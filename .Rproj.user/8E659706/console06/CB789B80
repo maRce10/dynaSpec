@@ -1,0 +1,571 @@
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i fee%04d.tiff -c:v libx264 -pprofile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/sccroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+[48;5;0m[38;5;207m[image2 @ 0x55cb3a648a00] [0m[48;5;0m[38;5;196mCould find no file with path 'fee%04d.tiff' and index in the range 0-4
+[0m[48;5;0m[38;5;196mfee%04d.tiff: No such file or directory
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ tempd[K[K[K[K[Kffmpeg -framerate 50 -i fee%04d.tiff -c:v libx264 -pprofile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/sccroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+[48;5;0m[38;5;207m[image2 @ 0x55aed8e54a00] [0m[48;5;0m[38;5;196mCould find no file with path 'fee%04d.tiff' and index in the range 0-4
+[0m[48;5;0m[38;5;196mfee%04d.tiff: No such file or directory
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i fee%04d.tiff -c:v libx264 -pprofile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/sccroll.spectro.temp.mp4[B[A[A[C[C[C[C[C[C[C[C[K
+[K
+[K[A[A[C[C[C[C[C[C[C[Cffmpeg -framerate 50 -i fee%04d.tiff -c:v libx264 -pprofile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/sccroll.spectro.temp.mp4[B[A[A[C[C[C[C[C[C[C[C[K
+[K
+[K[A[A[C[C[C[C[C[C[C[Cffmpeg -framerate 50 -i/tmp/Rtmpjj6nnI/fee%04d.tiff  -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /tmmp/Rtmpjj6nnI/scroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+[48;5;0m[38;5;196mUnrecognized option 'i/tmp/Rtmpjj6nnI/fee%04d.tiff'.
+[0m[48;5;0m[38;5;208mError splitting the argument list: [0m[48;5;0m[38;5;208mOption not found
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i/tmp/Rtmpjj6nnI/fee%04d.tiff  -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /tmmp/Rtmpjj6nnI/scroll.spectro.temp.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C /tmp[1P/Rtmpjj6nnI/scroll.spectro.temp.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C /tmp/[1PRtmpjj6nnI/scroll.spectro.temp.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C/tmp/R[1Ptmpjj6nnI/scroll.spectro.temp.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+[48;5;0m[38;5;196mUnrecognized option 'i/tmp/Rtmpjj6nnI/fee%04d.tiff'.
+[0m[48;5;0m[38;5;208mError splitting the argument list: [0m[48;5;0m[38;5;208mOption not found
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i/tmp/Rtmpjj6nnI/fee%04d.tiff  -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p /tmp/RRtmpjj6nnI/scroll.spectro.temp.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C-y /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C fee%04d.tiff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/sc[13Proll.spectro.temp.mp4[B[A[A[C[C[C[C[C[C[C/tmp/Rtmpjj6nnI/fee%04d.tiff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C /tmp/Rtmpjj6nnI/fee%04d.tiff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4[A[A
+
+
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, image2, from '/tmp/Rtmpjj6nnI/fee%04d.tiff':
+  Duration: 00:00:02.52, start: 0.000000, bitrate: N/A
+    Stream #0:0: Video: tiff, rgb24, 1100x700 [SAR 1:1 DAR 11:7], 50 fps, 50 tbr, 50 tbn, 50 tbc
+Stream mapping:
+  Stream #0:0 -> #0:0 (tiff (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0musing SAR=1/1
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0musing cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mprofile High, level 3.2
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0m264 - core 152 r2854 e9a5903 - H.264/MPEG-4 AVC codec - Copyleft 2003-2017 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=6 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=2.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4':
+  Metadata:
+    encoder         : Lavf57.83.100
+    Stream #0:0: Video: h264 (libx264) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], q=-1--1, 50 fps, 12800 tbn, 50 tbc
+    Metadata:
+      encoder         : Lavc57.107.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: -1
+frame=    2 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=    8 fps=6.8 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   31 fps= 16 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   40 fps= 16 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   48 fps= 15 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   50 fps= 14 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   54 fps= 13 q=10.0 size=       0kB time=00:00:00.02 bitrate=  19.1kbits/s speed=0.00472x    frame=   70 fps= 15 q=10.0 size=     256kB time=00:00:00.34 bitrate=6167.8kbits/s speed=0.0714x    frame=  103 fps= 20 q=10.0 size=    1024kB time=00:00:01.00 bitrate=8388.3kbits/s speed=0.19x    frame=  126 fps= 21 q=-1.0 Lsize=    2492kB time=00:00:02.46 bitrate=8299.2kbits/s speed=0.415x    
+video:2490kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.091500%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mframe I:1     Avg QP: 1.38  size: 36626
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mframe P:37    Avg QP: 6.45  size: 22607
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mframe B:88    Avg QP:12.29  size: 19045
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mconsecutive B-frames:  4.8%  1.6% 14.3% 79.4%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mmb I  I16..4: 84.3%  4.7% 11.0%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mmb P  I16..4:  2.0%  0.3%  0.8%  P16..4:  8.1%  3.2%  2.6%  0.0%  0.0%    skip:83.1%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mmb B  I16..4:  0.1%  0.0%  0.2%  B16..8:  9.9%  3.4%  2.9%  direct: 2.0%  skip:81.6%  L0:49.9% L1:38.0% BI:12.1%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0m8x8 transform intra:6.2% inter:4.5%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mcoded y,uvDC,uvAC intra: 14.9% 5.3% 5.3% inter: 7.2% 4.9% 4.8%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mi16 v,h,dc,p: 87% 11%  2%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 14% 19% 67%  0%  0%  0%  0%  0%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 35% 16% 35%  2%  2%  4%  1%  4%  2%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mi8c dc,h,v,p: 96%  3%  1%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mWeighted P-Frames: Y:0.0% UV:0.0%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mref P L0: 46.3%  2.4% 22.7% 28.5%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mref B L0: 58.5% 33.4%  8.1%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mref B L1: 73.5% 26.5%
+[48;5;0m[38;5;51m[libx264 @ 0x56057b03e3c0] [0mkb/s:8092.23
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i /tmp/Rtmpjj6nnI/fee%04d.tifff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /ttmp/Rtmpjj6nnI/scroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, image2, from '/tmp/Rtmpjj6nnI/fee%04d.tiff':
+  Duration: 00:00:02.52, start: 0.000000, bitrate: N/A
+    Stream #0:0: Video: tiff, rgb24, 1100x700 [SAR 1:1 DAR 11:7], 50 fps, 50 tbr, 50 tbn, 50 tbc
+Stream mapping:
+  Stream #0:0 -> #0:0 (tiff (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0musing SAR=1/1
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0musing cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mprofile High, level 3.2
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0m264 - core 152 r2854 e9a5903 - H.264/MPEG-4 AVC codec - Copyleft 2003-2017 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=6 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=2.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4':
+  Metadata:
+    encoder         : Lavf57.83.100
+    Stream #0:0: Video: h264 (libx264) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], q=-1--1, 50 fps, 12800 tbn, 50 tbc
+    Metadata:
+      encoder         : Lavc57.107.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: -1
+frame=   35 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   49 fps= 33 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   52 fps= 26 q=10.0 size=       0kB time=-00:00:00.01 bitrate=N/A speed=N/A    frame=   59 fps= 24 q=10.0 size=       0kB time=00:00:00.12 bitrate=   3.2kbits/s speed=0.048x    frame=   60 fps= 18 q=10.0 size=       0kB time=00:00:00.14 bitrate=   2.7kbits/s speed=0.0431x    frame=   97 fps= 26 q=10.0 size=     768kB time=00:00:00.88 bitrate=7149.2kbits/s speed=0.233x    frame=  126 fps= 27 q=-1.0 Lsize=    2492kB time=00:00:02.46 bitrate=8299.2kbits/s speed=0.537x    
+video:2490kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.091500%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mframe I:1     Avg QP: 1.38  size: 36626
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mframe P:37    Avg QP: 6.45  size: 22607
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mframe B:88    Avg QP:12.29  size: 19045
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mconsecutive B-frames:  4.8%  1.6% 14.3% 79.4%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mmb I  I16..4: 84.3%  4.7% 11.0%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mmb P  I16..4:  2.0%  0.3%  0.8%  P16..4:  8.1%  3.2%  2.6%  0.0%  0.0%    skip:83.1%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mmb B  I16..4:  0.1%  0.0%  0.2%  B16..8:  9.9%  3.4%  2.9%  direct: 2.0%  skip:81.6%  L0:49.9% L1:38.0% BI:12.1%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0m8x8 transform intra:6.2% inter:4.5%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mcoded y,uvDC,uvAC intra: 14.9% 5.3% 5.3% inter: 7.2% 4.9% 4.8%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi16 v,h,dc,p: 87% 11%  2%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 14% 19% 67%  0%  0%  0%  0%  0%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 35% 16% 35%  2%  2%  4%  1%  4%  2%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi8c dc,h,v,p: 96%  3%  1%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mWeighted P-Frames: Y:0.0% UV:0.0%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mref P L0: 46.3%  2.4% 22.7% 28.5%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mref B L0: 58.5% 33.4%  8.1%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mref B L1: 73.5% 26.5%
+[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mkb/s:8092.23
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4 i//tmp/Rtmpjj6nnI/audio.scroll.spectro.wav -vcodec libx264 -accodec libmp3lame -shortest -y scroll.spectro.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+  Duration: 00:00:02.52, start: 0.000000, bitrate: 8101 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 8094 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+Output #0, wav, to 'i/tmp/Rtmpjj6nnI/audio.scroll.spectro.wav':
+[48;5;0m[38;5;196mOutput file #0 does not contain any stream
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4 i//tmp/Rtmpjj6nnI/audio.scroll.spectro.wav -vcodec libx264 -accodec libmp3lame -shortest -y scroll.spectro.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+  Duration: 00:00:02.52, start: 0.000000, bitrate: 8101 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 8094 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+Output #0, wav, to 'i/tmp/Rtmpjj6nnI/audio.scroll.spectro.wav':
+[48;5;0m[38;5;196mOutput file #0 does not contain any stream
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4 i//tmp/Rtmpjj6nnI/audio.scroll.spectro.wav -vcodec libx264 -accodec libmp3lame -shortest -y scroll.spectro.mp4[1P scroll.spectro.mp4[1P scroll.spectro.mp4[1Pscroll.spectro.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+  Duration: 00:00:02.52, start: 0.000000, bitrate: 8101 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 8094 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+Output #0, wav, to 'i/tmp/Rtmpjj6nnI/audio.scroll.spectro.wav':
+[48;5;0m[38;5;196mOutput file #0 does not contain any stream
+[K[A]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i /tmp/RtmpW3KcZL/fee%04d.tifff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y /ttmp/RtmpW3KcZL/scroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, image2, from '/tmp/RtmpW3KcZL/fee%04d.tiff':
+  Duration: 00:00:02.52, start: 0.000000, bitrate: N/A
+    Stream #0:0: Video: tiff, rgb24, 1100x700 [SAR 1:1 DAR 11:7], 50 fps, 50 tbr, 50 tbn, 50 tbc
+Stream mapping:
+  Stream #0:0 -> #0:0 (tiff (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0musing SAR=1/1
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0musing cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mprofile High, level 3.2
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0m264 - core 152 r2854 e9a5903 - H.264/MPEG-4 AVC codec - Copyleft 2003-2017 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=6 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=2.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/tmp/RtmpW3KcZL/scroll.spectro.temp.mp4':
+  Metadata:
+    encoder         : Lavf57.83.100
+    Stream #0:0: Video: h264 (libx264) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], q=-1--1, 50 fps, 12800 tbn, 50 tbc
+    Metadata:
+      encoder         : Lavc57.107.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: -1
+frame=   56 fps=0.0 q=10.0 size=       0kB time=00:00:00.06 bitrate=   6.4kbits/s speed=0.119x    frame=   94 fps= 93 q=10.0 size=    1024kB time=00:00:00.82 bitrate=10229.5kbits/s speed=0.808x    frame=  126 fps= 66 q=-1.0 Lsize=    3069kB time=00:00:02.46 bitrate=10220.0kbits/s speed=1.29x    
+video:3067kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.076584%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mframe I:1     Avg QP: 1.57  size: 37134
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mframe P:32    Avg QP: 6.34  size: 29004
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mframe B:93    Avg QP:12.17  size: 23381
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mconsecutive B-frames:  0.8%  1.6%  2.4% 95.2%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mmb I  I16..4: 82.2%  6.3% 11.5%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mmb P  I16..4:  2.3%  0.7%  1.6%  P16..4:  7.4%  3.5%  3.6%  0.0%  0.0%    skip:80.9%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mmb B  I16..4:  0.1%  0.0%  0.5%  B16..8: 10.2%  3.6%  4.0%  direct: 2.0%  skip:79.7%  L0:46.5% L1:39.4% BI:14.0%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0m8x8 transform intra:9.7% inter:4.7%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mcoded y,uvDC,uvAC intra: 24.2% 4.5% 4.5% inter: 8.2% 4.7% 4.7%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi16 v,h,dc,p: 87% 10%  2%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23%  5% 72%  0%  0%  0%  0%  0%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 50% 10% 30%  1%  1%  3%  1%  3%  1%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi8c dc,h,v,p: 96%  2%  1%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mWeighted P-Frames: Y:0.0% UV:0.0%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mref P L0: 63.2%  8.9% 17.5% 10.5%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mref B L0: 69.7% 26.3%  3.9%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mref B L1: 76.7% 23.3%
+[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mkb/s:9967.17
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/RtmpW3KcZL/scroll.spectro.temp.mp4 i  /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -aacodec libmp3lame -shortest -y scroll.spectro.mp4"
+> ^C
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/RtmpW3KcZL/scroll.spectro.temp.mp4 i  /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -aacodec libmp3lame -shortest -y scroll.spectro.mp4"[K
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/RtmpW3KcZL/scroll.spectro.temp.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+  Duration: 00:00:02.52, start: 0.000000, bitrate: 9976 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 9969 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+[48;5;0m[38;5;213m[NULL @ 0x558c2a0ae040] [0m[48;5;0m[38;5;196mUnable to find a suitable output format for 'i'
+[0m[48;5;0m[38;5;196mi: Invalid argument
+[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/RtmpW3KcZL/scroll.spectro.temp.mp4 i  /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -aacodec libmp3lame -shortest -y scroll.spectro.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C-i /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -[1@a[A
+
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/RtmpW3KcZL/scroll.spectro.temp.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+  Duration: 00:00:02.52, start: 0.000000, bitrate: 9976 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 9969 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+[48;5;0m[38;5;226mGuessed Channel Layout for Input Stream #1.0 : mono
+[0mInput #1, wav, from '/tmp/RtmpW3KcZL/audio.scroll.spectro.wav':
+  Duration: 00:00:04.00, bitrate: 705 kb/s
+    Stream #1:0: Audio: pcm_s16le ([1][0][0][0] / 0x0001), 44100 Hz, mono, s16, 705 kb/s
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+  Stream #1:0 -> #0:1 (pcm_s16le (native) -> mp3 (libmp3lame))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0musing SAR=1/1
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0musing cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mprofile High, level 3.2
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0m264 - core 152 r2854 e9a5903 - H.264/MPEG-4 AVC codec - Copyleft 2003-2017 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=6 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to 'scroll.spectro.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+    Stream #0:0(und): Video: h264 (libx264) (avc1 / 0x31637661), yuv420p(progressive), 1100x700 [SAR 1:1 DAR 11:7], q=-1--1, 50 fps, 12800 tbn, 50 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+      encoder         : Lavc57.107.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: -1
+    Stream #0:1: Audio: mp3 (libmp3lame) (mp4a / 0x6134706D), 44100 Hz, mono, s16p
+    Metadata:
+      encoder         : Lavc57.107.100 libmp3lame
+frame=   64 fps=0.0 q=31.0 size=       0kB time=00:00:00.23 bitrate=   1.6kbits/s speed=0.464x    frame=  108 fps=105 q=31.0 size=       0kB time=00:00:01.12 bitrate=   0.3kbits/s speed=1.09x    frame=  126 fps= 79 q=-1.0 Lsize=     497kB time=00:00:02.53 bitrate=1606.3kbits/s speed=1.59x    
+video:472kB audio:20kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.934040%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mframe I:1     Avg QP:19.45  size: 12371
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mframe P:32    Avg QP:28.02  size:  6287
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mframe B:93    Avg QP:32.94  size:  2898
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mconsecutive B-frames:  0.8%  1.6%  2.4% 95.2%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mmb I  I16..4: 55.3% 34.5% 10.3%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mmb P  I16..4:  0.6%  2.8%  1.4%  P16..4:  6.7%  3.6%  2.5%  0.0%  0.0%    skip:82.4%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mmb B  I16..4:  0.1%  0.3%  0.2%  B16..8: 15.1%  3.4%  1.1%  direct: 1.2%  skip:78.6%  L0:51.5% L1:45.3% BI: 3.1%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0m8x8 transform intra:48.0% inter:20.9%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mcoded y,uvDC,uvAC intra: 17.3% 2.7% 2.4% inter: 3.9% 0.3% 0.2%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mi16 v,h,dc,p: 69% 26%  5%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 28%  5% 67%  0%  0%  0%  0%  0%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 52% 10% 28%  2%  1%  3%  1%  3%  1%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mi8c dc,h,v,p: 96%  3%  1%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mWeighted P-Frames: Y:0.0% UV:0.0%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mref P L0: 65.5%  8.4% 15.0% 11.1%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mref B L0: 68.6% 29.9%  1.4%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mref B L1: 80.9% 19.1%
+[48;5;0m[38;5;51m[libx264 @ 0x55c7eafa7fc0] [0mkb/s:1533.63
+ffmpeg -framerate 50 -i /tmp/RtmpSK50ll/%04d.temp.immg.tiff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420pp -y /tmp/RtmpSK50ll/scroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, image2, from '/tmp/RtmpSK50ll/%04d.temp.img.tiff':
+  Duration: 00:00:03.00, start: 0.000000, bitrate: N/A
+    Stream #0:0: Video: tiff, rgb24, 275x175 [SAR 1:1 DAR 11:7], 50 fps, 50 tbr, 50 tbn, 50 tbc
+Stream mapping:
+  Stream #0:0 -> #0:0 (tiff (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x55dfaab7d0e0] [0m[48;5;0m[38;5;196mwidth not divisible by 2 (275x175)
+[0m[48;5;0m[38;5;196mError initializing output stream 0:0 -- Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height
+[0mConversion failed!
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -framerate 50 -i /tmp/RtmpSK50ll/%04d.temp.immg.tiff -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420pp -y /tmp/RtmpSK50ll/scroll.spectro.temp.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, image2, from '/tmp/RtmpSK50ll/%04d.temp.img.tiff':
+  Duration: 00:00:03.00, start: 0.000000, bitrate: N/A
+    Stream #0:0: Video: tiff, rgb24, 276x175 [SAR 1:1 DAR 276:175], 50 fps, 50 tbr, 50 tbn, 50 tbc
+Stream mapping:
+  Stream #0:0 -> #0:0 (tiff (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x55c0275d00e0] [0m[48;5;0m[38;5;196mheight not divisible by 2 (276x175)
+[0m[48;5;0m[38;5;196mError initializing output stream 0:0 -- Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height
+[0mConversion failed!
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ xdg-open scroll.spectro.mp4
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ VLC media player 3.0.8 Vetinari (revision 3.0.8-0-gf350b6b5a7)
+[[32;1m00005641cb6ca630[0m] main libvlc: [0;1mEjecutar vlc con la interfaz predeterminada. Use «cvlc» para usar vlc sin interfaz.[0m
+Qt: Session management error: Could not open network socket
+libva info: VA-API version 1.1.0
+libva info: va_getDriverName() returns 0
+libva info: Trying to open /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
+libva info: Found init function __vaDriverInit_1_1
+libva info: va_openDriver() returns 0
+[[32;1m00007febbcc16c30[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc40540] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccb3f00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccb3f00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccd0180] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccd0180] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccb3f00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccb3f00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccd0180] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc40540] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc40540] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccb3f00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccb3f00] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccd0180] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc4fca0] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbcc97d00] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7febbccd0180] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[[32;1m00007feb4c04c140[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[48;5;0m[38;5;39m[h264 @ 0x7feb4c014480] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4c023ba0] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4cca2900] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4cca2900] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4ccbe7e0] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4cca2900] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4ccbe7e0] [0m[48;5;0m[38;5;196mmmco: unref short failure
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4c014480] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb4c014480] [0m[48;5;0m[38;5;196mco located POCs unavailable
+[0m[[32;1m00007feb7c017f10[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[[32;1m00007feb7cceaed0[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[[32;1m00007feb4c04adb0[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[[32;1m00007feb8000d250[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[[32;1m00007feb80014de0[0m] avcodec decoder: [0;1mUsing Intel i965 driver for Intel(R) Broadwell - 2.1.0 for hardware decoding[0m
+[48;5;0m[38;5;39m[h264 @ 0x7feb80036500] [0m[48;5;0m[38;5;196mget_buffer() failed
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb80036500] [0m[48;5;0m[38;5;196mthread_get_buffer() failed
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb80036500] [0m[48;5;0m[38;5;196mdecode_slice_header error
+[0m[48;5;0m[38;5;39m[h264 @ 0x7feb80036500] [0m[48;5;0m[38;5;196mno frame!
+[0mQObject::~QObject: Timers cannot be stopped from another thread
+ffmpeg -i scroll.spectro.mp4 -filter:v "minterpolatee='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120'" scroll.spectrro2.mp4
+ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
+  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
+  libavutil      55. 78.100 / 55. 78.100
+  libavcodec     57.107.100 / 57.107.100
+  libavformat    57. 83.100 / 57. 83.100
+  libavdevice    57. 10.100 / 57. 10.100
+  libavfilter     6.107.100 /  6.107.100
+  libavresample   3.  7.  0 /  3.  7.  0
+  libswscale      4.  8.100 /  4.  8.100
+  libswresample   2.  9.100 /  2.  9.100
+  libpostproc    54.  7.100 / 54.  7.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'scroll.spectro.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+  Duration: 00:00:05.82, start: 0.000000, bitrate: 551 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 700x400 [SAR 1:1 DAR 7:4], 469 kb/s, 150 fps, 150 tbr, 19200 tbn, 300 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+    Stream #0:1(und): Audio: mp3 (mp4a / 0x6134706D), 44100 Hz, mono, s16p, 64 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+  Stream #0:1 -> #0:1 (mp3 (native) -> aac (native))
+Press [q] to stop, [?] for help
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0musing SAR=1/1
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0musing cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mprofile High, level 3.2
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0m264 - core 152 r2854 e9a5903 - H.264/MPEG-4 AVC codec - Copyleft 2003-2017 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=6 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to 'scroll.spectro2.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf57.83.100
+    Stream #0:0(und): Video: h264 (libx264) (avc1 / 0x31637661), yuv420p, 700x400 [SAR 1:1 DAR 7:4], q=-1--1, 120 fps, 15360 tbn, 120 tbc (default)
+    Metadata:
+      handler_name    : VideoHandler
+      encoder         : Lavc57.107.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: -1
+    Stream #0:1(und): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, mono, fltp, 69 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+      encoder         : Lavc57.107.100 aac
+frame=    7 fps=0.0 q=0.0 size=       0kB time=00:00:00.04 bitrate=   0.0kbits/s speed=0.0805x    frame=   12 fps= 10 q=0.0 size=       0kB time=00:00:00.09 bitrate=   0.0kbits/s speed=0.0783x    frame=   18 fps= 11 q=0.0 size=       0kB time=00:00:00.16 bitrate=   0.0kbits/s speed=0.0958x    frame=   25 fps= 11 q=0.0 size=       0kB time=00:00:00.18 bitrate=   0.0kbits/s speed=0.0815x    frame=   31 fps= 11 q=0.0 size=       0kB time=00:00:00.23 bitrate=   0.0kbits/s speed=0.083x    frame=   37 fps= 11 q=0.0 size=       0kB time=00:00:00.27 bitrate=   0.0kbits/s speed=0.0825x    frame=   43 fps= 11 q=0.0 size=       0kB time=00:00:00.32 bitrate=   0.0kbits/s speed=0.083x    frame=   48 fps= 11 q=0.0 size=       0kB time=00:00:00.39 bitrate=   0.0kbits/s speed=0.0891x    frame=   53 fps= 11 q=33.0 size=       0kB time=00:00:00.41 bitrate=   0.9kbits/s speed=0.0848x    frame=   59 fps= 11 q=33.0 size=       0kB time=00:00:00.46 bitrate=   0.8kbits/s speed=0.0847x    frame=   65 fps= 11 q=33.0 size=       0kB time=00:00:00.51 bitrate=   0.8kbits/s speed=0.0837x    frame=   71 fps= 11 q=33.0 size=       0kB time=00:00:00.58 bitrate=   0.7kbits/s speed=0.0874x    frame=   77 fps= 11 q=33.0 size=       0kB time=00:00:00.62 bitrate=   0.6kbits/s speed=0.0868x    frame=   83 fps= 11 q=33.0 size=       0kB time=00:00:00.67 bitrate=   0.6kbits/s speed=0.0866x    frame=   87 fps= 10 q=33.0 size=       0kB time=00:00:00.71 bitrate=   0.5kbits/s speed=0.0867x    frame=   93 fps= 11 q=33.0 size=       0kB time=00:00:00.74 bitrate=   0.5kbits/s speed=0.0841x    frame=   99 fps= 10 q=33.0 size=       0kB time=00:00:00.81 bitrate=   0.5kbits/s speed=0.0862x    frame=  103 fps= 10 q=33.0 size=       0kB time=00:00:00.85 bitrate=   0.4kbits/s speed=0.0856x    frame=  109 fps= 10 q=33.0 size=       0kB time=00:00:00.88 bitrate=   0.4kbits/s speed=0.0836x    frame=  115 fps= 10 q=33.0 size=       0kB time=00:00:00.92 bitrate=   0.4kbits/s speed=0.0837x    frame=  121 fps= 10 q=33.0 size=       0kB time=00:00:00.99 bitrate=   0.4kbits/s speed=0.0851x    frame=  127 fps= 10 q=33.0 size=       0kB time=00:00:01.04 bitrate=   0.4kbits/s speed=0.0852x    frame=  131 fps= 10 q=33.0 size=       0kB time=00:00:01.09 bitrate=   0.4kbits/s speed=0.0854x    frame=  137 fps= 10 q=33.0 size=       0kB time=00:00:01.11 bitrate=   0.3kbits/s speed=0.0838x    frame=  143 fps= 10 q=33.0 size=       0kB time=00:00:01.16 bitrate=   0.3kbits/s speed=0.0838x    frame=  149 fps= 10 q=33.0 size=       0kB time=00:00:01.23 bitrate=   0.3kbits/s speed=0.0852x    frame=  155 fps= 10 q=33.0 size=       0kB time=00:00:01.27 bitrate=   0.3kbits/s speed=0.085x    frame=  159 fps= 10 q=33.0 size=       0kB time=00:00:01.32 bitrate=   0.3kbits/s speed=0.0848x    frame=  165 fps= 10 q=33.0 size=       0kB time=00:00:01.34 bitrate=   0.3kbits/s speed=0.0829x    frame=  170 fps= 10 q=33.0 size=       0kB time=00:00:01.41 bitrate=   0.3kbits/s speed=0.0845x    frame=  175 fps= 10 q=33.0 size=       0kB time=00:00:01.43 bitrate=   0.3kbits/s speed=0.0829x    frame=  178 fps= 10 q=33.0 size=       0kB time=00:00:01.48 bitrate=   0.3kbits/s speed=0.0831x    frame=  184 fps=9.9 q=33.0 size=       0kB time=00:00:01.50 bitrate=   0.3kbits/s speed=0.0815x    frame=  188 fps=9.9 q=33.0 size=       0kB time=00:00:01.53 bitrate=   0.3kbits/s speed=0.0804x    frame=  193 fps=9.8 q=33.0 size=       0kB time=00:00:01.57 bitrate=   0.2kbits/s speed=0.0803x    frame=  197 fps=9.8 q=33.0 size=       0kB time=00:00:01.64 bitrate=   0.2kbits/s speed=0.0817x    frame=  202 fps=9.8 q=33.0 size=       0kB time=00:00:01.67 bitrate=   0.2kbits/s speed=0.0807x    frame=  206 fps=9.7 q=33.0 size=       0kB time=00:00:01.69 bitrate=   0.2kbits/s speed=0.0799x    frame=  211 fps=9.7 q=33.0 size=       0kB time=00:00:01.74 bitrate=   0.2kbits/s speed=0.0797x    frame=  216 fps=9.6 q=33.0 size=       0kB time=00:00:01.76 bitrate=   0.2kbits/s speed=0.0785x    frame=  219 fps=9.5 q=33.0 size=       0kB time=00:00:01.83 bitrate=   0.2kbits/s speed=0.0798x    frame=  224 fps=9.5 q=33.0 size=       0kB time=00:00:01.85 bitrate=   0.2kbits/s speed=0.079x    frame=  229 fps=9.5 q=33.0 size=       0kB time=00:00:01.88 bitrate=   0.2kbits/s speed=0.078x    frame=  233 fps=9.5 q=33.0 size=       0kB time=00:00:01.92 bitrate=   0.2kbits/s speed=0.0782x    frame=  237 fps=9.4 q=33.0 size=       0kB time=00:00:01.95 bitrate=   0.2kbits/s speed=0.0776x    frame=  241 fps=9.4 q=33.0 size=       0kB time=00:00:01.99 bitrate=   0.2kbits/s speed=0.0778x    frame=  247 fps=9.4 q=33.0 size=       0kB time=00:00:02.04 bitrate=   0.2kbits/s speed=0.0778x    frame=  253 fps=9.4 q=33.0 size=       0kB time=00:00:02.08 bitrate=   0.2kbits/s speed=0.0778x    frame=  259 fps=9.5 q=33.0 size=       0kB time=00:00:02.13 bitrate=   0.2kbits/s speed=0.078x    frame=  263 fps=9.4 q=33.0 size=       0kB time=00:00:02.18 bitrate=   0.2kbits/s speed=0.0782x    frame=  269 fps=9.4 q=33.0 size=       0kB time=00:00:02.20 bitrate=   0.2kbits/s speed=0.0773x    frame=  272 fps=9.4 q=33.0 size=       0kB time=00:00:02.27 bitrate=   0.2kbits/s speed=0.0783x    frame=  277 fps=9.4 q=33.0 size=       0kB time=00:00:02.29 bitrate=   0.2kbits/s speed=0.0777x    frame=  281 fps=9.3 q=33.0 size=       0kB time=00:00:02.32 bitrate=   0.2kbits/s speed=0.0771x    frame=  285 fps=9.3 q=33.0 size=       0kB time=00:00:02.36 bitrate=   0.2kbits/s speed=0.0773x    frame=  289 fps=9.3 q=33.0 size=       0kB time=00:00:02.39 bitrate=   0.2kbits/s speed=0.0768x    frame=  294 fps=9.3 q=33.0 size=       0kB time=00:00:02.46 bitrate=   0.2kbits/s speed=0.0776x    frame=  300 fps=9.3 q=33.0 size=       0kB time=00:00:02.48 bitrate=   0.2kbits/s speed=0.0771x    frame=  304 fps=9.3 q=33.0 size=       0kB time=00:00:02.53 bitrate=   0.2kbits/s speed=0.0771x    frame=  309 fps=9.3 q=33.0 size=       0kB time=00:00:02.55 bitrate=   0.2kbits/s speed=0.0766x    frame=  313 fps=9.2 q=33.0 size=       0kB time=00:00:02.60 bitrate=   0.1kbits/s speed=0.0768x    frame=  318 fps=9.2 q=33.0 size=       0kB time=00:00:02.62 bitrate=   0.1kbits/s speed=0.0763x    frame=  322 fps=9.2 q=33.0 size=       0kB time=00:00:02.67 bitrate=   0.1kbits/s speed=0.0765x    frame=  327 fps=9.2 q=33.0 size=       0kB time=00:00:02.71 bitrate=   0.1kbits/s speed=0.0765x    frame=  332 fps=9.2 q=33.0 size=       0kB time=00:00:02.73 bitrate=   0.1kbits/s speed=0.0759x    frame=  335 fps=9.2 q=33.0 size=       0kB time=00:00:02.78 bitrate=   0.1kbits/s speed=0.0761x    frame=  341 fps=9.2 q=33.0 size=       0kB time=00:00:02.80 bitrate=   0.1kbits/s speed=0.0755x    frame=  345 fps=9.1 q=33.0 size=       0kB time=00:00:02.83 bitrate=   0.1kbits/s speed=0.075x    frame=  349 fps=9.1 q=33.0 size=       0kB time=00:00:02.90 bitrate=   0.1kbits/s speed=0.0759x    frame=  353 fps=9.1 q=33.0 size=       0kB time=00:00:02.92 bitrate=   0.1kbits/s speed=0.0755x    frame=  358 fps=9.1 q=33.0 size=       0kB time=00:00:02.97 bitrate=   0.1kbits/s speed=0.0756x    frame=  363 fps=9.1 q=33.0 size=       0kB time=00:00:02.99 bitrate=   0.1kbits/s speed=0.075x    frame=  366 fps=9.0 q=33.0 size=       0kB time=00:00:03.04 bitrate=   0.1kbits/s speed=0.075x    frame=  371 fps=9.0 q=33.0 size=       0kB time=00:00:03.08 bitrate=   0.1kbits/s speed=0.0752x    frame=  375 fps=9.0 q=33.0 size=       0kB time=00:00:03.11 bitrate=   0.1kbits/s speed=0.0748x    frame=  379 fps=9.0 q=33.0 size=       0kB time=00:00:03.13 bitrate=   0.1kbits/s speed=0.0744x    frame=  384 fps=9.0 q=33.0 size=       0kB time=00:00:03.18 bitrate=   0.1kbits/s speed=0.0744x    frame=  388 fps=9.0 q=33.0 size=       0kB time=00:00:03.20 bitrate=   0.1kbits/s speed=0.074x    frame=  391 fps=8.9 q=33.0 size=       0kB time=00:00:03.25 bitrate=   0.1kbits/s speed=0.0741x    frame=  396 fps=8.9 q=33.0 size=       0kB time=00:00:03.29 bitrate=   0.1kbits/s speed=0.0743x    frame=  400 fps=8.9 q=33.0 size=       0kB time=00:00:03.32 bitrate=   0.1kbits/s speed=0.074x    frame=  404 fps=8.9 q=33.0 size=       0kB time=00:00:03.34 bitrate=   0.1kbits/s speed=0.0736x    frame=  407 fps=8.9 q=33.0 size=       0kB time=00:00:03.39 bitrate=   0.1kbits/s speed=0.0737x    frame=  413 fps=8.9 q=33.0 size=       0kB time=00:00:03.41 bitrate=   0.1kbits/s speed=0.0732x    frame=  417 fps=8.8 q=33.0 size=       0kB time=00:00:03.45 bitrate=   0.1kbits/s speed=0.0734x    frame=  420 fps=8.8 q=33.0 size=       0kB time=00:00:03.50 bitrate=   0.1kbits/s speed=0.0736x    frame=  425 fps=8.8 q=33.0 size=       0kB time=00:00:03.52 bitrate=   0.1kbits/s speed=0.0732x    frame=  429 fps=8.8 q=33.0 size=       0kB time=00:00:03.57 bitrate=   0.1kbits/s speed=0.0734x    frame=  432 fps=8.8 q=33.0 size=       0kB time=00:00:03.59 bitrate=   0.1kbits/s speed=0.073x    frame=  437 fps=8.8 q=33.0 size=       0kB time=00:00:03.62 bitrate=   0.1kbits/s speed=0.0727x    frame=  441 fps=8.8 q=33.0 size=       0kB time=00:00:03.64 bitrate=   0.1kbits/s speed=0.0724x    frame=  445 fps=8.7 q=33.0 size=       0kB time=00:00:03.71 bitrate=   0.1kbits/s speed=0.073x    frame=  449 fps=8.7 q=33.0 size=       0kB time=00:00:03.73 bitrate=   0.1kbits/s speed=0.0727x    frame=  453 fps=8.7 q=33.0 size=       0kB time=00:00:03.76 bitrate=   0.1kbits/s speed=0.0724x    frame=  457 fps=8.7 q=33.0 size=       0kB time=00:00:03.78 bitrate=   0.1kbits/s speed=0.0721x    frame=  461 fps=8.7 q=33.0 size=       0kB time=00:00:03.80 bitrate=   0.1kbits/s speed=0.0719x    frame=  466 fps=8.7 q=33.0 size=       0kB time=00:00:03.85 bitrate=   0.1kbits/s speed=0.072x    frame=  469 fps=8.7 q=33.0 size=       0kB time=00:00:03.92 bitrate=   0.1kbits/s speed=0.0727x    frame=  475 fps=8.7 q=33.0 size=       0kB time=00:00:03.94 bitrate=   0.1kbits/s speed=0.0723x    frame=  479 fps=8.7 q=33.0 size=       0kB time=00:00:03.99 bitrate=   0.1kbits/s speed=0.0724x    frame=  485 fps=8.7 q=33.0 size=       0kB time=00:00:04.01 bitrate=   0.1kbits/s speed=0.0719x    frame=  489 fps=8.7 q=33.0 size=       0kB time=00:00:04.04 bitrate=   0.1kbits/s speed=0.0716x    frame=  492 fps=8.6 q=33.0 size=       0kB time=00:00:04.08 bitrate=   0.1kbits/s speed=0.0716x    frame=  497 fps=8.6 q=33.0 size=       0kB time=00:00:04.13 bitrate=   0.1kbits/s speed=0.0718x    frame=  501 fps=8.6 q=33.0 size=       0kB time=00:00:04.15 bitrate=   0.1kbits/s speed=0.0714x    frame=  504 fps=8.6 q=33.0 size=       0kB time=00:00:04.20 bitrate=   0.1kbits/s speed=0.0716x    frame=  509 fps=8.6 q=33.0 size=       0kB time=00:00:04.22 bitrate=   0.1kbits/s speed=0.0713x    frame=  513 fps=8.6 q=33.0 size=       0kB time=00:00:04.24 bitrate=   0.1kbits/s speed=0.071x    frame=  517 fps=8.6 q=33.0 size=       0kB time=00:00:04.27 bitrate=   0.1kbits/s speed=0.0707x    frame=  520 fps=8.5 q=33.0 size=       0kB time=00:00:04.34 bitrate=   0.1kbits/s speed=0.0712x    frame=  525 fps=8.5 q=33.0 size=       0kB time=00:00:04.36 bitrate=   0.1kbits/s speed=0.071x    frame=  529 fps=8.5 q=33.0 size=       0kB time=00:00:04.38 bitrate=   0.1kbits/s speed=0.0708x    frame=  534 fps=8.5 q=33.0 size=       0kB time=00:00:04.43 bitrate=   0.1kbits/s speed=0.071x    frame=  539 fps=8.5 q=33.0 size=       0kB time=00:00:04.45 bitrate=   0.1kbits/s speed=0.0707x    frame=  544 fps=8.5 q=33.0 size=       0kB time=00:00:04.50 bitrate=   0.1kbits/s speed=0.0707x    frame=  548 fps=8.5 q=33.0 size=       0kB time=00:00:04.57 bitrate=   0.1kbits/s speed=0.0711x    frame=  553 fps=8.5 q=33.0 size=       0kB time=00:00:04.59 bitrate=   0.1kbits/s speed=0.0709x    frame=  559 fps=8.5 q=33.0 size=       0kB time=00:00:04.64 bitrate=   0.1kbits/s speed=0.071x    frame=  564 fps=8.5 q=33.0 size=       0kB time=00:00:04.66 bitrate=   0.1kbits/s speed=0.0707x    frame=  569 fps=8.6 q=33.0 size=       0kB time=00:00:04.71 bitrate=   0.1kbits/s speed=0.0709x    frame=  575 fps=8.6 q=33.0 size=       0kB time=00:00:04.78 bitrate=   0.1kbits/s speed=0.0713x    frame=  581 fps=8.6 q=33.0 size=       0kB time=00:00:04.82 bitrate=   0.1kbits/s speed=0.0714x    frame=  587 fps=8.6 q=33.0 size=       0kB time=00:00:04.87 bitrate=   0.1kbits/s speed=0.0715x    frame=  592 fps=8.6 q=33.0 size=       0kB time=00:00:04.92 bitrate=   0.1kbits/s speed=0.0716x    frame=  598 fps=8.6 q=33.0 size=       0kB time=00:00:04.99 bitrate=   0.1kbits/s speed=0.072x    frame=  604 fps=8.6 q=33.0 size=       0kB time=00:00:05.01 bitrate=   0.1kbits/s speed=0.0717x    frame=  608 fps=8.6 q=33.0 size=       0kB time=00:00:05.06 bitrate=   0.1kbits/s speed=0.0717x    frame=  613 fps=8.6 q=33.0 size=       0kB time=00:00:05.08 bitrate=   0.1kbits/s speed=0.0715x    frame=  617 fps=8.6 q=33.0 size=       0kB time=00:00:05.10 bitrate=   0.1kbits/s speed=0.0713x    frame=  621 fps=8.6 q=33.0 size=       0kB time=00:00:05.17 bitrate=   0.1kbits/s speed=0.0718x    frame=  625 fps=8.6 q=33.0 size=       0kB time=00:00:05.20 bitrate=   0.1kbits/s speed=0.0716x    frame=  629 fps=8.6 q=33.0 size=       0kB time=00:00:05.22 bitrate=   0.1kbits/s speed=0.0714x    frame=  633 fps=8.6 q=33.0 size=       0kB time=00:00:05.27 bitrate=   0.1kbits/s speed=0.0715x    frame=  638 fps=8.6 q=33.0 size=       0kB time=00:00:05.29 bitrate=   0.1kbits/s speed=0.0714x    frame=  642 fps=8.6 q=33.0 size=       0kB time=00:00:05.34 bitrate=   0.1kbits/s speed=0.0714x    frame=  647 fps=8.6 q=33.0 size=     256kB time=00:00:05.38 bitrate= 389.4kbits/s speed=0.0715x    frame=  651 fps=8.6 q=33.0 size=     256kB time=00:00:05.41 bitrate= 387.7kbits/s speed=0.0713x    frame=  655 fps=8.6 q=33.0 size=     256kB time=00:00:05.45 bitrate= 384.4kbits/s speed=0.0714x    frame=  661 fps=8.6 q=33.0 size=     256kB time=00:00:05.47 bitrate= 382.8kbits/s speed=0.0713x    frame=  667 fps=8.6 q=33.0 size=     256kB time=00:00:05.52 bitrate= 379.6kbits/s speed=0.0713x    frame=  672 fps=8.6 q=33.0 size=     256kB time=00:00:05.59 bitrate= 374.8kbits/s speed=0.0717x    frame=  677 fps=8.6 q=33.0 size=     256kB time=00:00:05.61 bitrate= 373.3kbits/s speed=0.0716x    frame=  683 fps=8.6 q=33.0 size=     256kB time=00:00:05.66 bitrate= 370.2kbits/s speed=0.0716x    frame=  686 fps=8.6 q=33.0 size=     256kB time=00:00:05.71 bitrate= 367.2kbits/s speed=0.0717x    frame=  691 fps=8.6 q=33.0 size=     256kB time=00:00:05.73 bitrate= 365.7kbits/s speed=0.0715x    frame=  694 fps=8.6 q=33.0 size=     256kB time=00:00:05.73 bitrate= 365.7kbits/s speed=0.071x    frame=  694 fps=8.6 q=-1.0 Lsize=     303kB time=00:00:05.80 bitrate= 427.6kbits/s speed=0.0717x    
+video:240kB audio:49kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 4.722203%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mframe I:3     Avg QP:23.65  size:  8917
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mframe P:175   Avg QP:22.04  size:   711
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mframe B:516   Avg QP:25.78  size:   182
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mconsecutive B-frames:  0.6%  0.6%  0.9% 98.0%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mmb I  I16..4: 16.1% 70.1% 13.8%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mmb P  I16..4:  0.6%  1.5%  0.1%  P16..4: 11.4%  1.3%  0.4%  0.0%  0.0%    skip:84.6%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mmb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  8.3%  0.1%  0.0%  direct: 0.3%  skip:91.3%  L0:43.1% L1:56.6% BI: 0.3%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0m8x8 transform intra:68.8% inter:85.2%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mcoded y,uvDC,uvAC intra: 11.6% 27.1% 22.8% inter: 0.3% 2.6% 1.4%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mi16 v,h,dc,p: 36% 60%  4%  0%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 35% 10% 52%  0%  0%  0%  0%  0%  1%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 54% 23% 10%  1%  2%  3%  3%  3%  2%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mi8c dc,h,v,p: 69% 16% 14%  1%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mWeighted P-Frames: Y:0.0% UV:0.0%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mref P L0: 67.8%  7.5% 15.0%  9.7%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mref B L0: 94.3%  4.9%  0.8%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mref B L1: 98.0%  2.0%
+[48;5;0m[38;5;51m[libx264 @ 0x559d38e0fe20] [0mkb/s:339.03
+[48;5;0m[38;5;51m[aac @ 0x559d38e0caa0] [0mQavg: 114.975
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ 

@@ -1,0 +1,21 @@
+Package: dynaSpec
+Type: Package
+Title: Dynamic spectrogram visualization in R
+Version: 1.0.2
+Date: 2020-03-26
+Author: Marcelo Araya-Salas [aut, cre]
+Maintainer: Marcelo Araya-Salas <marceloa27@gmail.com>
+Description: A set of tools to generate dynamic spectrogram visualizations in video format.
+License: GPL (>= 2)
+Imports: pbapply, utils, stats, seewave, tuneR, grid
+Depends: R (>= 3.2.1)
+LazyData: TRUE
+URL: https://github.com/maRce10/dynaSpec
+BugReports: https://github.com/maRce10/dynaSpec/issues
+NeedsCompilation: no
+Suggests: ggplot2, knitr, kableExtra, viridis, png
+VignetteBuilder: knitr
+RoxygenNote: 7.0.2
+Repository: CRANs
+Language: en-US
+Authors@R: person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "marceloa27@gmail.com")

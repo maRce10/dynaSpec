@@ -34,4 +34,4 @@ library(dynaSpec)
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
-Araya-Salas M & M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Wilkins, M & M. Araya-Salas. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.

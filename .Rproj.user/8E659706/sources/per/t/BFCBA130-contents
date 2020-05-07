@@ -1,0 +1,133 @@
+#' Create scrolling dynamic spectrograms
+#' 
+#' \code{scrolling_spectro} create videos of single row spectrograms scrolling from right to left sync'ed with sound.
+#' @usage scrolling_spectro()
+#' @param wave object of class 'Wave'.
+#' @param method Numeric vector of length 1 to indicate the 'experimental design' for measuring envelope correlation. Two methods are available:
+#' \itemize{
+#' \item \code{1}: compare all signals with their counterpart that was recorded at the closest distance to source (e.g. compare a signal recorded at 5m, 10m and 15m with its counterpart recorded at 1m). This is the default method. 
+#' \item \code{2}: compare all signals with their counterpart recorded at the distance immediately before (e.g. a signal recorded at 10m compared with the same signal recorded at 5m, then signal recorded at 15m compared with same signal recorded at 10m and so on).
+#' }
+#' @param hop.size A numeric vector of length 1 specifying the time window duration (in ms). Default is 11.6 ms, which is equivalent to 512 wl for a 44.1 kHz sampling rate. Ignored if 'wl' is supplied.
+#' @param wl A numeric vector of length 1 specifying the window length of the spectrogram, default 
+#' is NULL. If supplied, 'hop.size' is ignored.
+#' @param ovlp Numeric vector of length 1 specifying the percent overlap between two 
+#'   consecutive windows, as in \code{\link[seewave]{spectro}}. Only used when plotting. Default is 70. Applied to both spectra and spectrograms on image files.
+#' @param speed Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values < 1 (but higher than 0) slow down while values > 1 speed up.
+#' @param pal A color palette function to be used to assign colors in the 
+#'   plot, as in \code{\link[seewave]{spectro}}. Default is reverse.gray.colors.2. 
+#' @param collevels	Numeric vector indicating a set of levels which are used to partition the amplitude range of the spectrogram (in dB) as in \code{\link[seewave]{spectro}}. Default is \code{seq(-60, 0, 5)}. 
+#' @param parallel Numeric vector of length 1. Controls whether parallel computing is applied by specifying the number of cores to be used. Default is 1 (i.e. no parallel computing).
+#' @param pb Logical argument to control if progress bar is shown. Default is \code{TRUE}.
+#' @return A video file in the working directory with the scrolling spectrogram.
+#' @export
+#' @name scrolling_spectro
+#' @details The function creates videos of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms. 
+#' @seealso \code{\link{envelope_correlation}}, \code{\link{spectral_scrolling_spectro}}
+#' @examples
+#' {
+#' # load example data
+#' data("playback_est")
+#' 
+#' # remove ambient selections
+#' playback_est <- playback_est[playback_est$signal.type != "ambient", ]
+#' 
+#' # using method 1
+#'scrolling_spectro(X = playback_est)
+#' 
+#' # using method 2
+#' scrolling_spectro(X = playback_est, method = 2)
+#' }
+#' 
+#' @author Marcelo Araya-Salas (\email{marceloa27@@gmail.com}) 
+#' @references {
+#' Wilkins, M & M. Araya-Salas. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+#' }
+#last modification on dec-26-2019 (MAS)
+
+scrolling_spectro <- function(wave, hop.size = 11.6, wl = NULL, ovlp = 50, speed = 1, fps = 50, t.display = 1.5, res = 70, width = 1100, height = 700, parallel = 1, pb = TRUE, ...)
+{
+
+  # hopsize  
+  if (!is.numeric(hop.size) | hop.size < 0) stop("'parallel' must be a positive number") 
+  
+  # If parallel is not numeric
+  if (!is.numeric(parallel)) stop("'parallel' must be a numeric vector of length 1") 
+  if (any(!(parallel %% 1 == 0),parallel < 1)) stop("'parallel' should be a positive integer")
+  
+  #add silence
+  wav <-pastew(wave2 = silence(duration = t.display / 2, samp.rate = wave@samp.rate, 
+                               xunit = "time"), wave1 = wave, f = wave@samp.rate, 
+               output = "Wave")
+  
+  wav <-pastew(wave1 = silence(duration = t.display / 2, samp.rate = wav@samp.rate, 
+                               xunit = "time"), wave2 = wav, f = wav@samp.rate,
+               output = "Wave")
+  
+  # resample to 44.1 kHz
+  wav <- resamp(wave = wav, f = wav@samp.rate, g = 44100, output = "Wave")
+  
+  # adjust wl based on hope.size
+  if (is.null(wl))
+    wl <- round(wav@samp.rate * hop.size / 1000, 0)
+  
+  # make wl even if odd
+  if (!(wl %% 2) == 0) wl <- wl + 1
+  
+  # number of frames
+  frames <- round(duration(wave) * fps, 0) 
+  
+  # time increase between frames
+  step_time <- duration(wave) / (frames - 1)
+  
+  img_names <- paste0(sprintf(paste0("%0",nchar(frames) + 1, "d"), 1:frames), ".temp.img.tiff")
+  
+  # set pb options 
+  pbapply::pboptions(type = ifelse(as.logical(pb), "timer", "none"))
+  
+  # set clusters for windows OS
+  if (Sys.info()[1] == "Windows" & parallel > 1)
+    cl <- parallel::makePSOCKcluster(getOption("cl.cores", parallel)) else cl <- parallel
+  
+  #loop to create image files 
+  out <- pbapply::pblapply(1:frames, function(x){
+    
+    tlim <- c((x - 1) * step_time, (x - 1) * step_time + t.display)
+    
+    tiff(file.path(tempdir(), img_names[x]),res = res, width = width, height = height)
+    
+    
+    spectro(wave = wav, f = wav@samp.rate, wl = wl, ovlp = ovlp, 
+            tlim = tlim, ...)
+    
+    abline(v = tlim[1] + (t.display / 2), lty = 2, col = "skyblue", lwd = 2)
+  
+    dev.off()
+    
+  })
+  
+  # temporary file names
+  temp.audio <- file.path(tempdir(), "audio.scroll.spectro.wav")
+  temp.video <- file.path(tempdir(), "scroll.spectro.temp.mp4")
+  
+  # save audio file
+  suppressWarnings(tuneR::writeWave(object = wave, filename = temp.audio, extensible = FALSE))
+  
+  # put together call for ffmpeg
+  cll1 <- paste0("ffmpeg -framerate ", fps, " -i ", tempdir(), "/", paste0("%0",nchar(frames) + 1, "d.temp.img.tiff")," -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y ", temp.video)
+  
+  # run ffmpeg to create video
+  out1 <- system(cll1, intern = TRUE, ignore.stdout = TRUE)
+  
+  # add audio
+  cll2 <- paste0("ffmpeg -i ", temp.video, " -i ", temp.audio, " -vcodec libx264 -acodec libmp3lame -shortest -y scroll.spectro.mp4")
+  
+  # run ffmpeg to add audio
+  out2 <- system(cll2, intern = TRUE, ignore.stdout = TRUE)
+  
+  # remove temporary files
+  unlink(c(temp.video, temp.audio, list.files(path = tempdir(), full.names = TRUE, pattern = "\\.temp.img.tiff$")))
+  
+  # return nothing
+  return(NULL)
+}
