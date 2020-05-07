@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "added deprecated function file"')
+system('git commit -m  "scrolling_spectro()"')
 system("git push origin master")
 
 ```
