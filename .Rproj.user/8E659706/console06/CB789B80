@@ -598,4 +598,49 @@ Total 13 (delta 8), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/8)[Kremote: Resolving deltas:  12% (1/8)[Kremote: Resolving deltas:  25% (2/8)[Kremote: Resolving deltas:  37% (3/8)[Kremote: Resolving deltas:  50% (4/8)[Kremote: Resolving deltas:  62% (5/8)[Kremote: Resolving deltas:  75% (6/8)[Kremote: Resolving deltas:  87% (7/8)[Kremote: Resolving deltas: 100% (8/8)[Kremote: Resolving deltas: 100% (8/8), completed with 8 local objects.[K
 To https://github.com/maRce10/dynaSpec.git
    609c934..924c0fd  master -> master
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git push origin master[C[C[C[C[C[C[C[C[K
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git push origin master[C[C[C[C[C[C[C[C[Kgit push origin master
+Username for 'https://github.com': maRce10
+Password for 'https://maRce10@github.com': 
+To https://github.com/maRce10/dynaSpec.git
+ ! [rejected]        master -> master (fetch first)
+error: fallo el push de algunas referencias a 'https://github.com/maRce10/dynaSpec.git'
+ayuda: Actualizaciones fueron rechazadas porque el remoto contiene trabajo que
+ayuda: no existe localmente. Esto es causado usualmente por otro repositorio 
+ayuda: realizando push a la misma ref. Quizás quiera integrar primero los cambios
+ayuda: remotos (ej. 'git pull ...') antes de volver a hacer push.
+ayuda: Vea 'Notes about fast-forwards0 en 'git push --help' para detalles.
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git push origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[Cll[K
+remote: Enumerating objects: 14, done.[K
+remote: Counting objects:   7% (1/14)[Kremote: Counting objects:  14% (2/14)[Kremote: Counting objects:  21% (3/14)[Kremote: Counting objects:  28% (4/14)[Kremote: Counting objects:  35% (5/14)[Kremote: Counting objects:  42% (6/14)[Kremote: Counting objects:  50% (7/14)[Kremote: Counting objects:  57% (8/14)[Kremote: Counting objects:  64% (9/14)[Kremote: Counting objects:  71% (10/14)[Kremote: Counting objects:  78% (11/14)[Kremote: Counting objects:  85% (12/14)[Kremote: Counting objects:  92% (13/14)[Kremote: Counting objects: 100% (14/14)[Kremote: Counting objects: 100% (14/14), done.[K
+remote: Compressing objects:   9% (1/11)[Kremote: Compressing objects:  18% (2/11)[Kremote: Compressing objects:  27% (3/11)[Kremote: Compressing objects:  36% (4/11)[Kremote: Compressing objects:  45% (5/11)[Kremote: Compressing objects:  54% (6/11)[Kremote: Compressing objects:  63% (7/11)[Kremote: Compressing objects:  72% (8/11)[Kremote: Compressing objects:  81% (9/11)[Kremote: Compressing objects:  90% (10/11)[Kremote: Compressing objects: 100% (11/11)[Kremote: Compressing objects: 100% (11/11), done.[K
+remote: Total 13 (delta 3), reused 0 (delta 0), pack-reused 0[K
+Desempaquetando objetos:   7% (1/13)   Desempaquetando objetos:  15% (2/13)   Desempaquetando objetos:  23% (3/13)   Desempaquetando objetos:  30% (4/13)   Desempaquetando objetos:  38% (5/13)   Desempaquetando objetos:  46% (6/13)   Desempaquetando objetos:  53% (7/13)   Desempaquetando objetos:  61% (8/13)   Desempaquetando objetos:  69% (9/13)   Desempaquetando objetos:  76% (10/13)   Desempaquetando objetos:  84% (11/13)   Desempaquetando objetos:  92% (12/13)   Desempaquetando objetos: 100% (13/13)   Desempaquetando objetos: 100% (13/13), listo.
+Desde https://github.com/maRce10/dynaSpec
+   924c0fd..f4b4987  master        -> origin/master
+ * [nueva rama]      add-code-of-conduct-1 -> origin/add-code-of-conduct-1
+ * [nueva rama]      add-license-1 -> origin/add-license-1
+ayuda: Esperando que tu editor cierre el archivo ... /usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5.9' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Sensors.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Sensors.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Sensors.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5.9' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Positioning.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Positioning.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Positioning.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Network.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Quick.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Gui.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Quick.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Gui.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Quick.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5.9' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Quick.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Quick.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Quick.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Network.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Qml.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5.9' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Qml.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Qml.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Qml.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5.9' not found (required by /usr/lib/x86_64-linux-gnu/libQt5WebChannel.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5WebChannel.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5WebChannel.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5.9' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Sql.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5_PRIVATE_API' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Sql.so.5)
+/usr/bin/rstudio: /usr/lib/rstudio/bin/libQt5Core.so.5: version `Qt_5' not found (required by /usr/lib/x86_64-linux-gnu/libQt5Sql.so.5)
+error: There was a problem with the editor 'rstudio'.
+No se realiza commit de la fusión; use 'git commit' para completar la fusión.
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git pullsh origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[Cll[Ksh origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[Cll[Ksh origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[Cll[K[K
