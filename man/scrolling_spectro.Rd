@@ -4,7 +4,7 @@
 \alias{scrolling_spectro}
 \title{Create scrolling dynamic spectrograms}
 \usage{
-scrolling_spectro(wave, hop.size = 11.6, wl = NULL, 
+scrolling_spectro(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, 
 ovlp = 50, flim = NULL, speed = 1, fps = 50, 
 t.display = 1.5, fix.time = TRUE, res = 70, 
 width = 700, height = 400, parallel = 1, pb = TRUE,
@@ -12,6 +12,8 @@ width = 700, height = 400, parallel = 1, pb = TRUE,
 }
 \arguments{
 \item{wave}{object of class 'Wave'.}
+
+\item{file.name}{Character string with the name of the output video file. Must include the .mp4 extension. Default is 'scroll.spectro.mp4'.}
 
 \item{hop.size}{A numeric vector of length 1 specifying the time window duration (in ms). Default is 11.6 ms, which is equivalent to 512 wl for a 44.1 kHz sampling rate. Ignored if 'wl' is supplied.}
 
@@ -46,13 +48,13 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
 \item{...}{Additional arguments to be passed to \code{\link[seewave]{spectro}} for customizing spectrograms. Note that 'scale' cannot be included.}
 }
 \value{
-A video file in the working directory with the scrolling spectrogram.
+A video file in mp4 format in the working directory with the scrolling spectrogram.
 }
 \description{
 \code{scrolling_spectro} create videos of single row spectrograms scrolling from right to left sync'ed with sound.
 }
 \details{
-The function creates videos of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms.
+The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms.
 }
 \examples{
 \dontrun{
@@ -69,7 +71,7 @@ fps = 50, t.display = 1.5, collevels = seq(-40, 0, 5),
 }
 \references{
 {
-Araya-Salas M & M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M & M. Wilkins. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 }
 }
 \seealso{

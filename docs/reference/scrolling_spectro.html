@@ -117,7 +117,7 @@
     <p><code>scrolling_spectro</code> create videos of single row spectrograms scrolling from right to left sync'ed with sound.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>scrolling_spectro</span>(<span class='no'>wave</span>, <span class='kw'>hop.size</span> <span class='kw'>=</span> <span class='fl'>11.6</span>, <span class='kw'>wl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>scrolling_spectro</span>(<span class='no'>wave</span>, <span class='kw'>file.name</span> <span class='kw'>=</span> <span class='st'>"scroll.spectro.mp4"</span>, <span class='kw'>hop.size</span> <span class='kw'>=</span> <span class='fl'>11.6</span>, <span class='kw'>wl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
 <span class='kw'>ovlp</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>flim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>speed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>50</span>,
 <span class='kw'>t.display</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>fix.time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>70</span>,
 <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>700</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>400</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pb</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -129,6 +129,10 @@
     <tr>
       <th>wave</th>
       <td><p>object of class 'Wave'.</p></td>
+    </tr>
+    <tr>
+      <th>file.name</th>
+      <td><p>Character string with the name of the output video file. Must include the .mp4 extension. Default is 'scroll.spectro.mp4'.</p></td>
     </tr>
     <tr>
       <th>hop.size</th>
@@ -196,13 +200,13 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A video file in the working directory with the scrolling spectrogram.</p>
+    <p>A video file in mp4 format in the working directory with the scrolling spectrogram.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The function creates videos of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms.</p>
+    <p>The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Araya-Salas M &amp; M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.</p>
+    <p>Araya-Salas M &amp; M. Wilkins. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'>

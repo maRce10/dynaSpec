@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "scrolling_spectro()"')
+system('git commit -m  "change speed scrolling_spectro"')
 system("git push origin master")
 
 ```
@@ -349,9 +349,13 @@ w <- Phae.long1
 
 w <- readWave("~/opt/Raven-1.5.0.0043/Examples/CanyonWren.wav")
 
+scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 1, fps = 10, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "normal.mp4")
 
-scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 0.5, fps = 150, t.display = 1.5, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(1, 10), width = 700, height = 400, res = 120)
+scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 2, fps = 10, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "fast.mp4")
 
+scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 0.5,  fps = 10, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "slow.mp4")
+
+scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 0.25, fps = 40, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "extra.slow.mp4")
 
 print("all is good!")
 

@@ -587,4 +587,15 @@ To https://github.com/maRce10/dynaSpec.git
    7b5e76a..609c934  master -> master
 ]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git push origin master[C[C[C[C[C[C[C[C[Kgit push origin master[C[C[C[C[C[C[C[C[Kgit pull
 Ya está actualizado.
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ 
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git pullsh origin master
+Username for 'https://github.com': maRce10
+Password for 'https://maRce10@github.com': 
+Contando objetos: 13, listo.
+Delta compression using up to 4 threads.
+Comprimiendo objetos:   7% (1/13)   Comprimiendo objetos:  15% (2/13)   Comprimiendo objetos:  23% (3/13)   Comprimiendo objetos:  30% (4/13)   Comprimiendo objetos:  38% (5/13)   Comprimiendo objetos:  46% (6/13)   Comprimiendo objetos:  53% (7/13)   Comprimiendo objetos:  61% (8/13)   Comprimiendo objetos:  69% (9/13)   Comprimiendo objetos:  76% (10/13)   Comprimiendo objetos:  84% (11/13)   Comprimiendo objetos:  92% (12/13)   Comprimiendo objetos: 100% (13/13)   Comprimiendo objetos: 100% (13/13), listo.
+Escribiendo objetos:   7% (1/13)   Escribiendo objetos:  15% (2/13)   Escribiendo objetos:  23% (3/13)   Escribiendo objetos:  30% (4/13)   Escribiendo objetos:  38% (5/13)   Escribiendo objetos:  46% (6/13)   Escribiendo objetos:  53% (7/13)   Escribiendo objetos:  61% (8/13)   Escribiendo objetos:  69% (9/13)   Escribiendo objetos:  76% (10/13)   Escribiendo objetos:  84% (11/13)   Escribiendo objetos:  92% (12/13)   Escribiendo objetos: 100% (13/13)   Escribiendo objetos: 100% (13/13), 2.58 KiB | 879.00 KiB/s, listo.
+Total 13 (delta 8), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/8)[Kremote: Resolving deltas:  12% (1/8)[Kremote: Resolving deltas:  25% (2/8)[Kremote: Resolving deltas:  37% (3/8)[Kremote: Resolving deltas:  50% (4/8)[Kremote: Resolving deltas:  62% (5/8)[Kremote: Resolving deltas:  75% (6/8)[Kremote: Resolving deltas:  87% (7/8)[Kremote: Resolving deltas: 100% (8/8)[Kremote: Resolving deltas: 100% (8/8), completed with 8 local objects.[K
+To https://github.com/maRce10/dynaSpec.git
+   609c934..924c0fd  master -> master
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ git push origin master[C[C[C[C[C[C[C[C[K
