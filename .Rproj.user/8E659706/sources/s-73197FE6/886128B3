@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "886128B3",
-    "lastKnownWriteTime" : 1589164035,
-    "last_content_update" : 1589164035888,
+    "lastKnownWriteTime" : 1589164298,
+    "last_content_update" : 1589164298828,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/README.Rmd",
     "project_path" : "README.Rmd",
     "properties" : {
-        "cursorPosition" : "167,23",
-        "scrollLine" : "150"
+        "cursorPosition" : "134,12",
+        "scrollLine" : "112"
     },
     "relative_order" : 3,
     "source_on_save" : false,

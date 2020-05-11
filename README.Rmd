@@ -48,7 +48,8 @@ library(dynaSpec)
 
 ## Examples
 
-Default spectrogram:
+
+A dynamic spectrogram of a canyon wren song:
 ```{r, eval = FALSE}
 
 library(viridis)
@@ -62,7 +63,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="800" height="400"
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="800" height="400"
 src="https://www.youtube.com/embed/GucDwVV7GS8" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
@@ -70,7 +71,7 @@ allowfullscreen></iframe></center>
 
 &nbsp;
 
-A spectrogram of a canyon wren with black background ('colbg' argument):
+A spectrogram with black background ('colbg' argument):
 ```{r, eval = FALSE}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
@@ -82,7 +83,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="800" height="400"
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="800" height="400"
 src="https://www.youtube.com/embed/ta0OGxE8dBo" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
@@ -131,7 +132,7 @@ allowfullscreen></iframe></center>
 
 &nbsp;
 
-Or speed up (a little tinamou song):
+Or speed it up (a little tinamou song):
 ```{r, eval = FALSE}
 
 library(NatureSounds)

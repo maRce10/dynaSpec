@@ -33,7 +33,7 @@ library(dynaSpec)
 Examples
 --------
 
-Default spectrogram:
+A dynamic spectrogram of a canyon wren song:
 
 ``` r
 
@@ -52,7 +52,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 </center>
  
 
-A spectrogram of a canyon wren with black background ('colbg' argument):
+A spectrogram with black background ('colbg' argument):
 
 ``` r
 
@@ -104,7 +104,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 </center>
  
 
-Or speed up (a little tinamou song):
+Or speed it up (a little tinamou song):
 
 ``` r
 
