@@ -1,6 +1,6 @@
-#' Measure noise profiles
+#' Measure full spectrum sound noise profiles
 #' 
-#' \code{noise_profile} Measure noise profiles in sound files or extended selection tables.
+#' \code{noise_profile} Measure full spectrum sound pressure levels (i.e. noise profiles) in sound files or extended selection tables.
 #' @usage noise_profile(X = NULL, files = NULL, mar = NULL, 
 #' noise.ref = "adjacent", parallel = 1, pb = TRUE, path = NULL,
 #' bp = NULL, hop.size = 1, wl = NULL, PSD = FALSE, norm = TRUE, dB = "A", averaged = TRUE)
@@ -29,7 +29,7 @@
 #' @return A list containing the the frequency spectra for each sound file or wave object (if 'X' is supplied).
 #' @export
 #' @name noise_profile
-#' @details The function `noise_profile()` allows to estimate the frequency spectrum of ambient noise. This can be done on extended selection tables (using the segments containing no signal) or over complete sound files in the working directory (or path supplied). The function uses \code{\link[seewave]{meanspec}} internally to calculate frequency spectra. 
+#' @details The function `noise_profile()` allows to estimate full spectrum sound pressure levels (i.e. noise profiles) of ambient noise. This can be done on extended selection tables (using the segments containing no signal) or over complete sound files in the working directory (or path supplied). The function uses \code{\link[seewave]{meanspec}} internally to calculate frequency spectra. 
 #' @examples
 #' {
 #' # load example data
@@ -124,6 +124,9 @@ noise_profile <- function(X = NULL, files = NULL, mar = NULL, noise.ref = "adjac
   # adjust wl based on hope.size
   if (is.null(wl))
     wl <- round(attr(X, "check.results")$sample.rate[1] * hop.size, 0)
+  
+  # make wl even if odd
+  if (!(wl %% 2) == 0) wl <- wl + 1
   
   # set pb options 
   pbapply::pboptions(type = ifelse(as.logical(pb), "timer", "none"))

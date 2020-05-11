@@ -8,7 +8,8 @@ scrolling_spectro(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = 
 ovlp = 50, flim = NULL, speed = 1, fps = 50, 
 t.display = 1.5, fix.time = TRUE, res = 70, 
 width = 700, height = 400, parallel = 1, pb = TRUE,
- play = TRUE, ...)
+ play = TRUE, loop = FALSE, lcol = "skyblue", 
+ lty = 2, lwd = 2, axis.type = "standard", ...)
 }
 \arguments{
 \item{wave}{object of class 'Wave'.}
@@ -25,7 +26,7 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
 
 \item{flim}{A numeric vector of length 2 specifying  limits in the frequency axis (in kHz). Default is \code{NULL} (which means from 0 to Nyquist frequency).}
 
-\item{speed}{Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values < 1 (but higher than 0) slow down while values > 1 speed up.}
+\item{speed}{Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values < 1 (but higher than 0) slow down while values > 1 speed up. Note that changes in speed are achieved by modifying the number of frames per second in the output video. Hence, you may want to adjust 'fps' if video quality is condsiderably affected.}
 
 \item{fps}{Numeric vector of length 1 specifying the number of frames per second.}
 
@@ -45,6 +46,21 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
 
 \item{play}{Logical argument to control if the video is played after generated. Default is \code{TRUE}.}
 
+\item{loop}{Logical argument to control if the video is formated to be played in a loop (i.e. if ends at the start of the clip).}
+
+\item{lcol}{Character string with the color to be used for the vertical line at which sounds are played. Default is 'skyblue'.}
+
+\item{lty}{Character string to control the type (as in \code{\link[graphics]{plot}}) of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.}
+
+\item{lwd}{Character string to control the width of the line at which sounds are played. Default is 2.}
+
+\item{axis.type}{Character string to control the style of spectrogram axes. Currently there are 3 options:
+#' \itemize{
+\item \code{standard}: Both Y and X axes are printed as in the default \code{\link[seewave]{spectro}} view. 
+\item \code{minimal}: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.
+\item \code{none}: No axis is printed (also removes ticks, tick labels, and axis labels).
+}}
+
 \item{...}{Additional arguments to be passed to \code{\link[seewave]{spectro}} for customizing spectrograms. Note that 'scale' cannot be included.}
 }
 \value{
@@ -62,7 +78,7 @@ The function creates videos (mp4 format) of single row spectrograms scrolling fr
 data(list = c("Phae.long1"))
 
 # run function
-scrolling_spectro(wave = w, wl = 300, ovlp = 90, 
+scrolling_spectro(wave = Phae.long1, wl = 300, ovlp = 90, 
 fps = 50, t.display = 1.5, collevels = seq(-40, 0, 5),
  pal = reverse.heat.colors, grid = FALSE, flim = c(1, 10), 
  res = 120)

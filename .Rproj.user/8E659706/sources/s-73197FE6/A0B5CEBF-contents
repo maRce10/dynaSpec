@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "change speed scrolling_spectro"')
+system('git commit -m  "change template yml"')
 system("git push origin master")
 
 ```
@@ -349,13 +349,27 @@ w <- Phae.long1
 
 w <- readWave("~/opt/Raven-1.5.0.0043/Examples/CanyonWren.wav")
 
-scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 1, fps = 10, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "normal.mp4")
+data("canyon_wren")
 
-scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 2, fps = 10, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "fast.mp4")
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1000, height = 500, res = 120, file.name = "standard.mp4")
 
-scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 0.5,  fps = 10, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "slow.mp4")
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1000, height = 500, res = 120, file.name = "black.mp4", colbg = "black")
 
-scrolling_spectro(wave = w, wl = 300, ovlp = 90, speed = 0.25, fps = 40, t.display = 2, collevels = seq(-40, 0, 5), pal = reverse.heat.colors, parallel = 3, pb = TRUE, grid = FALSE, flim = c(0, 8), width = 1000, height = 400, res = 120, file.name = "extra.slow.mp4")
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1000, height = 500, res = 120, file.name = "yellow.mp4", colbg = "yellow")
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1000, height = 500, res = 120, file.name = "slow.mp4", colbg = "black", speed = 0.5)
+
+data("Cryp.soui")
+scrolling_spectro(wave = Cryp.soui, wl = 600, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 3), width = 1000, height = 500, res = 120, file.name = "fast.mp4", colbg = "black", speed = 2)
+
+data("Phae.long4")
+
+sil <- silence(duration = 0.3, samp.rate = Phae.long4@samp.rate, xunit = "time")
+
+wav2 <- pastew(sil, Phae.long4, output = "Wave")
+pastew(wav2, Phae.long4, output = "Wave")
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, ovlp = 70, pal = magma, parallel = 3, grid = FALSE, flim = c(1, 10), width = 1000, height = 500, res = 120, collevels = seq(-50, 0, 5), file.name = "no_axis.mp4", colbg = "black", axis.type = "none")
 
 print("all is good!")
 
@@ -370,167 +384,10 @@ print("all is good!")
 ```{r create data objects}
 # create data examples for dynaSpec
 
-# read data from REU playback project
-est <- readRDS("./Projects/LBH_songtype_degradation/Extended selection table re-recorded playbacks.RDS")
+# read data Raven
+canyon_wren <- readWave("~/opt/Raven-1.5.0.0043/Examples/CanyonWren.wav")
 
-st1 <- attr(est,  "check.results")
 
-st1$bottom.freq <- est$bottom.freq
-st1$top.freq <- est$top.freq
-
-st1$lek.song.type <- est$lek.song.type
-
-st1 <- st1[order(st1$orig.sound.files, st1$start), ]
-
-
-# list waves
-lw <- list.files(path = "./wavs")
-
-st1 <- st1[st1$orig.sound.files %in% lw, ]
-
-st1 <- st1[st1$lek.song.type != "template", ]
-
-# set.seed(15)
-# smp <- sample(unique(st1$lek.song.type), 5)
-# st1 <- st1[st1$lek.song.type %in% c("BR1-D4", "CCE-I2", "CCL-M1", "HC1-F2", "SUR-J2"),]
-
-st1$distance <- NA
-st1$distance[st1$orig.sound.files == "Playback_sound_file_LBH_degradation.wav"] <- 1
-st1$distance[st1$orig.sound.files == "2W.10m.2019.7.1.10.20.wav"] <- 10
-st1$distance[st1$orig.sound.files == "2W.15m.2019.7.1.10.30.wav"] <- 15
-st1$distance[st1$orig.sound.files == "2W.5m.2019.7.1.10.10.wav"] <- 5
-
-# select song types that are next to each other in playback so they can be in a by.song EST
-st1 <- st1[ave(-(1:nrow(st1)), st1$orig.sound.files, FUN = rank) %in% 26:30, ]
-
-# check counts per song type
-table(st1$lek.song.type, st1$distance)
-
-# # rename columns
-st1$start <- st1$orig.start
-st1$end <- st1$orig.end
-st1$sound.files <- st1$orig.sound.files
-st1$selec <- st1$orig.selec
-
-# add background noise selection
-st2 <- st1[seq(1, nrow(st1), by = 5), ]
-st3 <- st1[seq(1, nrow(st1), by = 5), ]
-
-st2$start <- st2$start + 0.748
-st2$end <- st2$end + 0.748
-
-st3$start <- st3$start + 1.715
-st3$end <- st3$end + 1.715
-
-st4 <- rbind(st3, st2)
-st4$lek.song.type <- "ambient"
-
-st1 <- rbind(st1, st4)
-
-st1 <- st1[order(st1$distance, st1$start),]
-
-st1$selec <- rep(1:7, 4)
-
-# remove columns
-st1$mar.after <- st1$mar.before <- st1$orig.selec <- st1$n.samples <- st1$channels <- st1$sample.rate <- st1$duration <- st1$bits <- st1$wav.size <- st1$orig.start <- st1$orig.end <- NULL
-  
-# # make EST
-est.pb <- selection_table(X = st1, path = "./wavs", extended = TRUE, confirm.extended = FALSE, mar = 0.05, by.song = "sound.files")
-
-# remove columns
-est.pb$plbk.file <- est.pb$comments <- est.pb$life.span.class <- est.pb$SNR <- est.pb$orig.sound.fil <- est.pb$Lek <- est.pb$Point.ID <- est.pb$orig.sound.fil <- est.pb$type <- est.pb$Cardinal.point <- est.pb$Speaker  <- est.pb$Vegetation.dens <- est.pb$orig.sound.files <- NULL
-
-names(est.pb)[7:8] <- c("signal.type", "distance")
-
-format(object.size(est.pb), units = "auto")
-
-wv <- attr(est.pb, "wave.objects")[[1]]
-
-sig2noise(est.pb[1:7,], mar = 0.05)$SNR
-
-# add background noise
-attributes(est.pb)$wave.objects[[1]] <- normalize(wv + rnorm(n = length(wv@left), mean = 0, sd =  60), unit = "16") *100
-
-sig2noise(est.pb[1:7,], mar = 0.05)$SNR
-
-est.pb <- resample_est(est.pb, samp.rate = 44.1)
-
-# specan(est.pb)
-
-# a <- Rraven::exp_est(est.pb, path = "./wavs/test", selection.table = FALSE)
-
-est.pb$sound.files <- paste0(st1$orig.sound.files, "_1")
-
-attributes(est.pb)$check.results$sound.files <- est.pb$sound.files
-
-names(attributes(est.pb)$wave.objects) <- unique(paste0(st1$orig.sound.files, "_1"))
-
-playback_est <- est.pb
-
-# specan(playback_est)
-# View(playback_est)
-
-playback_est <- playback_est[order(playback_est$signal.type, playback_est$start), ]
-
-
-
-rownames(playback_est) <- 1:nrow(playback_est)
-
-source("./warbleR/R/resample_est.R")
-playback_est <- resample_est(playback_est, samp.rate = 44.1)
-
-
-playback_est_unaligned <- playback_est
-
-new.name <- playback_est_unaligned$sound.files
-
-
-new.name <- gsub("Playback_sound_file_LBH_degradation.wav_1", "01m_re-rec.wav", new.name)
-
-new.name <- gsub("2W.5m.2019.7.1.10.10.wav_1", "05m_re-rec.wav", new.name)
-
-new.name <- gsub("2W.10m.2019.7.1.10.20.wav_1", "10m_re-rec.wav", new.name)
-
-new.name <- gsub("2W.15m.2019.7.1.10.30.wav_1", "15m_re-rec.wav", new.name)
-
-new.name
-
-names(playback_est)[7:8] <- c("signal.type", "distance")
-
-
-playback_est$signal.type <- gsub("noise", "ambient", playback_est$signal.type)
-
-playback_est$old.sound.file.name <- NULL
-
-playback_est <- resample_est(playback_est, samp.rate = 44.1, bit.depth = 8)
-
-save(playback_est, file="./data/playback_est.rda", version = 2)
-
-
-playback_est_unaligned <- rename_waves_est(playback_est_unaligned, new.sound.files = new.name)
-
-names(playback_est_unaligned)[7:8] <- c("signal.type", "distance")
-
-playback_est_unaligned$old.sound.file.name <- NULL
-
-playback_est_unaligned$signal.type <- gsub("noise", "ambient", playback_est_unaligned$signal.type)
-
-playback_est_unaligned$old.sound.file.name <- NULL
-
-playback_est_unaligned <- playback_est_unaligned[playback_est_unaligned$signal.type %in% c("SUR-A4", "CCE-I2")]
-
-playback_est_unaligned <- resample_est(playback_est_unaligned, samp.rate = 22.1, bit.depth = 8)
-
-save(playback_est_unaligned, file="./data/playback_est_unaligned.rda", version = 2)
-
-playback_est <- spcc_align(X = playback_est_unaligned)
-
-playback_est$old.sound.file.name <- NULL
-
-playback_est <- rename_waves_est(playback_est, new.sound.files = new.name)
-
-# specreator(playback_est, path = "~/Downloads/")
-
-save(playback_est, file="./data/playback_est.rda", version = 2)
+save(canyon_wren, file="./data/canyon_wren.rda", version = 2)
 
 ```

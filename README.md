@@ -7,7 +7,6 @@
 
 A set of tools to generate dynamic spectrogram visualizations in video format.
 
-
 Install/load the package from CRAN as follows (**NOT YET IN CRAN**):
 
 ```r
@@ -31,6 +30,25 @@ devtools::install_github("maRce10/dynaSpec")
 library(dynaSpec)
 
 ```
+
+## Examples
+
+
+Black backgound ('colbg' argument):
+```r
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1000, height = 500, res = 120, file.name = "black.mp4", colbg = "black")
+
+```
+
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="800" height="400"
+src="https://www.youtube.com/embed/ta0OGxE8dBo" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 

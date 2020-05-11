@@ -1,21 +1,21 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1588890618273.000,
+    "created" : 1589158707988.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
-    "id" : "77C19F94",
-    "lastKnownWriteTime" : 1588899329,
-    "last_content_update" : 1588899329525,
+    "hash" : "1763211363",
+    "id" : "CFCE1C3F",
+    "lastKnownWriteTime" : 1589158795,
+    "last_content_update" : 1589158795287,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/R/scrolling_spectro.R",
     "project_path" : "R/scrolling_spectro.R",
     "properties" : {
-        "cursorPosition" : "77,6",
-        "scrollLine" : "67"
+        "cursorPosition" : "30,406",
+        "scrollLine" : "25"
     },
-    "relative_order" : 2,
+    "relative_order" : 3,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

@@ -5,7 +5,8 @@
 #' ovlp = 50, flim = NULL, speed = 1, fps = 50, 
 #' t.display = 1.5, fix.time = TRUE, res = 70, 
 #' width = 700, height = 400, parallel = 1, pb = TRUE,
-#'  play = TRUE, ...)
+#'  play = TRUE, loop = FALSE, lcol = "skyblue", 
+#'  lty = 2, lwd = 2, axis.type = "standard", ...)
 #' @param wave object of class 'Wave'.
 #' @param file.name Character string with the name of the output video file. Must include the .mp4 extension. Default is 'scroll.spectro.mp4'.
 #' @param hop.size A numeric vector of length 1 specifying the time window duration (in ms). Default is 11.6 ms, which is equivalent to 512 wl for a 44.1 kHz sampling rate. Ignored if 'wl' is supplied.
@@ -14,7 +15,7 @@
 #' @param ovlp Numeric vector of length 1 specifying the percent overlap between two 
 #'   consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.
 #' @param flim A numeric vector of length 2 specifying  limits in the frequency axis (in kHz). Default is \code{NULL} (which means from 0 to Nyquist frequency).  
-#' @param speed Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values < 1 (but higher than 0) slow down while values > 1 speed up.
+#' @param speed Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values < 1 (but higher than 0) slow down while values > 1 speed up. Note that changes in speed are achieved by modifying the number of frames per second in the output video. Hence, you may want to adjust 'fps' if video quality is condsiderably affected. 
 #' @param fps Numeric vector of length 1 specifying the number of frames per second.
 #' @param t.display Numeric vector of length 1 specifying the time range displayed in the spectrogram.
 #' @param fix.time Logical argument to control if the time axis moves along with the spectrogram or remains fixed. Default is \code{TRUE} (fixed).
@@ -25,6 +26,16 @@
 #' @param parallel Numeric vector of length 1. Controls whether parallel computing is applied by specifying the number of cores to be used. Default is 1 (i.e. no parallel computing).
 #' @param pb Logical argument to control if progress bar is shown. Default is \code{TRUE}.
 #' @param play Logical argument to control if the video is played after generated. Default is \code{TRUE}.
+#' @param loop Logical argument to control if the video is formated to be played in a loop (i.e. if ends at the start of the clip).
+#' @param lcol Character string with the color to be used for the vertical line at which sounds are played. Default is 'skyblue'.
+#' @param lty Character string to control the type (as in \code{\link[graphics]{plot}}) of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.
+#' @param lwd Character string to control the width of the line at which sounds are played. Default is 2.
+#' @param axis.type Character string to control the style of spectrogram axes. Currently there are 3 options:
+#' #' \itemize{
+#' \item \code{standard}: Both Y and X axes are printed as in the default \code{\link[seewave]{spectro}} view. 
+#' \item \code{minimal}: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.
+#' \item \code{none}: No axis is printed (also removes ticks, tick labels, and axis labels).
+#' }
 #' @param ... Additional arguments to be passed to \code{\link[seewave]{spectro}} for customizing spectrograms. Note that 'scale' cannot be included.
 #' @return A video file in mp4 format in the working directory with the scrolling spectrogram.
 #' @export
@@ -37,7 +48,7 @@
 #' data(list = c("Phae.long1"))
 #' 
 #' # run function
-#' scrolling_spectro(wave = w, wl = 300, ovlp = 90, 
+#' scrolling_spectro(wave = Phae.long1, wl = 300, ovlp = 90, 
 #' fps = 50, t.display = 1.5, collevels = seq(-40, 0, 5),
 #'  pal = reverse.heat.colors, grid = FALSE, flim = c(1, 10), 
 #'  res = 120)
@@ -48,7 +59,7 @@
 #' Araya-Salas M & M. Wilkins. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 #' }
 
-scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 50, flim = NULL, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, pb = TRUE, play = TRUE, ...)
+scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 50, flim = NULL, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, pb = TRUE, play = TRUE, loop = FALSE, lcol = "skyblue", lty = 2, lwd = 2, axis.type = "standard", ...)
 {
 
   # hopsize  
@@ -58,18 +69,23 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   if (!is.numeric(parallel)) stop("'parallel' must be a numeric vector of length 1") 
   if (any(!(parallel %% 1 == 0),parallel < 1)) stop("'parallel' should be a positive integer")
   
+  
+  ## create a segment to add at the beggining and end
+  if (!loop) 
+    add_sgm_end <- add_sgm_strt <- tuneR::silence(duration = t.display / 2, samp.rate = wave@samp.rate,
+                   xunit = "time") else {
+                     
+                     add_sgm_strt <- seewave::cutw(wave = wave, from = seewave::duration(wave) - t.display / 2, to = seewave::duration(wave), output = "Wave")
+                     
+                     add_sgm_end <- seewave::cutw(wave = wave, from = 0, to = t.display / 2)
+                   }
+                     
   # add silence to start and end
-  wave_sil <- seewave::pastew(wave2 = tuneR::silence(duration = t.display / 2, samp.rate = wave@samp.rate,
-                               xunit = "time"), wave1 = wave, f = wave@samp.rate,
+  wave_sil <- seewave::pastew(wave2 = add_sgm_strt, wave1 = wave, f = wave@samp.rate,
                output = "Wave")
 
-  wave_sil <- seewave::pastew(wave1 = tuneR::silence(duration = t.display / 2, samp.rate = wave_sil@samp.rate,
-                               xunit = "time"), wave2 = wave_sil, f = wave_sil@samp.rate,
+  wave_sil <- seewave::pastew(wave1 = add_sgm_end, wave2 = wave_sil, f = wave_sil@samp.rate,
                output = "Wave")
-  
-  # resample to 44.1 kHz
-  # if (wave_sil@samp.rate != 44100)
-  # wave_sil <- seewave::resamp(wave = wave_sil, f = wave_sil@samp.rate, g = 44100, output = "Wave")
   
   # adjust wl based on hope.size
   if (is.null(wl))
@@ -136,10 +152,13 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     grDevices::tiff(file.path(tempdir(), img_names[x]),res = res, width = width, height = height)
     
     # set regular margins
+    if (axis.type == "none")
+      par(mar =  rep(0, 4)) else
     par(mar =  c(4.2, 4.2, 1, 1) + 0.1)
     
     # plot anything at specific time
-    plot(0,0, xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = "Time (s)", ylab = "Frequency (kHz)", xaxs = "i", yaxs = "i")
+    plot(0,0, xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = "Time (s)", ylab = "Frequency (kHz)", xaxs = "i", yaxs = "i", bty = "o")
+    
     
     # get plotting area coordinates
     plt <- par("plt")
@@ -147,8 +166,8 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     # add spectrogram segment to plot
     grid::grid.raster(spc_img[, img.x.lim[1]:img.x.lim[2], ], x = plt[1], y =  plt[3], height = plt[4] - plt[3], width= plt[2] - plt[1], hjust = 0, vjust = 0)
     
-    abline(v = if(fix.time) t.display / 2 else tlim[1] + (t.display / 2), lty = 2, col = "skyblue", lwd = 2)
-  
+    abline(v = if(fix.time) t.display / 2 else tlim[1] + (t.display / 2), lty = lty, col = lcol, lwd = lwd)
+    
     dev.off()
   })
   
