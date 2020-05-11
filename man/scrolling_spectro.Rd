@@ -9,7 +9,7 @@ ovlp = 50, flim = NULL, speed = 1, fps = 50,
 t.display = 1.5, fix.time = TRUE, res = 70, 
 width = 700, height = 400, parallel = 1, pb = TRUE,
  play = TRUE, loop = FALSE, lcol = "skyblue", 
- lty = 2, lwd = 2, axis.type = "standard", ...)
+ lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ...)
 }
 \arguments{
 \item{wave}{object of class 'Wave'.}
@@ -60,6 +60,8 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
 \item \code{minimal}: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.
 \item \code{none}: No axis is printed (also removes ticks, tick labels, and axis labels).
 }}
+
+\item{buffer}{Numeric vector of length 1 (> 0) specifying the time to delay the start of the spectrogram scrolling (in seconds). Default is 1.}
 
 \item{...}{Additional arguments to be passed to \code{\link[seewave]{spectro}} for customizing spectrograms. Note that 'scale' cannot be included.}
 }

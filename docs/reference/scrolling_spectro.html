@@ -124,7 +124,7 @@
 <span class='kw'>t.display</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>fix.time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>70</span>,
 <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>700</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>400</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pb</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
  <span class='kw'>play</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>loop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>lcol</span> <span class='kw'>=</span> <span class='st'>"skyblue"</span>,
- <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>axis.type</span> <span class='kw'>=</span> <span class='st'>"standard"</span>, <span class='no'>...</span>)</pre>
+ <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>axis.type</span> <span class='kw'>=</span> <span class='st'>"standard"</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -219,6 +219,10 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
 <li><p><code>minimal</code>: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.</p></li>
 <li><p><code>none</code>: No axis is printed (also removes ticks, tick labels, and axis labels).</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>buffer</th>
+      <td><p>Numeric vector of length 1 (&gt; 0) specifying the time to delay the start of the spectrogram scrolling (in seconds). Default is 1.</p></td>
     </tr>
     <tr>
       <th>...</th>

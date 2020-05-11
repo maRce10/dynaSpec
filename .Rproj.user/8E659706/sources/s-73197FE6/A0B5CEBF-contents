@@ -292,7 +292,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "readme with videos 9"')
+system('git commit -m  "readme with videos 10"')
 system("git push origin master")
 
 ```
@@ -350,9 +350,13 @@ w <- Phae.long1
 
 w <- readWave("~/opt/Raven-1.5.0.0043/Examples/CanyonWren.wav")
 
+# fast
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0)
+
+
 data("canyon_wren")
 
-scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 200, file.name = "standard.mp4", ovlp = 95, fps = 100)
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 100, file.name = "standard.mp4", ovlp = 95, fps = 100)
 
 scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 200, file.name = "black.mp4", colbg = "black", ovlp = 95, fps = 100)
 
@@ -370,7 +374,7 @@ sil <- silence(duration = 0.3, samp.rate = Phae.long4@samp.rate, xunit = "time")
 wav2 <- pastew(Phae.long4, sil, output = "Wave")
 pastew(wav2, Phae.long4, output = "Wave")
 
-scrolling_spectro(wave = Phae.long4, wl = 250, t.display = 0.5, ovlp = 95, pal = magma, parallel = 3, grid = FALSE, flim = c(1, 10), width = 1500, height = 500, res = 200, collevels = seq(-40, 0, 5), file.name = "no_axis.mp4", colbg = "black", axis.type = "none", speed = 0.2, fps =100)
+scrolling_spectro(wave = Phae.long4, wl = 250, t.display = 0.5, ovlp = 95, pal = magma, parallel = 3, grid = FALSE, flim = c(1, 10), width = 1500, height = 500, res = 200, collevels = seq(-40, 0, 5), file.name = "slow_no_axis.mp4", colbg = "black", axis.type = "none", speed = 0.2, fps =100)
 
 print("all is good!")
 
