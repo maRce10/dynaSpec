@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "add loop and line control to scrolling_spectro()"')
+system('git commit -m  "readme with videos"')
 system("git push origin master")
 
 ```
