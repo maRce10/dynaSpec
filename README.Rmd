@@ -1,6 +1,5 @@
 ---
 title: "dynaSpec"
-author: "Marcelo Araya-SAlas"
 date: "`r Sys.Date()`"
 output: github_document
 ---

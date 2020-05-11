@@ -292,7 +292,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "readme with videos 6"')
+system('git commit -m  "readme with videos 7"')
 system("git push origin master")
 
 ```

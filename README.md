@@ -1,6 +1,5 @@
 dynaSpec
 ================
-Marcelo Araya-SAlas
 2020-05-10
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->

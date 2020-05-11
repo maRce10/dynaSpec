@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "3725476977",
+    "hash" : "0",
     "id" : "886128B3",
-    "lastKnownWriteTime" : 1589164509,
-    "last_content_update" : 1589164509630,
+    "lastKnownWriteTime" : 1589164622,
+    "last_content_update" : 1589164622057,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/README.Rmd",
     "project_path" : "README.Rmd",
     "properties" : {
-        "cursorPosition" : "90,0",
-        "scrollLine" : "89"
+        "cursorPosition" : "2,0",
+        "scrollLine" : "0"
     },
     "relative_order" : 3,
     "source_on_save" : false,
