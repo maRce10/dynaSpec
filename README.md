@@ -46,7 +46,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/GucDwVV7GS8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/pO0H4PriF-c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -63,7 +63,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/ta0OGxE8dBo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/uEx6N6uV8lM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -81,33 +81,14 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/jgxOgD5IYxI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/RjwanehO6oM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
 
-Or speed it up (a little tinamou song):
-
-``` r
-
-library(NatureSounds)
-data("Cryp.soui")
-
-scrolling_spectro(wave = Cryp.soui, wl = 300, 
-              t.display = 1.7, pal = viridis, 
-              grid = FALSE, flim = c(1.4, 2.1), 
-              width = 1000, height = 500, res = 120, 
-              file.name = "slow.mp4", colbg = "black",
-              speed = 2)
-```
-
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/CS2UPDpsIig" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
  
 
-Or remove axes (long-billed hermit song):
+Remove axes (long-billed hermit song at 1/5 speed):
 
 ``` r
 
@@ -122,7 +103,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/V9WcGA0m_kI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/GFvzR2mn6uo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
