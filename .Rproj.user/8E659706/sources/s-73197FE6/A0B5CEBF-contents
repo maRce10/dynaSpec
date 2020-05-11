@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "change template yml"')
+system('git commit -m  "add loop and line control to scrolling_spectro()"')
 system("git push origin master")
 
 ```
