@@ -281,6 +281,7 @@ system("R CMD Rd2pdf ./R\ package\ testing/dynaSpec/dynaSpec")
 setwd(".")
 
 #built site
+
 pkgdown::build_site()
 
 # to set a new computer
@@ -291,7 +292,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "readme with videos 5"')
+system('git commit -m  "readme with videos 6"')
 system("git push origin master")
 
 ```

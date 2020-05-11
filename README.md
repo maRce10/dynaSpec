@@ -47,7 +47,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="800" height="400" src="https://www.youtube.com/embed/GucDwVV7GS8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/GucDwVV7GS8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -64,24 +64,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="800" height="400" src="https://www.youtube.com/embed/ta0OGxE8dBo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
-
-... or yellow:
-
-``` r
-
-scrolling_spectro(wave = canyon_wren, wl = 300, 
-              t.display = 1.7, pal = viridis, 
-              grid = FALSE, flim = c(1, 9), 
-              width = 1000, height = 500, res = 120, 
-              file.name = "yellow.mp4", colbg = "yellow")
-```
-
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="800" height="400" src="https://www.youtube.com/embed/cT99V1xVtgM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/ta0OGxE8dBo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -99,7 +82,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="800" height="400" src="https://www.youtube.com/embed/jgxOgD5IYxI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/jgxOgD5IYxI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -120,7 +103,7 @@ scrolling_spectro(wave = Cryp.soui, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="800" height="400" src="https://www.youtube.com/embed/CS2UPDpsIig" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/CS2UPDpsIig" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -140,7 +123,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="800" height="400" src="https://www.youtube.com/embed/V9WcGA0m_kI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="300" src="https://www.youtube.com/embed/V9WcGA0m_kI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
