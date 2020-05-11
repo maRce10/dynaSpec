@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dynamic spectrogram visualization in R • dynaSpec</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="Dynamic spectrogram visualization in R">
+<script src="pkgdown.js"></script><meta property="og:title" content="Dynamic spectrogram visualization in R">
 <meta property="og:description" content="A set of tools to generate dynamic spectrogram visualizations in video format.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -73,7 +72,9 @@
 <div id="dynaspec" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#dynaspec" class="anchor"></a>dynaSpec</h1></div>
-
+<p>Marcelo Araya-SAlas 2020-05-10</p>
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<p><a href="https://cran.r-project.org/package=dynaSpec"><img src="http://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a> <a href="http://www.r-pkg.org/pkg/dynaSpec"><img src="http://cranlogs.r-pkg.org/badges/dynaSpec" alt="CRAN RStudio mirror downloads"></a> <a href="https://r-pkg.org/pkg/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue" alt="Total downloads"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></p>
 <p>A set of tools to generate dynamic spectrogram visualizations in video format.</p>
 <p>Install/load the package from CRAN as follows (<strong>NOT YET IN CRAN</strong>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
@@ -89,8 +90,95 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 
 <span class="co">#load package</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dynaSpec)</code></pre></div>
+<div id="examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples" class="anchor"></a>Examples</h2>
+<p>Default spectrogram:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(viridis)
+
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> canyon_wren, <span class="dt">wl =</span> <span class="dv">300</span>, 
+              <span class="dt">t.display =</span> <span class="fl">1.7</span>, <span class="dt">pal =</span> viridis, 
+              <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">9</span>), 
+              <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+              <span class="dt">file.name =</span> <span class="st">"default.mp4"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="800" height="400" src="https://www.youtube.com/embed/GucDwVV7GS8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>A spectrogram of a canyon wren with black background (‘colbg’ argument):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> canyon_wren, <span class="dt">wl =</span> <span class="dv">300</span>, 
+              <span class="dt">t.display =</span> <span class="fl">1.7</span>, <span class="dt">pal =</span> viridis, 
+              <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">9</span>), 
+              <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+              <span class="dt">file.name =</span> <span class="st">"black.mp4"</span>, <span class="dt">colbg =</span> <span class="st">"black"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="800" height="400" src="https://www.youtube.com/embed/ta0OGxE8dBo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>… or yellow:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> canyon_wren, <span class="dt">wl =</span> <span class="dv">300</span>, 
+              <span class="dt">t.display =</span> <span class="fl">1.7</span>, <span class="dt">pal =</span> viridis, 
+              <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">9</span>), 
+              <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+              <span class="dt">file.name =</span> <span class="st">"yellow.mp4"</span>, <span class="dt">colbg =</span> <span class="st">"yellow"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="800" height="400" src="https://www.youtube.com/embed/cT99V1xVtgM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>Slow down to 1/2 speed (‘speed’ argument):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> canyon_wren, <span class="dt">wl =</span> <span class="dv">300</span>, 
+              <span class="dt">t.display =</span> <span class="fl">1.7</span>, <span class="dt">pal =</span> viridis, 
+              <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">9</span>), 
+              <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+              <span class="dt">file.name =</span> <span class="st">"slow.mp4"</span>, <span class="dt">colbg =</span> <span class="st">"black"</span>,
+              <span class="dt">speed =</span> <span class="fl">0.5</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="800" height="400" src="https://www.youtube.com/embed/jgxOgD5IYxI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>Or speed up (a little tinamou song):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(NatureSounds)
+<span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Cryp.soui"</span>)
+
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> Cryp.soui, <span class="dt">wl =</span> <span class="dv">300</span>, 
+              <span class="dt">t.display =</span> <span class="fl">1.7</span>, <span class="dt">pal =</span> viridis, 
+              <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.4</span>, <span class="fl">2.1</span>), 
+              <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+              <span class="dt">file.name =</span> <span class="st">"slow.mp4"</span>, <span class="dt">colbg =</span> <span class="st">"black"</span>,
+              <span class="dt">speed =</span> <span class="dv">2</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="800" height="400" src="https://www.youtube.com/embed/CS2UPDpsIig" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>Or remove axes (long-billed hermit song):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Phae.long4"</span>)
+
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> Phae.long4, <span class="dt">wl =</span> <span class="dv">300</span>, 
+    <span class="dt">t.display =</span> <span class="fl">1.7</span>, <span class="dt">ovlp =</span> <span class="dv">70</span>, <span class="dt">pal =</span> magma, 
+    <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">10</span>), <span class="dt">width =</span> <span class="dv">1000</span>, 
+    <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">50</span>, <span class="dv">0</span>, <span class="dv">5</span>), 
+    <span class="dt">file.name =</span> <span class="st">"no_axis.mp4"</span>, <span class="dt">colbg =</span> <span class="st">"black"</span>, 
+    <span class="dt">axis.type =</span> <span class="st">"none"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="800" height="400" src="https://www.youtube.com/embed/V9WcGA0m_kI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<hr>
 <p>Please cite <a href="https://marce10.github.io/dynaSpec/">dynaSpec</a> as follows:</p>
 <p>Araya-Salas M &amp; M. Wilkins. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
+</div>
 </div>
   </div>
 
@@ -110,12 +198,6 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <li>GPL (&gt;= 2)</li>
 </ul>
 </div>
-<div class="community">
-<h2>Community</h2>
-<ul class="list-unstyled">
-<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
-</ul>
-</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -124,16 +206,7 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=dynaSpec"><img src="http://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a></li>
-<li><a href="http://www.r-pkg.org/pkg/dynaSpec"><img src="http://cranlogs.r-pkg.org/badges/dynaSpec" alt="CRAN RStudio mirror downloads"></a></li>
-<li><a href="https://r-pkg.org/pkg/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue" alt="Total downloads"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 

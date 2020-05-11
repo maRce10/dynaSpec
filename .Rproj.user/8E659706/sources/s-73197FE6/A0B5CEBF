@@ -5,16 +5,16 @@
     "dirty" : true,
     "encoding" : "UTF-8",
     "folds" : "20|23|51|0|\n54|16|237|0|\n240|12|252|0|\n299|6|315|0|\n",
-    "hash" : "0",
+    "hash" : "2885490472",
     "id" : "A0B5CEBF",
-    "lastKnownWriteTime" : 1589161763,
-    "last_content_update" : 1589162073734,
+    "lastKnownWriteTime" : 1589164003,
+    "last_content_update" : 1589164218305,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/testing-checking dynaSpec function apr-20.Rmd",
     "project_path" : null,
     "properties" : {
         "chunk_output_type" : "console",
-        "cursorPosition" : "294,0",
-        "scrollLine" : "281"
+        "cursorPosition" : "293,43",
+        "scrollLine" : "282"
     },
     "relative_order" : 1,
     "source_on_save" : false,

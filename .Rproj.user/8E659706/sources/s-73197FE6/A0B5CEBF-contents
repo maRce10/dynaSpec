@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "readme with videos"')
+system('git commit -m  "readme with videos 4"')
 system("git push origin master")
 
 ```
@@ -360,13 +360,13 @@ scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, 
 scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1000, height = 500, res = 120, file.name = "slow.mp4", colbg = "black", speed = 0.5)
 
 data("Cryp.soui")
-scrolling_spectro(wave = Cryp.soui, wl = 600, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 3), width = 1000, height = 500, res = 120, file.name = "fast.mp4", colbg = "black", speed = 2)
+scrolling_spectro(wave = Cryp.soui, ovlp = 90, wl = 600, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1.4, 2.1), width = 1000, height = 500, res = 120, file.name = "fast.mp4", colbg = "black", speed = 2)
 
 data("Phae.long4")
 
 sil <- silence(duration = 0.3, samp.rate = Phae.long4@samp.rate, xunit = "time")
 
-wav2 <- pastew(sil, Phae.long4, output = "Wave")
+wav2 <- pastew(Phae.long4, sil, output = "Wave")
 pastew(wav2, Phae.long4, output = "Wave")
 
 scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, ovlp = 70, pal = magma, parallel = 3, grid = FALSE, flim = c(1, 10), width = 1000, height = 500, res = 120, collevels = seq(-50, 0, 5), file.name = "no_axis.mp4", colbg = "black", axis.type = "none")

@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
@@ -34,8 +34,6 @@
 
 
 
-  <link href="../extra.css" rel="stylesheet">
-  
 
 <meta property="og:title" content="Create scrolling dynamic spectrograms — scrolling_spectro" />
 <meta property="og:description" content="scrolling_spectro create videos of single row spectrograms scrolling from right to left sync'ed with sound." />
@@ -123,7 +121,8 @@
 <span class='kw'>ovlp</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>flim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>speed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>50</span>,
 <span class='kw'>t.display</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>fix.time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>70</span>,
 <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>700</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>400</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pb</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
- <span class='kw'>play</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+ <span class='kw'>play</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>loop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>lcol</span> <span class='kw'>=</span> <span class='st'>"skyblue"</span>,
+ <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>axis.type</span> <span class='kw'>=</span> <span class='st'>"standard"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,7 +155,7 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
     </tr>
     <tr>
       <th>speed</th>
-      <td><p>Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values &lt; 1 (but higher than 0) slow down while values &gt; 1 speed up.</p></td>
+      <td><p>Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values &lt; 1 (but higher than 0) slow down while values &gt; 1 speed up. Note that changes in speed are achieved by modifying the number of frames per second in the output video. Hence, you may want to adjust 'fps' if video quality is condsiderably affected.</p></td>
     </tr>
     <tr>
       <th>fps</th>
@@ -195,6 +194,31 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
       <td><p>Logical argument to control if the video is played after generated. Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
+      <th>loop</th>
+      <td><p>Logical argument to control if the video is formated to be played in a loop (i.e. if ends at the start of the clip).</p></td>
+    </tr>
+    <tr>
+      <th>lcol</th>
+      <td><p>Character string with the color to be used for the vertical line at which sounds are played. Default is 'skyblue'.</p></td>
+    </tr>
+    <tr>
+      <th>lty</th>
+      <td><p>Character string to control the type (as in <code><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></code>) of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.</p></td>
+    </tr>
+    <tr>
+      <th>lwd</th>
+      <td><p>Character string to control the width of the line at which sounds are played. Default is 2.</p></td>
+    </tr>
+    <tr>
+      <th>axis.type</th>
+      <td><p>Character string to control the style of spectrogram axes. Currently there are 3 options:
+#'</p><ul>
+<li><p><code>standard</code>: Both Y and X axes are printed as in the default <code><a href='https://rdrr.io/pkg/seewave/man/spectro.html'>spectro</a></code> view.</p></li>
+<li><p><code>minimal</code>: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.</p></li>
+<li><p><code>none</code>: No axis is printed (also removes ticks, tick labels, and axis labels).</p></li>
+</ul></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Additional arguments to be passed to <code><a href='https://rdrr.io/pkg/seewave/man/spectro.html'>spectro</a></code> for customizing spectrograms. Note that 'scale' cannot be included.</p></td>
     </tr>
@@ -221,7 +245,7 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>list</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Phae.long1"</span>))
 
 <span class='co'># run function</span>
-<span class='fu'>scrolling_spectro</span>(<span class='kw'>wave</span> <span class='kw'>=</span> <span class='no'>w</span>, <span class='kw'>wl</span> <span class='kw'>=</span> <span class='fl'>300</span>, <span class='kw'>ovlp</span> <span class='kw'>=</span> <span class='fl'>90</span>,
+<span class='fu'>scrolling_spectro</span>(<span class='kw'>wave</span> <span class='kw'>=</span> <span class='no'>Phae.long1</span>, <span class='kw'>wl</span> <span class='kw'>=</span> <span class='fl'>300</span>, <span class='kw'>ovlp</span> <span class='kw'>=</span> <span class='fl'>90</span>,
 <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>t.display</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>collevels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(-<span class='fl'>40</span>, <span class='fl'>0</span>, <span class='fl'>5</span>),
  <span class='kw'>pal</span> <span class='kw'>=</span> <span class='no'>reverse.heat.colors</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>flim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>10</span>),
  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>120</span>)
