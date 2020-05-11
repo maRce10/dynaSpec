@@ -46,7 +46,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/pO0H4PriF-c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/gKIXdUmSoLw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -63,7 +63,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/uEx6N6uV8lM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/Y9exx7eY-N4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -81,7 +81,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/RjwanehO6oM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/fAfm4i9uhLs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -103,7 +103,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/GFvzR2mn6uo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="200" src="https://www.youtube.com/embed/sYpkRl0zkt8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
