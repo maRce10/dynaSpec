@@ -4,17 +4,17 @@
     "created" : 1588741859645.000,
     "dirty" : false,
     "encoding" : "UTF-8",
-    "folds" : "20|23|51|0|\n54|16|237|0|\n240|12|252|0|\n300|6|316|0|\n",
+    "folds" : "",
     "hash" : "0",
     "id" : "A0B5CEBF",
-    "lastKnownWriteTime" : 1589173354,
-    "last_content_update" : 1589173354223,
+    "lastKnownWriteTime" : 1589229886,
+    "last_content_update" : 1589230400690,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/testing-checking dynaSpec function apr-20.Rmd",
     "project_path" : null,
     "properties" : {
         "chunk_output_type" : "console",
-        "cursorPosition" : "264,0",
-        "scrollLine" : "240"
+        "cursorPosition" : "82,9",
+        "scrollLine" : "11"
     },
     "relative_order" : 1,
     "source_on_save" : false,
