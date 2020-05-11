@@ -8,13 +8,13 @@
     "hash" : "0",
     "id" : "A0B5CEBF",
     "lastKnownWriteTime" : 1589171940,
-    "last_content_update" : 1589172988122,
+    "last_content_update" : 1589173076464,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/testing-checking dynaSpec function apr-20.Rmd",
     "project_path" : null,
     "properties" : {
         "chunk_output_type" : "console",
-        "cursorPosition" : "294,45",
-        "scrollLine" : "275"
+        "cursorPosition" : "295,0",
+        "scrollLine" : "277"
     },
     "relative_order" : 1,
     "source_on_save" : false,
