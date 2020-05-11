@@ -1,6 +1,5 @@
 ---
 title: "dynaSpec"
-date: "`r Sys.Date()`"
 output: github_document
 ---
 
@@ -123,7 +122,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
     grid = FALSE, flim = c(1, 10), width = 1000, 
     height = 500, res = 120, collevels = seq(-50, 0, 5), 
     file.name = "no_axis.mp4", colbg = "black", 
-    axis.type = "none")
+    speed = 0.2, axis.type = "none")
 
 ```
 

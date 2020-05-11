@@ -1,6 +1,5 @@
 dynaSpec
 ================
-2020-05-10
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](http://www.r-pkg.org/pkg/dynaSpec) [![Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -99,7 +98,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
     grid = FALSE, flim = c(1, 10), width = 1000, 
     height = 500, res = 120, collevels = seq(-50, 0, 5), 
     file.name = "no_axis.mp4", colbg = "black", 
-    axis.type = "none")
+    speed = 0.2, axis.type = "none")
 ```
 
 <center>
