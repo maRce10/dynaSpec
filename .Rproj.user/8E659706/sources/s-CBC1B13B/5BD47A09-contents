@@ -292,7 +292,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "mention ffmpeg"')
+system('git commit -m  "mention ffmpeg 2"')
 system("git push origin master")
 
 ```
