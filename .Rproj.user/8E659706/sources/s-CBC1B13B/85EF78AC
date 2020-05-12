@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1589253348769.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "85EF78AC",
+    "lastKnownWriteTime" : 1589253468,
+    "last_content_update" : 1589253468184,
+    "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/README.Rmd",
+    "project_path" : "README.Rmd",
+    "properties" : {
+        "cursorPosition" : "22,18",
+        "scrollLine" : "14"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

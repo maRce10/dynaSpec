@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1588741859645.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "99088196",
+    "id" : "A0B5CEBF",
+    "lastKnownWriteTime" : 1589232817,
+    "last_content_update" : 1589232817465,
+    "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/testing-checking dynaSpec function apr-20.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "chunk_output_type" : "console",
+        "cursorPosition" : "295,0",
+        "scrollLine" : "280"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
