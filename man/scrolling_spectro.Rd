@@ -5,11 +5,13 @@
 \title{Create scrolling dynamic spectrograms}
 \usage{
 scrolling_spectro(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, 
-ovlp = 50, flim = NULL, speed = 1, fps = 50, 
+ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, 
 t.display = 1.5, fix.time = TRUE, res = 70, 
 width = 700, height = 400, parallel = 1, pb = TRUE,
- play = TRUE, loop = FALSE, lcol = "skyblue", 
- lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ...)
+ play = TRUE, loop = 1, lcol = "#07889B99", 
+ lty = 2, lwd = 2, axis.type = "standard", buffer = 1, 
+ ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, 
+ osc = FALSE, colwave = "black", colbg = "white", ...)
 }
 \arguments{
 \item{wave}{object of class 'Wave'.}
@@ -22,9 +24,11 @@ width = 700, height = 400, parallel = 1, pb = TRUE,
 is NULL. If supplied, 'hop.size' is ignored.}
 
 \item{ovlp}{Numeric vector of length 1 specifying the percent overlap between two 
-consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
+consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 70.}
 
 \item{flim}{A numeric vector of length 2 specifying  limits in the frequency axis (in kHz). Default is \code{NULL} (which means from 0 to Nyquist frequency).}
+
+\item{pal}{Character string with the color palette to be used. Default is 'reverse.gray.colors.1'.}
 
 \item{speed}{Numeric vector of length 1 indicating the speed at which the sound file will be reproduced (default is 1, normal speed). Values < 1 (but higher than 0) slow down while values > 1 speed up. Note that changes in speed are achieved by modifying the number of frames per second in the output video. Hence, you may want to adjust 'fps' if video quality is condsiderably affected.}
 
@@ -48,7 +52,7 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
 
 \item{loop}{Logical argument to control if the video is formated to be played in a loop (i.e. if ends at the start of the clip).}
 
-\item{lcol}{Character string with the color to be used for the vertical line at which sounds are played. Default is 'skyblue'.}
+\item{lcol}{Character string with the color to be used for the vertical line at which sounds are played. Default is \code{"#07889B99"}.}
 
 \item{lty}{Character string to control the type (as in \code{\link[graphics]{plot}}) of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.}
 
@@ -61,7 +65,21 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 50.}
 \item \code{none}: No axis is printed (also removes ticks, tick labels, and axis labels).
 }}
 
-\item{buffer}{Numeric vector of length 1 (> 0) specifying the time to delay the start of the spectrogram scrolling (in seconds). Default is 1.}
+\item{buffer}{Numeric vector of length 1 (> 0) specifying the time to delay the start of the spectrogram scrolling (in seconds). Default is 1. Not available when loop is > 1.}
+
+\item{ggspectro}{Logical argument to control if a ggspectro (\code{\link[seewave]{ggspectro}}) is used instead. Note that there is much less control on display parameters when \code{ggpsectro = TRUE}. Default is \code{FALSE}.}
+
+\item{lower.spectro}{Logical argument to control if a spectrogram of the full wave object is plotted at the bottom of the graph. Default is \code{TRUE}.}
+
+\item{height.prop}{Numeric vector of length 2 to control the relative height of the scrolling and lower spectro, respectively. Default is \code{c(5, 1)}. Ignored if \code{lower.spectro = FALSE}.}
+
+\item{derivative}{Logical argument to control if spectral derivative is used instead of spectrogram (as in Sound Analysis Pro, see \code{\link[imager]{deriche}}). Default is \code{FALSE}.}
+
+\item{osc}{Logical argument to control if the oscillogram is plotted at the bottom of the spectrogram. Default is \code{FALSE}. Note that 'osc' and 'lower.spectro' are mutually exclusive.}
+
+\item{colwave}{Character string to control the color of the oscillogram. Default is 'black'.}
+
+\item{colbg}{Character string to control the background color. Default is 'white'.}
 
 \item{...}{Additional arguments to be passed to \code{\link[seewave]{spectro}} for customizing spectrograms. Note that 'scale' cannot be included.}
 }

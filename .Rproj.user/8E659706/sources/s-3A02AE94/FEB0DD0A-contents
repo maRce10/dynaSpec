@@ -43,7 +43,7 @@
 #' @param ggspectro Logical argument to control if a ggspectro (\code{\link[seewave]{ggspectro}}) is used instead. Note that there is much less control on display parameters when \code{ggpsectro = TRUE}. Default is \code{FALSE}. 
 #' @param lower.spectro Logical argument to control if a spectrogram of the full wave object is plotted at the bottom of the graph. Default is \code{TRUE}.
 #' @param height.prop Numeric vector of length 2 to control the relative height of the scrolling and lower spectro, respectively. Default is \code{c(5, 1)}. Ignored if \code{lower.spectro = FALSE}.
-#' @param derivative Logical argument to control if spectral derivative is used instead of spectrogram (as in Sound Analysis Pro, see \code{\link[imager]{deriche}}). Default is \code{FALSE}.
+#' @param derivative Logical argument to control if spectral derivative is used instead of spectrogram (as in Sound Analysis Pro). Default is \code{FALSE}.
 #' @param osc Logical argument to control if the oscillogram is plotted at the bottom of the spectrogram. Default is \code{FALSE}. Note that 'osc' and 'lower.spectro' are mutually exclusive.
 #' @param colwave Character string to control the color of the oscillogram. Default is 'black'.
 #' @param colbg Character string to control the background color. Default is 'white'.
@@ -94,11 +94,8 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   if (!is.numeric(loop) | loop < 0) stop("'parallel' must be a positive number") 
 
   # error if buffer and loop > 1
-  if (buffer > 0 & loop > 1) {
-    warning("buffer cannot be used (> 0) when loop is > 1. Buffer was set to 0")
-
-    buffer <- 0
-    }  
+  if (buffer > 0 & loop > 1) stop("buffer cannot be used (> 0) when loop is > 1")
+  
     
   # If parallel is not numeric
   if (!is.numeric(parallel)) stop("'parallel' must be a numeric vector of length 1") 
@@ -222,7 +219,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     par(mar = rep(0, 4))
     
     # plot spectro
-    oscillo_dynaspec_int(wave = wave_sil, f = wave_sil@samp.rate, xaxt = "n", yaxt = "n", colwave = colwave, bg = colbg)
+    oscillo_dynaspec_int(wave = wave_sil, f = wave_sil@samp.rate, xaxt = "n", yaxt = "n", colwave = "black", bg = colbg)
     
     # close plot
     dev.off()

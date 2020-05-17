@@ -120,11 +120,13 @@
     </div>
 
     <pre class="usage"><span class='fu'>scrolling_spectro</span>(<span class='no'>wave</span>, <span class='kw'>file.name</span> <span class='kw'>=</span> <span class='st'>"scroll.spectro.mp4"</span>, <span class='kw'>hop.size</span> <span class='kw'>=</span> <span class='fl'>11.6</span>, <span class='kw'>wl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-<span class='kw'>ovlp</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>flim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>speed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+<span class='kw'>ovlp</span> <span class='kw'>=</span> <span class='fl'>70</span>, <span class='kw'>flim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pal</span> <span class='kw'>=</span> <span class='kw pkg'>seewave</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/seewave/man/seewave.internal.html'>reverse.gray.colors.1</a></span>, <span class='kw'>speed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>fps</span> <span class='kw'>=</span> <span class='fl'>50</span>,
 <span class='kw'>t.display</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>fix.time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>70</span>,
 <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>700</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>400</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pb</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
- <span class='kw'>play</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>loop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>lcol</span> <span class='kw'>=</span> <span class='st'>"skyblue"</span>,
- <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>axis.type</span> <span class='kw'>=</span> <span class='st'>"standard"</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
+ <span class='kw'>play</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>loop</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>lcol</span> <span class='kw'>=</span> <span class='st'>"#07889B99"</span>,
+ <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>axis.type</span> <span class='kw'>=</span> <span class='st'>"standard"</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+ <span class='kw'>ggspectro</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>lower.spectro</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>height.prop</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>1</span>), <span class='kw'>derivative</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+ <span class='kw'>osc</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>colwave</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>colbg</span> <span class='kw'>=</span> <span class='st'>"white"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,11 +151,15 @@ is NULL. If supplied, 'hop.size' is ignored.</p></td>
     <tr>
       <th>ovlp</th>
       <td><p>Numeric vector of length 1 specifying the percent overlap between two 
-consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectro.html'>spectro</a></code>. Default is 50.</p></td>
+consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectro.html'>spectro</a></code>. Default is 70.</p></td>
     </tr>
     <tr>
       <th>flim</th>
       <td><p>A numeric vector of length 2 specifying  limits in the frequency axis (in kHz). Default is <code>NULL</code> (which means from 0 to Nyquist frequency).</p></td>
+    </tr>
+    <tr>
+      <th>pal</th>
+      <td><p>Character string with the color palette to be used. Default is 'reverse.gray.colors.1'.</p></td>
     </tr>
     <tr>
       <th>speed</th>
@@ -201,7 +207,7 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
     </tr>
     <tr>
       <th>lcol</th>
-      <td><p>Character string with the color to be used for the vertical line at which sounds are played. Default is 'skyblue'.</p></td>
+      <td><p>Character string with the color to be used for the vertical line at which sounds are played. Default is <code>"#07889B99"</code>.</p></td>
     </tr>
     <tr>
       <th>lty</th>
@@ -222,7 +228,35 @@ consecutive windows, as in <code><a href='https://rdrr.io/pkg/seewave/man/spectr
     </tr>
     <tr>
       <th>buffer</th>
-      <td><p>Numeric vector of length 1 (&gt; 0) specifying the time to delay the start of the spectrogram scrolling (in seconds). Default is 1.</p></td>
+      <td><p>Numeric vector of length 1 (&gt; 0) specifying the time to delay the start of the spectrogram scrolling (in seconds). Default is 1. Not available when loop is &gt; 1.</p></td>
+    </tr>
+    <tr>
+      <th>ggspectro</th>
+      <td><p>Logical argument to control if a ggspectro (<code><a href='https://rdrr.io/pkg/seewave/man/ggspectro.html'>ggspectro</a></code>) is used instead. Note that there is much less control on display parameters when <code>ggpsectro = TRUE</code>. Default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>lower.spectro</th>
+      <td><p>Logical argument to control if a spectrogram of the full wave object is plotted at the bottom of the graph. Default is <code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>height.prop</th>
+      <td><p>Numeric vector of length 2 to control the relative height of the scrolling and lower spectro, respectively. Default is <code><a href='https://rdrr.io/r/base/c.html'>c(5, 1)</a></code>. Ignored if <code>lower.spectro = FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>derivative</th>
+      <td><p>Logical argument to control if spectral derivative is used instead of spectrogram (as in Sound Analysis Pro, see <code><a href='https://rdrr.io/pkg/imager/man/deriche.html'>deriche</a></code>). Default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>osc</th>
+      <td><p>Logical argument to control if the oscillogram is plotted at the bottom of the spectrogram. Default is <code>FALSE</code>. Note that 'osc' and 'lower.spectro' are mutually exclusive.</p></td>
+    </tr>
+    <tr>
+      <th>colwave</th>
+      <td><p>Character string to control the color of the oscillogram. Default is 'black'.</p></td>
+    </tr>
+    <tr>
+      <th>colbg</th>
+      <td><p>Character string to control the background color. Default is 'white'.</p></td>
     </tr>
     <tr>
       <th>...</th>

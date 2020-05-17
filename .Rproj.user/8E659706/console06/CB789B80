@@ -1,15 +1,4 @@
 
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mconsecutive B-frames:  4.8%  1.6% 14.3% 79.4%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mmb I  I16..4: 84.3%  4.7% 11.0%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mmb P  I16..4:  2.0%  0.3%  0.8%  P16..4:  8.1%  3.2%  2.6%  0.0%  0.0%    skip:83.1%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mmb B  I16..4:  0.1%  0.0%  0.2%  B16..8:  9.9%  3.4%  2.9%  direct: 2.0%  skip:81.6%  L0:49.9% L1:38.0% BI:12.1%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0m8x8 transform intra:6.2% inter:4.5%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mcoded y,uvDC,uvAC intra: 14.9% 5.3% 5.3% inter: 7.2% 4.9% 4.8%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi16 v,h,dc,p: 87% 11%  2%  0%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 14% 19% 67%  0%  0%  0%  0%  0%  0%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 35% 16% 35%  2%  2%  4%  1%  4%  2%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mi8c dc,h,v,p: 96%  3%  1%  0%
-[48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mWeighted P-Frames: Y:0.0% UV:0.0%
 [48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mref P L0: 46.3%  2.4% 22.7% 28.5%
 [48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mref B L0: 58.5% 33.4%  8.1%
 [48;5;0m[38;5;51m[libx264 @ 0x555f14f163c0] [0mref B L1: 73.5% 26.5%
@@ -1010,4 +999,25 @@ Total 30 (delta 14), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/14)[Kremote: Resolving deltas:   7% (1/14)[Kremote: Resolving deltas:  14% (2/14)[Kremote: Resolving deltas:  28% (4/14)[Kremote: Resolving deltas:  35% (5/14)[Kremote: Resolving deltas:  42% (6/14)[Kremote: Resolving deltas:  50% (7/14)[Kremote: Resolving deltas:  57% (8/14)[Kremote: Resolving deltas:  64% (9/14)[Kremote: Resolving deltas:  71% (10/14)[Kremote: Resolving deltas:  78% (11/14)[Kremote: Resolving deltas:  85% (12/14)[Kremote: Resolving deltas:  92% (13/14)[Kremote: Resolving deltas: 100% (14/14)[Kremote: Resolving deltas: 100% (14/14), completed with 12 local objects.[K
 To https://github.com/maRce10/dynaSpec.git
    8979eec..dc98edb  master -> master
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dyynaSpec/dynaSpec[00m$ 
+git push origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kgit push origin master
+Username for 'https://github.com': maRce10
+Password for 'https://maRce10@github.com': 
+Contando objetos: 50, listo.
+Delta compression using up to 4 threads.
+Comprimiendo objetos:   2% (1/42)   Comprimiendo objetos:   4% (2/42)   Comprimiendo objetos:   7% (3/42)   Comprimiendo objetos:   9% (4/42)   Comprimiendo objetos:  11% (5/42)   Comprimiendo objetos:  14% (6/42)   Comprimiendo objetos:  16% (7/42)   Comprimiendo objetos:  19% (8/42)   Comprimiendo objetos:  21% (9/42)   Comprimiendo objetos:  23% (10/42)   Comprimiendo objetos:  26% (11/42)   Comprimiendo objetos:  28% (12/42)   Comprimiendo objetos:  30% (13/42)   Comprimiendo objetos:  33% (14/42)   Comprimiendo objetos:  35% (15/42)   Comprimiendo objetos:  38% (16/42)   Comprimiendo objetos:  40% (17/42)   Comprimiendo objetos:  42% (18/42)   Comprimiendo objetos:  45% (19/42)   Comprimiendo objetos:  47% (20/42)   Comprimiendo objetos:  50% (21/42)   Comprimiendo objetos:  52% (22/42)   Comprimiendo objetos:  54% (23/42)   Comprimiendo objetos:  57% (24/42)   Comprimiendo objetos:  59% (25/42)   Comprimiendo objetos:  61% (26/42)   Comprimiendo objetos:  64% (27/42)   Comprimiendo objetos:  66% (28/42)   Comprimiendo objetos:  69% (29/42)   Comprimiendo objetos:  71% (30/42)   Comprimiendo objetos:  73% (31/42)   Comprimiendo objetos:  76% (32/42)   Comprimiendo objetos:  78% (33/42)   Comprimiendo objetos:  80% (34/42)   Comprimiendo objetos:  83% (35/42)   Comprimiendo objetos:  85% (36/42)   Comprimiendo objetos:  88% (37/42)   Comprimiendo objetos:  90% (38/42)   Comprimiendo objetos:  92% (39/42)   Comprimiendo objetos:  95% (40/42)   Comprimiendo objetos:  97% (41/42)   Comprimiendo objetos: 100% (42/42)   Comprimiendo objetos: 100% (42/42), listo.
+Escribiendo objetos:   2% (1/50)   Escribiendo objetos:   4% (2/50)   Escribiendo objetos:   6% (3/50)   Escribiendo objetos:   8% (4/50)   Escribiendo objetos:  10% (5/50)   Escribiendo objetos:  12% (6/50)   Escribiendo objetos:  14% (7/50)   Escribiendo objetos:  16% (8/50)   Escribiendo objetos:  18% (9/50)   Escribiendo objetos:  20% (10/50)   Escribiendo objetos:  22% (11/50)   Escribiendo objetos:  24% (12/50)   Escribiendo objetos:  26% (13/50)   Escribiendo objetos:  28% (14/50)   Escribiendo objetos:  30% (15/50)   Escribiendo objetos:  32% (16/50)   Escribiendo objetos:  34% (17/50)   Escribiendo objetos:  36% (18/50)   Escribiendo objetos:  38% (19/50)   Escribiendo objetos:  40% (20/50)   Escribiendo objetos:  44% (22/50)   Escribiendo objetos:  46% (23/50)   Escribiendo objetos:  48% (24/50)   Escribiendo objetos:  50% (25/50)   Escribiendo objetos:  52% (26/50)   Escribiendo objetos:  54% (27/50)   Escribiendo objetos:  56% (28/50)   Escribiendo objetos:  58% (29/50)   Escribiendo objetos:  60% (30/50)   Escribiendo objetos:  62% (31/50)   Escribiendo objetos:  64% (32/50)   Escribiendo objetos:  66% (33/50)   Escribiendo objetos:  68% (34/50)   Escribiendo objetos:  70% (35/50)   Escribiendo objetos:  72% (36/50)   Escribiendo objetos:  74% (37/50)   Escribiendo objetos:  76% (38/50)   Escribiendo objetos:  78% (39/50)   Escribiendo objetos:  80% (40/50)   Escribiendo objetos:  82% (41/50)   Escribiendo objetos:  84% (42/50)   Escribiendo objetos:  86% (43/50)   Escribiendo objetos:  88% (44/50)   Escribiendo objetos:  90% (45/50)   Escribiendo objetos:  92% (46/50)   Escribiendo objetos:  94% (47/50)   Escribiendo objetos:  96% (48/50)   Escribiendo objetos:  98% (49/50)   Escribiendo objetos: 100% (50/50)   Escribiendo objetos: 100% (50/50), 8.69 KiB | 4.34 MiB/s, listo.
+Total 50 (delta 24), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/24)[Kremote: Resolving deltas:   8% (2/24)[Kremote: Resolving deltas:  12% (3/24)[Kremote: Resolving deltas:  20% (5/24)[Kremote: Resolving deltas:  33% (8/24)[Kremote: Resolving deltas:  41% (10/24)[Kremote: Resolving deltas:  45% (11/24)[Kremote: Resolving deltas:  50% (12/24)[Kremote: Resolving deltas:  54% (13/24)[Kremote: Resolving deltas:  58% (14/24)[Kremote: Resolving deltas:  66% (16/24)[Kremote: Resolving deltas:  70% (17/24)[Kremote: Resolving deltas:  79% (19/24)[Kremote: Resolving deltas:  87% (21/24)[Kremote: Resolving deltas:  91% (22/24)[Kremote: Resolving deltas:  95% (23/24)[Kremote: Resolving deltas: 100% (24/24)[Kremote: Resolving deltas: 100% (24/24), completed with 14 local objects.[K
+To https://github.com/maRce10/dynaSpec.git
+   dc98edb..db28141  master -> master
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dyynaSpec/dynaSpec[00m$ git push origin master
+Username for 'https://github.com': ^C
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dyynaSpec/dynaSpec[00m$ git push origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[CR[Kffmpeg   -i input1.mp4   -i inpuut2.mp4   -filter_complex '[0:v]pad=iw*2:ih[int];[[int][1:v]overlay=W/2:0[vid]'   -map [vid]   -c:v  libx264   -crf 23   -preset veryfast   output.mp44[B[A[A[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[CR[K
+[K
+[K
+[K
+[K[A[A[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cffmpeg   -i input1.mp4   -i inpuut2.mp4   -filter_complex '[0:v]pad=iw*2:ih[int];[[int][1:v]overlay=W/2:0[vid]'   -map [vid]   -c:v  libx264   -crf 23   -preset veryfast   output.mp44[B[A[A[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[CR[K
+[K
+[K
+[K
+[K[A[A[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cgit push origin master[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K

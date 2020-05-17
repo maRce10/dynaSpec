@@ -27,7 +27,7 @@ rm(list = ls())
 # unload all non-based packages
 out <- sapply(paste('package:', names(sessionInfo()$otherPkgs), sep = ""), function(x) try(detach(x, unload = FALSE, character.only = TRUE), silent = T))
 
-x <- c("RColorBrewer", "devtools", "seewave", "maRce10/warbleR", "monitoR", "pkgdown", "ape", "spelling", "ggplot2", "png", "viridis"
+x <- c("RColorBrewer", "devtools", "seewave", "maRce10/warbleR", "maRce10/dynaSpec", "monitoR", "pkgdown", "ape", "spelling", "ggplot2", "png", "viridis"
        #, "maRce10/dynaSpec"
        )
 
@@ -281,7 +281,6 @@ system("R CMD Rd2pdf ./R\ package\ testing/dynaSpec/dynaSpec")
 setwd(".")
 
 #built site
-
 pkgdown::build_site()
 
 # to set a new computer
@@ -292,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "customized pkgdown 3"')
+system('git commit -m  "add oscillo"')
 system("git push origin master")
 
 ```
@@ -310,7 +309,7 @@ find.text(pattern = pattern, fun.only = F, ignore.case = T, path = path)
 
 repl <- "R package version 1.0.2"
 
-repl.text(pattern = pattern, repl = repl, path = path)
+# repl.text(pattern = pattern, repl = repl, path = path)
 
 # find.arg.text(arg1 = "parallel", arg2 = "pb", pattern = "pbmcapply")
 
@@ -329,8 +328,8 @@ source(file.path("./R", paste0(FUN, ".R")))
 #open in rstudio
 ##open.fun(fun = FUN)
 
-download.file(url = "http://marceloarayasalas.weebly.com/uploads/2/5/5/2/25524573/0.sur.2014.7.3.8.31.wav", 
-    destfile = file.path(tempdir(), "example.wav"))
+# download.file(url = "http://marceloarayasalas.weebly.com/uploads/2/5/5/2/25524573/0.sur.2014.7.3.8.31.wav", 
+#     destfile = file.path(tempdir(), "example.wav"))
 
 data(list = c("Phae.long1"))
 
@@ -343,20 +342,23 @@ rm(i)
 
 #tests  
 
-w <- readWave(file.path(tempdir(), "example.wav"))
+# w <- readWave(file.path(tempdir(), "example.wav"))
 # wave <- readWave(file.path(tempdir(), "Ph"))
 
 w <- Phae.long1
 
-w <- readWave("~/opt/Raven-1.5.0.0043/Examples/CanyonWren.wav")
-
-# fast
-scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0)
-
-
 data("canyon_wren")
 
-scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 100, file.name = "standard.mp4", ovlp = 95, fps = 100)
+# fast
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1))
+
+# fast oscillo
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), osc = T, colbg= "red")
+
+# fast derivative
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = reverse.gray.colors.1, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.oscillo.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), derivative = TRUE)
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = reverse.gray.colors.1, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 100, file.name = "standard.mp4", ovlp = 95, fps = 100, ggspectro = TRUE)
 
 scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 200, file.name = "black.mp4", colbg = "black", ovlp = 95, fps = 100)
 
@@ -376,11 +378,50 @@ pastew(wav2, Phae.long4, output = "Wave")
 
 scrolling_spectro(wave = Phae.long4, wl = 250, t.display = 0.5, ovlp = 95, pal = magma, parallel = 3, grid = FALSE, flim = c(1, 10), width = 1500, height = 500, res = 200, collevels = seq(-40, 0, 5), file.name = "slow_no_axis.mp4", colbg = "black", axis.type = "none", speed = 0.2, fps =100)
 
-print("all is good!")
 
+# fast and loop 4 times
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 4, speed = 2)
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 4, speed = 0.8)
+
+print("all is good!")
 
 ## try this
 # https://stackoverflow.com/questions/27800307/adding-a-picture-to-plot-in-r
+
+```
+
+```{r oscillo_dynaspec_int}
+
+FUN <- "oscillo_dynaspec_int"
+
+#run function
+run.all()
+source(file.path("./R", paste0(FUN, ".R")))
+
+#open in rstudio
+##open.fun(fun = FUN)
+
+# download.file(url = "http://marceloarayasalas.weebly.com/uploads/2/5/5/2/25524573/0.sur.2014.7.3.8.31.wav", 
+#     destfile = file.path(tempdir(), "example.wav"))
+
+data(list = c("Phae.long1"))
+
+# remove objects but no functions
+rm(list = setdiff(ls(), c(lsf.str(), "FUN")))
+
+# to troubleshoot internally
+for(i in run.def.args(FUN)) try(eval(parse(text = i)), silent = T)
+rm(i)
+
+#tests  
+
+
+w <- Phae.long1
+
+oscillo_dynaspec_int(w)
+
+print("all is good!")
 
 ```
 
