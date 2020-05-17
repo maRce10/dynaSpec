@@ -291,7 +291,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "add oscillo"')
+system('git commit -m  "imager as suggest"')
 system("git push origin master")
 
 ```
