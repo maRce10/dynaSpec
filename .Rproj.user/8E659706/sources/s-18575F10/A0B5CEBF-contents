@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-#uninstall dynaSpec 
+# uninstall dynaSpec 
 ```{r reinstall dynaSpec from github, eval=F}
 
 remove.packages("dynaSpec")

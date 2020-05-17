@@ -5,7 +5,7 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "2473427780",
+    "hash" : "0",
     "id" : "F538AD37",
     "lastKnownWriteTime" : 1589688736,
     "last_content_update" : 1589688736640,
@@ -13,7 +13,7 @@
     "project_path" : "R/scrolling_spectro.R",
     "properties" : {
         "cursorPosition" : "77,42",
-        "scrollLine" : "70"
+        "scrollLine" : "0"
     },
     "relative_order" : 4,
     "source_on_save" : false,

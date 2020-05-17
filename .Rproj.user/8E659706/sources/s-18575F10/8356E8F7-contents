@@ -168,29 +168,23 @@ allowfullscreen></iframe></center>
 &nbsp;
 
 
-Use spectral derivatives looping 3 times:
+Use spectral derivatives looping 3 times (need the package 'imager' installed):
 ```{r, eval = FALSE}
 
-data("Phae.long1")
-
-scrolling_spectro(wave = Phae.long1, wl = 512, 
-    t.display = 1.7, ovlp = 90, pal = magma, 
-    grid = FALSE, flim = c(1, 10), width = 1000, 
-    height = 500, res = 120, collevels = seq(-40, 0, 5), derivative = TRUE,
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+    t.display = 1.7, ovlp = 90, pal = reverse.gray.colors.1, 
+    grid = FALSE, flim = c(1, 8), width = 1000, 
+    height = 500, res = 200, collevels = seq(-40, 0, 5), derivative = TRUE,
     file.name = "spectral_derivatives.mp4", loop = 3)
 
 ```
 
 ```{r, eval = FALSE, echo= FALSE}
 
-library(seewave)
-
-data(tico)
-
-scrolling_spectro(wave = Phae.long1, wl = 512, 
-    t.display = 1.7, ovlp = 90, pal = magma, 
-    grid = FALSE, flim = c(1, 10), width = 1000, 
-    height = 500, res = 120, collevels = seq(-40, 0, 5), fps = 250, derivative = TRUE,
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+    t.display = 1.7, ovlp = 90, pal = reverse.gray.colors.1, 
+    grid = FALSE, flim = c(1, 8), width = 1000, 
+    height = 500, res = 120, collevels = seq(-40, 0, 5), fps = 60, derivative = TRUE,
     file.name = "../spectral_derivatives.mp4", loop = 3)
 
 ```
