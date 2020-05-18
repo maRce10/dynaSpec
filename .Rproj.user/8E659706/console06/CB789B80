@@ -1,15 +1,4 @@
 
-  Duration: 00:00:02.52, start: 0.000000, bitrate: 8101 kb/s
-    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 8094 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
-    Metadata:
-      handler_name    : VideoHandler
-Output #0, wav, to 'i/tmp/Rtmpjj6nnI/audio.scroll.spectro.wav':
-[48;5;0m[38;5;196mOutput file #0 does not contain any stream
-[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4 i//tmp/Rtmpjj6nnI/audio.scroll.spectro.wav -vcodec libx264 -accodec libmp3lame -shortest -y scroll.spectro.mp4[1P scroll.spectro.mp4[1P scroll.spectro.mp4[1Pscroll.spectro.mp4
-ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
-  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
-  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
-  libavutil      55. 78.100 / 55. 78.100
   libavcodec     57.107.100 / 57.107.100
   libavformat    57. 83.100 / 57. 83.100
   libavdevice    57. 10.100 / 57. 10.100
@@ -1010,4 +999,3 @@ Total 56 (delta 21), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/21)[Kremote: Resolving deltas:   9% (2/21)[Kremote: Resolving deltas:  23% (5/21)[Kremote: Resolving deltas:  33% (7/21)[Kremote: Resolving deltas:  38% (8/21)[Kremote: Resolving deltas:  47% (10/21)[Kremote: Resolving deltas:  52% (11/21)[Kremote: Resolving deltas:  57% (12/21)[Kremote: Resolving deltas:  61% (13/21)[Kremote: Resolving deltas:  66% (14/21)[Kremote: Resolving deltas:  71% (15/21)[Kremote: Resolving deltas:  76% (16/21)[Kremote: Resolving deltas:  80% (17/21)[Kremote: Resolving deltas:  85% (18/21)[Kremote: Resolving deltas:  90% (19/21)[Kremote: Resolving deltas:  95% (20/21)[Kremote: Resolving deltas: 100% (21/21)[Kremote: Resolving deltas: 100% (21/21), completed with 13 local objects.[K
 To https://github.com/maRce10/dynaSpec.git
    874b130..a31e221  master -> master
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSSpec/dynaSpec[00m$ 
