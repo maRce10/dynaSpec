@@ -290,7 +290,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "imager as suggest"')
+system('git commit -m  "fix"')
 system("git push origin master")
 
 ```
@@ -349,7 +349,7 @@ w <- Phae.long1
 data("canyon_wren")
 
 # fast
-scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1))
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1))
 
 # fast oscillo
 scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), osc = T, colbg= "red")
@@ -382,6 +382,42 @@ scrolling_spectro(wave = Phae.long4, wl = 250, t.display = 0.5, ovlp = 95, pal =
 scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 4, speed = 2)
 
 scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 4, speed = 0.8)
+
+# spectro call
+data(list = c("Phae.long4", "lbh_selec_table"))
+
+# subset selection table
+st <- lbh_selec_table[lbh_selec_table$sound.files == "Phae.long4.wav",]
+
+# create color column
+st$colors <- viridis(3)
+
+# highlight selections
+color.spectro(wave = Phae.long4, wl = 300, ovlp = 90, flim = c(1, 8.6), collevels = seq(-90, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "skyblue",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL)
+
+
+sp_cl <- call("color.spectro", wave = Phae.long4, wl = 300, ovlp = 90, flim = c(1, 8.6), collevels = seq(-90, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "skyblue",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL)
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../color_spectro.mp4", ovlp = 5, fps = 50, buffer = 1, loop = 1, lower.spectro = T, fix.time = T, height.prop = c(4, 1), spectro.call = sp_cl, osc = F, speed = 0.5)
+
+
+# highlight selections black background
+color.spectro(wave = Phae.long4, wl = 300, ovlp = 90, flim = c(2, 10), collevels = seq(-100, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "red",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL, bg.col = "black")
+
+
+sp_cl <- call("color.spectro", wave = Phae.long4, wl = 300, ovlp = 90, flim = c(2, 10), collevels = seq(-100, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "white",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL, bg.col = "white")
+
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../color_spectro.mp4", ovlp = 95, fps = 50, buffer = 1, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), spectro.call = sp_cl, osc = F, speed = 0.5, colbg = "white")
+
 
 print("all is good!")
 
