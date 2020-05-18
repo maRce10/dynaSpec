@@ -230,7 +230,8 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     eval(spectro.call)
 
       }
-  # close plot
+  }
+    # close plot
   dev.off()
   
   # spectral derivatives
@@ -256,7 +257,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
 
   par( bg = "white")
   
-  }} else {
+  } else {
   ..level.. <- NA
     
     suppressMessages(ggsp <- seewave::ggspectro(wave = wave_sil, f = wave_sil@samp.rate, wl = wl, ovlp = ovlp) +
