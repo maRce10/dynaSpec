@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 [![Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
-A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work. The package relies heavily on the packages [seewave](https://CRAN.R-project.org/package=seewave) and [tuneR](https://CRAN.R-project.org/package=tuneR).
+A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work.
 
 Install/load the package from CRAN as follows (**NOT YET IN CRAN**):
 
-```{r, eval = FALSE}
+```r
 
 # From CRAN would be
 #install.packages("dynaSpec")
@@ -48,7 +48,7 @@ library(dynaSpec)
 
 ## Examples
 
-A dynamic spectrogram of a canyon wren song with a viridis color palette:
+A dynamic spectrogram of a canyon wren song:
 ```{r, eval = FALSE}
 
 library(viridis)
@@ -72,22 +72,22 @@ data("canyon_wren")
 scrolling_spectro(wave = canyon_wren, wl = 300, 
               t.display = 1.7, pal = viridis, 
               grid = FALSE, flim = c(1, 9), loop = 3,
-              width = 1000, height = 500, ovlp = 95,
+              width = 1500, height = 600, ovlp = 95,
               res = 200, file.name = "../default.mp4", 
               parallel = parallel::detectCores() - 1)
 
 
 ```
 
-<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="240"
-src="https://www.youtube.com/embed/TOiukDxaNbI" 
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/QB4bwr7BcSA" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>
 
 &nbsp;
 
-Black and white spectrogram:
+Regular black and white spectrogram:
 ```{r, eval = FALSE}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
@@ -115,15 +115,15 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 
 ```
 
-<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="240"
-src="https://www.youtube.com/embed/5gQjgzijHOs" 
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/QB4bwr7BcSA" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>
 
 &nbsp;
 
-A spectrogram with black background (colbg = "black"):
+A spectrogram with black background ('colbg' argument):
 ```{r, eval = FALSE}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
@@ -134,7 +134,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 
 ```
 
-```{r, eval = FALSE, echo = FALSE}
+```{r}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
               t.display = 1.7, pal = viridis, 
@@ -146,8 +146,8 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 
-<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="240"
-src="https://www.youtube.com/embed/n_GNDn2VH-U" 
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/Y9exx7eY-N4" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>
@@ -179,8 +179,8 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="240"
-src="https://www.youtube.com/embed/r25TSKSklLo" 
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/s83yOt1dIwc" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>
@@ -189,7 +189,7 @@ allowfullscreen></iframe></center>
 
 &nbsp;
 
-Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and looping 3 times (loop = 3:
+Remove axes (long-billed hermit song at 1/5 speed):
 ```{r, eval = FALSE}
 
 data("Phae.long4")
@@ -199,7 +199,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
     grid = FALSE, flim = c(1, 10), width = 1000, 
     height = 500, res = 120, collevels = seq(-50, 0, 5), 
     file.name = "no_axis.mp4", colbg = "black", 
-    speed = 0.2, axis.type = "none", loop = 3)
+    speed = 0.2, axis.type = "none")
 
 ```
 
@@ -216,8 +216,8 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 
 ```
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="360"
-src="https://www.youtube.com/embed/7AAoaZUkA3k" 
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/E3oj7VR71mA" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>
@@ -261,15 +261,15 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
 
 ```
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="250"
-src="https://www.youtube.com/embed/OxvKoPyX-4o" 
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/E3oj7VR71mA" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>
 
 &nbsp;
 
-Spectral derivatives (need the package 'imager' installed), looping 3 times (loop = 3; doesn't look great in youtube!):
+Use spectral derivatives looping 3 times (need the package 'imager' installed):
 ```{r, eval = FALSE}
 
 
@@ -291,41 +291,9 @@ scrolling_spectro(wave = canyon_wren, wl = 512,
 
 ```
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="240"
-src="https://www.youtube.com/embed/JbQ741ZlZ2A" 
-frameborder="0" 
-allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe></center>
-
-&nbsp;
- 
-Spix's disc-winged bat inquiry call slow down (speed = 0.05):
+Visualizing a northern nightingale wren recording from [xeno-canto](xeno-canto.org) using a custom color palette:
 
 ```{r, eval = FALSE}
-
-data("thyroptera.est")
-
-# extract one call
-thy_wav <- attributes(thyroptera.est)$wave.objects[[12]]
-
-# add silence at both "sides""
-thy_wav <- pastew(tuneR::silence(duration = 0.05, 
-                                 samp.rate = thy_wav@samp.rate, xunit = "time"),thy_wav, output = "Wave")
-
-thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, 
-                                          samp.rate = thy_wav@samp.rate, xunit = "time"), output = "Wave")
-
-scrolling_spectro(wave = thy_wav, wl = 400, 
-    t.display = 0.08, ovlp = 95, pal = inferno, 
-    grid = FALSE, flim = c(12, 37), width = 700, 
-    height = 250, res = 100, collevels = seq(-40, 0, 5),
-    file.name = "thyroptera_osc.mp4", colbg = "black", lcol = "#FFFFFFE6", 
-    speed = 0.05, fps = 200, buffer = 0, loop = 4, lty = 1, 
-    osc = TRUE, colwave = inferno(10, alpha = 0.9)[3])
-
-```
-  
-```{r, eval = FALSE, echo= FALSE}
 
 data("thyroptera.est")
 
@@ -335,16 +303,36 @@ thy_wav <- pastew(tuneR::silence(duration = 0.05, samp.rate = thy_wav@samp.rate,
 
 thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, samp.rate = thy_wav@samp.rate, xunit = "time"), output = "Wave")
 
+# thy_wav <- pastew(thy_wav, thy_wav, output = "Wave")
+
 scrolling_spectro(wave = thy_wav, wl = 400, 
     t.display = 0.08, ovlp = 95, pal = inferno, 
     grid = FALSE, flim = c(12, 37), width = 700, 
     height = 250, res = 100, collevels = seq(-40, 0, 5),
-    file.name = "../thyroptera_osc.mp4", colbg = "black", lcol = "#FFFFFFE6", speed = 0.05, fps = 200, buffer = 0, loop = 4, lty = 1, osc = T, colwave = inferno(10, alpha = 0.9)[3])
+    file.name = "../thyroptera.mp4", colbg = "black", lcol = "#FFFFFFE6", speed = 0.05, fps = 200, buffer = 0, loop = 4, lty = 1)
 
 ```
 
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="250"
-src="https://www.youtube.com/embed/mFiYPzOe9Nw" 
+```{r, eval = FALSE, echo= FALSE}
+
+a <- quer_xc(qword = "nr:518334", download = TRUE, path = tempdir())
+
+ngh_wren <- readMP3(file.path(tempdir(), "Microcerculus-philomela-518334.mp3"))
+
+ngh_wren <- cutw(ngh_wren, from = 0, to = 6, output = "Wave")
+
+custom_pal <- colorRampPalette( c("#19194d", reverse.terrain.colors(10)[10:4]))
+
+scrolling_spectro(wave = ngh_wren, wl = 600, 
+    t.display = 3, ovlp = 95, pal = custom_pal, 
+    grid = FALSE, flim = c(2, 8), width = 700, 
+    height = 250, res = 80, collevels = seq(-40, 0, 2),    
+    file.name = "../nightingale_wren.mp4", colbg = "#19194d", speed = 1, parallel = parallel::detectCores() - 1, lcol = "#FFFFFFE6")
+
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/E3oj7VR71mA" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe></center>

@@ -1,0 +1,269 @@
+---
+title: "dynaSpec"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  out.width = "100%"
+)
+```
+
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
+[![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](http://www.r-pkg.org/pkg/dynaSpec)
+[![Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
+A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work.
+
+Install/load the package from CRAN as follows (**NOT YET IN CRAN**):
+
+```r
+
+# From CRAN would be
+#install.packages("dynaSpec")
+
+#load package
+library(dynaSpec)
+
+```
+
+To install the latest developmental version from [github](http://github.com/) you will need the R package [devtools](https://cran.r-project.org/package=devtools):
+
+```{r, eval = FALSE}
+
+# From github
+devtools::install_github("maRce10/dynaSpec")
+
+#load package
+library(dynaSpec)
+
+```
+
+## Examples
+
+
+A dynamic spectrogram of a canyon wren song:
+```{r, eval = FALSE}
+
+library(viridis)
+
+data("canyon_wren")
+
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+              t.display = 1.7, pal = viridis, 
+              grid = FALSE, flim = c(1, 9), 
+              width = 1000, height = 500, 
+              res = 120, file.name = "default.mp4")
+
+```
+
+
+```{r, eval = FALSE, echo = FALSE}
+
+library(viridis)
+
+data("canyon_wren")
+
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+              t.display = 1.7, pal = viridis, 
+              grid = FALSE, flim = c(1, 9), 
+              width = 1800, height = 750, ovlp = 95,
+              res = 300, file.name = "../default.mp4", 
+              parallel = parallel::detectCores() - 1)
+
+
+```
+
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/QB4bwr7BcSA" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+A spectrogram with black background ('colbg' argument):
+```{r, eval = FALSE}
+
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+              t.display = 1.7, pal = viridis, 
+              grid = FALSE, flim = c(1, 9), 
+              width = 1000, height = 500, res = 120, 
+              file.name = "black.mp4", colbg = "black")
+
+```
+
+```{r}
+
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+              t.display = 1.7, pal = viridis, 
+              grid = FALSE, flim = c(1, 9), ovlp = 95,
+              width = 1500, height = 750, res = 300,  fps = 60,
+              file.name = "../black.mp4", colbg = "black", parallel = parallel::detectCores() - 1, loop = 3)
+
+
+```
+
+
+<center><iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/Y9exx7eY-N4" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom (osc = TRUE):
+```{r, eval = FALSE}
+
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+              t.display = 1.7, pal = viridis, 
+              grid = FALSE, flim = c(1, 9), 
+              width = 1000, height = 500, res = 120, 
+              file.name = "slow.mp4", colbg = "black",
+              speed = 0.5, osc = TRUE, 
+              colwave = "#31688E99")
+
+```
+
+```{r, eval = FALSE, echo= FALSE}
+
+scrolling_spectro(wave = canyon_wren, wl = 300, 
+               t.display = 1.7, pal = viridis, 
+               grid = FALSE, flim = c(1, 9), 
+               width = 1800, height = 750, res = 300, 
+               file.name = "../slow.mp4", colbg = "black", ovlp = 95,
+               speed = 0.5, osc = TRUE, colwave = viridis(4, alpha = 0.9)[3], fps = 60, parallel = parallel::detectCores() - 1)
+
+```
+
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/s83yOt1dIwc" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+&nbsp;
+
+Remove axes (long-billed hermit song at 1/5 speed):
+```{r, eval = FALSE}
+
+data("Phae.long4")
+
+scrolling_spectro(wave = Phae.long4, wl = 300, 
+    t.display = 1.7, ovlp = 90, pal = magma, 
+    grid = FALSE, flim = c(1, 10), width = 1000, 
+    height = 500, res = 120, collevels = seq(-50, 0, 5), 
+    file.name = "no_axis.mp4", colbg = "black", 
+    speed = 0.2, axis.type = "none")
+
+```
+
+```{r, eval = FALSE, echo= FALSE}
+
+data("Phae.long4")
+
+scrolling_spectro(wave = Phae.long4, wl = 300, 
+    t.display = 1.7, ovlp = 90, pal = magma, 
+    grid = FALSE, flim = c(1, 10), width = 1000, 
+    height = 500, res = 120, collevels = seq(-50, 0, 5), 
+    file.name = "../no_axis.mp4", colbg = "black", 
+    speed = 0.2, axis.type = "none", loop = 3, fps = 60, parallel = parallel::detectCores() - 1)
+
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/E3oj7VR71mA" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+
+Visualizing a complete extended selection table (sensu 'warbleR' package):
+```{r, eval = FALSE}
+
+data("lbh.est")
+
+library(Rraven)
+
+library(seewave)
+
+lbh.est.wav <- exp_est(X = lbh.est, wave.object = TRUE)
+
+scrolling_spectro(wave = lbh.est.wav, wl = 300, 
+    t.display = 1.7, ovlp = 90, pal = reverse.heat.colors, 
+    grid = FALSE, flim = c(0, 11), width = 1000, 
+    height = 500, res = 120, collevels = seq(-50, 0, 5), 
+    file.name = "no_axis.mp4", colbg = "gray", 
+    speed = 0.5, parallel = parallel::detectCores() - 1)
+
+```
+
+```{r, eval = FALSE, echo= FALSE}
+
+data("Phae.long4")
+
+lbh.est.wav <- exp_est(X = lbh.est, wave.object = TRUE)
+
+scrolling_spectro(wave = lbh.est.wav, wl = 300, 
+    t.display = 1.7, ovlp = 90, pal = reverse.heat.colors, 
+    grid = FALSE, flim = c(0, 11), width = 1500, 
+    height = 600, res = 300, collevels = seq(-50, 0, 5), 
+    file.name = "../est.mp4", colbg = "gray", 
+    speed = 0.5, loop = 3, fps = 60)
+
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="200"
+src="https://www.youtube.com/embed/E3oj7VR71mA" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+Use spectral derivatives looping 3 times (need the package 'imager' installed):
+```{r, eval = FALSE}
+
+data("monk.parakeet.est")
+
+mp.est.wav <- exp_est(X = monk.parakeet.est[1:5, ], wave.object = TRUE)
+
+scrolling_spectro(wave = mp.est.wav, wl = 512, 
+    t.display = 1.7, ovlp = 90, pal = reverse.gray.colors.1, 
+    grid = FALSE, flim = c(1, 8), width = 1000, 
+    height = 500, res = 200, collevels = seq(-40, 0, 5), derivative = TRUE,
+    file.name = "spectral_derivatives.mp4", loop = 3)
+
+```
+
+```{r, eval = FALSE, echo= FALSE}
+
+data("monk.parakeet.est")
+
+mp.est.wav <- exp_est(X = monk.parakeet.est[1:5, ], wave.object = TRUE)
+
+scrolling_spectro(wave = mp.est.wav, wl = 512,  
+    t.display = 1.7, ovlp = 90, pal = reverse.gray.colors.1, 
+    grid = FALSE, flim = c(1, 8), width = 1500, 
+    height = 600, res = 300, collevels = seq(-40, 0, 5), fps = 60, derivative = TRUE, parallel = parallel::detectCores() - 1,
+    file.name = "../spectral_derivatives.mp4", loop = 3)
+
+```
+---
+
+Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
+
+Araya-Salas M & M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
