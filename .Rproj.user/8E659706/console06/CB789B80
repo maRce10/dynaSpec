@@ -1,15 +1,4 @@
 
-  libavcodec     57.107.100 / 57.107.100
-  libavformat    57. 83.100 / 57. 83.100
-  libavdevice    57. 10.100 / 57. 10.100
-  libavfilter     6.107.100 /  6.107.100
-  libavresample   3.  7.  0 /  3.  7.  0
-  libswscale      4.  8.100 /  4.  8.100
-  libswresample   2.  9.100 /  2.  9.100
-  libpostproc    54.  7.100 / 54.  7.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/Rtmpjj6nnI/scroll.spectro.temp.mp4':
-  Metadata:
-    major_brand     : isom
     minor_version   : 512
     compatible_brands: isomiso2avc1mp41
     encoder         : Lavf57.83.100
@@ -1010,4 +999,15 @@ Total 54 (delta 26), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/26)[Kremote: Resolving deltas:   3% (1/26)[Kremote: Resolving deltas:   7% (2/26)[Kremote: Resolving deltas:  15% (4/26)[Kremote: Resolving deltas:  23% (6/26)[Kremote: Resolving deltas:  30% (8/26)[Kremote: Resolving deltas:  34% (9/26)[Kremote: Resolving deltas:  42% (11/26)[Kremote: Resolving deltas:  46% (12/26)[Kremote: Resolving deltas:  50% (13/26)[Kremote: Resolving deltas:  57% (15/26)[Kremote: Resolving deltas:  61% (16/26)[Kremote: Resolving deltas:  69% (18/26)[Kremote: Resolving deltas:  73% (19/26)[Kremote: Resolving deltas:  76% (20/26)[Kremote: Resolving deltas:  80% (21/26)[Kremote: Resolving deltas:  84% (22/26)[Kremote: Resolving deltas:  88% (23/26)[Kremote: Resolving deltas:  92% (24/26)[Kremote: Resolving deltas:  96% (25/26)[Kremote: Resolving deltas: 100% (26/26)[Kremote: Resolving deltas: 100% (26/26), completed with 18 local objects.[K
 To https://github.com/maRce10/dynaSpec.git
    a31e221..c2932d0  master -> master
+
+Username for 'https://github.com': maRc10  e10
+Password for 'https://maRce10@github.com': 
+Contando objetos: 26, listo.
+Delta compression using up to 4 threads.
+Comprimiendo objetos:   4% (1/23)   Comprimiendo objetos:   8% (2/23)   Comprimiendo objetos:  13% (3/23)   Comprimiendo objetos:  17% (4/23)   Comprimiendo objetos:  21% (5/23)   Comprimiendo objetos:  26% (6/23)   Comprimiendo objetos:  30% (7/23)   Comprimiendo objetos:  34% (8/23)   Comprimiendo objetos:  39% (9/23)   Comprimiendo objetos:  43% (10/23)   Comprimiendo objetos:  47% (11/23)   Comprimiendo objetos:  52% (12/23)   Comprimiendo objetos:  56% (13/23)   Comprimiendo objetos:  60% (14/23)   Comprimiendo objetos:  65% (15/23)   Comprimiendo objetos:  69% (16/23)   Comprimiendo objetos:  73% (17/23)   Comprimiendo objetos:  78% (18/23)   Comprimiendo objetos:  82% (19/23)   Comprimiendo objetos:  86% (20/23)   Comprimiendo objetos:  91% (21/23)   Comprimiendo objetos:  95% (22/23)   Comprimiendo objetos: 100% (23/23)   Comprimiendo objetos: 100% (23/23), listo.
+Escribiendo objetos:   3% (1/26)   Escribiendo objetos:   7% (2/26)   Escribiendo objetos:  11% (3/26)   Escribiendo objetos:  15% (4/26)   Escribiendo objetos:  19% (5/26)   Escribiendo objetos:  23% (6/26)   Escribiendo objetos:  26% (7/26)   Escribiendo objetos:  30% (8/26)   Escribiendo objetos:  34% (9/26)   Escribiendo objetos:  38% (10/26)   Escribiendo objetos:  42% (11/26)   Escribiendo objetos:  46% (12/26)   Escribiendo objetos:  50% (13/26)   Escribiendo objetos:  53% (14/26)   Escribiendo objetos:  57% (15/26)   Escribiendo objetos:  61% (16/26)   Escribiendo objetos:  65% (17/26)   Escribiendo objetos:  69% (18/26)   Escribiendo objetos:  73% (19/26)   Escribiendo objetos:  76% (20/26)   Escribiendo objetos:  80% (21/26)   Escribiendo objetos:  84% (22/26)   Escribiendo objetos:  88% (23/26)   Escribiendo objetos:  92% (24/26)   Escribiendo objetos:  96% (25/26)   Escribiendo objetos: 100% (26/26)   Escribiendo objetos: 100% (26/26), 8.53 KiB | 1.22 MiB/s, listo.
+Total 26 (delta 15), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/15)[Kremote: Resolving deltas:   6% (1/15)[Kremote: Resolving deltas:  20% (3/15)[Kremote: Resolving deltas:  26% (4/15)[Kremote: Resolving deltas:  33% (5/15)[Kremote: Resolving deltas:  40% (6/15)[Kremote: Resolving deltas:  46% (7/15)[Kremote: Resolving deltas:  53% (8/15)[Kremote: Resolving deltas:  60% (9/15)[Kremote: Resolving deltas:  66% (10/15)[Kremote: Resolving deltas:  73% (11/15)[Kremote: Resolving deltas:  80% (12/15)[Kremote: Resolving deltas:  86% (13/15)[Kremote: Resolving deltas:  93% (14/15)[Kremote: Resolving deltas: 100% (15/15)[Kremote: Resolving deltas: 100% (15/15), completed with 14 local objects.[K
+To https://github.com/maRce10/dynaSpec.git
+   c2932d0..d4eaf84  master -> master
 ]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSSpec/dynaSpec[00m$ 

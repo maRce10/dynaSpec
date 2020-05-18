@@ -15,6 +15,11 @@ Install/load the package from CRAN as follows (**NOT YET IN CRAN**):
 
 #load package
 library(dynaSpec)
+
+# and load other dependencies
+library(viridis)
+library(tuneR)
+library(seewave)
 ```
 
 To install the latest developmental version from [github](http://github.com/) you will need the R package [devtools](https://cran.r-project.org/package=devtools):
