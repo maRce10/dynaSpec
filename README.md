@@ -176,10 +176,12 @@ thy_wav <- attributes(thyroptera.est)$wave.objects[[12]]
 
 # add silence at both "sides""
 thy_wav <- pastew(tuneR::silence(duration = 0.05, 
-                                 samp.rate = thy_wav@samp.rate, xunit = "time"),thy_wav, output = "Wave")
+            samp.rate = thy_wav@samp.rate, xunit = "time"),
+            thy_wav, output = "Wave")
 
 thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, 
-                                          samp.rate = thy_wav@samp.rate, xunit = "time"), output = "Wave")
+            samp.rate = thy_wav@samp.rate, xunit = "time"),
+            output = "Wave")
 
 scrolling_spectro(wave = thy_wav, wl = 400, 
     t.display = 0.08, ovlp = 95, pal = inferno, 

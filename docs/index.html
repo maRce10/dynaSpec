@@ -201,10 +201,12 @@ thy_wav &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/
 
 <span class="co"># add silence at both "sides""</span>
 thy_wav &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/seewave/man/pastew.html">pastew</a></span>(tuneR<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/tuneR/man/Waveforms.html">silence</a></span>(<span class="dt">duration =</span> <span class="fl">0.05</span>, 
-                                 <span class="dt">samp.rate =</span> thy_wav<span class="op">@</span>samp.rate, <span class="dt">xunit =</span> <span class="st">"time"</span>),thy_wav, <span class="dt">output =</span> <span class="st">"Wave"</span>)
+            <span class="dt">samp.rate =</span> thy_wav<span class="op">@</span>samp.rate, <span class="dt">xunit =</span> <span class="st">"time"</span>),
+            thy_wav, <span class="dt">output =</span> <span class="st">"Wave"</span>)
 
 thy_wav &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/seewave/man/pastew.html">pastew</a></span>(thy_wav, tuneR<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/tuneR/man/Waveforms.html">silence</a></span>(<span class="dt">duration =</span> <span class="fl">0.04</span>, 
-                                          <span class="dt">samp.rate =</span> thy_wav<span class="op">@</span>samp.rate, <span class="dt">xunit =</span> <span class="st">"time"</span>), <span class="dt">output =</span> <span class="st">"Wave"</span>)
+            <span class="dt">samp.rate =</span> thy_wav<span class="op">@</span>samp.rate, <span class="dt">xunit =</span> <span class="st">"time"</span>),
+            <span class="dt">output =</span> <span class="st">"Wave"</span>)
 
 <span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> thy_wav, <span class="dt">wl =</span> <span class="dv">400</span>, 
     <span class="dt">t.display =</span> <span class="fl">0.08</span>, <span class="dt">ovlp =</span> <span class="dv">95</span>, <span class="dt">pal =</span> inferno, 
