@@ -218,7 +218,7 @@ color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13),
               interactive = NULL, bg.col = "black")
 ```
 
-![](inst/colored_spectro_house_wren_duet.png)
+![](https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png)
 
 The male part is shown in green and the female part in yellow.
 
