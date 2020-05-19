@@ -5,17 +5,17 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1090172218",
+    "hash" : "0",
     "id" : "53D71E0D",
-    "lastKnownWriteTime" : 1589890397,
-    "last_content_update" : 1589890397760,
+    "lastKnownWriteTime" : 1589890447,
+    "last_content_update" : 1589890447184,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/README.Rmd",
     "project_path" : "README.Rmd",
     "properties" : {
         "chunk_output_type" : "console",
-        "cursorPosition" : "451,34",
+        "cursorPosition" : "452,14",
         "last_setup_crc32" : "",
-        "scrollLine" : "438"
+        "scrollLine" : "442"
     },
     "relative_order" : 3,
     "source_on_save" : false,
