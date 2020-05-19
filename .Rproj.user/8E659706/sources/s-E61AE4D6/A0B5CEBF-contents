@@ -290,7 +290,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "added "')
+system('git commit -m  "added spectro.call to scrolling_spectro()"')
 system("git push origin master")
 
 ```

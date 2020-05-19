@@ -279,36 +279,6 @@ allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 allowfullscreen></iframe></center>
 
 &nbsp;
-
-Spectral derivatives (need the package 'imager' installed), looping 3 times (loop = 3; doesn't look great on youtube!):
-```{r, eval = FALSE}
-
-
-scrolling_spectro(wave = canyon_wren, wl = 512, 
-    t.display = 1.7, ovlp = 90, pal = reverse.gray.colors.1, 
-    grid = FALSE, flim = c(1, 8), width = 1000, 
-    height = 500, res = 200, collevels = seq(-40, 0, 5), derivative = TRUE,
-    file.name = "spectral_derivatives.mp4", loop = 3)
-
-```
-
-```{r, eval = FALSE, echo= FALSE}
-
-scrolling_spectro(wave = canyon_wren, wl = 512,  
-    t.display = 1.7, ovlp = 90, pal = reverse.gray.colors.1, 
-    grid = FALSE, flim = c(1, 8), width = 1500, 
-    height = 600, res = 300, collevels = seq(-40, 0, 5), fps = 60, derivative = TRUE, parallel = parallel::detectCores() - 1,
-    file.name = "../spectral_derivatives.mp4", loop = 3)
-
-```
-
-<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="600" height="240"
-src="https://www.youtube.com/embed/JbQ741ZlZ2A" 
-frameborder="0" 
-allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe></center>
-
-&nbsp;
  
 Spix's disc-winged bat inquiry call slow down (speed = 0.05):
 
@@ -365,7 +335,7 @@ allowfullscreen></iframe></center>
 
 ### Further customization
 
-The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight with colors vocalizations from male and female house wrens (first we download the selection table and sound file from figshare):
+The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):
  
 ```{r, eval = FALSE}
 
@@ -381,14 +351,14 @@ st$colors <- c("green", "yellow")
 # highlight selections
 color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
               collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", 
-              base.col = "black",  t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL, 
-              bg.col = "black")
+              base.col = "black",  t.mar = 0.07, f.mar = 0.1, strength = 3, 
+              interactive = NULL, bg.col = "black")
 
 ```
  
-![](./inst/colored_spectro_house_wren_duet.jpeg) 
+![](inst/colored_spectro_house_wren_duet.png) 
  
-This looks a bit busy here, but will spread out in the dynamic spectrogram.
+The male part is shown in green and the female part in yellow. 
 
 We can wrap the `color_spectro()` call using the `call()` function form base R and input that into `scrolling_spectro()` using the argument 'spectro.call':
 
