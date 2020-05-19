@@ -218,7 +218,7 @@ color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13),
               interactive = NULL, bg.col = "black")
 ```
 
-![](https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png)
+<img src="https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png" alt="house wren duet">
 
 The male part is shown in green and the female part in yellow.
 
@@ -228,8 +228,8 @@ We can wrap the `color_spectro()` call using the `call()` function form base R a
 # save call
 sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, 
               flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
-              dB = "B", X = st, col.clm = "colors", base.col = "black",  t.mar = 0.07, f.mar = 0.1, 
-              interactive = NULL, bg.col = "black")
+              dB = "B", X = st, col.clm = "colors", base.col = "black",  
+              t.mar = 0.07, f.mar = 0.1, interactive = NULL, bg.col = "black")
 
 # create dynamic spectrogram
 scrolling_spectro(wave = hs_wren, wl = 512,  
@@ -274,8 +274,9 @@ st$colors <- viridis(10)[c(3, 8)]
 
 sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, 
               ovlp = 95, flim = c(1, 13), collevels = seq(-55, 0, 5),
-              dB = "B", X = st, col.clm = "colors", base.col = "white",  
-              t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL)
+              dB = "B", X = st, col.clm = "colors", 
+              base.col = "white", t.mar = 0.07, f.mar = 0.1,
+              strength = 3, interactive = NULL)
 
 # create dynamic spectrogram
 scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
