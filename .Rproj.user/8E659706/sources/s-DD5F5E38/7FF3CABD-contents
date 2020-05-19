@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   out.width = "100%"
 )
+library(warbleR)
 ```
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
@@ -53,10 +54,22 @@ library(dynaSpec)
 
 ## Examples
 
+To run the following examples you will also need to load a few more packages as well as  [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently as the developmental version on github). It can be installed as follows:
+
+```{r, eval = FALSE}
+
+# From github
+devtools::install_github("maRce10/warbleR")
+
+#load package
+library(warbleR)
+library(viridis)
+
+```
+
 A dynamic spectrogram of a canyon wren song with a viridis color palette:
 ```{r, eval = FALSE}
 
-library(viridis)
 
 data("canyon_wren")
 
@@ -232,9 +245,7 @@ Visualizing a northern nightingale wren recording from [xeno-canto](xeno-canto.o
 
 ```{r, eval = FALSE}
 
-a <- quer_xc(qword = "nr:518334", download = TRUE, path = tempdir())
-
-ngh_wren <- readMP3(file.path(tempdir(), "Microcerculus-philomela-518334.mp3"))
+ngh_wren <- read_wave("https://www.xeno-canto.org/518334/download")
 
 custom_pal <- colorRampPalette( c("#2d2d86", "#2d2d86", reverse.terrain.colors(10)[5:10]))
 
@@ -248,11 +259,8 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
 
 ```{r, eval = FALSE, echo= FALSE}
 
-a <- quer_xc(qword = "nr:518334", download = TRUE, path = tempdir())
 
-ngh_wren <- readMP3(file.path(tempdir(), "Microcerculus-philomela-518334.mp3"))
-
-# ngh_wren <- cutw(ngh_wren, from = 0, to = 6, output = "Wave")
+ngh_wren <- read_wave("https://www.xeno-canto.org/518334/download")
 
 custom_pal <- colorRampPalette( c("#19194d", reverse.terrain.colors(10)[10:4]))
 
@@ -272,7 +280,7 @@ allowfullscreen></iframe></center>
 
 &nbsp;
 
-Spectral derivatives (need the package 'imager' installed), looping 3 times (loop = 3; doesn't look great in youtube!):
+Spectral derivatives (need the package 'imager' installed), looping 3 times (loop = 3; doesn't look great on youtube!):
 ```{r, eval = FALSE}
 
 
@@ -355,7 +363,141 @@ allowfullscreen></iframe></center>
 &nbsp;
 
 
+### Further customization
+
+The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight with colors vocalizations from male and female house wrens (first we download the selection table and sound file from figshare):
+ 
+```{r, eval = FALSE}
+
+# get house wren male female duet recording
+hs_wren <- read_wave("https://ndownloader.figshare.com/files/22722101")
+
+# and extended selection table
+st <- read.csv("https://ndownloader.figshare.com/files/22722404")
+
+# create color column
+st$colors <- c("green", "yellow")
+
+# highlight selections
+color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
+              collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", 
+              base.col = "black",  t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL, 
+              bg.col = "black")
+
+```
+ 
+![](./vignettes/colored_spectro_house_wren_duet.jpeg) 
+ 
+This looks a bit busy here, but will spread out in the dynamic spectrogram.
+
+We can wrap the `color_spectro()` call using the `call()` function form base R and input that into `scrolling_spectro()` using the argument 'spectro.call':
+
+```{r, eval = FALSE}
+# save call
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, 
+              flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
+              dB = "B", X = st, col.clm = "colors", base.col = "black",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL, bg.col = "black")
+
+# create dynamic spectrogram
+scrolling_spectro(wave = hs_wren, wl = 512,  
+                  t.display = 1.2, pal = reverse.gray.colors.1, 
+                  grid = FALSE, flim = c(1, 13), loop = 3,
+                  width = 1000, height = 500, res = 120,
+                  collevels = seq(-100, 0, 1), spectro.call = sp_cl, fps = 60,
+                  file.name = "yellow_and_green.mp4")
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"
+src="https://www.youtube.com/embed/9qMPxYuGUJE" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+This option can be mixed with any of the other customizations in the function, as adding an oscillogram: 
+```{r, eval = FALSE}
+
+# create dynamic spectrogram
+scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
+                  t.display = 1.2, pal = reverse.gray.colors.1, 
+                  grid = FALSE, flim = c(1, 13), loop = 3, 
+                  width = 1000, height = 500, res = 120, 
+                  collevels = seq(-100, 0, 1), 
+                  spectro.call = sp_cl, fps = 60,
+                  file.name = "yellow_and_green_oscillo.mp4")
+
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"
+src="https://www.youtube.com/embed/k6OumiKsRWw" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+A viridis color palette:
+
+```{r, eval = FALSE}
+
+st$colors <- viridis(10)[c(3, 8)]
+
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, 
+              ovlp = 95, flim = c(1, 13), collevels = seq(-55, 0, 5),
+              dB = "B", X = st, col.clm = "colors", base.col = "white",  
+              t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL)
+
+# create dynamic spectrogram
+scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
+                  t.display = 1.2, pal = reverse.gray.colors.1, 
+                  grid = FALSE, flim = c(1, 13), loop = 3, 
+                  width = 1000, height = 500, res = 120, 
+                  collevels = seq(-100, 0, 1), colwave = viridis(10)[c(9)],
+                  spectro.call = sp_cl, fps = 60,
+                  file.name = "viridis.mp4")
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"
+src="https://www.youtube.com/embed/HvV2NFuJeIU" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
+
+Or simply a gray scale:
+
+```{r, eval = FALSE}
+
+st$colors <- c("gray", "gray49")
+
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
+              collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", base.col = "white",  
+              t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL)
+
+# create dynamic spectrogram
+scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
+                  t.display = 1.2, pal = reverse.gray.colors.1, 
+                  grid = FALSE, flim = c(1, 13), loop = 3, 
+                  width = 1000, height = 500, res = 120, 
+                  collevels = seq(-100, 0, 1), 
+                  spectro.call = sp_cl, fps = 60,
+                  file.name = "gray.mp4")
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"
+src="https://www.youtube.com/embed/gd096zAG5NE" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
 ---
+
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 

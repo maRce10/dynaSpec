@@ -98,9 +98,16 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
+<p>To run the following examples you will also need to load a few more packages as well as <a href="https://cran.r-project.org/package=warbleR">warbleR</a> 1.1.24 (currently as the developmental version on github). It can be installed as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># From github</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"maRce10/warbleR"</span>)
+
+<span class="co">#load package</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(warbleR)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(viridis)</code></pre></div>
 <p>A dynamic spectrogram of a canyon wren song with a viridis color palette:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(viridis)
 
 <span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"canyon_wren"</span>)
 
@@ -171,9 +178,7 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <p> </p>
 <p>Visualizing a northern nightingale wren recording from <a href="xeno-canto.org">xeno-canto</a> using a custom color palette:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-a &lt;-<span class="st"> </span><span class="kw">quer_xc</span>(<span class="dt">qword =</span> <span class="st">"nr:518334"</span>, <span class="dt">download =</span> <span class="ot">TRUE</span>, <span class="dt">path =</span> <span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())
-
-ngh_wren &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tuneR/man/readMP3.html">readMP3</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>(), <span class="st">"Microcerculus-philomela-518334.mp3"</span>))
+ngh_wren &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/warbleR/man/read_wave.html">read_wave</a></span>(<span class="st">"https://www.xeno-canto.org/518334/download"</span>)
 
 custom_pal &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span>( <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#2d2d86"</span>, <span class="st">"#2d2d86"</span>, <span class="kw"><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html">reverse.terrain.colors</a></span>(<span class="dv">10</span>)[<span class="dv">5</span><span class="op">:</span><span class="dv">10</span>]))
 
@@ -187,7 +192,7 @@ custom_pal &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.
 </iframe>
 </center>
 <p> </p>
-<p>Spectral derivatives (need the package ‘imager’ installed), looping 3 times (loop = 3; doesn’t look great in youtube!):</p>
+<p>Spectral derivatives (need the package ‘imager’ installed), looping 3 times (loop = 3; doesn’t look great on youtube!):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 
 <span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> canyon_wren, <span class="dt">wl =</span> <span class="dv">512</span>, 
@@ -226,9 +231,108 @@ thy_wav &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/
 </iframe>
 </center>
 <p> </p>
+<div id="further-customization" class="section level3">
+<h3 class="hasAnchor">
+<a href="#further-customization" class="anchor"></a>Further customization</h3>
+<p>The argument ‘spectro.call’ allows to insert customized spectrogram visualizations. For instance, the following code makes use of the <code><a href="https://rdrr.io/pkg/warbleR/man/color_spectro.html">color_spectro()</a></code> function from <a href="https://cran.r-project.org/package=warbleR">warbleR</a> to highlight with colors vocalizations from male and female house wrens (first we download the selection table and sound file from figshare):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># get house wren male female duet recording</span>
+hs_wren &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/warbleR/man/read_wave.html">read_wave</a></span>(<span class="st">"https://ndownloader.figshare.com/files/22722101"</span>)
+
+<span class="co"># and extended selection table</span>
+st &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="st">"https://ndownloader.figshare.com/files/22722404"</span>)
+
+<span class="co"># create color column</span>
+st<span class="op">$</span>colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"green"</span>, <span class="st">"yellow"</span>)
+
+<span class="co"># highlight selections</span>
+<span class="kw"><a href="https://rdrr.io/pkg/warbleR/man/color.spectro.html">color.spectro</a></span>(<span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">200</span>, <span class="dt">ovlp =</span> <span class="dv">95</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), 
+              <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">55</span>, <span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">dB =</span> <span class="st">"B"</span>, <span class="dt">X =</span> st, <span class="dt">col.clm =</span> <span class="st">"colors"</span>, 
+              <span class="dt">base.col =</span> <span class="st">"black"</span>,  <span class="dt">t.mar =</span> <span class="fl">0.07</span>, <span class="dt">f.mar =</span> <span class="fl">0.1</span>, <span class="dt">strength =</span> <span class="dv">3</span>, <span class="dt">interactive =</span> <span class="ot">NULL</span>, 
+              <span class="dt">bg.col =</span> <span class="st">"black"</span>)</code></pre></div>
+<p><img src="./inst/colored_spectro_house_wren_duet.jpeg"></p>
+<p>This looks a bit busy here, but will spread out in the dynamic spectrogram.</p>
+<p>We can wrap the <code><a href="https://rdrr.io/pkg/warbleR/man/color_spectro.html">color_spectro()</a></code> call using the <code><a href="https://rdrr.io/r/base/call.html">call()</a></code> function form base R and input that into <code><a href="reference/scrolling_spectro.html">scrolling_spectro()</a></code> using the argument ‘spectro.call’:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># save call</span>
+sp_cl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"color.spectro"</span>, <span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">200</span>, <span class="dt">ovlp =</span> <span class="dv">95</span>, 
+              <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">55</span>, <span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">strength =</span> <span class="dv">3</span>,
+              <span class="dt">dB =</span> <span class="st">"B"</span>, <span class="dt">X =</span> st, <span class="dt">col.clm =</span> <span class="st">"colors"</span>, <span class="dt">base.col =</span> <span class="st">"black"</span>,  <span class="dt">t.mar =</span> <span class="fl">0.07</span>, <span class="dt">f.mar =</span> <span class="fl">0.1</span>, 
+              <span class="dt">interactive =</span> <span class="ot">NULL</span>, <span class="dt">bg.col =</span> <span class="st">"black"</span>)
+
+<span class="co"># create dynamic spectrogram</span>
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">512</span>,  
+                  <span class="dt">t.display =</span> <span class="fl">1.2</span>, <span class="dt">pal =</span> reverse.gray.colors.<span class="dv">1</span>, 
+                  <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), <span class="dt">loop =</span> <span class="dv">3</span>,
+                  <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>,
+                  <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">spectro.call =</span> sp_cl, <span class="dt">fps =</span> <span class="dv">60</span>,
+                  <span class="dt">file.name =</span> <span class="st">"yellow_and_green.mp4"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>This option can be mixed with any of the other customizations in the function, as adding an oscillogram:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># create dynamic spectrogram</span>
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">512</span>, <span class="dt">osc =</span> <span class="ot">TRUE</span>,
+                  <span class="dt">t.display =</span> <span class="fl">1.2</span>, <span class="dt">pal =</span> reverse.gray.colors.<span class="dv">1</span>, 
+                  <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), <span class="dt">loop =</span> <span class="dv">3</span>, 
+                  <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+                  <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">1</span>), 
+                  <span class="dt">spectro.call =</span> sp_cl, <span class="dt">fps =</span> <span class="dv">60</span>,
+                  <span class="dt">file.name =</span> <span class="st">"yellow_and_green_oscillo.mp4"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>A viridis color palette:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+st<span class="op">$</span>colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">viridis</a></span>(<span class="dv">10</span>)[<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">8</span>)]
+
+sp_cl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"color.spectro"</span>, <span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">200</span>, 
+              <span class="dt">ovlp =</span> <span class="dv">95</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">55</span>, <span class="dv">0</span>, <span class="dv">5</span>),
+              <span class="dt">dB =</span> <span class="st">"B"</span>, <span class="dt">X =</span> st, <span class="dt">col.clm =</span> <span class="st">"colors"</span>, <span class="dt">base.col =</span> <span class="st">"white"</span>,  
+              <span class="dt">t.mar =</span> <span class="fl">0.07</span>, <span class="dt">f.mar =</span> <span class="fl">0.1</span>, <span class="dt">strength =</span> <span class="dv">3</span>, <span class="dt">interactive =</span> <span class="ot">NULL</span>)
+
+<span class="co"># create dynamic spectrogram</span>
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">200</span>, <span class="dt">osc =</span> <span class="ot">TRUE</span>,
+                  <span class="dt">t.display =</span> <span class="fl">1.2</span>, <span class="dt">pal =</span> reverse.gray.colors.<span class="dv">1</span>, 
+                  <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), <span class="dt">loop =</span> <span class="dv">3</span>, 
+                  <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+                  <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">colwave =</span> <span class="kw"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">viridis</a></span>(<span class="dv">10</span>)[<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">9</span>)],
+                  <span class="dt">spectro.call =</span> sp_cl, <span class="dt">fps =</span> <span class="dv">60</span>,
+                  <span class="dt">file.name =</span> <span class="st">"viridis.mp4"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
+<p>Or simply a gray scale:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+st<span class="op">$</span>colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gray"</span>, <span class="st">"gray49"</span>)
+
+sp_cl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"color.spectro"</span>, <span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">200</span>, <span class="dt">ovlp =</span> <span class="dv">95</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), 
+              <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">55</span>, <span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">dB =</span> <span class="st">"B"</span>, <span class="dt">X =</span> st, <span class="dt">col.clm =</span> <span class="st">"colors"</span>, <span class="dt">base.col =</span> <span class="st">"white"</span>,  
+              <span class="dt">t.mar =</span> <span class="fl">0.07</span>, <span class="dt">f.mar =</span> <span class="fl">0.1</span>, <span class="dt">strength =</span> <span class="dv">3</span>, <span class="dt">interactive =</span> <span class="ot">NULL</span>)
+
+<span class="co"># create dynamic spectrogram</span>
+<span class="kw"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="dt">wave =</span> hs_wren, <span class="dt">wl =</span> <span class="dv">512</span>, <span class="dt">osc =</span> <span class="ot">TRUE</span>,
+                  <span class="dt">t.display =</span> <span class="fl">1.2</span>, <span class="dt">pal =</span> reverse.gray.colors.<span class="dv">1</span>, 
+                  <span class="dt">grid =</span> <span class="ot">FALSE</span>, <span class="dt">flim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">13</span>), <span class="dt">loop =</span> <span class="dv">3</span>, 
+                  <span class="dt">width =</span> <span class="dv">1000</span>, <span class="dt">height =</span> <span class="dv">500</span>, <span class="dt">res =</span> <span class="dv">120</span>, 
+                  <span class="dt">collevels =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">1</span>), 
+                  <span class="dt">spectro.call =</span> sp_cl, <span class="dt">fps =</span> <span class="dv">60</span>,
+                  <span class="dt">file.name =</span> <span class="st">"gray.mp4"</span>)</code></pre></div>
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+<p> </p>
 <hr>
 <p>Please cite <a href="https://marce10.github.io/dynaSpec/">dynaSpec</a> as follows:</p>
 <p>Araya-Salas M &amp; M. Wilkins. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
+</div>
 </div>
 </div>
   </div>
