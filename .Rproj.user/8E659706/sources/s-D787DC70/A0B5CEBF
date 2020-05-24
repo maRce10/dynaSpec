@@ -7,14 +7,14 @@
     "folds" : "20|23|50|0|\n53|16|236|0|\n",
     "hash" : "0",
     "id" : "A0B5CEBF",
-    "lastKnownWriteTime" : 1589890138,
-    "last_content_update" : 1589890494514,
+    "lastKnownWriteTime" : 1590290075,
+    "last_content_update" : 1590290551020,
     "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/testing-checking dynaSpec function apr-20.Rmd",
     "project_path" : null,
     "properties" : {
         "chunk_output_type" : "console",
-        "cursorPosition" : "293,0",
-        "scrollLine" : "273"
+        "cursorPosition" : "292,37",
+        "scrollLine" : "272"
     },
     "relative_order" : 1,
     "source_on_save" : false,

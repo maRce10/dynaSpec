@@ -63,7 +63,6 @@ devtools::install_github("maRce10/warbleR")
 
 #load package
 library(warbleR)
-library(viridis)
 
 ```
 
@@ -430,6 +429,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
                   collevels = seq(-100, 0, 1), colwave = viridis(10)[c(9)],
                   spectro.call = sp_cl, fps = 60,
                   file.name = "viridis.mp4")
+
 ```
 
 <center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"

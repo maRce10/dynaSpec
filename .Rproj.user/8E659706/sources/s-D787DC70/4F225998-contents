@@ -1,0 +1,21 @@
+library(NatureSounds)
+library(warbleR)
+
+# load data
+data("lbh.est")
+
+# extract 1 clip
+w <- read_wave(lbh.est, 10)
+
+# plot
+spectro(w, wl = 300, ovlp = 95, flim = c(1, 10), scale = FALSE, grid = FALSE, palette = reverse.gray.colors.1)
+
+# filter out freqs below 5 kHz
+attributes(lbh.est)$wave.objects <- lapply(attributes(lbh.est)$wave.objects, FUN = seewave::ffilter, from = 5000, to = 10000, output = "Wave")
+
+
+# extract 1 clip
+w <- read_wave(lbh.est, 10)
+
+# plot
+spectro(w, wl = 300, ovlp = 95, flim = c(1, 10), scale = FALSE, grid = FALSE, palette = reverse.gray.colors.1)

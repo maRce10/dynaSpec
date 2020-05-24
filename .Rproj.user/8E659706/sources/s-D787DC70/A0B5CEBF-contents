@@ -280,7 +280,7 @@ system("R CMD Rd2pdf ./R\ package\ testing/dynaSpec/dynaSpec")
 setwd(".")
 
 #built site
-pkgdown::build_site()
+pkgdown::build_site(lazy = TRUE)
 
 # to set a new computer
 ## 1. install git
@@ -290,7 +290,7 @@ pkgdown::build_site()
 
 #sent to github
 system("git add .")
-system('git commit -m  "fix readme image 6"')
+system('git commit -m  "fix fix.time "')
 system("git push origin master")
 
 ```
@@ -349,7 +349,7 @@ w <- Phae.long1
 data("canyon_wren")
 
 # fast
-scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1))
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 60, file.name = "../fast.mp4", ovlp = 0, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = F, height.prop = c(4, 1))
 
 # fast oscillo
 scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), osc = T, colbg= "red")
@@ -418,6 +418,31 @@ sp_cl <- call("color.spectro", wave = Phae.long4, wl = 300, ovlp = 90, flim = c(
 
 scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../color_spectro.mp4", ovlp = 95, fps = 50, buffer = 1, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), spectro.call = sp_cl, osc = F, speed = 0.5, colbg = "white")
 
+
+
+# get house wren male female duet recording
+hs_wren <- read_wave("https://ndownloader.figshare.com/files/22722101")
+
+# and extended selection table
+st <- read.csv("https://ndownloader.figshare.com/files/22722404")
+
+# create color column
+st$colors <- c("green", "yellow")
+
+
+# save call
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 5, 
+              flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
+              dB = "B", X = st, col.clm = "colors", base.col = "black",  
+              t.mar = 0.07, f.mar = 0.1, interactive = NULL, bg.col = "black")
+
+# create dynamic spectrogram
+scrolling_spectro(wave = hs_wren, wl = 512,  
+                  t.display = 1.2, pal = reverse.gray.colors.1, 
+                  grid = FALSE, flim = c(1, 13), loop = 3,
+                  width = 1000, height = 500, res = 60,
+                  collevels = seq(-100, 0, 5), spectro.call = sp_cl, fps = 10,
+                  file.name = "yellow_and_green.mp4")
 
 print("all is good!")
 

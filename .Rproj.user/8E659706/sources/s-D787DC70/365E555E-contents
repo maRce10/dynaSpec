@@ -63,7 +63,6 @@ devtools::install_github("maRce10/warbleR")
 
 #load package
 library(warbleR)
-library(viridis)
 
 ```
 
@@ -291,10 +290,12 @@ thy_wav <- attributes(thyroptera.est)$wave.objects[[12]]
 
 # add silence at both "sides""
 thy_wav <- pastew(tuneR::silence(duration = 0.05, 
-                                 samp.rate = thy_wav@samp.rate, xunit = "time"),thy_wav, output = "Wave")
+            samp.rate = thy_wav@samp.rate, xunit = "time"),
+            thy_wav, output = "Wave")
 
 thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, 
-                                          samp.rate = thy_wav@samp.rate, xunit = "time"), output = "Wave")
+            samp.rate = thy_wav@samp.rate, xunit = "time"),
+            output = "Wave")
 
 scrolling_spectro(wave = thy_wav, wl = 400, 
     t.display = 0.08, ovlp = 95, pal = inferno, 
@@ -356,7 +357,7 @@ color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13),
 
 ```
  
-![](https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png) 
+<img src="https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png" alt="house wren duet">
  
 The male part is shown in green and the female part in yellow. 
 
@@ -366,8 +367,8 @@ We can wrap the `color_spectro()` call using the `call()` function form base R a
 # save call
 sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, 
               flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
-              dB = "B", X = st, col.clm = "colors", base.col = "black",  t.mar = 0.07, f.mar = 0.1, 
-              interactive = NULL, bg.col = "black")
+              dB = "B", X = st, col.clm = "colors", base.col = "black",  
+              t.mar = 0.07, f.mar = 0.1, interactive = NULL, bg.col = "black")
 
 # create dynamic spectrogram
 scrolling_spectro(wave = hs_wren, wl = 512,  
@@ -416,8 +417,9 @@ st$colors <- viridis(10)[c(3, 8)]
 
 sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, 
               ovlp = 95, flim = c(1, 13), collevels = seq(-55, 0, 5),
-              dB = "B", X = st, col.clm = "colors", base.col = "white",  
-              t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL)
+              dB = "B", X = st, col.clm = "colors", 
+              base.col = "white", t.mar = 0.07, f.mar = 0.1,
+              strength = 3, interactive = NULL)
 
 # create dynamic spectrogram
 scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
@@ -427,6 +429,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
                   collevels = seq(-100, 0, 1), colwave = viridis(10)[c(9)],
                   spectro.call = sp_cl, fps = 60,
                   file.name = "viridis.mp4")
+
 ```
 
 <center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"
@@ -445,8 +448,9 @@ Or simply a gray scale:
 st$colors <- c("gray", "gray49")
 
 sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
-              collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", base.col = "white",  
-              t.mar = 0.07, f.mar = 0.1, strength = 3, interactive = NULL)
+              collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", 
+              base.col = "white", t.mar = 0.07, f.mar = 0.1, strength = 3, 
+              interactive = NULL)
 
 # create dynamic spectrogram
 scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
