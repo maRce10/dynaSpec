@@ -1,53 +1,4 @@
 
-  Metadata:
-    encoder         : Lavf57.83.100
-    Stream #0:0: Video: h264 (libx264) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], q=-1--1, 50 fps, 12800 tbn, 50 tbc
-    Metadata:
-      encoder         : Lavc57.107.100 libx264
-    Side data:
-      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: -1
-frame=   56 fps=0.0 q=10.0 size=       0kB time=00:00:00.06 bitrate=   6.4kbits/s speed=0.119x    frame=   94 fps= 93 q=10.0 size=    1024kB time=00:00:00.82 bitrate=10229.5kbits/s speed=0.808x    frame=  126 fps= 66 q=-1.0 Lsize=    3069kB time=00:00:02.46 bitrate=10220.0kbits/s speed=1.29x    
-video:3067kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.076584%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mframe I:1     Avg QP: 1.57  size: 37134
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mframe P:32    Avg QP: 6.34  size: 29004
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mframe B:93    Avg QP:12.17  size: 23381
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mconsecutive B-frames:  0.8%  1.6%  2.4% 95.2%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mmb I  I16..4: 82.2%  6.3% 11.5%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mmb P  I16..4:  2.3%  0.7%  1.6%  P16..4:  7.4%  3.5%  3.6%  0.0%  0.0%    skip:80.9%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mmb B  I16..4:  0.1%  0.0%  0.5%  B16..8: 10.2%  3.6%  4.0%  direct: 2.0%  skip:79.7%  L0:46.5% L1:39.4% BI:14.0%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0m8x8 transform intra:9.7% inter:4.7%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mcoded y,uvDC,uvAC intra: 24.2% 4.5% 4.5% inter: 8.2% 4.7% 4.7%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi16 v,h,dc,p: 87% 10%  2%  0%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23%  5% 72%  0%  0%  0%  0%  0%  0%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 50% 10% 30%  1%  1%  3%  1%  3%  1%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mi8c dc,h,v,p: 96%  2%  1%  0%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mWeighted P-Frames: Y:0.0% UV:0.0%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mref P L0: 63.2%  8.9% 17.5% 10.5%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mref B L0: 69.7% 26.3%  3.9%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mref B L1: 76.7% 23.3%
-[48;5;0m[38;5;51m[libx264 @ 0x55b5a66f13c0] [0mkb/s:9967.17
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/RtmpW3KcZL/scroll.spectro.temp.mp4 i  /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -aacodec libmp3lame -shortest -y scroll.spectro.mp4"
-> ^C
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/RtmpW3KcZL/scroll.spectro.temp.mp4 i  /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -aacodec libmp3lame -shortest -y scroll.spectro.mp4"[K
-ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
-  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
-  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
-  libavutil      55. 78.100 / 55. 78.100
-  libavcodec     57.107.100 / 57.107.100
-  libavformat    57. 83.100 / 57. 83.100
-  libavdevice    57. 10.100 / 57. 10.100
-  libavfilter     6.107.100 /  6.107.100
-  libavresample   3.  7.  0 /  3.  7.  0
-  libswscale      4.  8.100 /  4.  8.100
-  libswresample   2.  9.100 /  2.  9.100
-  libpostproc    54.  7.100 / 54.  7.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/RtmpW3KcZL/scroll.spectro.temp.mp4':
-  Metadata:
-    major_brand     : isom
-    minor_version   : 512
-    compatible_brands: isomiso2avc1mp41
-    encoder         : Lavf57.83.100
-  Duration: 00:00:02.52, start: 0.000000, bitrate: 9976 kb/s
     Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 9969 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
     Metadata:
       handler_name    : VideoHandler
@@ -1048,4 +999,20 @@ Total 61 (delta 47), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/47)[Kremote: Resolving deltas:   8% (4/47)[Kremote: Resolving deltas:  17% (8/47)[Kremote: Resolving deltas:  21% (10/47)[Kremote: Resolving deltas:  29% (14/47)[Kremote: Resolving deltas:  34% (16/47)[Kremote: Resolving deltas:  42% (20/47)[Kremote: Resolving deltas:  51% (24/47)[Kremote: Resolving deltas:  57% (27/47)[Kremote: Resolving deltas:  63% (30/47)[Kremote: Resolving deltas:  72% (34/47)[Kremote: Resolving deltas:  80% (38/47)[Kremote: Resolving deltas:  87% (41/47)[Kremote: Resolving deltas:  93% (44/47)[Kremote: Resolving deltas: 100% (47/47)[Kremote: Resolving deltas: 100% (47/47), completed with 14 local objects.[K
 To https://github.com/maRce10/dynaSpec.git
    03b9cd3..fb91756  master -> master
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dyynaSpec/dynaSpec[00m$ 
+[K[A]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSSpec/dynaSpec[00m$ git push origin master
+Username for 'https://github.com': maRce10
+Password for 'https://maRce10@github.com': 
+remote: Invalid username or password.
+fatal: Authentication failed for 'https://github.com/maRce10/dynaSpec.git/'
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSSpec/dynaSpec[00m$ git push origin master
+Username for 'https://github.com': mar Rce10
+Password for 'https://maRce10@github.com': 
+Contando objetos: 40, listo.
+Delta compression using up to 4 threads.
+Comprimiendo objetos:   3% (1/33)   Comprimiendo objetos:   6% (2/33)   Comprimiendo objetos:   9% (3/33)   Comprimiendo objetos:  12% (4/33)   Comprimiendo objetos:  15% (5/33)   Comprimiendo objetos:  18% (6/33)   Comprimiendo objetos:  21% (7/33)   Comprimiendo objetos:  24% (8/33)   Comprimiendo objetos:  27% (9/33)   Comprimiendo objetos:  30% (10/33)   Comprimiendo objetos:  33% (11/33)   Comprimiendo objetos:  36% (12/33)   Comprimiendo objetos:  39% (13/33)   Comprimiendo objetos:  42% (14/33)   Comprimiendo objetos:  45% (15/33)   Comprimiendo objetos:  48% (16/33)   Comprimiendo objetos:  51% (17/33)   Comprimiendo objetos:  54% (18/33)   Comprimiendo objetos:  57% (19/33)   Comprimiendo objetos:  60% (20/33)   Comprimiendo objetos:  63% (21/33)   Comprimiendo objetos:  66% (22/33)   Comprimiendo objetos:  69% (23/33)   Comprimiendo objetos:  72% (24/33)   Comprimiendo objetos:  75% (25/33)   Comprimiendo objetos:  78% (26/33)   Comprimiendo objetos:  81% (27/33)   Comprimiendo objetos:  84% (28/33)   Comprimiendo objetos:  87% (29/33)   Comprimiendo objetos:  90% (30/33)   Comprimiendo objetos:  93% (31/33)   Comprimiendo objetos:  96% (32/33)   Comprimiendo objetos: 100% (33/33)   Comprimiendo objetos: 100% (33/33), listo.
+Escribiendo objetos:   2% (1/40)   Escribiendo objetos:   5% (2/40)   Escribiendo objetos:   7% (3/40)   Escribiendo objetos:  10% (4/40)   Escribiendo objetos:  12% (5/40)   Escribiendo objetos:  15% (6/40)   Escribiendo objetos:  17% (7/40)   Escribiendo objetos:  20% (8/40)   Escribiendo objetos:  22% (9/40)   Escribiendo objetos:  25% (10/40)   Escribiendo objetos:  27% (11/40)   Escribiendo objetos:  30% (12/40)   Escribiendo objetos:  32% (13/40)   Escribiendo objetos:  35% (14/40)   Escribiendo objetos:  37% (15/40)   Escribiendo objetos:  42% (17/40)   Escribiendo objetos:  45% (18/40)   Escribiendo objetos:  47% (19/40)   Escribiendo objetos:  52% (21/40)   Escribiendo objetos:  55% (22/40)   Escribiendo objetos:  57% (23/40)   Escribiendo objetos:  60% (24/40)   Escribiendo objetos:  62% (25/40)   Escribiendo objetos:  65% (26/40)   Escribiendo objetos:  67% (27/40)   Escribiendo objetos:  70% (28/40)   Escribiendo objetos:  72% (29/40)   Escribiendo objetos:  75% (30/40)   Escribiendo objetos:  77% (31/40)   Escribiendo objetos:  80% (32/40)   Escribiendo objetos:  82% (33/40)   Escribiendo objetos:  85% (34/40)   Escribiendo objetos:  87% (35/40)   Escribiendo objetos:  90% (36/40)   Escribiendo objetos:  92% (37/40)   Escribiendo objetos:  95% (38/40)   Escribiendo objetos:  97% (39/40)   Escribiendo objetos: 100% (40/40)   Escribiendo objetos: 100% (40/40), 17.89 KiB | 2.98 MiB/s, listo.
+Total 40 (delta 15), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/15)[Kremote: Resolving deltas:  13% (2/15)[Kremote: Resolving deltas:  20% (3/15)[Kremote: Resolving deltas:  33% (5/15)[Kremote: Resolving deltas:  40% (6/15)[Kremote: Resolving deltas:  46% (7/15)[Kremote: Resolving deltas:  53% (8/15)[Kremote: Resolving deltas:  60% (9/15)[Kremote: Resolving deltas:  66% (10/15)[Kremote: Resolving deltas:  73% (11/15)[Kremote: Resolving deltas:  86% (13/15)[Kremote: Resolving deltas:  93% (14/15)[Kremote: Resolving deltas: 100% (15/15)[Kremote: Resolving deltas: 100% (15/15), completed with 11 local objects.[K
+To https://github.com/maRce10/dynaSpec.git
+   fb91756..3acd59d  master -> master
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSSpec/dynaSpec[00m$ 

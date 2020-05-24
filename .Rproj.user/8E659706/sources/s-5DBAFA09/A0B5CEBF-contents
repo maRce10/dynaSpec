@@ -17,7 +17,7 @@ remove.packages("dynaSpec")
 
 ```
 
-# install packages
+# install/load packages
 ```{r packages, eval=T}
 
 Sys.unsetenv("GITHUB_PAT")
@@ -290,7 +290,7 @@ pkgdown::build_site(lazy = TRUE)
 
 #sent to github
 system("git add .")
-system('git commit -m  "fix fix.time "')
+system('git commit -m  "add"')
 system("git push origin master")
 
 ```
@@ -330,8 +330,6 @@ source(file.path("./R", paste0(FUN, ".R")))
 # download.file(url = "http://marceloarayasalas.weebly.com/uploads/2/5/5/2/25524573/0.sur.2014.7.3.8.31.wav", 
 #     destfile = file.path(tempdir(), "example.wav"))
 
-data(list = c("Phae.long1"))
-
 # remove objects but no functions
 rm(list = setdiff(ls(), c(lsf.str(), "FUN")))
 
@@ -343,8 +341,6 @@ rm(i)
 
 # w <- readWave(file.path(tempdir(), "example.wav"))
 # wave <- readWave(file.path(tempdir(), "Ph"))
-
-w <- Phae.long1
 
 data("canyon_wren")
 
@@ -427,22 +423,42 @@ hs_wren <- read_wave("https://ndownloader.figshare.com/files/22722101")
 st <- read.csv("https://ndownloader.figshare.com/files/22722404")
 
 # create color column
-st$colors <- c("green", "yellow")
-
+st$colors <- viridis(10)[c(3, 8)]
+st$labels <- c("male", "female")
 
 # save call
-sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 5, 
-              flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
-              dB = "B", X = st, col.clm = "colors", base.col = "black",  
-              t.mar = 0.07, f.mar = 0.1, interactive = NULL, bg.col = "black")
 
-# create dynamic spectrogram
+# highlight selections
+ann.fun <- function(wave, X){
+  color.spectro(wave = wave,  wl = 200, 
+              ovlp = 95, flim = c(1, 16.6), collevels = seq(-55, 0, 5),
+              dB = "B", X = st, col.clm = "colors", 
+              base.col = "white", t.mar = 0.07, f.mar = 0.1,
+              strength = 3, interactive = NULL)
+  
+  
+  for(e in 1:nrow(X)){  
+    text(x = X$start[e] + ((X$end[e] - X$start[e]) / 2), y = 14.9, labels = X$labels[e], cex = 3.3, col = adjustcolor("gray50", 0.6))
+    
+    lines(x = c(X$start[e], X$end[e]), y = c(13.4, 13.4), lwd = 3, col = adjustcolor("gray50", 0.4))
+  }
+  
+}
+
+
+# cmp_ann.fun <- compiler::cmpfun(ann.fun)
+
+ann_cl <- call("ann.fun", wave = hs_wren, X = st)
+
+eval(ann_cl)
+
 scrolling_spectro(wave = hs_wren, wl = 512,  
                   t.display = 1.2, pal = reverse.gray.colors.1, 
-                  grid = FALSE, flim = c(1, 13), loop = 3,
-                  width = 1000, height = 500, res = 60,
-                  collevels = seq(-100, 0, 5), spectro.call = sp_cl, fps = 10,
-                  file.name = "yellow_and_green.mp4")
+                  grid = FALSE, flim = c(1, 16.6), loop = 3,
+                  width = 500, height = 250, res = 60,
+                  collevels = seq(-100, 0, 5), 
+                  spectro.call = ann_cl, fps = 10, file.name = "../viridis_annotated.mp4", annotate.call = ann_cl)
+
 
 print("all is good!")
 

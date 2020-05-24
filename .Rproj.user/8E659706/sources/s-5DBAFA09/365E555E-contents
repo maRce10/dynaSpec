@@ -470,9 +470,67 @@ allowfullscreen></iframe></center>
 
 &nbsp;
 
+The 'spectro.call' argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. `text()`, `lines()`) in a single function and then save the call to that function:
+
+```{r, eval = FALSE}
+
+# create color column
+st$colors <- viridis(10)[c(3, 8)]
+
+# create label column
+st$labels <- c("male", "female")
+
+# shrink end of second selection (purely aesthetics)
+st$end[2] <- 3.87
+
+  # function to highlight selections
+ann_fun <- function(wave, X){
+  
+  # print spectrogram
+  color.spectro(wave = wave,  wl = 200, 
+              ovlp = 95, flim = c(1, 18.6), collevels = seq(-55, 0, 5),
+              dB = "B", X = X, col.clm = "colors", 
+              base.col = "white", t.mar = 0.07, f.mar = 0.1,
+              strength = 3, interactive = NULL)
+  
+  # annotate each selection in X 
+  for(e in 1:nrow(X)){  
+    # label
+    text(x = X$start[e] + ((X$end[e] - X$start[e]) / 2), 
+         y = 16.5, labels = X$labels[e], cex = 3.3, 
+         col = adjustcolor(X$colors[e], 0.6))
+    
+    # line
+    lines(x = c(X$start[e], X$end[e]), y = c(14.5, 14.5), 
+          lwd = 6, col = adjustcolor("gray50", 0.3))
+  }
+  
+}
+
+# save call
+ann_cl <- call("ann_fun", wave = hs_wren, X = st)
+
+# create annotated dynamic spectrogram
+scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2, 
+                  grid = FALSE, flim = c(1, 18.6), loop = 3, 
+                  width = 1000, height = 500, res = 200, 
+                  collevels = seq(-100, 0, 1), speed = 0.5,
+                  spectro.call = ann_cl, fps = 120,
+                  file.name = "../viridis_annotated.mp4")
+
+```
+
+<center><iframe  allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;"  width="700" height="350"
+src="https://www.youtube.com/embed/wbpjKfZUUIw" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe></center>
+
+&nbsp;
+
 ---
 
 
-Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
+Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
 
 Araya-Salas M & M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
