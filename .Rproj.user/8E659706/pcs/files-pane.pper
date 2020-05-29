@@ -1,6 +1,10 @@
 {
-    "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/R",
+    "path" : "~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec/docs",
     "sortOrder" : [
+        {
+            "ascending" : false,
+            "columnIndex" : 4
+        },
         {
             "ascending" : true,
             "columnIndex" : 2

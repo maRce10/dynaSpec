@@ -377,6 +377,67 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
 </center>
  
 
+Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to spectro.call, but requires a call from `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s) and 'fading' for fading in and out the label (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:
+
+``` r
+
+# read data from figshare
+frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
+
+# cut a couple of species
+shrt_frgs <- cutw(frogs, from = 35.3, to = 50.5, output = "Wave")
+
+# make annotation call
+ann_cll <- call("text", x = 0.25, y = 0.87, 
+                labels = "Frog calls", cex = 1, start = 0.2, end = 14, 
+                col = "#FFEA46CC", font = 3, fading = 0.6)
+
+# create dynamic spectro
+scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,  
+                  t.display = 1.1, pal = cividis,
+                  grid = FALSE, flim = c(0, 5.5), loop = 3,
+                  width = 1200, height = 550, res = 200,
+                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", 
+                  colbg = "black", fps = 60, file.name = "../frogs.mp4",
+                  osc = TRUE, height.prop = c(3, 1), colwave = "#31688E", 
+                  lty = 3, annotation.call = ann_cll)
+```
+
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+ 
+
+The argument accepts more than one labels as in a regular `text()` call. In the case 'start' and 'end' values should be also supplied for each label:
+
+``` r
+
+# read data from figshare
+frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
+
+# make annotation call for 2 annotations
+ann_cll <- call("text", x = 0.25, y = 0.87, 
+                labels = c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"), 
+                cex = 1, start = c(0.4, 7), 
+                end = c(5.5, 14.8), col = "#FFEA46CC", font = 3, fading = 0.6)
+
+# create dynamic spectro
+scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,  
+                  t.display = 1.1, pal = cividis,
+                  grid = FALSE, flim = c(0, 5.5), loop = 3,
+                  width = 1200, height = 550, res = 200,
+                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", fps = 60, 
+                  file.name = "../frogs_sp_labels.mp4", osc = TRUE, height.prop = c(3, 1), 
+                  colwave = "#31688E", lty = 3, annotation.call = ann_cll)
+```
+
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
+ 
+
 ------------------------------------------------------------------------
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:

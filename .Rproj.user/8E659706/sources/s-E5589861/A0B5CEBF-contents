@@ -290,7 +290,7 @@ pkgdown::build_site(lazy = TRUE)
 
 #sent to github
 system("git add .")
-system('git commit -m  "add"')
+system('git commit -m  "added annotation.call"')
 system("git push origin master")
 
 ```
@@ -416,54 +416,53 @@ scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, p
 
 
 
-# get house wren male female duet recording
-hs_wren <- read_wave("https://ndownloader.figshare.com/files/22722101")
+## try this
+# https://stackoverflow.com/questions/27800307/adding-a-picture-to-plot-in-r
 
-# and extended selection table
-st <- read.csv("https://ndownloader.figshare.com/files/22722404")
-
-# create color column
-st$colors <- viridis(10)[c(3, 8)]
-st$labels <- c("male", "female")
-
-# save call
-
-# highlight selections
-ann.fun <- function(wave, X){
-  color.spectro(wave = wave,  wl = 200, 
-              ovlp = 95, flim = c(1, 16.6), collevels = seq(-55, 0, 5),
-              dB = "B", X = st, col.clm = "colors", 
-              base.col = "white", t.mar = 0.07, f.mar = 0.1,
-              strength = 3, interactive = NULL)
-  
-  
-  for(e in 1:nrow(X)){  
-    text(x = X$start[e] + ((X$end[e] - X$start[e]) / 2), y = 14.9, labels = X$labels[e], cex = 3.3, col = adjustcolor("gray50", 0.6))
-    
-    lines(x = c(X$start[e], X$end[e]), y = c(13.4, 13.4), lwd = 3, col = adjustcolor("gray50", 0.4))
-  }
-  
-}
-
-
-# cmp_ann.fun <- compiler::cmpfun(ann.fun)
-
-ann_cl <- call("ann.fun", wave = hs_wren, X = st)
-
-eval(ann_cl)
 
 scrolling_spectro(wave = hs_wren, wl = 512,  
                   t.display = 1.2, pal = reverse.gray.colors.1, 
                   grid = FALSE, flim = c(1, 16.6), loop = 3,
-                  width = 500, height = 250, res = 60,
+                  width = 500, height = 250, res = 40,
                   collevels = seq(-100, 0, 5), 
-                  spectro.call = ann_cl, fps = 10, file.name = "../viridis_annotated.mp4", annotate.call = ann_cl)
+                  spectro.call = ann_cl, fps = 5, file.name = "../viridis_annotated.mp4", annotate.call = ann_cl)
 
 
-print("all is good!")
+# get house frogs recording
+frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
+# frogs <- read_wave("CostaRican_frogs.wav", path = "~/Downloads/")
 
-## try this
-# https://stackoverflow.com/questions/27800307/adding-a-picture-to-plot-in-r
+# and extended selection table
+# st <- read.csv("https://ndownloader.figshare.com/files/22722404")
+# 
+# # create color column
+# st$colors <- viridis(10)[c(3, 8)]
+# st$labels <- c("male", "female")
+
+shrt_frgs <- cutw(frogs, from = 35.3, to = 50.5, output = "Wave")
+
+
+
+
+
+ann_cll <- call("text", x = 0.25, y = 0.87, labels = "Frog calls", cex = 1, start = 0.2, end = 14, col = "#FFEA46CC", font = 3, fading = 0.6)
+
+ann_cll <- call("text", x = 0.25, y = 0.87, labels = c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"), cex = 1, start = c(0.4, 7), end = c(5.5, 14.8), col = "#FFEA46CC", font = 3, fading = 0.6)
+
+
+scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 5,  
+                  t.display = 1.1, pal = cividis,
+                  grid = FALSE, flim = c(0, 6), loop = 3,
+                  width = 1200/2, height = 550/2, res = 200/2, lower.spectro = FALSE, buffer = 0,
+                  collevels = seq(-45, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", fps = 20, file.name = "../frogs.mp4", osc = TRUE, height.prop = c(3, 1), colwave = "#31688E", lty = 3, annotation.call = ann_cll)
+
+
+scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,  
+                  t.display = 1.1, pal = cividis,
+                  grid = FALSE, flim = c(0, 4.5), loop = 3,
+                  width = 1200, height = 550, res = 200,
+                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", fps = 60, file.name = "../frogs.mp4", osc = TRUE, height.prop = c(3, 1), colwave = "#31688E", lty = 3, annotation.call = ann_cll)
+
 
 ```
 

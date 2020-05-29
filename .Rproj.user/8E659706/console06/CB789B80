@@ -1,31 +1,4 @@
 
-    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 9969 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
-    Metadata:
-      handler_name    : VideoHandler
-[48;5;0m[38;5;213m[NULL @ 0x558c2a0ae040] [0m[48;5;0m[38;5;196mUnable to find a suitable output format for 'i'
-[0m[48;5;0m[38;5;196mi: Invalid argument
-[0m]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dynnaSpec[00m$ ffmpeg -i /tmp/RtmpW3KcZL/scroll.spectro.temp.mp4 i  /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -aacodec libmp3lame -shortest -y scroll.spectro.mp4[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C-i /tmp/RtmpW3KcZL/audio.scroll.spectro.wav -vcodec libx264 -[1@a[A
-
-ffmpeg version 3.4.6-0ubuntu0.18.04.1 Copyright (c) 2000-2019 the FFmpeg developers
-  built with gcc 7 (Ubuntu 7.3.0-16ubuntu3)
-  configuration: --prefix=/usr --extra-version=0ubuntu0.18.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --enable-gpl --disable-stripping --enable-avresample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librubberband --enable-librsvg --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libopencv --enable-libx264 --enable-shared
-  libavutil      55. 78.100 / 55. 78.100
-  libavcodec     57.107.100 / 57.107.100
-  libavformat    57. 83.100 / 57. 83.100
-  libavdevice    57. 10.100 / 57. 10.100
-  libavfilter     6.107.100 /  6.107.100
-  libavresample   3.  7.  0 /  3.  7.  0
-  libswscale      4.  8.100 /  4.  8.100
-  libswresample   2.  9.100 /  2.  9.100
-  libpostproc    54.  7.100 / 54.  7.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/RtmpW3KcZL/scroll.spectro.temp.mp4':
-  Metadata:
-    major_brand     : isom
-    minor_version   : 512
-    compatible_brands: isomiso2avc1mp41
-    encoder         : Lavf57.83.100
-  Duration: 00:00:02.52, start: 0.000000, bitrate: 9976 kb/s
-    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 1100x700 [SAR 1:1 DAR 11:7], 9969 kb/s, 50 fps, 50 tbr, 12800 tbn, 100 tbc (default)
     Metadata:
       handler_name    : VideoHandler
 [48;5;0m[38;5;226mGuessed Channel Layout for Input Stream #1.0 : mono
@@ -1015,4 +988,19 @@ Total 40 (delta 15), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/15)[Kremote: Resolving deltas:  13% (2/15)[Kremote: Resolving deltas:  20% (3/15)[Kremote: Resolving deltas:  33% (5/15)[Kremote: Resolving deltas:  40% (6/15)[Kremote: Resolving deltas:  46% (7/15)[Kremote: Resolving deltas:  53% (8/15)[Kremote: Resolving deltas:  60% (9/15)[Kremote: Resolving deltas:  66% (10/15)[Kremote: Resolving deltas:  73% (11/15)[Kremote: Resolving deltas:  86% (13/15)[Kremote: Resolving deltas:  93% (14/15)[Kremote: Resolving deltas: 100% (15/15)[Kremote: Resolving deltas: 100% (15/15), completed with 11 local objects.[K
 To https://github.com/maRce10/dynaSpec.git
    fb91756..3acd59d  master -> master
-]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSSpec/dynaSpec[00m$ 
+
+Username for 'https://github.com': maRce10
+Password for 'https://maRce10@github.com': 
+Contando objetos: 37, listo.
+Delta compression using up to 4 threads.
+Comprimiendo objetos:   3% (1/32)   Comprimiendo objetos:   6% (2/32)   Comprimiendo objetos:   9% (3/32)   Comprimiendo objetos:  12% (4/32)   Comprimiendo objetos:  15% (5/32)   Comprimiendo objetos:  18% (6/32)   Comprimiendo objetos:  21% (7/32)   Comprimiendo objetos:  25% (8/32)   Comprimiendo objetos:  28% (9/32)   Comprimiendo objetos:  31% (10/32)   Comprimiendo objetos:  34% (11/32)   Comprimiendo objetos:  37% (12/32)   Comprimiendo objetos:  40% (13/32)   Comprimiendo objetos:  43% (14/32)   Comprimiendo objetos:  46% (15/32)   Comprimiendo objetos:  50% (16/32)   Comprimiendo objetos:  53% (17/32)   Comprimiendo objetos:  56% (18/32)   Comprimiendo objetos:  59% (19/32)   Comprimiendo objetos:  62% (20/32)   Comprimiendo objetos:  65% (21/32)   Comprimiendo objetos:  68% (22/32)   Comprimiendo objetos:  71% (23/32)   Comprimiendo objetos:  75% (24/32)   Comprimiendo objetos:  78% (25/32)   Comprimiendo objetos:  81% (26/32)   Comprimiendo objetos:  84% (27/32)   Comprimiendo objetos:  87% (28/32)   Comprimiendo objetos:  90% (29/32)   Comprimiendo objetos:  93% (30/32)   Comprimiendo objetos:  96% (31/32)   Comprimiendo objetos: 100% (32/32)   Comprimiendo objetos: 100% (32/32), listo.
+Escribiendo objetos:   2% (1/37)   Escribiendo objetos:   5% (2/37)   Escribiendo objetos:   8% (3/37)   Escribiendo objetos:  10% (4/37)   Escribiendo objetos:  13% (5/37)   Escribiendo objetos:  16% (6/37)   Escribiendo objetos:  18% (7/37)   Escribiendo objetos:  21% (8/37)   Escribiendo objetos:  24% (9/37)   Escribiendo objetos:  27% (10/37)   Escribiendo objetos:  29% (11/37)   Escribiendo objetos:  32% (12/37)   Escribiendo objetos:  35% (13/37)   Escribiendo objetos:  37% (14/37)   Escribiendo objetos:  40% (15/37)   Escribiendo objetos:  45% (17/37)   Escribiendo objetos:  48% (18/37)   Escribiendo objetos:  51% (19/37)   Escribiendo objetos:  54% (20/37)   Escribiendo objetos:  56% (21/37)   Escribiendo objetos:  59% (22/37)   Escribiendo objetos:  62% (23/37)   Escribiendo objetos:  64% (24/37)   Escribiendo objetos:  67% (25/37)   Escribiendo objetos:  70% (26/37)   Escribiendo objetos:  72% (27/37)   Escribiendo objetos:  75% (28/37)   Escribiendo objetos:  78% (29/37)   Escribiendo objetos:  81% (30/37)   Escribiendo objetos:  83% (31/37)   Escribiendo objetos:  86% (32/37)   Escribiendo objetos:  89% (33/37)   Escribiendo objetos:  91% (34/37)   Escribiendo objetos:  94% (35/37)   Escribiendo objetos:  97% (36/37)   Escribiendo objetos: 100% (37/37)   Escribiendo objetos: 100% (37/37), 20.35 KiB | 4.07 MiB/s, listo.
+Total 37 (delta 18), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/18)[Kremote: Resolving deltas:   5% (1/18)[Kremote: Resolving deltas:  11% (2/18)[Kremote: Resolving deltas:  16% (3/18)[Kremote: Resolving deltas:  22% (4/18)[Kremote: Resolving deltas:  27% (5/18)[Kremote: Resolving deltas:  33% (6/18)[Kremote: Resolving deltas:  38% (7/18)[Kremote: Resolving deltas:  50% (9/18)[Kremote: Resolving deltas:  55% (10/18)[Kremote: Resolving deltas:  61% (11/18)[Kremote: Resolving deltas:  66% (12/18)[Kremote: Resolving deltas:  72% (13/18)[Kremote: Resolving deltas:  77% (14/18)[Kremote: Resolving deltas:  83% (15/18)[Kremote: Resolving deltas:  88% (16/18)[Kremote: Resolving deltas:  94% (17/18)[Kremote: Resolving deltas: 100% (18/18)[Kremote: Resolving deltas: 100% (18/18), completed with 16 local objects.[K
+To https://github.com/maRce10/dynaSpec.git
+   3acd59d..d57dc81  master -> master
+[K[A]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dyynaSpec[00m$ sudo kill 21404398404[C[C[C[C[C[C[C[C[C[Ksudo kill 21404398[C[C[C[C[C[C[C[C[C[9Pps -efgit push origin master[C[C[C[C[C[C[C[C[Cbundle exec jekyll serve[C[C[C[C[C[C[C[C[C[2Pgit push origin master
+Username for 'https://github.com': chichi      marR  Rce10
+Password for 'https://maRce10@github.com': 
+Everything up-to-date
+]0;/home/m/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec]0;m@m-MacBookPro: ~/sda5/Dropbox/R_package_testing/dynaSpec/dynaSpec[01;32mm@m-MacBookPro[00m:[01;34m~/sda5/Dropbox/R_package_testing/dynaSpec/dyynaSpec[00m$ 
