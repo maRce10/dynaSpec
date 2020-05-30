@@ -565,12 +565,9 @@ allowfullscreen></iframe></center>
 
 &nbsp;
 
-The argument accepts more than one labels as in a regular `text()` call. In the case 'start' and 'end' values should be also supplied for each label:
+The argument accepts more than one labels as in a regular `text()` call. In that case 'start' and 'end' values should be supplied for each label:
 
 ```{r, eval = FALSE}
-
-# read data from figshare
-frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
 
 # make annotation call for 2 annotations
 ann_cll <- call("text", x = 0.25, y = 0.87, 
@@ -583,9 +580,10 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
                   t.display = 1.1, pal = cividis,
                   grid = FALSE, flim = c(0, 5.5), loop = 3,
                   width = 1200, height = 550, res = 200,
-                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", fps = 60, 
-                  file.name = "../frogs_sp_labels.mp4", osc = TRUE, height.prop = c(3, 1), 
-                  colwave = "#31688E", lty = 3, annotation.call = ann_cll)
+                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", 
+                  fps = 60, file.name = "../frogs_sp_labels.mp4", osc = TRUE, 
+                  height.prop = c(3, 1),colwave = "#31688E", lty = 3, 
+                  annotation.call = ann_cll)
 
 ```
 

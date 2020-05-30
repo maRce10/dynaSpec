@@ -290,7 +290,7 @@ pkgdown::build_site(lazy = TRUE)
 
 #sent to github
 system("git add .")
-system('git commit -m  "added annotation.call 2"')
+system('git commit -m  "added annotation.call 3"')
 system("git push origin master")
 
 ```
@@ -440,8 +440,6 @@ frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
 # st$labels <- c("male", "female")
 
 shrt_frgs <- cutw(frogs, from = 35.3, to = 50.5, output = "Wave")
-
-
 
 
 
