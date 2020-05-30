@@ -290,7 +290,7 @@ pkgdown::build_site(lazy = TRUE)
 
 #sent to github
 system("git add .")
-system('git commit -m  "added annotation.call 3"')
+system('git commit -m  "annotation.call typos"')
 system("git push origin master")
 
 ```
