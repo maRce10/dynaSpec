@@ -39,11 +39,11 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 70.}
 
 \item{fix.time}{Logical argument to control if the time axis moves along with the spectrogram or remains fixed. Default is \code{TRUE} (fixed).}
 
-\item{res}{Numeric vector of length 1 specifying the resolution of the image files (see \code{\link[grDevices]{tiff}}).}
+\item{res}{Numeric vector of length 1 specifying the resolution of the image files (see \code{\link[grDevices]{png}}).}
 
-\item{width}{Numeric vector of length 1 specifying width of the video frame in pixels (see \code{\link[grDevices]{tiff}}). Default is 700.}
+\item{width}{Numeric vector of length 1 specifying width of the video frame in pixels (see \code{\link[grDevices]{png}}). Default is 700.}
 
-\item{height}{Numeric vector of length 1 specifying height of the video frame in pixels (see \code{\link[grDevices]{tiff}}). Default is 400.}
+\item{height}{Numeric vector of length 1 specifying height of the video frame in pixels (see \code{\link[grDevices]{png}}). Default is 400.}
 
 \item{parallel}{Numeric vector of length 1. Controls whether parallel computing is applied by specifying the number of cores to be used. Default is 1 (i.e. no parallel computing).}
 
@@ -55,7 +55,7 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 70.}
 
 \item{lcol}{Character string with the color to be used for the vertical line at which sounds are played. Default is \code{"#07889B99"}.}
 
-\item{lty}{Character string to control the type (as in \code{\link[graphics]{plot}}) of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.}
+\item{lty}{Character string to control the type of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.}
 
 \item{lwd}{Character string to control the width of the line at which sounds are played. Default is 2.}
 
@@ -112,12 +112,12 @@ fps = 50, t.display = 1.5, collevels = seq(-40, 0, 5),
 }
 \references{
 {
-Araya-Salas M & M. Wilkins. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 }
 }
 \seealso{
-
+\code{\link[seewave]{spectro}}
 }
 \author{
-Marcelo Araya-Salas (\email{marceloa27@gmail.com})
+Marcelo Araya-Salas (\email{marcelo.araya@ucr.ac.cr})
 }

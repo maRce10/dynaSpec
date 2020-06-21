@@ -11,7 +11,7 @@ A set of tools to generate dynamic spectrogram visualizations in video format.
 License: GPL (>= 2)
 }
 \author{
-Marcelo Araya-Salas & Matthew Wilkins
+Marcelo Araya-Salas
   
-  Maintainer: Marcelo Araya-Salas (\email{marceloa27@gmail.com})
+  Maintainer: Marcelo Araya-Salas (\email{marcelo.araya@ucr.ac.cr})
 }

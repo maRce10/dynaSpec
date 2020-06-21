@@ -302,7 +302,7 @@ system("git push origin master")
 
 path <- "./R"
 
-pattern <-  "R package version 1.0.0"
+pattern <-  "marcelo.araya@@ucr.ac.cr"
 
 find.text(pattern = pattern, fun.only = F, ignore.case = T, path = path)
 

@@ -23,16 +23,16 @@
 #' @param fps Numeric vector of length 1 specifying the number of frames per second.
 #' @param t.display Numeric vector of length 1 specifying the time range displayed in the spectrogram.
 #' @param fix.time Logical argument to control if the time axis moves along with the spectrogram or remains fixed. Default is \code{TRUE} (fixed).
-#' @param res Numeric vector of length 1 specifying the resolution of the image files (see \code{\link[grDevices]{tiff}}). Default is 70.
-#' @param width Numeric vector of length 1 specifying width of the video frame in pixels (see \code{\link[grDevices]{tiff}}). Default is 700.
-#' @param height Numeric vector of length 1 specifying height of the video frame in pixels (see \code{\link[grDevices]{tiff}}). Default is 400.
-#' @param res Numeric vector of length 1 specifying the resolution of the image files (see \code{\link[grDevices]{tiff}}).
+#' @param res Numeric vector of length 1 specifying the resolution of the image files (see \code{\link[grDevices]{png}}). Default is 70.
+#' @param width Numeric vector of length 1 specifying width of the video frame in pixels (see \code{\link[grDevices]{png}}). Default is 700.
+#' @param height Numeric vector of length 1 specifying height of the video frame in pixels (see \code{\link[grDevices]{png}}). Default is 400.
+#' @param res Numeric vector of length 1 specifying the resolution of the image files (see \code{\link[grDevices]{png}}).
 #' @param parallel Numeric vector of length 1. Controls whether parallel computing is applied by specifying the number of cores to be used. Default is 1 (i.e. no parallel computing).
 #' @param pb Logical argument to control if progress bar is shown. Default is \code{TRUE}.
 #' @param play Logical argument to control if the video is played after generated. Default is \code{TRUE}.
 #' @param loop Logical argument to control if the video is formatted to be played in a loop (i.e. if ends at the start of the clip).
 #' @param lcol Character string with the color to be used for the vertical line at which sounds are played. Default is \code{"#07889B99"}.
-#' @param lty Character string to control the type (as in \code{\link[graphics]{plot}}) of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.
+#' @param lty Character string to control the type of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.
 #' @param lwd Character string to control the width of the line at which sounds are played. Default is 2.
 #' @param axis.type Character string to control the style of spectrogram axes. Currently there are 3 options:
 #' #' \itemize{
@@ -55,7 +55,7 @@
 #' @export
 #' @name scrolling_spectro
 #' @details The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms. 
-#' @seealso 
+#' @seealso \code{\link[seewave]{spectro}}
 #' @examples
 #' \dontrun{
 #' # load example data
@@ -68,9 +68,9 @@
 #'  res = 120)
 #' }
 #' 
-#' @author Marcelo Araya-Salas (\email{marceloa27@@gmail.com}) 
+#' @author Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr}) 
 #' @references {
-#' Araya-Salas M & M. Wilkins. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+#' Araya-Salas M. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 #' }
 
 scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, pb = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = "white", spectro.call = NULL, annotation.call = NULL, ...)

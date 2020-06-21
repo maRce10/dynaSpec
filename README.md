@@ -6,12 +6,12 @@ dynaSpec
 
 A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work. The package relies heavily on the packages [seewave](https://CRAN.R-project.org/package=seewave) and [tuneR](https://CRAN.R-project.org/package=tuneR).
 
-Install/load the package from CRAN as follows (**NOT YET IN CRAN**):
+Install/load the package from CRAN as follows:
 
 ``` r
 
 # From CRAN would be
-#install.packages("dynaSpec")
+install.packages("dynaSpec")
 
 #load package
 library(dynaSpec)
@@ -36,7 +36,7 @@ library(dynaSpec)
 Examples
 --------
 
-To run the following examples you will also need to load a few more packages as well as [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently as the developmental version on github). It can be installed as follows:
+To run the following examples you will also need to load a few more packages as well as [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24. It can be installed as follows:
 
 ``` r
 
@@ -143,7 +143,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 </center>
  
 
-Visualizing a northern nightingale wren recording from [xeno-canto](xeno-canto.org) using a custom color palette:
+Visualizing a northern nightingale wren recording from [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
 
 ``` r
 
@@ -377,7 +377,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
 </center>
  
 
-Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to spectro.call, but requires a call from `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s) and 'fading' for fading in and out the label (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:
+Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:
 
 ``` r
 
@@ -440,4 +440,4 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
 
-Araya-Salas M & M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.

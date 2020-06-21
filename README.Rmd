@@ -23,12 +23,12 @@ library(warbleR)
 
 A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work. The package relies heavily on the packages [seewave](https://CRAN.R-project.org/package=seewave) and [tuneR](https://CRAN.R-project.org/package=tuneR).
 
-Install/load the package from CRAN as follows (**NOT YET IN CRAN**):
+Install/load the package from CRAN as follows:
 
 ```{r, eval = FALSE}
 
 # From CRAN would be
-#install.packages("dynaSpec")
+install.packages("dynaSpec")
 
 #load package
 library(dynaSpec)
@@ -54,7 +54,7 @@ library(dynaSpec)
 
 ## Examples
 
-To run the following examples you will also need to load a few more packages as well as  [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently as the developmental version on github). It can be installed as follows:
+To run the following examples you will also need to load a few more packages as well as  [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24. It can be installed as follows:
 
 ```{r, eval = FALSE}
 
@@ -240,7 +240,7 @@ allowfullscreen></iframe></center>
 &nbsp;
 
 
-Visualizing a northern nightingale wren recording from [xeno-canto](xeno-canto.org) using a custom color palette:
+Visualizing a northern nightingale wren recording from [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
 
 ```{r, eval = FALSE}
 
@@ -601,4 +601,4 @@ allowfullscreen></iframe></center>
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
 
-Araya-Salas M & M. Wilkins. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
