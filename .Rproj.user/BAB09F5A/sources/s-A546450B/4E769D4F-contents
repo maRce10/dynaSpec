@@ -1,0 +1,14 @@
+require(pacman)
+p_load(devtools,roxygen2)
+p_load(seewave,tuneR,NatureSounds,warbleR)
+devtools::install_github("maRce10/dynaSpec")
+require(dynaSpec)
+
+data(canyon_wren)
+
+(f<-system.file(package="dynaSpec") %>% list.files(pattern=".wav",full.names=T))
+p<-prepStaticSpec(f[1],savePNG=T,destFolder="wd",onlyPlotSpec = F, bgFlood=T)
+paged_spectro(p)
+
+p2<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",onlyPlotSpec=F,bgFlood=T,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+paged_spectro(p2)
