@@ -3,23 +3,23 @@
     "path": "~/GDrive/R/Nonshiny Github/dynaSpec/R/dynaSpec-package.R",
     "project_path": "R/dynaSpec-package.R",
     "type": "r_source",
-    "hash": "3488834437",
+    "hash": "504074700",
     "contents": "",
     "dirty": false,
     "created": 1593493741279.0,
     "source_on_save": false,
     "relative_order": 4,
     "properties": {
-        "cursorPosition": "12,8",
-        "scrollLine": "0",
+        "cursorPosition": "28,3",
+        "scrollLine": "1",
         "source_window_id": ""
     },
     "folds": "",
-    "lastKnownWriteTime": 1593493777,
+    "lastKnownWriteTime": 1593494419,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1593493777225,
+    "last_content_update": 1593494419010,
     "read_only": false,
     "read_only_alternatives": []
 }
