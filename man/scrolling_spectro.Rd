@@ -112,7 +112,7 @@ fps = 50, t.display = 1.5, collevels = seq(-40, 0, 5),
 }
 \references{
 {
-Araya-Salas M. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 }
 }
 \seealso{

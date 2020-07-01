@@ -1,0 +1,20 @@
+Package: dynaSpec
+Type: Package
+Title: Dynamic spectrogram visualization in R
+Version: 1.0.0
+Date: 2020-05-20s
+Description: A set of tools to generate dynamic spectrogram visualizations in video format.
+License: GPL (>= 2)
+Imports: pbapply, utils, grDevices, stats, seewave, tuneR, grid, png, NatureSounds, ggplot2, viridis, scales, av, ari, gganimate, magrittr
+Depends: R (>= 3.2.1)
+LazyData: TRUE
+SystemRequirements: ffmpeg
+URL: https://github.com/maRce10/dynaSpec
+BugReports: https://github.com/maRce10/dynaSpec/issues
+NeedsCompilation: no
+Suggests: parallel, knitr, imager
+VignetteBuilder: knitr
+RoxygenNote: 7.1.0
+Repository: CRANs
+Language: en-US
+Authors@R: c(person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "marceloa27@gmail.com", comment = c(ORCID = "0000-0003-3594-619X")), person("Matthew R.", "Wilkins", role = c("aut"), email = "m.r.wilkins06@gmail.com"))
