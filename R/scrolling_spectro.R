@@ -186,8 +186,8 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     flim <- c(0, wave@samp.rate / 2000)
 
   # reset margins at the end
-  opar <- par
-  on.exit(par(opar), add = TRUE)
+  opar <- graphics::par()
+  on.exit(graphics::par(opar), add = TRUE)
   
   # remove temporary files at the end
   on.exit(try(unlink(c(temp.video, temp.audio, list.files(path = tempdir(), full.names = TRUE, pattern = "\\.temp.img.tiff$"))), silent = TRUE), add = TRUE)
@@ -200,7 +200,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   grDevices::png(filename = file.path(tempdir(), "temp.full.spectro.png"), height = height, width = width * seewave::duration(wave_sil) / t.display, res = res)
   
   # set plot margins for spectrogram
-  par(mar = rep(0, 4))
+  graphics::par(mar = rep(0, 4))
   
   # plot spectro
   if (is.null(spectro.call))
@@ -252,7 +252,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   }
     
   # close plot
-  dev.off()
+  grDevices::dev.off()
   
   # spectral derivatives
   if (derivative){
@@ -264,18 +264,18 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   grDevices::png(filename = file.path(tempdir(), "temp.full.spectro.png"), height = height, width = width * seewave::duration(wave_sil) / t.display, res = res)
   
   # remove margins and make background gray
-  par(mar = rep(0, 4), bg = "gray")
+  graphics::par(mar = rep(0, 4), bg = "gray")
   
   # calculate 2 order derivative
   der.im <- imager::deriche(spc_img, sigma = 3, order = 2, axis="y") 
   
   # plot
-  plot(der.im)
+  graphics::plot(der.im)
   
-  dev.off()
+  grDevices::dev.off()
   }
 
-  par( bg = "white")
+  graphics::par( bg = "white")
   
   } else {
   ..level.. <- NA
@@ -295,13 +295,13 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     grDevices::png(filename = file.path(tempdir(), "temp.full.oscillo.png"), height = height, width = width * seewave::duration(wave_sil) / t.display, res = res)
     
     # set plot margins for spectrogram
-    par(mar = rep(0, 4))
+    graphics::par(mar = rep(0, 4))
     
     # plot spectro
     oscillo_dynaspec_int(wave = wave_sil, f = wave_sil@samp.rate, xaxt = "n", yaxt = "n", colwave = colwave, bg = colbg)
     
     # close plot
-    dev.off()
+    grDevices::dev.off()
   
     # read image
     osc_img <- png::readPNG(source = file.path(tempdir(), "temp.full.oscillo.png"))
@@ -349,8 +349,8 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     
     # set regular margins
     if (axis.type == "none")
-      par(mar =  rep(0, 4)) else
-    par(mar =  c(4.2, 4.2, 1, 1) + 0.1)
+      graphics::par(mar =  rep(0, 4)) else
+    graphics::par(mar =  c(4.2, 4.2, 1, 1) + 0.1)
     
     # keep original values
     org.flim <- flim
@@ -363,13 +363,13 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     }
     
     # plot anything at specific time and freq
-    plot(0,0, xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = "Time (s)", ylab = "Frequency (kHz)", xaxs = "i", yaxs = "i", bty = "o", yaxt = "n")
+    graphics::plot(0,0, xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = "Time (s)", ylab = "Frequency (kHz)", xaxs = "i", yaxs = "i", bty = "o", yaxt = "n")
     
     # get plotting area coordinates
-    plt <- par("plt")
+    plt <- graphics::par("plt")
     
     # get plotting area in original units
-    usr <- par("usr")
+    usr <- graphics::par("usr")
     
     # add spectrogram segment to plot
     grid::grid.raster(spc_img[, img.x.lim[1]:img.x.lim[2], ], x = plt[1], y =  plt[3] + (plt[4] - plt[3]) * height.prop[2] / height.prop[1], height = (plt[4] - plt[3]) * (1 - height.prop[2] / height.prop[1]), width = plt[2] - plt[1], hjust = 0, vjust = 0)
@@ -391,10 +391,10 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
 
     # right gray rectangle
     if (fix.time)
-    graphics::rect(xleft = tlim_low[2] + usr[1], ybottom = flim[1], ytop = flim[1] + (flim[2] - flim[1]) * height.prop[2] / height.prop[1], xright = if(loop > 1 & tlim_low[1] - usr[1] <= 0) usr[2] - (white_window - (tlim_low[2] - usr[1])) else usr[2], col = adjustcolor("gray", 0.42), border = NA) else # different time limits when looping
+    graphics::rect(xleft = tlim_low[2] + usr[1], ybottom = flim[1], ytop = flim[1] + (flim[2] - flim[1]) * height.prop[2] / height.prop[1], xright = if(loop > 1 & tlim_low[1] - usr[1] <= 0) usr[2] - (white_window - (tlim_low[2] - usr[1])) else usr[2], col = grDevices::adjustcolor("gray", 0.42), border = NA) else # different time limits when looping
       graphics::rect(xleft = tlim_low[2] + usr[1], ybottom = flim[1], ytop = flim[1] + (flim[2] - flim[1]) * height.prop[2] / height.prop[1], xright = if(loop > 1 & tlim_low[1] - usr[1] <= 0) {usr[2] - (white_window - (tlim_low[2] - usr[1]))
         + if (tlim_low[1] - usr[1] <= 0) tlim_low[2] + usr[1] + (seewave::duration(wave_sil) - white_window) / 2 else 0 
-      }  else usr[2], col = adjustcolor("gray", 0.42), border = NA)
+      }  else usr[2], col = grDevices::adjustcolor("gray", 0.42), border = NA)
        
     # box in playing area
     graphics::rect(xleft = tlim_low[1] + usr[1], ybottom = flim[1], ytop = flim[1] + (flim[2] - flim[1]) * height.prop[2] / height.prop[1], xright = tlim_low[2] + usr[1], col = "transparent", lwd = 0.4)
@@ -425,7 +425,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
       if (is.null(annotation.call$col)) annotation.call$col <- "black"
       
       # overwrite col in call
-      annotation.call$col <- adjustcolor(annotation.call$col, alpha.f = ann_alpha[x])
+      annotation.call$col <- grDevices::adjustcolor(annotation.call$col, alpha.f = ann_alpha[x])
         
       # overwrite label in call
       
@@ -440,7 +440,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     # reprint box
     graphics::box()
   
-    dev.off()
+    grDevices::dev.off()
     
     # if loop > 1 and out of buffer time
     if (loop > 1)

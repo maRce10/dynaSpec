@@ -31,7 +31,7 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
   time <- rep(spectrogram$time, each = nrow(spectrogram$amp))
   amplitude <- as.vector(spectrogram$amp)
   #<--------
-  df<-dplyr::tibble(time,freq,amplitude)
+  df <- data.frame(time,freq,amplitude)
 
   
   #experimental code to simplify the tibble for generating spec data

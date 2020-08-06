@@ -63,32 +63,38 @@ settings to \code{\link{paged_spectro}} to generate dynamic spectrogram video.
 }
 \examples{
 {
-(f<-system.file(package="dynaSpec") \%>\% list.files(pattern=".wav",full.names=T))
+f <- list.files(pattern=".wav", full.names = TRUE, path = system.file(package="dynaSpec"))
 
-#default behavior should be a decent start for good recordings; doesn't save anything, just plots
+# default behavior should be a decent start for good recordings; doesn't save anything, just plots
 prep_static_ggspectro(f[1])
 
-#to use with paged_spectro or to do other stuff, you need to assign the resulting object, but it will still always plot the first spec
-#let's add axes and boost the signal a smidge
-femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",onlyPlotSpec = F, bgFlood=T,ampTrans=2)
+# to use with paged_spectro or to do other stuff, you need to assign the
+# resulting object, but it will still always plot the first spec
+# let's add axes and boost the signal a smidge
+femaleBarnSwallow <- prep_static_ggspectro(f[1],destFolder="wd",
+onlyPlotSpec = F, bgFlood=T,ampTrans=2)
  
 #feels like we're missing a little bit of the quieter signals; let's lower the minimum amplitude threshold a bit
-femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",onlyPlotSpec = F, bgFlood=T,ampTrans=2,min_dB=-35)
+femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",
+onlyPlotSpec = F, bgFlood=T,ampTrans=2,min_dB=-35)
  
 #now for a male song  
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, bgFlood=T)
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, 
+bgFlood=T)
 
 #Nice, but the trill is fading out; I'm gonna signal boost and lower the min_dB
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, bgFlood=T,ampTrans=2,min_dB=-40)
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, 
+bgFlood=T,ampTrans=2,min_dB=-40)
 
 #much stronger, now let's combine them (you need the cowplot package)
 
-cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")
+cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),
+maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")
 
 ggsave("M&F_barn_swallow_song_specs.jpeg")
 
 
-see more examples at \url{https://marce10.github.io/dynaSpec/}
+# see more examples at https://marce10.github.io/dynaSpec/
 }
 }
 \references{

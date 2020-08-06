@@ -26,7 +26,7 @@
 #' }
 #' @examples {
 #' #show wav files included with dynaSpec
-#' (f<-system.file(package="dynaSpec") %>% list.files(pattern=".wav",full.names=T))
+#' f <- list.files(pattern=".wav", full.names = TRUE, path = system.file(package="dynaSpec"))
 #' 
 #' femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",onlyPlotSpec = F, bgFlood=T)
 #' paged_spectro(femaleBarnSwallow)
@@ -34,19 +34,23 @@
 #' maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, bgFlood=T,min_dB=-40)
 #' paged_spectro(femaleBarnSwallow)
 #' 
-#' #Make a multipage dynamic spec of a humpback whale song
-#' #Note, we're saving PNGs of our specs in the working directory; to add axis labels, we set onlyPlotSpec to F, and to make the same background color for the entire figure, we set bgFlood=T;
-#' #The yLim is set to only go to 0.7kHz, where the sounds are for these big whales; 
+#' # Make a multipage dynamic spec of a humpback whale song
+#' # Note, we're saving PNGs of our specs in the working directory; to add
+#'# axis labels, we set onlyPlotSpec to F, and to make the same background
+#' # color for the entire figure, we set bgFlood=T;
+#' # The yLim is set to only go to 0.7kHz, where the sounds are for these big whales; 
 #' #also applying an amplitude transform to boost signal.
 #' #This is a longer file, so we're taking the first 12 seconds with crop=12
 #' #xLim=3 means each "page" will be 3 seconds, so we'll have 4 dynamic spec pages that get combined
 #' 
-#' humpback<-prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",onlyPlotSpec=F,bgFlood=T,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+#' humpback <- prep_static_ggspectro(
+#' "http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",
+#' onlyPlotSpec=F,bgFlood=T,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 #' 
 #' #to generate multipage dynamic spec (movie), run the following
 #' paged_spectro(humpback)
 #' 
-#' see more examples at \url{https://marce10.github.io/dynaSpec/}
+#' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
 
 paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=T,... )

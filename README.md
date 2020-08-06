@@ -527,11 +527,3 @@ pagedSpec(n,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
 </div>
 
 Enjoy! Please share your specs with us on Twitter! [@@M_Araya_Salas](https://twitter.com/M_Araya_Salas) & [@@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
-
-
-
-------------------------------------------------------------------------
-
-Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
-
-Araya-Salas M. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.

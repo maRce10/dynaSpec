@@ -4,12 +4,10 @@
 #' 
 #' @import NatureSounds
 #' @import ggplot2
-#' @import magrittr
 #' @import seewave
 #' @import gganimate
 #' @import viridis
 #' @import av
-#' @importFrom dplyr tibble
 #' @importFrom tuneR writeWave readWave readMP3 mono silence bind 
 #' @importFrom png readPNG
 #' @importFrom scales modulus_trans
@@ -18,8 +16,8 @@
 #' @importFrom grid grid.raster
 #' @importFrom parallel makePSOCKcluster
 #' @importFrom grDevices dev.off tiff adjustcolor
-#' @importFrom graphics abline par plot rect axis mtext
-
+#' @importFrom graphics abline par plot rect axis mtext par
+#' 
 #' @author Marcelo Araya-Salas & Matthew R. Wilkins
 #'         Maintainer: Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr})
 #'   

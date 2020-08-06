@@ -73,14 +73,17 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div id="dynaspec" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#dynaspec" class="anchor"></a>dynaSpec</h1></div>
+<p>Please cite <a href="https://marce10.github.io/dynaSpec">dynaSpec</a> as follows:</p>
+<p>Araya-Salas M &amp; M. Wilkins. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
+<p><a href="https://cran.r-project.org/package=dynaSpec"><img src="http://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a> <a href="http://www.r-pkg.org/pkg/dynaSpec"><img src="http://cranlogs.r-pkg.org/badges/dynaSpec" alt="CRAN RStudio mirror downloads"></a> <a href="https://r-pkg.org/pkg/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue" alt="Total downloads"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></p>
 <p>A set of tools to generate dynamic spectrogram visualizations in video format. <a href="https://ffmpeg.org/download.html">FFMPEG</a> must be installed in order for this package to work. The package relies heavily on the packages <a href="https://CRAN.R-project.org/package=seewave">seewave</a> and <a href="https://CRAN.R-project.org/package=tuneR">tuneR</a>.</p>
 <p>Install/load the package from CRAN as follows:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb1"><pre class="r">
 <span class="co"># From CRAN would be</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"dynaSpec"</span>)
 
@@ -92,24 +95,29 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tuneR</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">seewave</span>)</pre></div>
 <p>To install the latest developmental version from <a href="http://github.com/">github</a> you will need the R package <a href="https://cran.r-project.org/package=devtools">devtools</a>:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb2"><pre class="r">
 <span class="co"># From github</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"maRce10/dynaSpec"</span>)
 
 <span class="co">#load package</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dynaSpec</span>)</pre></div>
-<div id="examples" class="section level2">
+</div>
+<div id="background" class="section level1">
+<h1 class="hasAnchor">
+<a href="#background" class="anchor"></a>Background</h1>
+<p>This package is a collaboration between Marcelo Araya-Salas and Matt Wilkins. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, <em>without taking screen shots</em> of another program. <a href="#marcelos-examples">Marcelo’s approach</a> (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell’s Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. <a href="#matts-examples">Matt’s approach</a> creates “paged” spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition’s spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.</p>
+<div id="marcelos-examples" class="section level2">
 <h2 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h2>
-<p>To run the following examples you will also need to load a few more packages as well as <a href="https://cran.r-project.org/package=warbleR">warbleR</a> 1.1.24. It can be installed as follows:</p>
-<div class="sourceCode"><pre class="r">
+<a href="#marcelos-examples" class="anchor"></a>Marcelo’s Examples:</h2>
+<p>To run the following examples you will also need to load a few more packages as well as <a href="https://cran.r-project.org/package=warbleR">warbleR</a> 1.1.24 (currently as the developmental version on github). It can be installed as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="r">
 <span class="co"># From github</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"maRce10/warbleR"</span>)
 
 <span class="co">#load package</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">warbleR</span>)</pre></div>
 <p>A dynamic spectrogram of a canyon wren song with a viridis color palette:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb4"><pre class="r">
 
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"canyon_wren"</span>)
 
@@ -124,7 +132,7 @@
 </center>
 <p> </p>
 <p>Black and white spectrogram:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb5"><pre class="r">
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="kw">wave</span> <span class="kw">=</span> <span class="no">canyon_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">300</span>,
           <span class="kw">t.display</span> <span class="kw">=</span> <span class="fl">1.7</span>, <span class="kw">pal</span> <span class="kw">=</span> <span class="no">reverse.gray.colors.1</span>,
           <span class="kw">grid</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">flim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">9</span>),
@@ -137,7 +145,7 @@
 </center>
 <p> </p>
 <p>A spectrogram with black background (colbg = “black”):</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb6"><pre class="r">
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="kw">wave</span> <span class="kw">=</span> <span class="no">canyon_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">300</span>,
               <span class="kw">t.display</span> <span class="kw">=</span> <span class="fl">1.7</span>, <span class="kw">pal</span> <span class="kw">=</span> <span class="no">viridis</span>,
               <span class="kw">grid</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">flim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">9</span>),
@@ -149,7 +157,7 @@
 </center>
 <p> </p>
 <p>Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom (osc = TRUE):</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb7"><pre class="r">
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="kw">wave</span> <span class="kw">=</span> <span class="no">canyon_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">300</span>,
               <span class="kw">t.display</span> <span class="kw">=</span> <span class="fl">1.7</span>, <span class="kw">pal</span> <span class="kw">=</span> <span class="no">viridis</span>,
               <span class="kw">grid</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">flim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">9</span>),
@@ -164,7 +172,7 @@
 <p> </p>
 <p> </p>
 <p>Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and looping 3 times (loop = 3:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb8"><pre class="r">
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Phae.long4"</span>)
 
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="kw">wave</span> <span class="kw">=</span> <span class="no">Phae.long4</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">300</span>,
@@ -179,7 +187,7 @@
 </center>
 <p> </p>
 <p>Visualizing a northern nightingale wren recording from <a href="https://www.xeno-canto.org">xeno-canto</a> using a custom color palette:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb9"><pre class="r">
 <span class="no">ngh_wren</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/warbleR/man/read_wave.html">read_wave</a></span>(<span class="st">"https://www.xeno-canto.org/518334/download"</span>)
 
 <span class="no">custom_pal</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span>( <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#2d2d86"</span>, <span class="st">"#2d2d86"</span>, <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html">reverse.terrain.colors</a></span>(<span class="fl">10</span>)[<span class="fl">5</span>:<span class="fl">10</span>]))
@@ -195,7 +203,7 @@
 </center>
 <p> </p>
 <p>Spix’s disc-winged bat inquiry call slow down (speed = 0.05):</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb10"><pre class="r">
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"thyroptera.est"</span>)
 
 <span class="co"># extract one call</span>
@@ -226,7 +234,7 @@
 <h3 class="hasAnchor">
 <a href="#further-customization" class="anchor"></a>Further customization</h3>
 <p>The argument ‘spectro.call’ allows to insert customized spectrogram visualizations. For instance, the following code makes use of the <code><a href="https://rdrr.io/pkg/warbleR/man/color_spectro.html">color_spectro()</a></code> function from <a href="https://cran.r-project.org/package=warbleR">warbleR</a> to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb11"><pre class="r">
 <span class="co"># get house wren male female duet recording</span>
 <span class="no">hs_wren</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/warbleR/man/read_wave.html">read_wave</a></span>(<span class="st">"https://ndownloader.figshare.com/files/22722101"</span>)
 
@@ -244,7 +252,7 @@
 <p><img src="https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png" alt="house wren duet"></p>
 <p>The male part is shown in green and the female part in yellow.</p>
 <p>We can wrap the <code><a href="https://rdrr.io/pkg/warbleR/man/color_spectro.html">color_spectro()</a></code> call using the <code><a href="https://rdrr.io/r/base/call.html">call()</a></code> function form base R and input that into <code><a href="reference/scrolling_spectro.html">scrolling_spectro()</a></code> using the argument ‘spectro.call’:</p>
-<div class="sourceCode"><pre class="r"><span class="co"># save call</span>
+<div class="sourceCode" id="cb12"><pre class="r"><span class="co"># save call</span>
 <span class="no">sp_cl</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"color.spectro"</span>, <span class="kw">wave</span> <span class="kw">=</span> <span class="no">hs_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">200</span>, <span class="kw">ovlp</span> <span class="kw">=</span> <span class="fl">95</span>,
               <span class="kw">flim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">13</span>), <span class="kw">collevels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(-<span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span>), <span class="kw">strength</span> <span class="kw">=</span> <span class="fl">3</span>,
               <span class="kw">dB</span> <span class="kw">=</span> <span class="st">"B"</span>, <span class="kw">X</span> <span class="kw">=</span> <span class="no">st</span>, <span class="kw">col.clm</span> <span class="kw">=</span> <span class="st">"colors"</span>, <span class="kw">base.col</span> <span class="kw">=</span> <span class="st">"black"</span>,
@@ -263,7 +271,7 @@
 </center>
 <p> </p>
 <p>This option can be mixed with any of the other customizations in the function, as adding an oscillogram:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb13"><pre class="r">
 <span class="co"># create dynamic spectrogram</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span>(<span class="kw">wave</span> <span class="kw">=</span> <span class="no">hs_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">512</span>, <span class="kw">osc</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
                   <span class="kw">t.display</span> <span class="kw">=</span> <span class="fl">1.2</span>, <span class="kw">pal</span> <span class="kw">=</span> <span class="no">reverse.gray.colors.1</span>,
@@ -278,7 +286,7 @@
 </center>
 <p> </p>
 <p>A viridis color palette:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb14"><pre class="r">
 <span class="no">st</span>$<span class="no">colors</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">viridis</a></span>(<span class="fl">10</span>)[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>, <span class="fl">8</span>)]
 
 <span class="no">sp_cl</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"color.spectro"</span>, <span class="kw">wave</span> <span class="kw">=</span> <span class="no">hs_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">200</span>,
@@ -301,7 +309,7 @@
 </center>
 <p> </p>
 <p>Or simply a gray scale:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb15"><pre class="r">
 <span class="no">st</span>$<span class="no">colors</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gray"</span>, <span class="st">"gray49"</span>)
 
 <span class="no">sp_cl</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"color.spectro"</span>, <span class="kw">wave</span> <span class="kw">=</span> <span class="no">hs_wren</span>, <span class="kw">wl</span> <span class="kw">=</span> <span class="fl">200</span>, <span class="kw">ovlp</span> <span class="kw">=</span> <span class="fl">95</span>, <span class="kw">flim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">13</span>),
@@ -322,8 +330,8 @@
 </iframe>
 </center>
 <p> </p>
-<p>The ‘spectro.call’ argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>, <code><a href="https://rdrr.io/r/graphics/lines.html">lines()</a></code>) in a single function and then save the call to that function:</p>
-<div class="sourceCode"><pre class="r">
+<p>The ‘spectro.call’ argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>, <code><a href="https://rdrr.io/r/graphics/lines.html">lines()</a></code>) in a single function and then save the call to that function:</p>
+<div class="sourceCode" id="cb16"><pre class="r">
 <span class="co"># create color column</span>
 <span class="no">st</span>$<span class="no">colors</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">viridis</a></span>(<span class="fl">10</span>)[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>, <span class="fl">8</span>)]
 
@@ -373,7 +381,7 @@
 </center>
 <p> </p>
 <p>Finally, the argument ‘annotation.call’ can be used to add static labels (i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a call from <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>. This let users customize things as size, color, position, font, and additional arguments taken by <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>. The call should also include the argmuents ‘start’ and ‘end’ to indicate the time at which the labels are displayed (in s). ‘fading’ is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb17"><pre class="r">
 <span class="co"># read data from figshare</span>
 <span class="no">frogs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/warbleR/man/read_wave.html">read_wave</a></span>(<span class="st">"https://ndownloader.figshare.com/files/22829075"</span>)
 
@@ -400,7 +408,7 @@
 </center>
 <p> </p>
 <p>The argument accepts more than one labels as in a regular <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code> call. In that case ‘start’ and ‘end’ values should be supplied for each label:</p>
-<div class="sourceCode"><pre class="r">
+<div class="sourceCode" id="cb18"><pre class="r">
 <span class="co"># make annotation call for 2 annotations</span>
 <span class="no">ann_cll</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span>(<span class="st">"text"</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="fl">0.25</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="fl">0.87</span>,
                 <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Dendropsophus ebraccatus"</span>, <span class="st">"Eleutherodactylus coqui"</span>),
@@ -422,17 +430,119 @@
 </center>
 <p> </p>
 <hr>
-<p>Please cite <a href="https://marce10.github.io/dynaSpec">dynaSpec</a> as follows:</p>
-<p>Araya-Salas M. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
+</div>
+</div>
+<div id="matts-examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#matts-examples" class="anchor"></a>Matt’s examples:</h2>
+<div id="workflow" class="section level4">
+<h4 class="hasAnchor">
+<a href="#workflow" class="anchor"></a>Workflow</h4>
+<ol>
+<li>Tweak your spectrogram settings using the prep_static_ggspectro() function – aka prepStaticSpec() – storing results in variable. You can also just segment and export static specs at this step.</li>
+<li>Feed variable into paged_spectro() – aka pagedSpec() – to generate a dynamic spectrogram
+<ul>
+<li>It does this by exporting a PNG of the testSpec() ggplot function;</li>
+<li>Import PNG as a new ggplot raster layer</li>
+<li>Overlay a series of translucent highlight boxes that disolve away using gganimate</li>
+</ul>
+</li>
+</ol>
+<pre><code>#list WAVs included with dynaSpec
+(f&lt;-system.file(package="dynaSpec") %&gt;% list.files(pattern=".wav",full.names=T))
+
+#store output and save spectrogram to working directory
+params &lt;-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)</code></pre>
+</div>
+<div id="static-spectrogram-of-a-female-barn-swallow-song" class="section level3">
+<h3 class="hasAnchor">
+<a href="#static-spectrogram-of-a-female-barn-swallow-song" class="anchor"></a>Static spectrogram of a female barn swallow song</h3>
+<p><img src="README_files/figure-markdown_github/femaleBarnSwallow_1.png" alt="Static Spectrogram of a female barn swallow song"></p>
+<pre><code>#let's add axes 
+femaleBarnSwallow&lt;-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T,onlyPlotSpec = F)</code></pre>
+<p><img src="README_files/figure-markdown_github/femaleBarnSwallow_1b.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<pre><code><a href="reference/paged_spectro.html">#Now generate a dynamic spectrogram
+paged_spectro(femaleBarnSwallow)</a></code></pre>
+</div>
+<div id="dynamic-spectrogram-of-a-female-barn-swallow-song" class="section level3">
+<h3 class="hasAnchor">
+<a href="#dynamic-spectrogram-of-a-female-barn-swallow-song" class="anchor"></a>Dynamic spectrogram of a female barn swallow song</h3>
+<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
+</div>
+</div>
+<div id="now-brighten-the-spec-using-the-amptrans-parameter" class="section level2">
+<h2 class="hasAnchor">
+<a href="#now-brighten-the-spec-using-the-amptrans-parameter" class="anchor"></a>Now brighten the spec using the ampTrans parameter</h2>
+<ul>
+<li>ampTrans=3 is a nonlinear signal booster. Basically collapses the difference between loudest and quietest values (higher values= brighter specs); 1 (default) means no transformation</li>
+<li>Here, I also lowered the decibel threshold to include some quieter sounds with min_dB=-35; default is -30</li>
+<li>bgFlood=T makes the axis area the same color as the plot background. It will automatically switch to white axis font if background is too dark.</li>
+<li>Then generate dynamic spectrogram</li>
+</ul>
+<pre><code>#note that prep_static_spectro() is tha same as prepStaticSpec()
+#Also paged_spectro() is the same as pagedSpec()
+
+p2&lt;-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
+pagedSpec(p2) </code></pre>
+<p><img src="README_files/figure-markdown_github/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
+<div id="now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files" class="section level3">
+<h3 class="hasAnchor">
+<a href="#now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files" class="anchor"></a>Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)</h3>
+<ul>
+<li>Long files may take a long time to render, depending on CPU power…
+<ul>
+<li>the default is to not plot axes and labels (onlyPlotSpec=T)</li>
+<li>crop=12 is interpreted as: only use the first 12 seconds of the file; can also specify interval w/ c(0,12)</li>
+<li>xLim=3 specifies the “page window” i.e. how many seconds each “page” of the dynamic spectrogram should display, here 3 sec</li>
+<li>here we also limit the yLim of the plot to the vocalized frequencies from 0 to 700 Hz (0.7 kHz)</li>
+</ul>
+</li>
+</ul>
+<pre><code>whale&lt;-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+pagedSpec(whale)
+#Voila 🐋</code></pre>
+</div>
+</div>
+<div id="static-whale-song-spectrogram" class="section level2">
+<h2 class="hasAnchor">
+<a href="#static-whale-song-spectrogram" class="anchor"></a>Static whale song spectrogram</h2>
+<p><img src="README_files/figure-markdown_github/humpback.png" alt="Humpback whale song spectrogram"></p>
+</div>
+<div id="dynamic-multipage-whale-song-spectrogram" class="section level2">
+<h2 class="hasAnchor">
+<a href="#dynamic-multipage-whale-song-spectrogram" class="anchor"></a>Dynamic multipage whale song spectrogram</h2>
+<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height="303" width="910" allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
+<div id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="section level4">
+<h4 class="hasAnchor">
+<a href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="anchor"></a>Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)</h4>
+<pre><code>song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
+n=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
+pagedSpec(n,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")</code></pre>
+<div>
+</div>
+<div id="nighthawk-multipage-dynamic-spec" class="section level3">
+<h3 class="hasAnchor">
+<a href="#nighthawk-multipage-dynamic-spec" class="anchor"></a>Nighthawk multipage dynamic spec</h3>
+<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height="303" width="910" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
+</div>
+<p>Enjoy! Please share your specs with us on Twitter! <a href="https://twitter.com/M_Araya_Salas">@@M_Araya_Salas</a> &amp; <a href="https://twitter.com/mattwilkinsbio">@@mattwilkinsbio</a></p>
 </div>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=dynaSpec">https://​cloud.r-project.org/​package=dynaSpec</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/maRce10/dynaSpec/">https://​github.com/​maRce10/​dynaSpec/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/maRce10/dynaSpec/issues">https://​github.com/​maRce10/​dynaSpec/​issues</a>
@@ -452,16 +562,7 @@
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=dynaSpec"><img src="http://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a></li>
-<li><a href="http://www.r-pkg.org/pkg/dynaSpec"><img src="http://cranlogs.r-pkg.org/badges/dynaSpec" alt="CRAN RStudio mirror downloads"></a></li>
-<li><a href="https://r-pkg.org/pkg/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue" alt="Total downloads"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 

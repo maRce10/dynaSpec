@@ -5,7 +5,7 @@ Version: 1.0.0
 Date: 2020-06-14
 Description: A set of tools to generate dynamic spectrogram visualizations in video format.
 License: GPL (>= 2)
-Imports: pbapply, utils, grDevices, stats, seewave, tuneR, grid, png, NatureSounds, ggplot2, viridis, scales, av, ari, gganimate, magrittr
+Imports: pbapply, utils, grDevices, graphics, stats, seewave, tuneR, grid, png, NatureSounds, ggplot2, viridis, scales, av, ari, gganimate, magrittr
 Depends: R (>= 3.2.1)
 LazyData: TRUE
 SystemRequirements: ffmpeg
