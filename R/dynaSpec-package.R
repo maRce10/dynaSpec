@@ -3,18 +3,28 @@
 #' A set of tools to generate dynamic spectrogram visualizations in video format.
 #' 
 #' @import NatureSounds
+#' @import ggplot2
+#' @import magrittr
+#' @import seewave
+#' @import gganimate
+#' @import viridis
+#' @import av
+#' @importFrom dplyr tibble
+#' @importFrom tuneR writeWave readWave readMP3 mono silence bind 
+#' @importFrom png readPNG
+#' @importFrom scales modulus_trans
+#' @importFrom ari have_ffmpeg_exec ffmpeg_exec
 #' @importFrom png readPNG
 #' @importFrom grid grid.raster
 #' @importFrom parallel makePSOCKcluster
 #' @importFrom grDevices dev.off tiff adjustcolor
 #' @importFrom graphics abline par plot rect axis mtext
-#' @author Marcelo Araya-Salas
-#'   
-#'   Maintainer: Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr})
+
+#' @author Marcelo Araya-Salas & Matthew R. Wilkins
+#'         Maintainer: Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr})
 #'   
 #' @docType package
 #' @name dynaSpec
 #' @details License: GPL (>= 2)  
-NULL
-#> NULL 
+#' > NULL 
 #'

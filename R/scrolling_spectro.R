@@ -70,7 +70,8 @@
 #' 
 #' @author Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr}) 
 #' @references {
-#' Araya-Salas M. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+
+#' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 #' }
 
 scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, pb = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = "white", spectro.call = NULL, annotation.call = NULL, ...)
