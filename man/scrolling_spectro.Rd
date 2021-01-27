@@ -60,7 +60,7 @@ consecutive windows, as in \code{\link[seewave]{spectro}}. Default is 70.}
 \item{lwd}{Character string to control the width of the line at which sounds are played. Default is 2.}
 
 \item{axis.type}{Character string to control the style of spectrogram axes. Currently there are 3 options:
-#' \itemize{
+ \itemize{
 \item \code{standard}: Both Y and X axes are printed as in the default \code{\link[seewave]{spectro}} view. 
 \item \code{minimal}: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.
 \item \code{none}: No axis is printed (also removes ticks, tick labels, and axis labels).
@@ -112,7 +112,7 @@ fps = 50, t.display = 1.5, collevels = seq(-40, 0, 5),
 }
 \references{
 {
-Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M & Wilkins M R. (2020). dynaSpec: dynamic spectrogram visualizations in R. R package version 1.0.0.
 }
 }
 \seealso{

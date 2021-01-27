@@ -6,10 +6,10 @@
 \alias{prepStaticGGspec}
 \title{Generate ggplot2-based spectrogram(s), which can be passed to paged_spectro}
 \usage{
-prep_static_ggspectro(soundFile,destFolder,outFilename,savePNG=F,colPal="inferno",crop=NULL,
-bg=NULL,filter=NULL,xLim=NULL,yLim=c(0,10),plotLegend=F,onlyPlotSpec=T,ampTrans=1,min_dB=-30,wl=512,
-ovlp=90,wn="blackman",specWidth=9,specHeight=3,colbins=30,ampThresh=0,bgFlood=F,fontAndAxisCol=NULL,
-optim=NULL,...)
+prep_static_ggspectro(soundFile,destFolder,outFilename,savePNG=FALSE,colPal="inferno",
+crop=NULL,bg=NULL,filter=NULL,xLim=NULL,yLim=c(0,10),plotLegend=FALSE,onlyPlotSpec=TRUE,
+ampTrans=1,min_dB=-30,wl=512, ovlp=90,wn="blackman",specWidth=9,specHeight=3,
+colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
 }
 \arguments{
 \item{soundFile}{should work with URLs, full and relative paths; handles .mp3 and .wav}
@@ -34,6 +34,8 @@ optim=NULL,...)
 
 \item{ampTrans}{amplitude transform for boosting spectrum contrast; defaults to identity (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)}
 
+\item{min_dB}{the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)}
+
 \item{wl}{window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff}
 
 \item{ovlp}{how much overlap (as percent) between sliding windows to generate spec? Default 90 looks good, but takes longer}
@@ -49,8 +51,6 @@ optim=NULL,...)
 \item{fontAndAxisCol}{the color of legend text if onlyPlotSpec=T (since margins will be white, with black text); if bgFlood=T, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color}
 
 \item{optim}{NULL by default; this is an experimental feature to simplify the dataframe of the FFT-processed waveform used to generate the spectrogram (currently does nothing)}
-
-\item{min_db}{the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)}
 }
 \value{
 a list with all spectrogram parameters, segmented WAV files (segWavs) and spectrograms spec; importantly, spec is a list of n=number of "pages"/segments; the first page is displayed by default
@@ -74,7 +74,8 @@ prep_static_ggspectro(f[1])
 femaleBarnSwallow <- prep_static_ggspectro(f[1],destFolder="wd",
 onlyPlotSpec = F, bgFlood=T,ampTrans=2)
  
-#feels like we're missing a little bit of the quieter signals; let's lower the minimum amplitude threshold a bit
+# feels like we're missing a little bit of the quieter signals; let's lower
+# the minimum amplitude threshold a bit
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",
 onlyPlotSpec = F, bgFlood=T,ampTrans=2,min_dB=-35)
  
@@ -88,11 +89,10 @@ bgFlood=T,ampTrans=2,min_dB=-40)
 
 #much stronger, now let's combine them (you need the cowplot package)
 
-cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),
-maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")
+# cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),
+# maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")
 
-ggsave("M&F_barn_swallow_song_specs.jpeg")
-
+# ggsave("M&F_barn_swallow_song_specs.jpeg")
 
 # see more examples at https://marce10.github.io/dynaSpec/
 }

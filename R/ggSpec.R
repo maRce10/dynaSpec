@@ -11,10 +11,10 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
   #Font color adapted from https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
    
   if(is.null(fontAndAxisCol)){
-  autoFontCol=T
+  autoFontCol=TRUE
   bgRGB<-grDevices::col2rgb(bg)
   fontAndAxisCol<-if (bgRGB["red",1]*0.299 + bgRGB["green",1]*0.587 + bgRGB["blue",1]*0.114 > 149){"#000000"}else{"#ffffff"}
-  }else{autoFontCol=F}
+  }else{autoFontCol=FALSE}
   #For testing font contrast against bg
   # par(bg=bg)
   # plot(1,1,col="transparent")
@@ -57,14 +57,15 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
       
     }else{df_i=df}
  
-  
+    ..level.. <- NULL
+    
     #Plot that thang
-    Glist[[i]]<-ggplot2::ggplot(df_i,ggplot2::aes(x=time,y=freq,z=amplitude))+xlim(segLens[i],segLens[i+1])+ylim(yLim)+
+    Glist[[i]]<-ggplot2::ggplot(df_i,ggplot2::aes(x=time,y=freq,z=amplitude))+ggplot2::xlim(segLens[i],segLens[i+1])+ggplot2::ylim(yLim)+
       #Labels
       ggplot2::labs(x="Time (s)",y="Frequency (kHz)",fill="Amplitude\n(dB)\n")+{
        #Set scale according to viridis or custom color scheme
-        if(isViridis){scale_fill_viridis(limits=c(min_dB,0),na.value="transparent",option=colPal,trans=scales::modulus_trans(p=ampTrans))}else{
-        scale_fill_gradient(limits=c(min_dB,0),na.value="transparent",low=colPal[1],high=colPal[2],trans=scales::modulus_trans(p=ampTrans))}
+        if(isViridis){viridis::scale_fill_viridis(limits=c(min_dB,0),na.value="transparent",option=colPal,trans=scales::modulus_trans(p=ampTrans))}else{
+          ggplot2::scale_fill_gradient(limits=c(min_dB,0),na.value="transparent",low=colPal[1],high=colPal[2],trans=scales::modulus_trans(p=ampTrans))}
         }+
     #Make contours  
     ggplot2::stat_contour(geom="polygon",ggplot2::aes(fill=..level..),bins=colbins,na.rm=T)+
@@ -72,7 +73,7 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
     mytheme(bg)+{
        #If user supplied fontAndAxisCol, change those settings (regardless of whether bg is flooded or not)
            if(!autoFontCol){
-            ggplot2::theme(axis.text=ggplot2::element_text(colour=fontAndAxisCol),text=ggplot2::element_text(colour=fontAndAxisCol),axis.line = ggplot2::element_line(colour=fontAndAxisCol),axis.ticks=element_line(colour=fontAndAxisCol))
+            ggplot2::theme(axis.text=ggplot2::element_text(colour=fontAndAxisCol),text=ggplot2::element_text(colour=fontAndAxisCol),axis.line = ggplot2::element_line(colour=fontAndAxisCol),axis.ticks=ggplot2::element_line(colour=fontAndAxisCol))
            }else{}
       }+{
       #get rid of axes & legend if requested
@@ -92,10 +93,10 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
       if(i==1){
         baseNom<-basename(tools::file_path_sans_ext(soundFile))
         subDest<-fs::path(destFolder,paste0(baseNom,"_static_specs"))
-        dir.create(subDest,showWarnings = F)
+        dir.create(subDest,showWarnings = FALSE)
         }
       fn_i=fs::path(subDest,paste0(baseNom,"_",i),ext="png")
-      ggsave(fn_i,width=specWidth,height=specHeight,units="in")
+      ggplot2::ggsave(fn_i,width=specWidth,height=specHeight,units="in")
       cat(paste0("\nStatic spec saved @",fn_i))
     }
     

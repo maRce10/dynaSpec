@@ -14,8 +14,7 @@ BugReports: https://github.com/maRce10/dynaSpec/issues
 NeedsCompilation: no
 Suggests: parallel, knitr, imager
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Repository: CRANs
 Language: en-US
 Authors@R: c(person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "marcelo.araya@ucr.ac.cr", comment = c(ORCID = "0000-0003-3594-619X")))
-

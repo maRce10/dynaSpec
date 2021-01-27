@@ -9,7 +9,7 @@
 #' 
 #' @aliases pagedSpectro pagedSpec
 #' @usage paged_spectro(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",
-#' highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=T,...)
+#' highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 #' @param specParams an object returned from \code{\link{prep_static_ggspectro}}
 #' @param destFolder destination of output video; this setting overwrites setting from specParams object
 #' @param vidName expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()
@@ -53,7 +53,7 @@
 #' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
 
-paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=T,... )
+paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 {
 if(!ari::have_ffmpeg_exec()){
   cat("\n*****This script needs ffmpeg to work*****\n")
@@ -77,7 +77,7 @@ if(!missing(vidName)){
     iName0<-gsub("'",".",iName0)
     
   tempdir<-paste0(destFolder,"temp/")
-  dir.create(tempdir,showWarnings=F)
+  dir.create(tempdir,showWarnings=FALSE)
   
   
     #always export the newWav version that has been cropped/padded according to user parameters
@@ -108,10 +108,10 @@ for(i in 1:length(specParams$segWavs))
     
     
     #output spec without axes, b/c we'll have to 
-    ggsave(filename=outPNG,plot=specParams$spec[[i]]+ggplot2::theme_void()+ggplot2::theme(panel.background=ggplot2::element_rect(fill=specParams$bg),legend.position = 'none'),dpi=300,width=specParams$specWidth,height=specParams$specHeight,units="in")
+    ggplot2::ggsave(filename=outPNG,plot=specParams$spec[[i]]+ggplot2::theme_void()+ggplot2::theme(panel.background=ggplot2::element_rect(fill=specParams$bg),legend.position = 'none'),dpi=300,width=specParams$specWidth,height=specParams$specHeight,units="in")
     print(paste0("Spec saved @ ",outPNG))
  #Read PNG bitmap back in
-  spec_PNG<-readPNG(outPNG)
+  spec_PNG<-png::readPNG(outPNG)
   spec_width_px<-attributes(spec_PNG)$dim[2]
   spec_height_px<-attributes(spec_PNG)$dim[1]
     
@@ -136,7 +136,7 @@ for(i in 1:length(specParams$segWavs))
             
         #If user supplied fontAndAxisCol, change those settings (regardless of whether bg is flooded or not)
          if(!specParams$autoFontCol){
-            ggplot2::theme(axis.text=ggplot2::element_text(colour=specParams$fontAndAxisCol),text=ggplot2::element_text(colour=specParams$fontAndAxisCol),axis.line = ggplot2::element_line(colour=specParams$fontAndAxisCol),axis.ticks=element_line(colour=specParams$fontAndAxisCol))
+            ggplot2::theme(axis.text=ggplot2::element_text(colour=specParams$fontAndAxisCol),text=ggplot2::element_text(colour=specParams$fontAndAxisCol),axis.line = ggplot2::element_line(colour=specParams$fontAndAxisCol),axis.ticks=ggplot2::element_line(colour=specParams$fontAndAxisCol))
             }else{}
        }+{
           
@@ -151,13 +151,13 @@ for(i in 1:length(specParams$segWavs))
        }+
       
       #Add spectrogram
-      ggplot2::annotation_custom(grid::rasterGrob(spec_PNG,width = unit(1,"npc"), height = unit(1,"npc")),- Inf, Inf, -Inf, Inf)+
+      ggplot2::annotation_custom(grid::rasterGrob(spec_PNG,width = ggplot2::unit(1,"npc"), height = ggplot2::unit(1,"npc")),- Inf, Inf, -Inf, Inf)+
       
       #Add box highlights for playback reveal    
-      ggplot2::geom_rect(data=played,aes(xmin=xmin,ymin=ymin,xmax=xmax,ymax=ymax),fill=highlightCol,alpha=highlightAlpha)+
+      ggplot2::geom_rect(data=played,ggplot2::aes(xmin=xmin,ymin=ymin,xmax=xmax,ymax=ymax),fill=highlightCol,alpha=highlightAlpha)+
       
       #Add cursor
-      ggplot2::geom_segment(data=played,aes(x=xmin,xend=xmin,y=ymin,yend=ymax),col=cursorCol,size=2) +
+      ggplot2::geom_segment(data=played,ggplot2::aes(x=xmin,xend=xmin,y=ymin,yend=ymax),col=cursorCol,size=2) +
   
       #Add animation
       #**** Time consuming animation stage *****
@@ -172,9 +172,9 @@ for(i in 1:length(specParams$segWavs))
   #save Audio File with sound in 1 step only if not segmented
   if(length(specParams$segWavs)==1){
     #note, height is set to 500px due to an issue w/ output being garbled at some resolutions; width according to aspect ratio
-  animate(vidSegment,renderer=av_renderer(vidName,audio=newWavOut),duration=specParams$xLim[2],width=500*(spec_width_px/spec_height_px),height=500,units="px") #Need to save audio for segments!!
+    gganimate::animate(vidSegment,renderer=gganimate::av_renderer(vidName,audio=newWavOut),duration=specParams$xLim[2],width=500*(spec_width_px/spec_height_px),height=500,units="px") #Need to save audio for segments!!
   }else{
-    animate(vidSegment,renderer=av_renderer(outTmpVid,audio=outWAV[[i]]),duration=specParams$xLim[2],width=500*(spec_width_px/spec_height_px),height=500,units="px") #Need to save audio for segments!!
+    gganimate::animate(vidSegment,renderer=gganimate::av_renderer(outTmpVid,audio=outWAV[[i]]),duration=specParams$xLim[2],width=500*(spec_width_px/spec_height_px),height=500,units="px") #Need to save audio for segments!!
     }
 }#end for loop extracting video pieces
 
@@ -216,7 +216,7 @@ for(i in 1:length(specParams$segWavs))
   cat(paste0("file saved @",vidName))
   system(paste0('open "',vidName,'"'))
   
-  if(delTemps){unlink(tempdir,recursive=T);print(paste0("FYI temporary file directory deleted @ ",tempdir))}
+  if(delTemps){unlink(tempdir,recursive=TRUE);print(paste0("FYI temporary file directory deleted @ ",tempdir))}
 }#end else which passed FFMPEG check
 }#end paged_spectro definition
 

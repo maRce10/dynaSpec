@@ -35,7 +35,7 @@
 #' @param lty Character string to control the type of the line at which sounds are played. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses 'invisible lines' (i.e., does not draw them).Default is 2.
 #' @param lwd Character string to control the width of the line at which sounds are played. Default is 2.
 #' @param axis.type Character string to control the style of spectrogram axes. Currently there are 3 options:
-#' #' \itemize{
+#'  \itemize{
 #' \item \code{standard}: Both Y and X axes are printed as in the default \code{\link[seewave]{spectro}} view. 
 #' \item \code{minimal}: Single lines are used to denote the range defined by 1 s and 1 kHz for the X and Y axes respectively.
 #' \item \code{none}: No axis is printed (also removes ticks, tick labels, and axis labels).
@@ -70,8 +70,7 @@
 #' 
 #' @author Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr}) 
 #' @references {
-
-#' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+#' Araya-Salas M & Wilkins M R. (2020). dynaSpec: dynamic spectrogram visualizations in R. R package version 1.0.0.
 #' }
 
 scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, pb = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = "white", spectro.call = NULL, annotation.call = NULL, ...)
@@ -97,13 +96,13 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     if (!is.call(spectro.call)) stop("'spectro.call' is not a call")
   
   # hopsize  
-  if (!is.numeric(hop.size) | hop.size < 0) stop("'parallel' must be a positive number") 
+  if (!is.numeric(hop.size) | hop.size < 0) stop("'hop.size' must be a positive number") 
 
   # buffer  
-  if (!is.numeric(buffer) | buffer < 0) stop("'parallel' must be a positive number") 
+  if (!is.numeric(buffer) | buffer < 0) stop("'buffer' must be a positive number") 
 
-  # buffer  
-  if (!is.numeric(loop) | loop < 0) stop("'parallel' must be a positive number") 
+  # loop  
+  if (!is.numeric(loop) | loop < 0) stop("'loop' must be a positive number") 
 
   # error if buffer and loop > 1
   if (buffer > 0 & loop > 1) {
@@ -180,7 +179,6 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   
   # make vector with name of images
   img_names <- paste0(sprintf(paste0("%0",nchar(frames) + 2, "d"), 1:(frames * loop)), ".temp.img.tiff")
-
   
   if (is.null(flim)) # flim on original wave
     flim <- c(0, wave@samp.rate / 2000)
@@ -194,10 +192,12 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
  
   on.exit(try(unlink(c(file.path(path = tempdir(), "temp.full.spectro.png"), file.path(path = tempdir(), "temp.full.oscillo.png"))), silent = TRUE), add = TRUE)
   
+  wdt <- width * seewave::duration(wave_sil) / t.display
+  if (wdt > 32767) wdt <- 32767 
    
   if (!ggspectro){
   # save full spectrogram of wave
-  grDevices::png(filename = file.path(tempdir(), "temp.full.spectro.png"), height = height, width = width * seewave::duration(wave_sil) / t.display, res = res)
+  grDevices::png(filename = file.path(tempdir(), "temp.full.spectro.png"), height = height, width = wdt, res = res)
   
   # set plot margins for spectrogram
   graphics::par(mar = rep(0, 4))
@@ -261,7 +261,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   spc_img <- imager::load.image(file.path(tempdir(), "temp.full.spectro.png"))
   
   # resave with derivatives
-  grDevices::png(filename = file.path(tempdir(), "temp.full.spectro.png"), height = height, width = width * seewave::duration(wave_sil) / t.display, res = res)
+  grDevices::png(filename = file.path(tempdir(), "temp.full.spectro.png"), height = height, width = wdt, res = res)
   
   # remove margins and make background gray
   graphics::par(mar = rep(0, 4), bg = "gray")
@@ -287,12 +287,12 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
       ggplot2::scale_y_continuous(expand = c(0, 0), limits = flim) +
       ggplot2::theme(axis.line = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank(), axis.ticks = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.position = "none"))
 
-    ggplot2::ggsave(plot = ggsp, filename = file.path(tempdir(), "temp.full.spectro.png"), height = height / res, width = (width * seewave::duration(wave_sil) / t.display) / res, units = "in", dpi = res, device = "png", limitsize = FALSE)    
+    ggplot2::ggsave(plot = ggsp, filename = file.path(tempdir(), "temp.full.spectro.png"), height = height / res, width = wdt / res, units = "in", dpi = res, device = "png", limitsize = FALSE)    
   }
   
   # plot oscillogram
   if (osc){
-    grDevices::png(filename = file.path(tempdir(), "temp.full.oscillo.png"), height = height, width = width * seewave::duration(wave_sil) / t.display, res = res)
+    grDevices::png(filename = file.path(tempdir(), "temp.full.oscillo.png"), height = height, width = wdt, res = res)
     
     # set plot margins for spectrogram
     graphics::par(mar = rep(0, 4))

@@ -7,7 +7,7 @@
 \title{Make a paged dynamic spectrogram similar to spectral display in Adobe Audition}
 \usage{
 paged_spectro(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",
-highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=T,...)
+highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 }
 \arguments{
 \item{specParams}{an object returned from \code{\link{prep_static_ggspectro}}}

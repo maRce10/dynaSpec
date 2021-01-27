@@ -17,7 +17,6 @@
 #' @importFrom parallel makePSOCKcluster
 #' @importFrom grDevices dev.off tiff adjustcolor
 #' @importFrom graphics abline par plot rect axis mtext par
-#' 
 #' @author Marcelo Araya-Salas & Matthew R. Wilkins
 #'         Maintainer: Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr})
 #'   

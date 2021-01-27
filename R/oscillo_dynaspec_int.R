@@ -20,10 +20,10 @@ oscillo_dynaspec_int <- function (wave, f, channel = 1, tlab = "Time (s)", alab 
   
     alim <- max(abs(wave))
       
-        op <- par(tcl = tcl, col.axis = colaxis, cex.axis = cexaxis, 
+        op <- graphics::par(tcl = tcl, col.axis = colaxis, cex.axis = cexaxis, 
                   font.axis = fontaxis, col = colline, las = 0, bg = bg)
 
-        on.exit(par(op))
+        on.exit(graphics::par(op))
         
                 plot(x = seq(from, to, length.out = n), y = wave, 
              col = colwave, type = type, cex = cex, xaxs = "i", 
