@@ -32,6 +32,10 @@ colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
 
 \item{yLim}{is the frequency limits (y-axis); default is c(0,10) aka 0-10kHz}
 
+\item{plotLegend}{include a legend showing amplitude colors?}
+
+\item{onlyPlotSpec}{do you want to just plot the spec and leave out the legend, axes, and axis labels?}
+
 \item{ampTrans}{amplitude transform for boosting spectrum contrast; defaults to identity (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)}
 
 \item{min_dB}{the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)}
@@ -42,15 +46,21 @@ colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
 
 \item{wn}{window name (slight tweaks on algorithm that affect smoothness of output) see \code{\link[seewave]{spectro}}}
 
+\item{specWidth}{what width (in inches) would you like to make your PNG output be, if saving a static spec?}
+
+\item{specHeight}{what height (in inches) would you like to make your PNG output be, if saving a static spec?}
+
 \item{colbins}{default 30: increasing can smooth the color contours, but take longer to generate spec}
 
 \item{ampThresh}{amplitude threshold as a percent to cut out of recording (try 5 to start); default= no filtering (high data loss with this; not recommended; play with min_dB  and ampTrans first)}
 
-\item{bgFlood}{do you want the background color to spill into the axis margins? Default=F (i.e. white margins)}
+\item{bgFlood}{do you want the background color to spill into the axis margins? Default=FALSE (i.e. white margins)}
 
-\item{fontAndAxisCol}{the color of legend text if onlyPlotSpec=T (since margins will be white, with black text); if bgFlood=T, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color}
+\item{fontAndAxisCol}{the color of legend text if onlyPlotSpec=TRUE (since margins will be white, with black text); if bgFlood=TRUE, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color}
 
 \item{optim}{NULL by default; this is an experimental feature to simplify the dataframe of the FFT-processed waveform used to generate the spectrogram (currently does nothing)}
+
+\item{...}{Other arguments to be passed for rendering the spec (i.e. to seewave::spectro)}
 }
 \value{
 a list with all spectrogram parameters, segmented WAV files (segWavs) and spectrograms spec; importantly, spec is a list of n=number of "pages"/segments; the first page is displayed by default
@@ -63,6 +73,7 @@ settings to \code{\link{paged_spectro}} to generate dynamic spectrogram video.
 }
 \examples{
 {
+require(dynaSpec)
 f <- list.files(pattern=".wav", full.names = TRUE, path = system.file(package="dynaSpec"))
 
 # default behavior should be a decent start for good recordings; doesn't save anything, just plots
@@ -72,20 +83,20 @@ prep_static_ggspectro(f[1])
 # resulting object, but it will still always plot the first spec
 # let's add axes and boost the signal a smidge
 femaleBarnSwallow <- prep_static_ggspectro(f[1],destFolder="wd",
-onlyPlotSpec = F, bgFlood=T,ampTrans=2)
+onlyPlotSpec = FALSE, bgFlood=TRUE,ampTrans=2)
  
 # feels like we're missing a little bit of the quieter signals; let's lower
 # the minimum amplitude threshold a bit
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",
-onlyPlotSpec = F, bgFlood=T,ampTrans=2,min_dB=-35)
+onlyPlotSpec = FALSE, bgFlood=TRUE,ampTrans=2,min_dB=-35)
  
 #now for a male song  
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, 
-bgFlood=T)
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE, 
+bgFlood=TRUE)
 
 #Nice, but the trill is fading out; I'm gonna signal boost and lower the min_dB
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, 
-bgFlood=T,ampTrans=2,min_dB=-40)
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE, 
+bgFlood=TRUE,ampTrans=2,min_dB=-40)
 
 #much stronger, now let's combine them (you need the cowplot package)
 

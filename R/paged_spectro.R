@@ -16,7 +16,7 @@
 #' @param highlightCol default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)
 #' @param highlightAlpha opacity of the highlight box; default is 0.6
 #' @param cursorCol    Color of the leading edge of the highlight box; default "#4B0C6BFF"
-#' @param delTemps   Default=T, deletes temporary files (specs & WAV files used to create concatenated video)
+#' @param delTemps   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
 #' @param framerate by default, set to 30 (currently this is not supported, as animate doesn't honor the setting)
 #' @return Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
 #' @seealso \code{\link{prep_static_ggspectro}}
@@ -24,28 +24,33 @@
 #' @references {
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 #' }
+#' @export
 #' @examples {
 #' #show wav files included with dynaSpec
-#' f <- list.files(pattern=".wav", full.names = TRUE, path = system.file(package="dynaSpec"))
+#' f <- list.files(pattern=".wav", full.names = TRUE, 
+#'      path = system.file(package="dynaSpec"))
 #' 
-#' femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",onlyPlotSpec = F, bgFlood=T)
+#' femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",
+#'                    onlyPlotSpec = FALSE, bgFlood= TRUE)
 #' paged_spectro(femaleBarnSwallow)
 #' 
-#' maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = F, bgFlood=T,min_dB=-40)
+#' maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",
+#'                  onlyPlotSpec = FALSE, bgFlood= TRUE,min_dB=-40)
+#' 
 #' paged_spectro(femaleBarnSwallow)
 #' 
 #' # Make a multipage dynamic spec of a humpback whale song
 #' # Note, we're saving PNGs of our specs in the working directory; to add
-#'# axis labels, we set onlyPlotSpec to F, and to make the same background
-#' # color for the entire figure, we set bgFlood=T;
+#' # axis labels, we set onlyPlotSpec to F, and to make the same background
+#' # color for the entire figure, we set bgFlood= TRUE;
 #' # The yLim is set to only go to 0.7kHz, where the sounds are for these big whales; 
 #' #also applying an amplitude transform to boost signal.
 #' #This is a longer file, so we're taking the first 12 seconds with crop=12
 #' #xLim=3 means each "page" will be 3 seconds, so we'll have 4 dynamic spec pages that get combined
 #' 
 #' humpback <- prep_static_ggspectro(
-#' "http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",
-#' onlyPlotSpec=F,bgFlood=T,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+#' "http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG= TRUE,destFolder="wd",
+#' onlyPlotSpec=FALSE,bgFlood= TRUE,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 #' 
 #' #to generate multipage dynamic spec (movie), run the following
 #' paged_spectro(humpback)
@@ -55,9 +60,12 @@
 
 paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 {
-if(!ari::have_ffmpeg_exec()){
+ xmin<-ymin <- xmax <- ymax <- NULL 
+ #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
+  if(!ari::have_ffmpeg_exec()){
   cat("\n*****This script needs ffmpeg to work*****\n")
-  cat("If you have a mac, with HomeBrew installed, you can fix this easily in terminal with:\n")
+  cat("If you have a mac, with HomeBrew installed, you can fix this easily 
+      in terminal with:\n")
   cat("\n>\tbrew install ffmpeg\n")
   cat("\nIf not, download and install it from ffmpeg.org")
   }else{

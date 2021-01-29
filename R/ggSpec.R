@@ -23,10 +23,10 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
   
   #Modified from seewave::ggspectro
   #--->
-  # norm = F is important for having similar gain across different recordings
-  # spectrogram<-seewave::spectro(wav,plot=F,ovlp=ovlp,wl=wl,wn=wn,norm=F)
-  #normalize(wav,center=F,pcm=T)
-  spectrogram<-seewave::spectro(wav,plot=F,ovlp=ovlp,wl=wl,wn=wn)
+  # norm =FALSE is important for having similar gain across different recordings
+  # spectrogram<-seewave::spectro(wav,plot=FALSE,ovlp=ovlp,wl=wl,wn=wn,norm=FALSE)
+  #normalize(wav,center=FALSE,pcm=TRUE)
+  spectrogram<-seewave::spectro(wav,plot=FALSE,ovlp=ovlp,wl=wl,wn=wn,...)
   freq <- rep(spectrogram$freq, times = ncol(spectrogram$amp))
   time <- rep(spectrogram$time, each = nrow(spectrogram$amp))
   amplitude <- as.vector(spectrogram$amp)
@@ -68,7 +68,7 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
           ggplot2::scale_fill_gradient(limits=c(min_dB,0),na.value="transparent",low=colPal[1],high=colPal[2],trans=scales::modulus_trans(p=ampTrans))}
         }+
     #Make contours  
-    ggplot2::stat_contour(geom="polygon",ggplot2::aes(fill=..level..),bins=colbins,na.rm=T)+
+    ggplot2::stat_contour(geom="polygon",ggplot2::aes(fill=..level..),bins=colbins,na.rm=TRUE)+
     #Set base theme  
     mytheme(bg)+{
        #If user supplied fontAndAxisCol, change those settings (regardless of whether bg is flooded or not)

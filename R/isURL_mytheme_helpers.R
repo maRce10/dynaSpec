@@ -1,9 +1,19 @@
-#' Helper functions for paged_spectro.R
+#' Functions to check if a string is a URL or change a ggplot theme
 #' 
+#' Test if string is URL; Not intended for direct use.
 #' 
+#' @param x a string to test for being a URL
+#' @noRd
+#' @return TRUE or FALSE 
+
 is.url <-function(x) { 
     grepl("www.|http:|https:", x)
 }
+
+#' @description Custom ggplot theme helper functions
+#' @param bg a background color to be passed to the custom theming function
+#' @noRd
+#' @return a ggplot theme
 
 #base ggplot theme for all specs used in testSpec.R
 mytheme<-function(bg){
@@ -21,6 +31,11 @@ mytheme<-function(bg){
     legend.text=ggplot2::element_text(size=16),
     legend.title=ggplot2::element_text(face="bold",size=16)
     )}
+
+#' @description Custom ggplot (larger) theme helper function 
+#' @param bg a background color to be passed to the custom theming function
+#' @noRd
+#' @return a ggplot theme
 
 #base ggplot theme for all specs used in paged_spectro
 mytheme_lg<-function(bg){
