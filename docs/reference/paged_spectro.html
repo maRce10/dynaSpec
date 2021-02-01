@@ -135,8 +135,8 @@ Each page has a sliding window revealing the part of the static spectrogram bein
 is defined by the xLim parameter in <code><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></code>. You can also output temporary segmented files, if desired.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>paged_spectro</span>(<span class='no'>specParams</span>,<span class='no'>destFolder</span>,<span class='no'>vidName</span>,<span class='kw'>framerate</span><span class='kw'>=</span><span class='fl'>30</span>,<span class='kw'>highlightCol</span><span class='kw'>=</span><span class='st'>"#4B0C6BFF"</span>,
-<span class='kw'>highlightAlpha</span><span class='kw'>=</span><span class='fl'>.6</span>,<span class='kw'>cursorCol</span><span class='kw'>=</span><span class='st'>"#4B0C6BFF"</span>,<span class='kw'>delTemps</span><span class='kw'>=</span><span class='no'>T</span>,<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>specParams</span>,<span class='va'>destFolder</span>,<span class='va'>vidName</span>,framerate<span class='op'>=</span><span class='fl'>30</span>,highlightCol<span class='op'>=</span><span class='st'>"#4B0C6BFF"</span>,
+highlightAlpha<span class='op'>=</span><span class='fl'>.6</span>,cursorCol<span class='op'>=</span><span class='st'>"#4B0C6BFF"</span>,delTemps<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +171,7 @@ is defined by the xLim parameter in <code><a href='prep_static_ggspectro.html'>p
     </tr>
     <tr>
       <th>delTemps</th>
-      <td><p>Default=T, deletes temporary files (specs &amp; WAV files used to create concatenated video)</p></td>
+      <td><p>Default= TRUE, deletes temporary files (specs &amp; WAV files used to create concatenated video)</p></td>
     </tr>
     </table>
 
@@ -184,36 +184,44 @@ is defined by the xLim parameter in <code><a href='prep_static_ggspectro.html'>p
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Matthew R Wilkins (<a href='mailto:matt@galacticpolymath.com'>matt@galacticpolymath.com</a>)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>{
+    <pre class="examples"><span class='op'>{</span>
 <span class='co'>#show wav files included with dynaSpec</span>
-<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span>(<span class='kw'>pattern</span><span class='kw'>=</span><span class='st'>".wav"</span>, <span class='kw'>full.names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"dynaSpec"</span>))
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span>pattern<span class='op'>=</span><span class='st'>".wav"</span>, full.names <span class='op'>=</span> <span class='cn'>TRUE</span>, 
+     path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span>package<span class='op'>=</span><span class='st'>"dynaSpec"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>femaleBarnSwallow</span><span class='kw'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span>(<span class='no'>f</span>[<span class='fl'>1</span>],<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,<span class='kw'>onlyPlotSpec</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>)
-<span class='fu'>paged_spectro</span>(<span class='no'>femaleBarnSwallow</span>)
+<span class='va'>femaleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
+                   onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, bgFlood<span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>femaleBarnSwallow</span><span class='op'>)</span>
 
-<span class='no'>maleBarnSwallow</span><span class='kw'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span>(<span class='no'>f</span>[<span class='fl'>2</span>],<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,<span class='kw'>onlyPlotSpec</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>min_dB</span><span class='kw'>=</span>-<span class='fl'>40</span>)
-<span class='fu'>paged_spectro</span>(<span class='no'>femaleBarnSwallow</span>)
+<span class='va'>maleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
+                 onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, bgFlood<span class='op'>=</span> <span class='cn'>TRUE</span>,min_dB<span class='op'>=</span><span class='op'>-</span><span class='fl'>40</span><span class='op'>)</span>
+
+<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>femaleBarnSwallow</span><span class='op'>)</span>
 
 <span class='co'># Make a multipage dynamic spec of a humpback whale song</span>
 <span class='co'># Note, we're saving PNGs of our specs in the working directory; to add</span>
 <span class='co'># axis labels, we set onlyPlotSpec to F, and to make the same background</span>
-<span class='co'># color for the entire figure, we set bgFlood=T;</span>
+<span class='co'># color for the entire figure, we set bgFlood= TRUE;</span>
 <span class='co'># The yLim is set to only go to 0.7kHz, where the sounds are for these big whales; </span>
 <span class='co'>#also applying an amplitude transform to boost signal.</span>
 <span class='co'>#This is a longer file, so we're taking the first 12 seconds with crop=12</span>
 <span class='co'>#xLim=3 means each "page" will be 3 seconds, so we'll have 4 dynamic spec pages that get combined</span>
 
-<span class='no'>humpback</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span>(
-<span class='st'>"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,<span class='kw'>savePNG</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,
-<span class='kw'>onlyPlotSpec</span><span class='kw'>=</span><span class='no'>F</span>,<span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>yLim</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>.7</span>),<span class='kw'>crop</span><span class='kw'>=</span><span class='fl'>12</span>,<span class='kw'>xLim</span><span class='kw'>=</span><span class='fl'>3</span>,<span class='kw'>ampTrans</span><span class='kw'>=</span><span class='fl'>3</span>)
+<span class='va'>humpback</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span>
+<span class='st'>"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,savePNG<span class='op'>=</span> <span class='cn'>TRUE</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
+onlyPlotSpec<span class='op'>=</span><span class='cn'>FALSE</span>,bgFlood<span class='op'>=</span> <span class='cn'>TRUE</span>,yLim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>.7</span><span class='op'>)</span>,crop<span class='op'>=</span><span class='fl'>12</span>,xLim<span class='op'>=</span><span class='fl'>3</span>,ampTrans<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span> 
 
 <span class='co'>#to generate multipage dynamic spec (movie), run the following</span>
-<span class='fu'>paged_spectro</span>(<span class='no'>humpback</span>)
+<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>humpback</span><span class='op'>)</span>
 
 <span class='co'># see more examples at https://marce10.github.io/dynaSpec/</span>
-}</div><div class='output co'>#&gt; <span class='error'>Error in xlim(segLens[i], segLens[i + 1]): could not find function "xlim"</span></div></pre>
+<span class='op'>}</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -229,7 +237,7 @@ is defined by the xLim parameter in <code><a href='prep_static_ggspectro.html'>p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
