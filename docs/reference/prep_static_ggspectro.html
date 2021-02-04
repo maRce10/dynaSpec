@@ -131,10 +131,10 @@ prep_static_ggspectro to crop, filter, segment and tweak all spectrogram paramet
 settings to <code><a href='paged_spectro.html'>paged_spectro</a></code> to generate dynamic spectrogram video.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prep_static_ggspectro</span><span class='op'>(</span><span class='va'>soundFile</span>,<span class='va'>destFolder</span>,<span class='va'>outFilename</span>,savePNG<span class='op'>=</span><span class='cn'>FALSE</span>,colPal<span class='op'>=</span><span class='st'>"inferno"</span>,
-crop<span class='op'>=</span><span class='cn'>NULL</span>,bg<span class='op'>=</span><span class='cn'>NULL</span>,filter<span class='op'>=</span><span class='cn'>NULL</span>,xLim<span class='op'>=</span><span class='cn'>NULL</span>,yLim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>10</span><span class='op'>)</span>,plotLegend<span class='op'>=</span><span class='cn'>FALSE</span>,onlyPlotSpec<span class='op'>=</span><span class='cn'>TRUE</span>,
-ampTrans<span class='op'>=</span><span class='fl'>1</span>,min_dB<span class='op'>=</span><span class='op'>-</span><span class='fl'>30</span>,wl<span class='op'>=</span><span class='fl'>512</span>, ovlp<span class='op'>=</span><span class='fl'>90</span>,wn<span class='op'>=</span><span class='st'>"blackman"</span>,specWidth<span class='op'>=</span><span class='fl'>9</span>,specHeight<span class='op'>=</span><span class='fl'>3</span>,
-colbins<span class='op'>=</span><span class='fl'>30</span>,ampThresh<span class='op'>=</span><span class='fl'>0</span>,bgFlood<span class='op'>=</span><span class='cn'>FALSE</span>,fontAndAxisCol<span class='op'>=</span><span class='cn'>NULL</span>,optim<span class='op'>=</span><span class='cn'>NULL</span>,<span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>prep_static_ggspectro</span>(<span class='no'>soundFile</span>,<span class='no'>destFolder</span>,<span class='no'>outFilename</span>,<span class='kw'>savePNG</span><span class='kw'>=</span><span class='no'>F</span>,<span class='kw'>colPal</span><span class='kw'>=</span><span class='st'>"inferno"</span>,<span class='kw'>crop</span><span class='kw'>=</span><span class='kw'>NULL</span>,
+<span class='kw'>bg</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>filter</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>xLim</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>yLim</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>10</span>),<span class='kw'>plotLegend</span><span class='kw'>=</span><span class='no'>F</span>,<span class='kw'>onlyPlotSpec</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>ampTrans</span><span class='kw'>=</span><span class='fl'>1</span>,<span class='kw'>min_dB</span><span class='kw'>=</span>-<span class='fl'>30</span>,<span class='kw'>wl</span><span class='kw'>=</span><span class='fl'>512</span>,
+<span class='kw'>ovlp</span><span class='kw'>=</span><span class='fl'>90</span>,<span class='kw'>wn</span><span class='kw'>=</span><span class='st'>"blackman"</span>,<span class='kw'>specWidth</span><span class='kw'>=</span><span class='fl'>9</span>,<span class='kw'>specHeight</span><span class='kw'>=</span><span class='fl'>3</span>,<span class='kw'>colbins</span><span class='kw'>=</span><span class='fl'>30</span>,<span class='kw'>ampThresh</span><span class='kw'>=</span><span class='fl'>0</span>,<span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>F</span>,<span class='kw'>fontAndAxisCol</span><span class='kw'>=</span><span class='kw'>NULL</span>,
+<span class='kw'>optim</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,7 +157,7 @@ colbins<span class='op'>=</span><span class='fl'>30</span>,ampThresh<span class=
     </tr>
     <tr>
       <th>colPal</th>
-      <td><p>color palette; one of "viridis","magma","plasma","inferno","cividis" from the <code><a href='https://rdrr.io/pkg/viridisLite/man/viridis.html'>viridis</a></code> package OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient</p></td>
+      <td><p>color palette; one of "viridis","magma","plasma","inferno","cividis" from the <code><a href='https://rdrr.io/pkg/viridis/man/reexports.html'>viridis</a></code> package OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient</p></td>
     </tr>
     <tr>
       <th>crop</th>
@@ -180,20 +180,8 @@ colbins<span class='op'>=</span><span class='fl'>30</span>,ampThresh<span class=
       <td><p>is the frequency limits (y-axis); default is c(0,10) aka 0-10kHz</p></td>
     </tr>
     <tr>
-      <th>plotLegend</th>
-      <td><p>include a legend showing amplitude colors?</p></td>
-    </tr>
-    <tr>
-      <th>onlyPlotSpec</th>
-      <td><p>do you want to just plot the spec and leave out the legend, axes, and axis labels?</p></td>
-    </tr>
-    <tr>
       <th>ampTrans</th>
       <td><p>amplitude transform for boosting spectrum contrast; defaults to identity (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)</p></td>
-    </tr>
-    <tr>
-      <th>min_dB</th>
-      <td><p>the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)</p></td>
     </tr>
     <tr>
       <th>wl</th>
@@ -208,14 +196,6 @@ colbins<span class='op'>=</span><span class='fl'>30</span>,ampThresh<span class=
       <td><p>window name (slight tweaks on algorithm that affect smoothness of output) see <code><a href='https://rdrr.io/pkg/seewave/man/spectro.html'>spectro</a></code></p></td>
     </tr>
     <tr>
-      <th>specWidth</th>
-      <td><p>what width (in inches) would you like to make your PNG output be, if saving a static spec?</p></td>
-    </tr>
-    <tr>
-      <th>specHeight</th>
-      <td><p>what height (in inches) would you like to make your PNG output be, if saving a static spec?</p></td>
-    </tr>
-    <tr>
       <th>colbins</th>
       <td><p>default 30: increasing can smooth the color contours, but take longer to generate spec</p></td>
     </tr>
@@ -225,19 +205,19 @@ colbins<span class='op'>=</span><span class='fl'>30</span>,ampThresh<span class=
     </tr>
     <tr>
       <th>bgFlood</th>
-      <td><p>do you want the background color to spill into the axis margins? Default=FALSE (i.e. white margins)</p></td>
+      <td><p>do you want the background color to spill into the axis margins? Default=F (i.e. white margins)</p></td>
     </tr>
     <tr>
       <th>fontAndAxisCol</th>
-      <td><p>the color of legend text if onlyPlotSpec=TRUE (since margins will be white, with black text); if bgFlood=TRUE, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color</p></td>
+      <td><p>the color of legend text if onlyPlotSpec=T (since margins will be white, with black text); if bgFlood=T, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color</p></td>
     </tr>
     <tr>
       <th>optim</th>
       <td><p>NULL by default; this is an experimental feature to simplify the dataframe of the FFT-processed waveform used to generate the spectrogram (currently does nothing)</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Other arguments to be passed for rendering the spec (i.e. to seewave::spectro)</p></td>
+      <th>min_db</th>
+      <td><p>the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)</p></td>
     </tr>
     </table>
 
@@ -250,47 +230,42 @@ colbins<span class='op'>=</span><span class='fl'>30</span>,ampThresh<span class=
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='paged_spectro.html'>paged_spectro</a></code></p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Matthew R Wilkins (<a href='mailto:matt@galacticpolymath.com'>matt@galacticpolymath.com</a>)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/maRce10/dynaSpec'>dynaSpec</a></span><span class='op'>)</span>
-<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span>pattern<span class='op'>=</span><span class='st'>".wav"</span>, full.names <span class='op'>=</span> <span class='cn'>TRUE</span>, path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span>package<span class='op'>=</span><span class='st'>"dynaSpec"</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'>{
+<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span>(<span class='kw'>pattern</span><span class='kw'>=</span><span class='st'>".wav"</span>, <span class='kw'>full.names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"dynaSpec"</span>))
 
 <span class='co'># default behavior should be a decent start for good recordings; doesn't save anything, just plots</span>
-<span class='fu'>prep_static_ggspectro</span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+<span class='fu'>prep_static_ggspectro</span>(<span class='no'>f</span>[<span class='fl'>1</span>])
 
 <span class='co'># to use with paged_spectro or to do other stuff, you need to assign the</span>
 <span class='co'># resulting object, but it will still always plot the first spec</span>
 <span class='co'># let's add axes and boost the signal a smidge</span>
-<span class='va'>femaleBarnSwallow</span> <span class='op'>&lt;-</span> <span class='fu'>prep_static_ggspectro</span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
-onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, bgFlood<span class='op'>=</span><span class='cn'>TRUE</span>,ampTrans<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
- 
-<span class='co'># feels like we're missing a little bit of the quieter signals; let's lower</span>
-<span class='co'># the minimum amplitude threshold a bit</span>
-<span class='va'>femaleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'>prep_static_ggspectro</span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
-onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, bgFlood<span class='op'>=</span><span class='cn'>TRUE</span>,ampTrans<span class='op'>=</span><span class='fl'>2</span>,min_dB<span class='op'>=</span><span class='op'>-</span><span class='fl'>35</span><span class='op'>)</span>
- 
+<span class='no'>femaleBarnSwallow</span> <span class='kw'>&lt;-</span> <span class='fu'>prep_static_ggspectro</span>(<span class='no'>f</span>[<span class='fl'>1</span>],<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,
+<span class='kw'>onlyPlotSpec</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>ampTrans</span><span class='kw'>=</span><span class='fl'>2</span>)
+
+<span class='co'>#feels like we're missing a little bit of the quieter signals; let's lower the minimum amplitude threshold a bit</span>
+<span class='no'>femaleBarnSwallow</span><span class='kw'>&lt;-</span><span class='fu'>prep_static_ggspectro</span>(<span class='no'>f</span>[<span class='fl'>1</span>],<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,
+<span class='kw'>onlyPlotSpec</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>ampTrans</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>min_dB</span><span class='kw'>=</span>-<span class='fl'>35</span>)
+
 <span class='co'>#now for a male song  </span>
-<span class='va'>maleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'>prep_static_ggspectro</span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, 
-bgFlood<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='no'>maleBarnSwallow</span><span class='kw'>&lt;-</span><span class='fu'>prep_static_ggspectro</span>(<span class='no'>f</span>[<span class='fl'>2</span>],<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,<span class='kw'>onlyPlotSpec</span> <span class='kw'>=</span> <span class='no'>F</span>,
+<span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>)
 
 <span class='co'>#Nice, but the trill is fading out; I'm gonna signal boost and lower the min_dB</span>
-<span class='va'>maleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'>prep_static_ggspectro</span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, 
-bgFlood<span class='op'>=</span><span class='cn'>TRUE</span>,ampTrans<span class='op'>=</span><span class='fl'>2</span>,min_dB<span class='op'>=</span><span class='op'>-</span><span class='fl'>40</span><span class='op'>)</span>
+<span class='no'>maleBarnSwallow</span><span class='kw'>&lt;-</span><span class='fu'>prep_static_ggspectro</span>(<span class='no'>f</span>[<span class='fl'>2</span>],<span class='kw'>destFolder</span><span class='kw'>=</span><span class='st'>"wd"</span>,<span class='kw'>onlyPlotSpec</span> <span class='kw'>=</span> <span class='no'>F</span>,
+<span class='kw'>bgFlood</span><span class='kw'>=</span><span class='no'>T</span>,<span class='kw'>ampTrans</span><span class='kw'>=</span><span class='fl'>2</span>,<span class='kw'>min_dB</span><span class='kw'>=</span>-<span class='fl'>40</span>)
 
 <span class='co'>#much stronger, now let's combine them (you need the cowplot package)</span>
 
-<span class='co'># cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),</span>
-<span class='co'># maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")</span>
+<span class='kw pkg'>cowplot</span><span class='kw ns'>::</span><span class='fu'>plot_grid</span>(<span class='no'>femaleBarnSwallow</span>$<span class='no'>spec</span><span class='kw'>[[</span><span class='fl'>1</span>]]+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.window.html'>xlim</a></span>(<span class='fl'>0</span>,<span class='fl'>5</span>)+<span class='fu'>ggtitle</span>(<span class='st'>"female barn swallow song"</span>),
+<span class='no'>maleBarnSwallow</span>$<span class='no'>spec</span><span class='kw'>[[</span><span class='fl'>1</span>]]+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.window.html'>xlim</a></span>(<span class='fl'>0</span>,<span class='fl'>5</span>)+<span class='fu'>ggtitle</span>(<span class='st'>"male barn swallow song"</span>),<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>1</span>,<span class='kw'>labels</span><span class='kw'>=</span><span class='st'>"auto"</span>)
 
-<span class='co'># ggsave("M&amp;F_barn_swallow_song_specs.jpeg")</span>
+<span class='fu'>ggsave</span>(<span class='st'>"M&amp;F_barn_swallow_song_specs.jpeg"</span>)
+
 
 <span class='co'># see more examples at https://marce10.github.io/dynaSpec/</span>
-<span class='op'>}</span>
-</pre>
+}</div><div class='output co'>#&gt; <span class='error'>Error in xlim(segLens[i], segLens[i + 1]): could not find function "xlim"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -306,7 +281,7 @@ bgFlood<span class='op'>=</span><span class='cn'>TRUE</span>,ampTrans<span class
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
