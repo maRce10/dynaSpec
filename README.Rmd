@@ -37,10 +37,11 @@ devtools::install_github("maRce10/dynaSpec")
 library(dynaSpec)
 ```
 # Background
-This package is a collaboration between Marcelo Araya-Salas and Matt Wilkins. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-examples) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-examples) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
+This package is a collaboration between Marcelo Araya-Salas and Matt Wilkins. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-approach-scrolling-dynamic-spectrograms) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-approach-paged-dynamic-spectrograms) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
 
-
-## Marcelo's Examples:
+<hr>
+# Marcelo's Approach: "Scrolling Dynamic Spectrograms"  
+<hr>
 To run the following examples you will also need to load a few more packages as well as [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently as the developmental version on github). It can be installed as follows:
 
 ``` r
@@ -443,11 +444,11 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 
 
 
----
+<hr>
+# Matt's approach: "Paged Dynamic Spectrograms"
+<hr>
 
-
-## Matt's examples:
-#### Workflow 
+### Workflow 
 1.  Tweak your spectrogram settings using the prep_static_ggspectro() function -- aka prepStaticSpec() -- storing results in variable. You can also just segment and export static specs at this step.
 2.  Feed variable into paged_spectro() -- aka pagedSpec() -- to generate a dynamic spectrogram
     * It does this by exporting a PNG of the testSpec() ggplot function;
@@ -462,13 +463,13 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
 ```
 ### Static spectrogram of a female barn swallow song
-![Static Spectrogram of a female barn swallow song](README_files/figure-markdown_github/femaleBarnSwallow_1.png)
+![Static Spectrogram of a female barn swallow song](https://github.com/maRce10/dynaSpec/raw/master/inst/femaleBarnSwallow_1.png)
 
 ```
 #let's add axes 
-femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T,onlyPlotSpec = F)
+femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
 ```
-![Static spectrogram with axis labels for female barn swallow song](README_files/figure-markdown_github/femaleBarnSwallow_1b.png)
+![Static spectrogram with axis labels for female barn swallow song](https://github.com/maRce10/dynaSpec/raw/master/inst/femaleBarnSwallow_1b.png)
 
 ```
 #Now generate a dynamic spectrogram
@@ -477,7 +478,7 @@ paged_spectro(femaleBarnSwallow)
 ### Dynamic spectrogram of a female barn swallow song
 <iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
-## Now brighten the spec using the ampTrans parameter
+### Now brighten the spec using the ampTrans parameter
 * ampTrans=3 is a nonlinear signal booster. Basically collapses the difference between loudest and quietest values (higher values= brighter specs); 1 (default) means no transformation
 * Here, I also lowered the decibel threshold to include some quieter sounds with min_dB=-35; default is -30
 * bgFlood=T makes the axis area the same color as the plot background. It will automatically switch to white axis font if background is too dark.
@@ -490,7 +491,7 @@ paged_spectro(femaleBarnSwallow)
 p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
 pagedSpec(p2) 
 ```
-![Static spectrogram with axis labels for female barn swallow song](README_files/figure-markdown_github/femaleBarnSwallow_1c.png)
+![Static spectrogram with axis labels for female barn swallow song](https://github.com/maRce10/dynaSpec/raw/master/inst/femaleBarnSwallow_1c.png)
 
 <iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
@@ -504,29 +505,33 @@ pagedSpec(p2)
   * here we also limit the yLim of the plot to the vocalized frequencies from 0 to 700 Hz (0.7 kHz) 
   
 ```
-whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+       savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 pagedSpec(whale)
 #Voila 🐋
 ```
-## Static whale song spectrogram
-![Humpback whale song spectrogram](README_files/figure-markdown_github/humpback.png)
+### Static whale song spectrogram
+![Humpback whale song spectrogram](https://github.com/maRce10/dynaSpec/raw/master/inst/figure-markdown_github/humpback.png)
 
-## Dynamic multipage whale song spectrogram
+
+### Dynamic multipage whale song spectrogram
 <iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height=303 width=910 allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 
-#### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
+
+### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
 ```
 song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
-n=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
-pagedSpec(n,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
+temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
+pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
 ```
-<div>
+
+
 ### Nighthawk multipage dynamic spec
 <iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height=303 width=910  margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-</div>
 
-Enjoy! Please share your specs with us on Twitter! [@@M_Araya_Salas](https://twitter.com/M_Araya_Salas) & [@@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
+
+Enjoy! Please share your specs with us on Twitter! [\@M_Araya_Salas](https://twitter.com/M_Araya_Salas) & [\@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
 
 
 
@@ -534,4 +539,4 @@ Enjoy! Please share your specs with us on Twitter! [@@M_Araya_Salas](https://twi
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
 
-Araya-Salas M. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
