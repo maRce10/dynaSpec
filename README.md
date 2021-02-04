@@ -1,27 +1,25 @@
----
-title: "dynaSpec"
-output: github_document
-editor_options: 
-  chunk_output_type: console
----
+dynaSpec
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  out.width = "100%"
-)
-library(warbleR)
-```
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
+[![CRAN RStudio mirror
+downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](http://www.r-pkg.org/pkg/dynaSpec)
+[![Total
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](http://www.r-pkg.org/pkg/dynaSpec) [![Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-
-A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work. The package relies heavily on the packages [seewave](https://CRAN.R-project.org/package=seewave) and [tuneR](https://CRAN.R-project.org/package=tuneR).
+A set of tools to generate dynamic spectrogram visualizations in video
+format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in
+order for this package to work. The package relies heavily on the
+packages [seewave](https://CRAN.R-project.org/package=seewave) and
+[tuneR](https://CRAN.R-project.org/package=tuneR).
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
 
-Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic
+spectrogram visualizations in R*. R package version 1.0.0.
 
 Install/load the package from CRAN as follows:
 
@@ -39,7 +37,9 @@ library(tuneR)
 library(seewave)
 ```
 
-To install the latest developmental version from [github](http://github.com/) you will need the R package [devtools](https://cran.r-project.org/package=devtools):
+To install the latest developmental version from
+[github](http://github.com/) you will need the R package
+[devtools](https://cran.r-project.org/package=devtools):
 
 ``` r
 
@@ -49,13 +49,36 @@ devtools::install_github("maRce10/dynaSpec")
 #load package
 library(dynaSpec)
 ```
+
 # Background
-This package is a collaboration between Marcelo Araya-Salas and [Matt Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-approach-scrolling-dynamic-spectrograms) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-approach-paged-dynamic-spectrograms) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
+
+This package is a collaboration between Marcelo Araya-Salas and [Matt
+Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static
+and dynamic visualizations of sounds, ready for publication or
+presentation, *without taking screen shots* of another program.
+[Marcelo’s
+approach](#marcelos-approach-scrolling-dynamic-spectrograms)
+(implemented in the scrolling\_spectro() function) shows a spectrogram
+sliding past a fixed point as sounds are played, similar to that
+utilized in Cornell’s Macaulay Library of Sounds. These dynamic
+spectrograms are produced natively with base graphics. [Matt’s
+approach](#matts-approach-paged-dynamic-spectrograms) creates “paged”
+spectrograms that are revealed by a sliding highlight box as sounds are
+played, akin to Adobe Audition’s spectral view. This approach is in
+ggplot2 natively, and requires setting up spec parameters and segmenting
+sound files with prep\_static\_ggspectro(), the result of which is
+processed with paged\_spectro() to generate a dynamic spectrogram.
 
 <hr>
-# Marcelo's Approach: "Scrolling Dynamic Spectrograms"  
+
+# Marcelo’s Approach: “Scrolling Dynamic Spectrograms”
+
 <hr>
-To run the following examples you will also need to load a few more packages as well as [warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently as the developmental version on github). It can be installed as follows:
+
+To run the following examples you will also need to load a few more
+packages as well as
+[warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently
+as the developmental version on github). It can be installed as follows:
 
 ``` r
 
@@ -66,7 +89,8 @@ devtools::install_github("maRce10/warbleR")
 library(warbleR)
 ```
 
-A dynamic spectrogram of a canyon wren song with a viridis color palette:
+A dynamic spectrogram of a canyon wren song with a viridis color
+palette:
 
 ``` r
 
@@ -81,10 +105,12 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
+
 <iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/TOiukDxaNbI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
 </iframe>
+
 </center>
- 
 
 Black and white spectrogram:
 
@@ -99,12 +125,14 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-A spectrogram with black background (colbg = "black"):
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+A spectrogram with black background (colbg = “black”):
 
 ``` r
 
@@ -116,12 +144,15 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom (osc = TRUE):
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom
+(osc = TRUE):
 
 ``` r
 
@@ -135,14 +166,15 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
+
 <iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
 </iframe>
+
 </center>
- 
 
- 
-
-Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and looping 3 times (loop = 3:
+Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and
+looping 3 times (loop = 3:
 
 ``` r
 
@@ -157,12 +189,15 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="360" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-Visualizing a northern nightingale wren recording from [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="360" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+Visualizing a northern nightingale wren recording from
+[xeno-canto](https://www.xeno-canto.org) using a custom color palette:
 
 ``` r
 
@@ -178,12 +213,14 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-Spix's disc-winged bat inquiry call slow down (speed = 0.05):
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+Spix’s disc-winged bat inquiry call slow down (speed = 0.05):
 
 ``` r
 
@@ -211,14 +248,21 @@ scrolling_spectro(wave = thy_wav, wl = 400,
 ```
 
 <center>
+
 <iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
 </iframe>
+
 </center>
- 
 
 ### Further customization
 
-The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):
+The argument ‘spectro.call’ allows to insert customized spectrogram
+visualizations. For instance, the following code makes use of the
+`color_spectro()` function from
+[warbleR](https://cran.r-project.org/package=warbleR) to highlight
+vocalizations from male and female house wrens with different colors
+(after downloading the selection table and sound file from figshare):
 
 ``` r
 
@@ -242,7 +286,9 @@ color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13),
 
 The male part is shown in green and the female part in yellow.
 
-We can wrap the `color_spectro()` call using the `call()` function form base R and input that into `scrolling_spectro()` using the argument 'spectro.call':
+We can wrap the `color_spectro()` call using the `call()` function form
+base R and input that into `scrolling_spectro()` using the argument
+‘spectro.call’:
 
 ``` r
 # save call
@@ -261,12 +307,15 @@ scrolling_spectro(wave = hs_wren, wl = 512,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-This option can be mixed with any of the other customizations in the function, as adding an oscillogram:
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+This option can be mixed with any of the other customizations in the
+function, as adding an oscillogram:
 
 ``` r
 
@@ -281,10 +330,12 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 ```
 
 <center>
+
 <iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
 </iframe>
+
 </center>
- 
 
 A viridis color palette:
 
@@ -309,10 +360,12 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
 ```
 
 <center>
+
 <iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
 </iframe>
+
 </center>
- 
 
 Or simply a gray scale:
 
@@ -336,12 +389,17 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-The 'spectro.call' argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. `text()`, `lines()`) in a single function and then save the call to that function:
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+The ‘spectro.call’ argument can also be used to add annotations. To do
+this we need to wrap up both the spectrogram function and the annotation
+functions (i.e. `text()`, `lines()`) in a single function and then save
+the call to that function:
 
 ``` r
 
@@ -391,12 +449,23 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+Finally, the argument ‘annotation.call’ can be used to add static labels
+(i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a
+call from `text()`. This let users customize things as size, color,
+position, font, and additional arguments taken by `text()`. The call
+should also include the argmuents ‘start’ and ‘end’ to indicate the time
+at which the labels are displayed (in s). ‘fading’ is optional and
+allows fade-in and fade-out effects on labels (in s as well). The
+following code downloads a recording containing several frog species
+recorded in Costa Rica from figshare, cuts a clip including two species
+and labels it with a single label:
 
 ``` r
 
@@ -423,12 +492,15 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
 
-The argument accepts more than one labels as in a regular `text()` call. In that case 'start' and 'end' values should be supplied for each label:
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
+
+</center>
+
+The argument accepts more than one labels as in a regular `text()` call.
+In that case ‘start’ and ‘end’ values should be supplied for each label:
 
 ``` r
 
@@ -450,106 +522,134 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ```
 
 <center>
+
 <iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
 </iframe>
+
 </center>
- 
-
-
 
 <hr>
-# Matt's approach: "Paged Dynamic Spectrograms"
+
+# Matt’s approach: “Paged Dynamic Spectrograms”
+
 <hr>
 
-### Workflow 
-1.  Tweak your spectrogram settings using the prep_static_ggspectro() function -- aka prepStaticSpec() -- storing results in variable. You can also just segment and export static specs at this step.
-2.  Feed variable into paged_spectro() -- aka pagedSpec() -- to generate a dynamic spectrogram
-    * It does this by exporting a PNG of the testSpec() ggplot function;
-    * Import PNG as a new ggplot raster layer
-    * Overlay a series of translucent highlight boxes that disolve away using gganimate
+### Workflow
 
-```
-#list WAVs included with dynaSpec
-(f<-system.file(package="dynaSpec") %>% list.files(pattern=".wav",full.names=T))
+1.  Tweak your spectrogram settings using the prep\_static\_ggspectro()
+    function – aka prepStaticSpec() – storing results in variable. You
+    can also just segment and export static specs at this step.
+2.  Feed variable into paged\_spectro() – aka pagedSpec() – to generate
+    a dynamic spectrogram
+      - It does this by exporting a PNG of the testSpec() ggplot
+        function;
+      - Import PNG as a new ggplot raster layer
+      - Overlay a series of translucent highlight boxes that disolve
+        away using gganimate
 
-#store output and save spectrogram to working directory
-params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
-```
+<!-- end list -->
+
+    #list WAVs included with dynaSpec
+    (f<-system.file(package="dynaSpec") %>% list.files(pattern=".wav",full.names=T))
+    
+    #store output and save spectrogram to working directory
+    params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
+
 ### Static spectrogram of a female barn swallow song
-![Static Spectrogram of a female barn swallow song](inst/femaleBarnSwallow_1.png)
 
-```
-#let's add axes 
-femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
-```
-![Static spectrogram with axis labels for female barn swallow song](inst/femaleBarnSwallow_1b.png)
+![Static Spectrogram of a female barn swallow
+song](inst/femaleBarnSwallow_1.png)
 
-```
-#Now generate a dynamic spectrogram
-paged_spectro(femaleBarnSwallow)
-```
+    #let's add axes 
+    femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
+
+![Static spectrogram with axis labels for female barn swallow
+song](inst/femaleBarnSwallow_1b.png)
+
+    #Now generate a dynamic spectrogram
+    paged_spectro(femaleBarnSwallow)
+
 ### Dynamic spectrogram of a female barn swallow song
-<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+
+</iframe>
 
 ### Now brighten the spec using the ampTrans parameter
-* ampTrans=3 is a nonlinear signal booster. Basically collapses the difference between loudest and quietest values (higher values= brighter specs); 1 (default) means no transformation
-* Here, I also lowered the decibel threshold to include some quieter sounds with min_dB=-35; default is -30
-* bgFlood=T makes the axis area the same color as the plot background. It will automatically switch to white axis font if background is too dark.
-* Then generate dynamic spectrogram
 
-```
-#note that prep_static_spectro() is tha same as prepStaticSpec()
-#Also paged_spectro() is the same as pagedSpec()
+  - ampTrans=3 is a nonlinear signal booster. Basically collapses the
+    difference between loudest and quietest values (higher values=
+    brighter specs); 1 (default) means no transformation
+  - Here, I also lowered the decibel threshold to include some quieter
+    sounds with min\_dB=-35; default is -30
+  - bgFlood=T makes the axis area the same color as the plot background.
+    It will automatically switch to white axis font if background is too
+    dark.
+  - Then generate dynamic spectrogram
 
-p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
-pagedSpec(p2) 
-```
-![Static spectrogram with axis labels for female barn swallow song](inst/femaleBarnSwallow_1c.png)
+<!-- end list -->
 
-<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    #note that prep_static_spectro() is tha same as prepStaticSpec()
+    #Also paged_spectro() is the same as pagedSpec()
+    
+    p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
+    pagedSpec(p2) 
 
+![Static spectrogram with axis labels for female barn swallow
+song](inst/femaleBarnSwallow_1c.png)
 
-### Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)
+<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 
-* Long files may take a long time to render, depending on CPU power...
-  * the default is to not plot axes and labels (onlyPlotSpec=T)
-  * crop=12 is interpreted as: only use the first 12 seconds of the file; can also specify interval w/ c(0,12)
-  * xLim=3 specifies the "page window" i.e. how many seconds each "page" of the dynamic spectrogram should display, here 3 sec
-  * here we also limit the yLim of the plot to the vocalized frequencies from 0 to 700 Hz (0.7 kHz) 
-  
-```
-whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
-       savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
-pagedSpec(whale)
-#Voila 🐋
-```
+</iframe>
+
+### Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)
+
+  - Long files may take a long time to render, depending on CPU power…
+      - the default is to not plot axes and labels (onlyPlotSpec=T)
+      - crop=12 is interpreted as: only use the first 12 seconds of the
+        file; can also specify interval w/ c(0,12)
+      - xLim=3 specifies the “page window” i.e. how many seconds each
+        “page” of the dynamic spectrogram should display, here 3 sec
+      - here we also limit the yLim of the plot to the vocalized
+        frequencies from 0 to 700 Hz (0.7 kHz)
+
+<!-- end list -->
+
+    whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+           savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+    pagedSpec(whale)
+    #Voila 🐋
+
 ### Static whale song spectrogram
+
 ![Humpback whale song spectrogram](inst/humpback.png)
 
-
 ### Dynamic multipage whale song spectrogram
-<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height=303 width=910 allow="autoplay; fullscreen" allowfullscreen></iframe>
 
+<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height="303" width="910" allow="autoplay; fullscreen" allowfullscreen>
 
+</iframe>
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
-```
-song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
-temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
-pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
-```
 
+    song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
+    temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
+    pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
 
 ### Nighthawk multipage dynamic spec
-<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height=303 width=910  margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
+<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height="303" width="910" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 
-Enjoy! Please share your specs with us on Twitter! [\@M_Araya_Salas](https://twitter.com/M_Araya_Salas) & [\@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
+</iframe>
 
+Enjoy\! Please share your specs with us on Twitter\!
+[@M\_Araya\_Salas](https://twitter.com/M_Araya_Salas) &
+[@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
 
-
-------------------------------------------------------------------------
+-----
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
 
-Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), *dynaSpec: dynamic
+spectrogram visualizations in R*. R package version 1.0.0.
