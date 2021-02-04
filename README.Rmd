@@ -238,7 +238,7 @@ color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13),
               interactive = NULL, bg.col = "black")
 ```
 
-<img src="inst/colored_spectro_house_wren_duet.png" alt="house wren duet">
+<img src="man/figures/colored_spectro_house_wren_duet.png" alt="house wren duet">
 
 The male part is shown in green and the female part in yellow.
 
@@ -476,13 +476,13 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
 ```
 ### Static spectrogram of a female barn swallow song
-![Static Spectrogram of a female barn swallow song](inst/femaleBarnSwallow_1.png)
+![Static Spectrogram of a female barn swallow song](man/figures/femaleBarnSwallow_1.png)
 
 ```
 #let's add axes 
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
 ```
-![Static spectrogram with axis labels for female barn swallow song](inst/femaleBarnSwallow_1b.png)
+![Static spectrogram with axis labels for female barn swallow song](man/figures/femaleBarnSwallow_1b.png)
 
 ```
 #Now generate a dynamic spectrogram
@@ -504,7 +504,7 @@ paged_spectro(femaleBarnSwallow)
 p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
 pagedSpec(p2) 
 ```
-![Static spectrogram with axis labels for female barn swallow song](inst/femaleBarnSwallow_1c.png)
+![Static spectrogram with axis labels for female barn swallow song](man/figures/femaleBarnSwallow_1c.png)
 
 <iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
@@ -524,7 +524,7 @@ pagedSpec(whale)
 #Voila 🐋
 ```
 ### Static whale song spectrogram
-![Humpback whale song spectrogram](inst/humpback.png)
+![Humpback whale song spectrogram](man/figures/humpback.png)
 
 
 ### Dynamic multipage whale song spectrogram

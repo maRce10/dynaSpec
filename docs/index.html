@@ -255,7 +255,7 @@
               collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
               base.col <span class="op">=</span> <span class="st">"black"</span>,  t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>, strength <span class="op">=</span> <span class="fl">3</span>, 
               interactive <span class="op">=</span> <span class="cn">NULL</span>, bg.col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></pre></div>
-<p><img src="inst/colored_spectro_house_wren_duet.png" alt="house wren duet"></p>
+<p><img src="reference/figures/colored_spectro_house_wren_duet.png" alt="house wren duet"></p>
 <p>The male part is shown in green and the female part in yellow.</p>
 <p>We can wrap the <code><a href="https://marce10.github.io/warbleR/reference/color_spectro.html">color_spectro()</a></code> call using the <code><a href="https://rdrr.io/r/base/call.html">call()</a></code> function form base R and input that into <code><a href="reference/scrolling_spectro.html">scrolling_spectro()</a></code> using the argument ‘spectro.call’:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
@@ -464,10 +464,10 @@
 <div id="static-spectrogram-of-a-female-barn-swallow-song" class="section level3">
 <h3 class="hasAnchor">
 <a href="#static-spectrogram-of-a-female-barn-swallow-song" class="anchor"></a>Static spectrogram of a female barn swallow song</h3>
-<p><img src="inst/femaleBarnSwallow_1.png" alt="Static Spectrogram of a female barn swallow song"></p>
+<p><img src="reference/figures/femaleBarnSwallow_1.png" alt="Static Spectrogram of a female barn swallow song"></p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">#let's add axes </span></span>
 <span id="cb20-2"><a href="#cb20-2"></a>femaleBarnSwallow&lt;-<span class="kw">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="dt">destFolder=</span><span class="kw">tempdir</span>(),<span class="dt">savePNG=</span>T,<span class="dt">onlyPlotSpec =</span> F)</span></code></pre></div>
-<p><img src="inst/femaleBarnSwallow_1b.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<p><img src="reference/figures/femaleBarnSwallow_1b.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co">#Now generate a dynamic spectrogram</span></span>
 <span id="cb21-2"><a href="#cb21-2"></a><span class="kw">paged_spectro</span>(femaleBarnSwallow)</span></code></pre></div>
 </div>
@@ -491,7 +491,7 @@
 <span id="cb22-3"><a href="#cb22-3"></a></span>
 <span id="cb22-4"><a href="#cb22-4"></a>p2&lt;-<span class="kw">prepStaticSpec</span>(f[<span class="dv">1</span>],<span class="dt">min_dB=</span><span class="op">-</span><span class="dv">35</span>, <span class="dt">savePNG=</span>T, <span class="dt">destFolder=</span><span class="st">"wd"</span>,<span class="dt">onlyPlotSpec=</span>F,<span class="dt">bgFlood=</span>T,<span class="dt">ampTrans=</span><span class="dv">3</span>) </span>
 <span id="cb22-5"><a href="#cb22-5"></a><span class="kw">pagedSpec</span>(p2) </span></code></pre></div>
-<p><img src="inst/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<p><img src="reference/figures/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
 <iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 </div>
@@ -516,7 +516,7 @@
 <div id="static-whale-song-spectrogram" class="section level3">
 <h3 class="hasAnchor">
 <a href="#static-whale-song-spectrogram" class="anchor"></a>Static whale song spectrogram</h3>
-<p><img src="inst/humpback.png" alt="Humpback whale song spectrogram"></p>
+<p><img src="reference/figures/humpback.png" alt="Humpback whale song spectrogram"></p>
 </div>
 <div id="dynamic-multipage-whale-song-spectrogram" class="section level3">
 <h3 class="hasAnchor">
