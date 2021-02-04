@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dynaSpec</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -77,11 +77,11 @@
 <div id="dynaspec" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#dynaspec" class="anchor"></a>dynaSpec</h1></div>
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+<p>A set of tools to generate dynamic spectrogram visualizations in video format. <a href="https://ffmpeg.org/download.html">FFMPEG</a> must be installed in order for this package to work. The package relies heavily on the packages <a href="https://CRAN.R-project.org/package=seewave">seewave</a> and <a href="https://CRAN.R-project.org/package=tuneR">tuneR</a>.</p>
 <p>Please cite <a href="https://marce10.github.io/dynaSpec">dynaSpec</a> as follows:</p>
 <p>Araya-Salas, Marcelo &amp; Wilkins, Matthew R.. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-<p><a href="https://cran.r-project.org/package=dynaSpec"><img src="http://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a> <a href="https://www.r-pkg.org:443/pkg/dynaSpec"><img src="http://cranlogs.r-pkg.org/badges/dynaSpec" alt="CRAN RStudio mirror downloads"></a> <a href="https://www.r-pkg.org:443/pkg/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue" alt="Total downloads"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></p>
-<p>A set of tools to generate dynamic spectrogram visualizations in video format. <a href="https://ffmpeg.org/download.html">FFMPEG</a> must be installed in order for this package to work. The package relies heavily on the packages <a href="https://CRAN.R-project.org/package=seewave">seewave</a> and <a href="https://CRAN.R-project.org/package=tuneR">tuneR</a>.</p>
 <p>Install/load the package from CRAN as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 
@@ -95,7 +95,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sjmgarnier/viridis">viridis</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tuneR</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://rug.mnhn.fr/seewave">seewave</a></span><span class="op">)</span></pre></div>
-<p>To install the latest developmental version from <a href="https://github.com/">github</a> you will need the R package <a href="https://cran.r-project.org/package=devtools">devtools</a>:</p>
+<p>To install the latest developmental version from <a href="http://github.com/">github</a> you will need the R package <a href="https://cran.r-project.org/package=devtools">devtools</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 
 <span class="co"># From github</span>
@@ -107,10 +107,13 @@
 <div id="background" class="section level1">
 <h1 class="hasAnchor">
 <a href="#background" class="anchor"></a>Background</h1>
-<p>This package is a collaboration between Marcelo Araya-Salas and Matt Wilkins. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, <em>without taking screen shots</em> of another program. <a href="#marcelos-examples">Marcelo’s approach</a> (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell’s Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. <a href="#matts-examples">Matt’s approach</a> creates “paged” spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition’s spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.</p>
-<div id="marcelos-examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#marcelos-examples" class="anchor"></a>Marcelo’s Examples:</h2>
+<p>This package is a collaboration between Marcelo Araya-Salas and <a href="http://www.mattwilkinsbio.com/">Matt Wilkins</a>. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, <em>without taking screen shots</em> of another program. <a href="#marcelos-approach-scrolling-dynamic-spectrograms">Marcelo’s approach</a> (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell’s Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. <a href="#matts-approach-paged-dynamic-spectrograms">Matt’s approach</a> creates “paged” spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition’s spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.</p>
+<hr>
+</div>
+<div id="marcelos-approach-scrolling-dynamic-spectrograms" class="section level1">
+<h1 class="hasAnchor">
+<a href="#marcelos-approach-scrolling-dynamic-spectrograms" class="anchor"></a>Marcelo’s Approach: “Scrolling Dynamic Spectrograms”</h1>
+<hr>
 <p>To run the following examples you will also need to load a few more packages as well as <a href="https://cran.r-project.org/package=warbleR">warbleR</a> 1.1.24 (currently as the developmental version on github). It can be installed as follows:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 
@@ -252,7 +255,7 @@
               collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
               base.col <span class="op">=</span> <span class="st">"black"</span>,  t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>, strength <span class="op">=</span> <span class="fl">3</span>, 
               interactive <span class="op">=</span> <span class="cn">NULL</span>, bg.col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></pre></div>
-<p><img src="https://github.com/maRce10/dynaSpec/raw/master/inst/colored_spectro_house_wren_duet.png" alt="house wren duet"></p>
+<p><img src="inst/colored_spectro_house_wren_duet.png" alt="house wren duet"></p>
 <p>The male part is shown in green and the female part in yellow.</p>
 <p>We can wrap the <code><a href="https://marce10.github.io/warbleR/reference/color_spectro.html">color_spectro()</a></code> call using the <code><a href="https://rdrr.io/r/base/call.html">call()</a></code> function form base R and input that into <code><a href="reference/scrolling_spectro.html">scrolling_spectro()</a></code> using the argument ‘spectro.call’:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
@@ -435,12 +438,13 @@
 <hr>
 </div>
 </div>
-<div id="matts-examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#matts-examples" class="anchor"></a>Matt’s examples:</h2>
-<div id="workflow" class="section level4">
-<h4 class="hasAnchor">
-<a href="#workflow" class="anchor"></a>Workflow</h4>
+<div id="matts-approach-paged-dynamic-spectrograms" class="section level1">
+<h1 class="hasAnchor">
+<a href="#matts-approach-paged-dynamic-spectrograms" class="anchor"></a>Matt’s approach: “Paged Dynamic Spectrograms”</h1>
+<hr>
+<div id="workflow" class="section level3">
+<h3 class="hasAnchor">
+<a href="#workflow" class="anchor"></a>Workflow</h3>
 <ol>
 <li>Tweak your spectrogram settings using the prep_static_ggspectro() function – aka prepStaticSpec() – storing results in variable. You can also just segment and export static specs at this step.</li>
 <li>Feed variable into paged_spectro() – aka pagedSpec() – to generate a dynamic spectrogram
@@ -451,21 +455,21 @@
 </ul>
 </li>
 </ol>
-<pre><code>#list WAVs included with dynaSpec
-(f&lt;-system.file(package="dynaSpec") %&gt;% list.files(pattern=".wav",full.names=T))
-
-#store output and save spectrogram to working directory
-params &lt;-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)</code></pre>
+<!-- end list --><div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co">#list WAVs included with dynaSpec</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>(f&lt;-<span class="kw">system.file</span>(<span class="dt">package=</span><span class="st">"dynaSpec"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">list.files</span>(<span class="dt">pattern=</span><span class="st">".wav"</span>,<span class="dt">full.names=</span>T))</span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="co">#store output and save spectrogram to working directory</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>params &lt;-<span class="kw">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="dt">destFolder=</span><span class="st">"wd"</span>,<span class="dt">savePNG=</span>T)</span></code></pre></div>
 </div>
 <div id="static-spectrogram-of-a-female-barn-swallow-song" class="section level3">
 <h3 class="hasAnchor">
 <a href="#static-spectrogram-of-a-female-barn-swallow-song" class="anchor"></a>Static spectrogram of a female barn swallow song</h3>
-<p><img src="README_files/figure-markdown_github/femaleBarnSwallow_1.png" alt="Static Spectrogram of a female barn swallow song"></p>
-<pre><code>#let's add axes 
-femaleBarnSwallow&lt;-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T,onlyPlotSpec = F)</code></pre>
-<p><img src="README_files/figure-markdown_github/femaleBarnSwallow_1b.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
-<pre><code><a href="reference/paged_spectro.html">#Now generate a dynamic spectrogram
-paged_spectro(femaleBarnSwallow)</a></code></pre>
+<p><img src="inst/femaleBarnSwallow_1.png" alt="Static Spectrogram of a female barn swallow song"></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">#let's add axes </span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>femaleBarnSwallow&lt;-<span class="kw">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="dt">destFolder=</span><span class="kw">tempdir</span>(),<span class="dt">savePNG=</span>T,<span class="dt">onlyPlotSpec =</span> F)</span></code></pre></div>
+<p><img src="inst/femaleBarnSwallow_1b.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co">#Now generate a dynamic spectrogram</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="kw">paged_spectro</span>(femaleBarnSwallow)</span></code></pre></div>
 </div>
 <div id="dynamic-spectrogram-of-a-female-barn-swallow-song" class="section level3">
 <h3 class="hasAnchor">
@@ -473,24 +477,24 @@ paged_spectro(femaleBarnSwallow)</a></code></pre>
 <iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 </div>
-</div>
-<div id="now-brighten-the-spec-using-the-amptrans-parameter" class="section level2">
-<h2 class="hasAnchor">
-<a href="#now-brighten-the-spec-using-the-amptrans-parameter" class="anchor"></a>Now brighten the spec using the ampTrans parameter</h2>
+<div id="now-brighten-the-spec-using-the-amptrans-parameter" class="section level3">
+<h3 class="hasAnchor">
+<a href="#now-brighten-the-spec-using-the-amptrans-parameter" class="anchor"></a>Now brighten the spec using the ampTrans parameter</h3>
 <ul>
 <li>ampTrans=3 is a nonlinear signal booster. Basically collapses the difference between loudest and quietest values (higher values= brighter specs); 1 (default) means no transformation</li>
 <li>Here, I also lowered the decibel threshold to include some quieter sounds with min_dB=-35; default is -30</li>
 <li>bgFlood=T makes the axis area the same color as the plot background. It will automatically switch to white axis font if background is too dark.</li>
 <li>Then generate dynamic spectrogram</li>
 </ul>
-<pre><code>#note that prep_static_spectro() is tha same as prepStaticSpec()
-#Also paged_spectro() is the same as pagedSpec()
-
-p2&lt;-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
-pagedSpec(p2) </code></pre>
-<p><img src="README_files/figure-markdown_github/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<!-- end list --><div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co">#note that prep_static_spectro() is tha same as prepStaticSpec()</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="co">#Also paged_spectro() is the same as pagedSpec()</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a>p2&lt;-<span class="kw">prepStaticSpec</span>(f[<span class="dv">1</span>],<span class="dt">min_dB=</span><span class="op">-</span><span class="dv">35</span>, <span class="dt">savePNG=</span>T, <span class="dt">destFolder=</span><span class="st">"wd"</span>,<span class="dt">onlyPlotSpec=</span>F,<span class="dt">bgFlood=</span>T,<span class="dt">ampTrans=</span><span class="dv">3</span>) </span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="kw">pagedSpec</span>(p2) </span></code></pre></div>
+<p><img src="inst/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
 <iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
+</div>
 <div id="now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files" class="section level3">
 <h3 class="hasAnchor">
 <a href="#now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files" class="anchor"></a>Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)</h3>
@@ -504,40 +508,38 @@ pagedSpec(p2) </code></pre>
 </ul>
 </li>
 </ul>
-<pre><code>whale&lt;-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
-pagedSpec(whale)
-#Voila 🐋</code></pre>
+<!-- end list --><div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>whale&lt;-<span class="kw">prepStaticSpec</span>(<span class="st">"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,</span>
+<span id="cb23-2"><a href="#cb23-2"></a>       <span class="dt">savePNG=</span>T,<span class="dt">destFolder=</span><span class="st">"wd"</span>,<span class="dt">yLim=</span><span class="kw">c</span>(<span class="dv">0</span>,.<span class="dv">7</span>),<span class="dt">crop=</span><span class="dv">12</span>,<span class="dt">xLim=</span><span class="dv">3</span>,<span class="dt">ampTrans=</span><span class="dv">3</span>) </span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="kw">pagedSpec</span>(whale)</span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="co">#Voila 🐋</span></span></code></pre></div>
 </div>
+<div id="static-whale-song-spectrogram" class="section level3">
+<h3 class="hasAnchor">
+<a href="#static-whale-song-spectrogram" class="anchor"></a>Static whale song spectrogram</h3>
+<p><img src="inst/humpback.png" alt="Humpback whale song spectrogram"></p>
 </div>
-<div id="static-whale-song-spectrogram" class="section level2">
-<h2 class="hasAnchor">
-<a href="#static-whale-song-spectrogram" class="anchor"></a>Static whale song spectrogram</h2>
-<p><img src="README_files/figure-markdown_github/humpback.png" alt="Humpback whale song spectrogram"></p>
-</div>
-<div id="dynamic-multipage-whale-song-spectrogram" class="section level2">
-<h2 class="hasAnchor">
-<a href="#dynamic-multipage-whale-song-spectrogram" class="anchor"></a>Dynamic multipage whale song spectrogram</h2>
+<div id="dynamic-multipage-whale-song-spectrogram" class="section level3">
+<h3 class="hasAnchor">
+<a href="#dynamic-multipage-whale-song-spectrogram" class="anchor"></a>Dynamic multipage whale song spectrogram</h3>
 <iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height="303" width="910" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
-<div id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="section level4">
-<h4 class="hasAnchor">
-<a href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="anchor"></a>Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)</h4>
-<pre><code>song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
-n=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
-pagedSpec(n,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")</code></pre>
-<div>
+</div>
+<div id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="anchor"></a>Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)</h3>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>song=<span class="st">"https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>temp=<span class="kw">prepStaticSpec</span>(song,<span class="dt">crop=</span><span class="dv">20</span>,<span class="dt">xLim=</span><span class="dv">4</span>,<span class="dt">colPal =</span> <span class="kw">c</span>(<span class="st">"white"</span>,<span class="st">"black"</span>))</span>
+<span id="cb24-3"><a href="#cb24-3"></a><span class="kw">pagedSpec</span>(temp,<span class="dt">vidName=</span><span class="st">"nightHawk"</span> ,<span class="dt">highlightCol =</span> <span class="st">"#d1b0ff"</span>,<span class="dt">cursorCol =</span> <span class="st">"#7817ff"</span>)</span></code></pre></div>
 </div>
 <div id="nighthawk-multipage-dynamic-spec" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nighthawk-multipage-dynamic-spec" class="anchor"></a>Nighthawk multipage dynamic spec</h3>
 <iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height="303" width="910" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
-</div>
-<p>Enjoy! Please share your specs with us on Twitter! <a href="https://twitter.com/M_Araya_Salas">@@M_Araya_Salas</a> &amp; <a href="https://twitter.com/mattwilkinsbio">@@mattwilkinsbio</a></p>
+<p>Enjoy! Please share your specs with us on Twitter! <a href="https://twitter.com/M_Araya_Salas">@M_Araya_Salas</a> &amp; <a href="https://twitter.com/mattwilkinsbio">@mattwilkinsbio</a></p>
 <hr>
-<p>Please cite <a href="https://marce10.github.io/dynaSpec/">dynaSpec</a> as follows:</p>
-<p>Araya-Salas M. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
-</div>
+<p>Please cite <a href="https://marce10.github.io/dynaSpec">dynaSpec</a> as follows:</p>
+<p>Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
 </div>
 </div>
 
@@ -568,7 +570,16 @@ pagedSpec(n,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=dynaSpec"><img src="http://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a></li>
+<li><a href="http://www.r-pkg.org/pkg/dynaSpec"><img src="http://cranlogs.r-pkg.org/badges/dynaSpec" alt="CRAN RStudio mirror downloads"></a></li>
+<li><a href="https://r-pkg.org/pkg/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue" alt="Total downloads"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 

@@ -43,14 +43,14 @@ is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can
 f <- list.files(pattern=".wav", full.names = TRUE, 
      path = system.file(package="dynaSpec"))
 
-femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",
+femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),
                    onlyPlotSpec = FALSE, bgFlood= TRUE)
-paged_spectro(femaleBarnSwallow)
+paged_spectro(femaleBarnSwallow,destFolder=tempdir())
 
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder=tempdir(),
                  onlyPlotSpec = FALSE, bgFlood= TRUE,min_dB=-40)
 
-paged_spectro(femaleBarnSwallow)
+paged_spectro(femaleBarnSwallow,destFolder=tempdir())
 
 # Make a multipage dynamic spec of a humpback whale song
 # Note, we're saving PNGs of our specs in the working directory; to add
@@ -62,11 +62,11 @@ paged_spectro(femaleBarnSwallow)
 #xLim=3 means each "page" will be 3 seconds, so we'll have 4 dynamic spec pages that get combined
 
 humpback <- prep_static_ggspectro(
-"http://www.oceanmammalinst.org/songs/hmpback3.wav",savePNG= TRUE,destFolder="wd",
+"http://www.oceanmammalinst.org/songs/hmpback3.wav",destFolder=tempdir(),savePNG= FALSE,
 onlyPlotSpec=FALSE,bgFlood= TRUE,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 
 #to generate multipage dynamic spec (movie), run the following
-paged_spectro(humpback)
+paged_spectro(humpback,destFolder=tempdir())
 
 # see more examples at https://marce10.github.io/dynaSpec/
 }

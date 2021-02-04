@@ -79,7 +79,7 @@ is defined by the xLim parameter in prep_static_ggspectro. You can also output t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dynaSpec</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -194,14 +194,14 @@ highlightAlpha<span class='op'>=</span><span class='fl'>.6</span>,cursorCol<span
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span>pattern<span class='op'>=</span><span class='st'>".wav"</span>, full.names <span class='op'>=</span> <span class='cn'>TRUE</span>, 
      path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span>package<span class='op'>=</span><span class='st'>"dynaSpec"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>femaleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
+<span class='va'>femaleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>,
                    onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, bgFlood<span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>femaleBarnSwallow</span><span class='op'>)</span>
+<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>femaleBarnSwallow</span>,destFolder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>maleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
+<span class='va'>maleBarnSwallow</span><span class='op'>&lt;-</span><span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>,destFolder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>,
                  onlyPlotSpec <span class='op'>=</span> <span class='cn'>FALSE</span>, bgFlood<span class='op'>=</span> <span class='cn'>TRUE</span>,min_dB<span class='op'>=</span><span class='op'>-</span><span class='fl'>40</span><span class='op'>)</span>
 
-<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>femaleBarnSwallow</span><span class='op'>)</span>
+<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>femaleBarnSwallow</span>,destFolder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Make a multipage dynamic spec of a humpback whale song</span>
 <span class='co'># Note, we're saving PNGs of our specs in the working directory; to add</span>
@@ -213,11 +213,11 @@ highlightAlpha<span class='op'>=</span><span class='fl'>.6</span>,cursorCol<span
 <span class='co'>#xLim=3 means each "page" will be 3 seconds, so we'll have 4 dynamic spec pages that get combined</span>
 
 <span class='va'>humpback</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prep_static_ggspectro.html'>prep_static_ggspectro</a></span><span class='op'>(</span>
-<span class='st'>"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,savePNG<span class='op'>=</span> <span class='cn'>TRUE</span>,destFolder<span class='op'>=</span><span class='st'>"wd"</span>,
+<span class='st'>"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,destFolder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>,savePNG<span class='op'>=</span> <span class='cn'>FALSE</span>,
 onlyPlotSpec<span class='op'>=</span><span class='cn'>FALSE</span>,bgFlood<span class='op'>=</span> <span class='cn'>TRUE</span>,yLim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>.7</span><span class='op'>)</span>,crop<span class='op'>=</span><span class='fl'>12</span>,xLim<span class='op'>=</span><span class='fl'>3</span>,ampTrans<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span> 
 
 <span class='co'>#to generate multipage dynamic spec (movie), run the following</span>
-<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>humpback</span><span class='op'>)</span>
+<span class='fu'>paged_spectro</span><span class='op'>(</span><span class='va'>humpback</span>,destFolder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># see more examples at https://marce10.github.io/dynaSpec/</span>
 <span class='op'>}</span>
