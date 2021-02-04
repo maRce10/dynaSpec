@@ -38,7 +38,7 @@ Each page has a sliding window revealing the part of the static spectrogram bein
 is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can also output temporary segmented files, if desired.
 }
 \examples{
-{
+\dontrun{
 #show wav files included with dynaSpec
 f <- list.files(pattern=".wav", full.names = TRUE, 
      path = system.file(package="dynaSpec"))

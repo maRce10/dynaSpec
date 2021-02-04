@@ -46,7 +46,7 @@
 #' }
 #' @export
 #' @name prep_static_ggspectro
-#' @examples {
+#' @examples \dontrun{
 #' require(dynaSpec)
 #' f <- list.files(pattern=".wav", full.names = TRUE, path = system.file(package="dynaSpec"))
 #' 

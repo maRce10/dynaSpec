@@ -1,12 +1,12 @@
 dynaSpec
 ================
-Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
+Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
 Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](http://www.r-pkg.org/pkg/dynaSpec) [![Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](https://www.r-pkg.org:443/pkg/dynaSpec) [![Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://www.r-pkg.org:443/pkg/dynaSpec) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 A set of tools to generate dynamic spectrogram visualizations in video format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in order for this package to work. The package relies heavily on the packages [seewave](https://CRAN.R-project.org/package=seewave) and [tuneR](https://CRAN.R-project.org/package=tuneR).
 
@@ -26,7 +26,7 @@ library(tuneR)
 library(seewave)
 ```
 
-To install the latest developmental version from [github](http://github.com/) you will need the R package [devtools](https://cran.r-project.org/package=devtools):
+To install the latest developmental version from [github](https://github.com/) you will need the R package [devtools](https://cran.r-project.org/package=devtools):
 
 ``` r
 
@@ -532,6 +532,6 @@ Enjoy! Please share your specs with us on Twitter! [@@M_Araya_Salas](https://twi
 
 ------------------------------------------------------------------------
 
-Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
+Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
 Araya-Salas M. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.

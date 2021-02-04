@@ -72,7 +72,7 @@ prep_static_ggspectro to crop, filter, segment and tweak all spectrogram paramet
 settings to \code{\link{paged_spectro}} to generate dynamic spectrogram video.
 }
 \examples{
-{
+\dontrun{
 require(dynaSpec)
 f <- list.files(pattern=".wav", full.names = TRUE, path = system.file(package="dynaSpec"))
 

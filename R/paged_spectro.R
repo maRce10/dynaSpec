@@ -25,7 +25,7 @@
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 #' }
 #' @export
-#' @examples {
+#' @examples \dontrun{
 #' #show wav files included with dynaSpec
 #' f <- list.files(pattern=".wav", full.names = TRUE, 
 #'      path = system.file(package="dynaSpec"))
