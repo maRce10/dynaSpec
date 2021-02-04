@@ -5,7 +5,7 @@ dynaSpec
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![CRAN RStudio mirror
-downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](http://www.r-pkg.org/pkg/dynaSpec)
+downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](https://www.r-pkg.org:443/pkg/dynaSpec)
 [![Total
 downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -16,7 +16,7 @@ order for this package to work. The package relies heavily on the
 packages [seewave](https://CRAN.R-project.org/package=seewave) and
 [tuneR](https://CRAN.R-project.org/package=tuneR).
 
-Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
+Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
 Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic
 spectrogram visualizations in R*. R package version 1.0.0.
@@ -38,7 +38,7 @@ library(seewave)
 ```
 
 To install the latest developmental version from
-[github](http://github.com/) you will need the R package
+[github](https://github.com/) you will need the R package
 [devtools](https://cran.r-project.org/package=devtools):
 
 ``` r
@@ -649,7 +649,7 @@ Enjoy\! Please share your specs with us on Twitter\!
 
 -----
 
-Please cite [dynaSpec](https://marce10.github.io/dynaSpec) as follows:
+Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
 Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), *dynaSpec: dynamic
 spectrogram visualizations in R*. R package version 1.0.0.
