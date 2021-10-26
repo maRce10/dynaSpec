@@ -446,7 +446,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     if (loop > 1)
       for (i in 1:loop)
       file.copy(file.path(tempdir(), img_names[x]), file.path(tempdir(), img_names[x + (frames * i)]))
-  })
+  }, cl = cl)
   
   # temporary file names
   temp.audio <- file.path(tempdir(), "audio.scroll.spectro.wav")
