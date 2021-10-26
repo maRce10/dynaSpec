@@ -449,7 +449,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   }, cl = cl)
   
   # stop clusters for windows OS
-  parallel::stopCluster(cl = cl)
+  stopCluster(cl = cl)
   
   # temporary file names
   temp.audio <- file.path(tempdir(), "audio.scroll.spectro.wav")
