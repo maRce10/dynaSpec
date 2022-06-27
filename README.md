@@ -3,12 +3,12 @@ dynaSpec
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![CRAN RStudio mirror
-downloads](http://cranlogs.r-pkg.org/badges/dynaSpec)](https://www.r-pkg.org:443/pkg/dynaSpec)
+downloads](https://cranlogs.r-pkg.org/badges/dynaSpec)](https://www.r-pkg.org:443/pkg/dynaSpec)
 [![Total
 downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec?color=blue)](https://r-pkg.org/pkg/dynaSpec)
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 A set of tools to generate dynamic spectrogram visualizations in video
 format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in
@@ -52,7 +52,8 @@ library(dynaSpec)
 
 # Background
 
-This package is a collaboration between Marcelo Araya-Salas and [Matt
+This package is a collaboration between [Marcelo
+Araya-Salas](https://marceloarayasalas.weebly.com/) and [Matt
 Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static
 and dynamic visualizations of sounds, ready for publication or
 presentation, *without taking screen shots* of another program.

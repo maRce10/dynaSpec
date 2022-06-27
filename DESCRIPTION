@@ -2,7 +2,7 @@ Package: dynaSpec
 Type: Package
 Title: Dynamic Spectrogram Visualizations
 Version: 1.0.1
-Date: 2021-02-04
+Date: 2021-03-09
 Description: A set of tools to generate dynamic spectrogram visualizations in video format.
 License: GPL (>= 2)
 Imports: pbapply, utils, grDevices, graphics, stats, seewave, tuneR, grid, png, NatureSounds, ggplot2, viridis, scales, av, ari, gganimate, magrittr
@@ -12,8 +12,7 @@ SystemRequirements: ffmpeg
 URL: https://github.com/maRce10/dynaSpec
 BugReports: https://github.com/maRce10/dynaSpec/issues
 NeedsCompilation: no
-Suggests: parallel, knitr, imager, fs
-VignetteBuilder: knitr
+Suggests: parallel, imager, fs
 RoxygenNote: 7.1.1
 Repository: CRANs
 Language: en-US
