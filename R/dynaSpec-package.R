@@ -12,11 +12,11 @@
 #' @importFrom png readPNG
 #' @importFrom scales modulus_trans
 #' @importFrom ari have_ffmpeg_exec ffmpeg_exec
-#' @importFrom png readPNG
+#' @importFrom png readPN
 #' @importFrom grid grid.raster
 #' @importFrom parallel makePSOCKcluster
 #' @importFrom grDevices dev.off tiff adjustcolor
-#' @importFrom graphics abline par plot rect axis mtext par
+#' @importFrom graphics abline plot rect axis mtext par
 #' @author Marcelo Araya-Salas & Matthew R. Wilkins
 #'         Maintainer: Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr})
 #'   

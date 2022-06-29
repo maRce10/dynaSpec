@@ -184,7 +184,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     flim <- c(0, wave@samp.rate / 2000)
 
   # reset margins at the end
-  opar <- graphics::par(mar = par("mar"), bg = par("bg"))
+  opar <- graphics::par(mar = graphics::par("mar"), bg = graphics::par("bg"))
   on.exit(graphics::par(opar), add = TRUE)
   
   # remove temporary files at the end
@@ -275,7 +275,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   grDevices::dev.off()
   }
 
-  graphics::par( bg = "white")
+  graphics::par(bg = "white")
   
   } else {
   ..level.. <- NA

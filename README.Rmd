@@ -1,5 +1,5 @@
 ---
-title: "dynaSpec"
+title: "dynaSpec: dynamic spectrogram visualizations"
 output: github_document
 editor_options: 
   chunk_output_type: console
