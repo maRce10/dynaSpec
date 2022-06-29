@@ -1,0 +1,507 @@
+---
+title: "testing-checking dynaSpec apr-2020"
+author: "Marcelo Araya-Salas"
+date: "November 23, 2016"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# uninstall dynaSpec 
+```{r reinstall dynaSpec from github, eval=F}
+
+remove.packages("dynaSpec")
+# 
+# #restart R
+.rs.restartR()
+
+```
+
+# install/load packages
+```{r packages, eval=T}
+
+
+x <- c("RColorBrewer", "devtools", "seewave", "maRce10/warbleR", "monitoR", "pkgdown", "ape", "spelling", "ggplot2", "png", "viridis", "maRce10/Rraven", "av", "ari", "gganimate", "imager"
+       )
+
+out <- lapply(x, function(y) {
+  
+  # get pakage name
+  pkg <- strsplit(y, "/")[[1]]
+  pkg <- pkg[length(pkg)]
+  
+  # check if installed, if not then install 
+  if (!pkg %in% installed.packages()[,"Package"])  {
+
+      if (grepl("/", y))  devtools::install_github(y, force = TRUE) else
+    install.packages(y) 
+    }
+
+  # load package
+  try(require(pkg, character.only = T), silent = T)
+})
+
+
+```
+
+# functions
+```{r functions}
+
+#open function in rstudio
+open.fun <- function(fun) system(paste("rstudio", file.path("./R", paste0(fun, ".R"))))
+
+# run default arguments in a function
+run.def.args <- function(fun = NULL){
+
+  #list functions in package
+rfiles <- list.files(pattern = ".R", path = "./R", full.names = T)
+
+# select target function file
+funfile <- rfiles[gsub(".R", "", basename(rfiles)) == fun]
+
+  x <- readLines(funfile, warn = F)
+  st <- grep('@usage', x, fixed = T)
+  en <- grep('@param', x, fixed = T)[1]
+  x <- paste(x[st:(en-1)], collapse = " ")  
+  x <- gsub("usage|\\@|\\#\\'", "", x)
+
+  b <- gregexpr(pattern ='\\(|\\)',x)[1][[1]]
+  x <- substr(x, start = b[1] + 1, stop = b[length(b)] - 1)
+  spltx <- strsplit(x, "\\,")[[1]]
+
+sl <- vector()
+  y = 1
+
+      while(y <= length(spltx))
+        {
+        w <- spltx[y]
+        z <- 1
+        if(grepl('\\(', spltx[y])) 
+          {z  <- 0
+          while(!grepl('\\)', w))
+          {
+              z <- z+ 1
+              w <- paste(w, ",", spltx[y + z], collapse = "")
+          }
+        z <- z + 1
+          }
+        
+       y = y + z
+       sl[length(sl) + 1] <- w
+            }
+
+  sl <- sl[sl != "X"]
+  return(sl)
+  }
+
+# run it like this: 
+# for(i in run.def.args("dfts")) try(eval(parse(text = i)), silent = T)
+
+# remove sound files and or image files
+rm.sf <- function() unlink(list.files(path = tempdir(), pattern = "\\.wav$", ignore.case = T, full.names = TRUE))
+
+rm.sf.img <- function(mp3 = TRUE) {if(mp3)
+  unlink(list.files(path = tempdir(), pattern = "\\.wav$|\\.mp3$|\\.tiff$|\\.jpeg$|\\.jpg$|\\.png$", ignore.case = T, full.names = TRUE)) else
+      unlink(list.files(path = tempdir(), pattern = "\\.wav$|\\.tiff$|\\.jpeg$|\\.jpg$|\\.png$", ignore.case = T, full.names = TRUE))}
+
+rm.img <- function() unlink(list.files(path = tempdir(), pattern = "\\.tiff$|\\.jpeg$|\\.jpg$|\\.png$|\\.pdf$", ignore.case = T, full.names = TRUE))
+
+#open latest image
+last.img <- function() system(paste("eog", list.files(path = tempdir(), pattern = "\\.tiff$|\\.jpeg$|\\.jpg$", ignore.case = T, full.names = TRUE)[which.max(file.mtime(list.files(path = tempdir(), pattern = "\\.tiff$|\\.jpeg$|\\.jpg$", ignore.case = T, full.names = TRUE)))]
+))
+
+#open pdf
+last.pdf <- function() system(paste("xdg-open", list.files(path = tempdir(), pattern = "\\.pdf$", ignore.case = T, full.names = TRUE)[which.max(file.mtime(list.files(path = tempdir(), pattern = "\\.pdf", ignore.case = T, full.names = TRUE)))]
+))
+
+#find text in functions
+find.text <- function(pattern, fun.only = FALSE, path = "./R", ignore.case = T)
+  {
+rfiles <- list.files(pattern = "\\.R$|\\.Rmd$", path = path, full.names = T, all.files = T)
+  
+#check where a word is found in each function an return the name of function where it was found and the time
+res <- NULL
+w <- 1
+for(f in rfiles){
+  x <- readLines(f)
+  y <- grep(pattern, x, fixed = T, value = T, ignore.case = ignore.case)
+  if(length(y)>0 & !fun.only) {
+    print(gsub(pattern = "\\.R", "", (basename(f)))) 
+    for(i in y) print(i)
+  }
+  if(length(y)>0 & fun.only) res[w] <- gsub(pattern = "\\.R", "", (basename(f))) 
+# options(nwarnings = 0)
+  w = w + 1
+}
+if(fun.only)
+{res <- res[!is.na(res)]
+return(res)}
+}
+
+
+#replace text
+repl.text <- function(pattern, repl, path = "./R", ignore.case = T){
+  rfiles <- list.files(pattern = "\\.R$|\\.Rmd", path = path, full.names = T, all.files = T)
+
+    for(f in rfiles){
+  
+    #find and replace
+      x <- readLines(f)
+      y <- gsub(pattern, repl, x, fixed = T, ignore.case = ignore.case)
+      cat(y, file=f, sep="\n")
+  
+  #reread
+      x <- readLines(f)
+      w <- grep(repl, x, fixed = T, value = T, ignore.case = T)
+      if(length(w)>0) {
+          print(f) 
+        for(i in w) print(i)
+          }
+    }
+}
+
+#find functions with specific arguments
+find.arg <- function(arg1, arg2 = NULL){
+  
+  rfiles <- list.files(pattern = "\\.R$", path = "./R", full.names = T, all.files = T)
+  
+  funs <- gsub(pattern = "\\.R", "", (basename(rfiles)))
+  funs <-grep("zzz|data|package", funs, invert = T, value = T)
+  
+l1 <- unlist(lapply(funs, function(x)
+{  a <-  try(run.def.args(x), silent = T)
+  if(any(grep(arg1, a))) return(x)
+}      ))
+
+if(!is.null(arg2))
+{l2 <- unlist(lapply(funs, function(x)
+{  a <-  try(run.def.args(x), silent = T)
+  if(any(grep(arg2, a))) return(x)
+}      ))
+
+res <- intersect(l1, l2)
+
+} else res <- l1
+
+return(res)
+
+}
+
+# run default arguments
+run.def.args2 <-function(FUN)
+{
+  fm <- formals(FUN)
+
+  
+fm <- fm[sapply(fm, length) > 0 | sapply(fm, is.null)]
+
+fm <- lapply(1:length(fm), function(x) paste(names(fm)[x], "=", fm[x]))
+
+for(i in fm) try(eval(parse(text = i)), silent = T)
+
+}
+
+
+#find functions with specific arguments and text
+find.arg.text <- function(arg1, arg2 = NULL, pattern) {
+  
+  f1 <- find.text(pattern = pattern, fun.only = T)
+f2 <- find.arg(arg1 = arg1, arg2 = arg2)
+
+return(intersect(f1, f2))
+}
+  
+#big data set
+big.seltab <- function(X, nrow = 100){
+Y <- X[rep(1:nrow(X), ceiling(nrow/nrow(X)))[1:nrow],]
+  Y$selec <- 1:nrow(Y)
+if(is_selection_table(Y) | is_extended_selection_table(Y))
+  
+  attr(Y, "check.results") <- attr(X, "check.results")[rep(1:nrow(attr(X, "check.results")), ceiling(nrow/nrow(attr(X, "check.results"))))[1:nrow],]
+  
+  attr(Y, "check.results")$selec <- 1:nrow(Y)
+  return(Y)
+}
+
+# run all fuctions
+run.all <- function() invisible(lapply(list.files(pattern = "\\.R", path = "./R", full.names = T, all.files = T), function(x) try(source(x), silent = T)))
+
+run.all()
+
+```
+
+# check
+```{r check}
+#delete NAMESPACE file
+
+unlink("./NAMESPACE")
+
+#run document twice
+devtools::document(".")
+devtools::document(".")
+
+#check with devtools
+devtools::check(".", document = TRUE, run_dont_test = FALSE)
+
+```
+
+# test and build package
+```{r test and build package}
+
+# check spelling
+spch <- devtools::spell_check(".")
+
+spch$word[grep("dynaSpec", spch$found)]
+
+source('./R_package_testing/warbleR/Beta functions/random_sound.R')
+random_sound(dur = 2, segment.dur.range = c(0.01, 0.9), frange = c(1, 2))
+
+# check as in cran
+system("R CMD check . --as-cran --resave-data")
+
+# build tar.gz package file
+setwd("./")
+system('R CMD build . --resave-data="best"')
+
+# devtools::build()
+devtools::build_vignettes()
+
+unlink(list.files(pattern = "dynaSpec\\.pdf", path = "./"))
+
+# only build manual 
+setwd(".")
+system("R CMD Rd2pdf ./R\ package\ testing/dynaSpec/dynaSpec")
+
+setwd(".")
+
+#built site
+pkgdown::build_site(lazy = FALSE)
+
+# to set a new computer
+## 1. install git
+# 2. generate ssh key https://help.github.com/en/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent
+# 3. add key to github account https://help.github.com/en/articles/adding-a-new-ssh-key-to-your-github-account  
+
+
+#sent to github
+system("git add .")
+system('git commit -m  "checking Matt changes"')
+system("git push origin master")
+
+```
+
+# find and replace text
+```{r}
+
+# list.files
+
+path <- "./R"
+
+pattern <-  "%>%"
+
+find.text(pattern = pattern, fun.only = F, ignore.case = T, path = path)
+
+repl <- "R package version 1.0.2"
+
+# repl.text(pattern = pattern, repl = repl, path = path)
+
+# find.arg.text(arg1 = "parallel", arg2 = "pb", pattern = "pbmcapply")
+
+```
+
+## troubleshoot dynaSpec functions ####
+
+```{r scrolling_spectro}
+
+FUN <- "scrolling_spectro"
+
+#run function
+run.all()
+source(file.path("./R", paste0(FUN, ".R")))
+
+#open in rstudio
+##open.fun(fun = FUN)
+
+# download.file(url = "http://marceloarayasalas.weebly.com/uploads/2/5/5/2/25524573/0.sur.2014.7.3.8.31.wav", 
+#     destfile = file.path(tempdir(), "example.wav"))
+
+# remove objects but no functions
+rm(list = setdiff(ls(), c(lsf.str(), "FUN")))
+
+# to troubleshoot internally
+for(i in run.def.args(FUN)) try(eval(parse(text = i)), silent = T)
+rm(i)
+
+#tests  
+
+# w <- readWave(file.path(tempdir(), "example.wav"))
+# wave <- readWave(file.path(tempdir(), "Ph"))
+
+data("canyon_wren")
+
+# fast
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 60, file.name = "../fast.mp4", ovlp = 0, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = F, height.prop = c(4, 1))
+
+# fast oscillo
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), osc = T, colbg= "red")
+
+# fast derivative
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = reverse.gray.colors.1, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "fast.oscillo.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), derivative = TRUE)
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = reverse.gray.colors.1, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 100, file.name = "standard.mp4", ovlp = 95, fps = 100, ggspectro = TRUE)
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 200, file.name = "black.mp4", colbg = "black", ovlp = 95, fps = 100)
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 200, file.name = "yellow.mp4", colbg = "yellow")
+
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 1500, height = 500, res = 200, file.name = "slow.mp4", colbg = "black", speed = 0.5, ovlp = 95, fps = 100)
+
+data("Cryp.soui")
+scrolling_spectro(wave = Cryp.soui, ovlp = 90, wl = 600, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1.4, 2.1), width = 1000, height = 500, res = 200, file.name = "fast.mp4", colbg = "black", speed = 2)
+
+data("Phae.long4")
+
+sil <- silence(duration = 0.3, samp.rate = Phae.long4@samp.rate, xunit = "time")
+
+wav2 <- pastew(Phae.long4, sil, output = "Wave")
+pastew(wav2, Phae.long4, output = "Wave")
+
+scrolling_spectro(wave = Phae.long4, wl = 250, t.display = 0.5, ovlp = 95, pal = magma, parallel = 3, grid = FALSE, flim = c(1, 10), width = 1500, height = 500, res = 200, collevels = seq(-40, 0, 5), file.name = "slow_no_axis.mp4", colbg = "black", axis.type = "none", speed = 0.2, fps =100)
+
+
+# fast and loop 4 times
+scrolling_spectro(wave = canyon_wren, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 4, speed = 2)
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "standard.mp4", ovlp = 5, fps = 20, buffer = 0, loop = 4, speed = 0.8)
+
+# spectro call
+data(list = c("Phae.long4", "lbh_selec_table"))
+
+# subset selection table
+st <- lbh_selec_table[lbh_selec_table$sound.files == "Phae.long4.wav",]
+
+# create color column
+st$colors <- viridis(3)
+
+# highlight selections
+color.spectro(wave = Phae.long4, wl = 300, ovlp = 90, flim = c(1, 8.6), collevels = seq(-90, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "skyblue",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL)
+
+
+sp_cl <- call("color.spectro", wave = Phae.long4, wl = 300, ovlp = 90, flim = c(1, 8.6), collevels = seq(-90, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "skyblue",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL)
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../color_spectro.mp4", ovlp = 5, fps = 50, buffer = 1, loop = 1, lower.spectro = T, fix.time = T, height.prop = c(4, 1), spectro.call = sp_cl, osc = F, speed = 0.5)
+
+
+# highlight selections black background
+color.spectro(wave = Phae.long4, wl = 300, ovlp = 90, flim = c(2, 10), collevels = seq(-100, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "red",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL, bg.col = "black")
+
+
+sp_cl <- call("color.spectro", wave = Phae.long4, wl = 300, ovlp = 90, flim = c(2, 10), collevels = seq(-100, 0, 5), 
+              dB = "B", X = st, col.clm = "colors", base.col = "white",  t.mar = 0.07, f.mar = 0.1, 
+              interactive = NULL, bg.col = "white")
+
+
+scrolling_spectro(wave = Phae.long4, wl = 300, t.display = 1.7, pal = viridis, parallel = 3, grid = FALSE, flim = c(1, 9), width = 600, height = 200, res = 100, file.name = "../color_spectro.mp4", ovlp = 95, fps = 50, buffer = 1, loop = 2, lower.spectro = T, fix.time = T, height.prop = c(4, 1), spectro.call = sp_cl, osc = F, speed = 0.5, colbg = "white")
+
+
+
+## try this
+# https://stackoverflow.com/questions/27800307/adding-a-picture-to-plot-in-r
+
+
+scrolling_spectro(wave = hs_wren, wl = 512,  
+                  t.display = 1.2, pal = reverse.gray.colors.1, 
+                  grid = FALSE, flim = c(1, 16.6), loop = 3,
+                  width = 500, height = 250, res = 40,
+                  collevels = seq(-100, 0, 5), 
+                  spectro.call = ann_cl, fps = 5, file.name = "../viridis_annotated.mp4", annotate.call = ann_cl)
+
+
+# get house frogs recording
+frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
+# frogs <- read_wave("CostaRican_frogs.wav", path = "~/Downloads/")
+
+# and extended selection table
+# st <- read.csv("https://ndownloader.figshare.com/files/22722404")
+# 
+# # create color column
+# st$colors <- viridis(10)[c(3, 8)]
+# st$labels <- c("male", "female")
+
+shrt_frgs <- cutw(frogs, from = 35.3, to = 50.5, output = "Wave")
+
+
+
+ann_cll <- call("text", x = 0.25, y = 0.87, labels = "Frog calls", cex = 1, start = 0.2, end = 14, col = "#FFEA46CC", font = 3, fading = 0.6)
+
+ann_cll <- call("text", x = 0.25, y = 0.87, labels = c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"), cex = 1, start = c(0.4, 7), end = c(5.5, 14.8), col = "#FFEA46CC", font = 3, fading = 0.6)
+
+
+scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 5,  
+                  t.display = 1.1, pal = cividis,
+                  grid = FALSE, flim = c(0, 6), loop = 3,
+                  width = 1200/2, height = 550/2, res = 200/2, lower.spectro = FALSE, buffer = 0,
+                  collevels = seq(-45, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", fps = 20, file.name = "../frogs.mp4", osc = TRUE, height.prop = c(3, 1), colwave = "#31688E", lty = 3, annotation.call = ann_cll)
+
+
+scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,  
+                  t.display = 1.1, pal = cividis,
+                  grid = FALSE, flim = c(0, 4.5), loop = 3,
+                  width = 1200, height = 550, res = 200,
+                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", fps = 60, file.name = "../frogs.mp4", osc = TRUE, height.prop = c(3, 1), colwave = "#31688E", lty = 3, annotation.call = ann_cll)
+
+
+```
+
+```{r oscillo_dynaspec_int}
+
+FUN <- "oscillo_dynaspec_int"
+
+#run function
+run.all()
+source(file.path("./R", paste0(FUN, ".R")))
+
+#open in rstudio
+##open.fun(fun = FUN)
+
+# download.file(url = "http://marceloarayasalas.weebly.com/uploads/2/5/5/2/25524573/0.sur.2014.7.3.8.31.wav", 
+#     destfile = file.path(tempdir(), "example.wav"))
+
+data(list = c("Phae.long1"))
+
+# remove objects but no functions
+rm(list = setdiff(ls(), c(lsf.str(), "FUN")))
+
+# to troubleshoot internally
+for(i in run.def.args(FUN)) try(eval(parse(text = i)), silent = T)
+rm(i)
+
+#tests  
+
+
+w <- Phae.long1
+
+oscillo_dynaspec_int(w)
+
+print("all is good!")
+
+```
+
+### data objects
+
+```{r create data objects}
+# create data examples for dynaSpec
+
+# read data Raven
+canyon_wren <- readWave("~/opt/Raven-1.5.0.0043/Examples/CanyonWren.wav")
+
+
+save(canyon_wren, file="./data/canyon_wren.rda", version = 2)
+
+```
