@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,18 +34,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dynaSpec</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -53,7 +49,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/maRce10/dynaSpec/">
+  <a href="https://github.com/maRce10/dynaSpec/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -71,59 +67,59 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="dynaspec" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#dynaspec" class="anchor"></a>dynaSpec</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="dynaspec-dynamic-spectrogram-visualizations">dynaSpec: dynamic spectrogram visualizations<a class="anchor" aria-label="anchor" href="#dynaspec-dynamic-spectrogram-visualizations"></a>
+</h1></div>
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<p>A set of tools to generate dynamic spectrogram visualizations in video format. <a href="https://ffmpeg.org/download.html">FFMPEG</a> must be installed in order for this package to work. The package relies heavily on the packages <a href="https://CRAN.R-project.org/package=seewave">seewave</a> and <a href="https://CRAN.R-project.org/package=tuneR">tuneR</a>.</p>
-<p>Please cite <a href="https://marce10.github.io/dynaSpec/">dynaSpec</a> as follows:</p>
+<p>A set of tools to generate dynamic spectrogram visualizations in video format. <a href="https://ffmpeg.org/download.html" class="external-link">FFMPEG</a> must be installed in order for this package to work. The package relies heavily on the packages <a href="https://CRAN.R-project.org/package=seewave" class="external-link">seewave</a> and <a href="https://CRAN.R-project.org/package=tuneR" class="external-link">tuneR</a>.</p>
+<p>Please cite <a href="https://marce10.github.io/dynaSpec/" class="external-link">dynaSpec</a> as follows:</p>
 <p>Araya-Salas, Marcelo &amp; Wilkins, Matthew R.. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
 <p>Install/load the package from CRAN as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># From CRAN would be</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"dynaSpec"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"dynaSpec"</span><span class="op">)</span>
 
 <span class="co">#load package</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maRce10/dynaSpec">dynaSpec</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maRce10/dynaSpec" class="external-link">dynaSpec</a></span><span class="op">)</span>
 
 <span class="co"># and load other dependencies</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sjmgarnier.github.io/viridis/">viridis</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tuneR</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rug.mnhn.fr/seewave/">seewave</a></span><span class="op">)</span></code></pre></div>
-<p>To install the latest developmental version from <a href="https://github.com/">github</a> you will need the R package <a href="https://cran.r-project.org/package=devtools">devtools</a>:</p>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sjmgarnier.github.io/viridis/" class="external-link">viridis</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">tuneR</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rug.mnhn.fr/seewave/" class="external-link">seewave</a></span><span class="op">)</span></code></pre></div>
+<p>To install the latest developmental version from <a href="https://github.com/" class="external-link">github</a> you will need the R package <a href="https://cran.r-project.org/package=devtools" class="external-link">devtools</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># From github</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"maRce10/dynaSpec"</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"maRce10/dynaSpec"</span><span class="op">)</span>
 
 <span class="co">#load package</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maRce10/dynaSpec">dynaSpec</a></span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maRce10/dynaSpec" class="external-link">dynaSpec</a></span><span class="op">)</span></code></pre></div>
 </div>
-<div id="background" class="section level1">
-<h1 class="hasAnchor">
-<a href="#background" class="anchor"></a>Background</h1>
-<p>This package is a collaboration between <a href="https://marceloarayasalas.weebly.com/">Marcelo Araya-Salas</a> and <a href="http://www.mattwilkinsbio.com/">Matt Wilkins</a>. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, <em>without taking screen shots</em> of another program. <a href="#marcelos-approach-scrolling-dynamic-spectrograms">Marcelo’s approach</a> (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell’s Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. <a href="#matts-approach-paged-dynamic-spectrograms">Matt’s approach</a> creates “paged” spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition’s spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.</p>
+<div class="section level1">
+<h1 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
+</h1>
+<p>This package is a collaboration between <a href="https://marceloarayasalas.weebly.com/" class="external-link">Marcelo Araya-Salas</a> and <a href="http://www.mattwilkinsbio.com/" class="external-link">Matt Wilkins</a>. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, <em>without taking screen shots</em> of another program. <a href="#marcelos-approach-scrolling-dynamic-spectrograms">Marcelo’s approach</a> (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell’s Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. <a href="#matts-approach-paged-dynamic-spectrograms">Matt’s approach</a> creates “paged” spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition’s spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.</p>
 <hr>
 </div>
-<div id="marcelos-approach-scrolling-dynamic-spectrograms" class="section level1">
-<h1 class="hasAnchor">
-<a href="#marcelos-approach-scrolling-dynamic-spectrograms" class="anchor"></a>Marcelo’s Approach: “Scrolling Dynamic Spectrograms”</h1>
+<div class="section level1">
+<h1 id="marcelos-approach-scrolling-dynamic-spectrograms">Marcelo’s Approach: “Scrolling Dynamic Spectrograms”<a class="anchor" aria-label="anchor" href="#marcelos-approach-scrolling-dynamic-spectrograms"></a>
+</h1>
 <hr>
-<p>To run the following examples you will also need to load a few more packages as well as <a href="https://cran.r-project.org/package=warbleR">warbleR</a> 1.1.24 (currently as the developmental version on github). It can be installed as follows:</p>
+<p>To run the following examples you will also need to load a few more packages as well as <a href="https://cran.r-project.org/package=warbleR" class="external-link">warbleR</a> &gt;= 1.1.24. It can be installed as follows:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># From github</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"maRce10/warbleR"</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"maRce10/warbleR"</span><span class="op">)</span>
 
 <span class="co">#load package</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://marce10.github.io/warbleR/">warbleR</a></span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://marce10.github.io/warbleR/" class="external-link">warbleR</a></span><span class="op">)</span></code></pre></div>
 <p>A dynamic spectrogram of a canyon wren song with a viridis color palette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"canyon_wren"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"canyon_wren"</span><span class="op">)</span>
 
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">canyon_wren</span>, wl <span class="op">=</span> <span class="fl">300</span>, 
               t.display <span class="op">=</span> <span class="fl">1.7</span>, pal <span class="op">=</span> <span class="va">viridis</span>, 
-              grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
+              grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
               width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, 
               res <span class="op">=</span> <span class="fl">120</span>, file.name <span class="op">=</span> <span class="st">"default.mp4"</span><span class="op">)</span></code></pre></div>
 <center>
@@ -134,10 +130,10 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">canyon_wren</span>, wl <span class="op">=</span> <span class="fl">300</span>, 
           t.display <span class="op">=</span> <span class="fl">1.7</span>, pal <span class="op">=</span> <span class="va">reverse.gray.colors.1</span>, 
-          grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
+          grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
           width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, 
           res <span class="op">=</span> <span class="fl">120</span>, file.name <span class="op">=</span> <span class="st">"black_and_white.mp4"</span>,
-          collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+          collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="600" height="240" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
@@ -146,7 +142,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">canyon_wren</span>, wl <span class="op">=</span> <span class="fl">300</span>, 
               t.display <span class="op">=</span> <span class="fl">1.7</span>, pal <span class="op">=</span> <span class="va">viridis</span>, 
-              grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
+              grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
               width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, 
               file.name <span class="op">=</span> <span class="st">"black.mp4"</span>, colbg <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></code></pre></div>
 <center>
@@ -157,7 +153,7 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">canyon_wren</span>, wl <span class="op">=</span> <span class="fl">300</span>, 
               t.display <span class="op">=</span> <span class="fl">1.7</span>, pal <span class="op">=</span> <span class="va">viridis</span>, 
-              grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
+              grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span>, 
               width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, 
               file.name <span class="op">=</span> <span class="st">"slow.mp4"</span>, colbg <span class="op">=</span> <span class="st">"black"</span>,
               speed <span class="op">=</span> <span class="fl">0.5</span>, osc <span class="op">=</span> <span class="cn">TRUE</span>, 
@@ -168,28 +164,28 @@
 </center>
 <p>Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and looping 3 times (loop = 3:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"Phae.long4"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Phae.long4"</span><span class="op">)</span>
 
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">Phae.long4</span>, wl <span class="op">=</span> <span class="fl">300</span>, 
     t.display <span class="op">=</span> <span class="fl">1.7</span>, ovlp <span class="op">=</span> <span class="fl">90</span>, pal <span class="op">=</span> <span class="va">magma</span>, 
-    grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">1000</span>, 
-    height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, 
+    grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">1000</span>, 
+    height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, 
     file.name <span class="op">=</span> <span class="st">"no_axis.mp4"</span>, colbg <span class="op">=</span> <span class="st">"black"</span>, 
     speed <span class="op">=</span> <span class="fl">0.2</span>, axis.type <span class="op">=</span> <span class="st">"none"</span>, loop <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="600" height="360" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
-<p>Visualizing a northern nightingale wren recording from <a href="https://www.xeno-canto.org">xeno-canto</a> using a custom color palette:</p>
+<p>Visualizing a northern nightingale wren recording from <a href="https://www.xeno-canto.org" class="external-link">xeno-canto</a> using a custom color palette:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ngh_wren</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://marce10.github.io/warbleR/reference/read_wave.html">read_wave</a></span><span class="op">(</span><span class="st">"https://www.xeno-canto.org/518334/download"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">ngh_wren</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://marce10.github.io/warbleR/reference/read_wave.html" class="external-link">read_wave</a></span><span class="op">(</span><span class="st">"https://www.xeno-canto.org/518334/download"</span><span class="op">)</span>
 
-<span class="va">custom_pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#2d2d86"</span>, <span class="st">"#2d2d86"</span>, <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html">reverse.terrain.colors</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="va">custom_pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html" class="external-link">colorRampPalette</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#2d2d86"</span>, <span class="st">"#2d2d86"</span>, <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html" class="external-link">reverse.terrain.colors</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">ngh_wren</span>, wl <span class="op">=</span> <span class="fl">600</span>, 
     t.display <span class="op">=</span> <span class="fl">3</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, pal <span class="op">=</span> <span class="va">custom_pal</span>, 
-    grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">8</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">700</span>, 
-    height <span class="op">=</span> <span class="fl">250</span>, res <span class="op">=</span> <span class="fl">100</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
+    grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">8</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">700</span>, 
+    height <span class="op">=</span> <span class="fl">250</span>, res <span class="op">=</span> <span class="fl">100</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
     file.name <span class="op">=</span> <span class="st">"../nightingale_wren.mp4"</span>, colbg <span class="op">=</span> <span class="st">"#2d2d86"</span>, lcol <span class="op">=</span> <span class="st">"#FFFFFFE6"</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="250" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -197,66 +193,66 @@
 </center>
 <p>Spix’s disc-winged bat inquiry call slow down (speed = 0.05):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"thyroptera.est"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"thyroptera.est"</span><span class="op">)</span>
 
 <span class="co"># extract one call</span>
-<span class="va">thy_wav</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html">attributes</a></span><span class="op">(</span><span class="va">thyroptera.est</span><span class="op">)</span><span class="op">$</span><span class="va">wave.objects</span><span class="op">[[</span><span class="fl">12</span><span class="op">]</span><span class="op">]</span>
+<span class="va">thy_wav</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">thyroptera.est</span><span class="op">)</span><span class="op">$</span><span class="va">wave.objects</span><span class="op">[[</span><span class="fl">12</span><span class="op">]</span><span class="op">]</span>
 
 <span class="co"># add silence at both "sides""</span>
-<span class="va">thy_wav</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/pastew.html">pastew</a></span><span class="op">(</span><span class="fu">tuneR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tuneR/man/Waveforms.html">silence</a></span><span class="op">(</span>duration <span class="op">=</span> <span class="fl">0.05</span>, 
+<span class="va">thy_wav</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/pastew.html" class="external-link">pastew</a></span><span class="op">(</span><span class="fu">tuneR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tuneR/man/Waveforms.html" class="external-link">silence</a></span><span class="op">(</span>duration <span class="op">=</span> <span class="fl">0.05</span>, 
             samp.rate <span class="op">=</span> <span class="va">thy_wav</span><span class="op">@</span><span class="va">samp.rate</span>, xunit <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span>,
             <span class="va">thy_wav</span>, output <span class="op">=</span> <span class="st">"Wave"</span><span class="op">)</span>
 
-<span class="va">thy_wav</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/pastew.html">pastew</a></span><span class="op">(</span><span class="va">thy_wav</span>, <span class="fu">tuneR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tuneR/man/Waveforms.html">silence</a></span><span class="op">(</span>duration <span class="op">=</span> <span class="fl">0.04</span>, 
+<span class="va">thy_wav</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/pastew.html" class="external-link">pastew</a></span><span class="op">(</span><span class="va">thy_wav</span>, <span class="fu">tuneR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tuneR/man/Waveforms.html" class="external-link">silence</a></span><span class="op">(</span>duration <span class="op">=</span> <span class="fl">0.04</span>, 
             samp.rate <span class="op">=</span> <span class="va">thy_wav</span><span class="op">@</span><span class="va">samp.rate</span>, xunit <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span>,
             output <span class="op">=</span> <span class="st">"Wave"</span><span class="op">)</span>
 
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">thy_wav</span>, wl <span class="op">=</span> <span class="fl">400</span>, 
     t.display <span class="op">=</span> <span class="fl">0.08</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, pal <span class="op">=</span> <span class="va">inferno</span>, 
-    grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">37</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">700</span>, 
-    height <span class="op">=</span> <span class="fl">250</span>, res <span class="op">=</span> <span class="fl">100</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
+    grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">37</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">700</span>, 
+    height <span class="op">=</span> <span class="fl">250</span>, res <span class="op">=</span> <span class="fl">100</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
     file.name <span class="op">=</span> <span class="st">"thyroptera_osc.mp4"</span>, colbg <span class="op">=</span> <span class="st">"black"</span>, lcol <span class="op">=</span> <span class="st">"#FFFFFFE6"</span>, 
     speed <span class="op">=</span> <span class="fl">0.05</span>, fps <span class="op">=</span> <span class="fl">200</span>, buffer <span class="op">=</span> <span class="fl">0</span>, loop <span class="op">=</span> <span class="fl">4</span>, lty <span class="op">=</span> <span class="fl">1</span>, 
-    osc <span class="op">=</span> <span class="cn">TRUE</span>, colwave <span class="op">=</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html">inferno</a></span><span class="op">(</span><span class="fl">10</span>, alpha <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+    osc <span class="op">=</span> <span class="cn">TRUE</span>, colwave <span class="op">=</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span><span class="op">(</span><span class="fl">10</span>, alpha <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="250" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
-<div id="further-customization" class="section level3">
-<h3 class="hasAnchor">
-<a href="#further-customization" class="anchor"></a>Further customization</h3>
-<p>The argument ‘spectro.call’ allows to insert customized spectrogram visualizations. For instance, the following code makes use of the <code><a href="https://marce10.github.io/warbleR/reference/color_spectro.html">color_spectro()</a></code> function from <a href="https://cran.r-project.org/package=warbleR">warbleR</a> to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):</p>
+<div class="section level3">
+<h3 id="further-customization">Further customization<a class="anchor" aria-label="anchor" href="#further-customization"></a>
+</h3>
+<p>The argument ‘spectro.call’ allows to insert customized spectrogram visualizations. For instance, the following code makes use of the <code><a href="https://marce10.github.io/warbleR/reference/color_spectro.html" class="external-link">color_spectro()</a></code> function from <a href="https://cran.r-project.org/package=warbleR" class="external-link">warbleR</a> to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get house wren male female duet recording</span>
-<span class="va">hs_wren</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://marce10.github.io/warbleR/reference/read_wave.html">read_wave</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/22722101"</span><span class="op">)</span>
+<span class="va">hs_wren</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://marce10.github.io/warbleR/reference/read_wave.html" class="external-link">read_wave</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/22722101"</span><span class="op">)</span>
 
 <span class="co"># and extended selection table</span>
-<span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/22722404"</span><span class="op">)</span>
+<span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/22722404"</span><span class="op">)</span>
 
 <span class="co"># create color column</span>
-<span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"green"</span>, <span class="st">"yellow"</span><span class="op">)</span>
+<span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"green"</span>, <span class="st">"yellow"</span><span class="op">)</span>
 
 <span class="co"># highlight selections</span>
-<span class="fu"><a href="https://marce10.github.io/warbleR/reference/color.spectro.html">color.spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, 
-              collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
+<span class="fu"><a href="https://marce10.github.io/warbleR/reference/color.spectro.html" class="external-link">color.spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, 
+              collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
               base.col <span class="op">=</span> <span class="st">"black"</span>,  t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>, strength <span class="op">=</span> <span class="fl">3</span>, 
               interactive <span class="op">=</span> <span class="cn">NULL</span>, bg.col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/colored_spectro_house_wren_duet.png" alt="house wren duet"></p>
 <p>The male part is shown in green and the female part in yellow.</p>
-<p>We can wrap the <code><a href="https://marce10.github.io/warbleR/reference/color_spectro.html">color_spectro()</a></code> call using the <code><a href="https://rdrr.io/r/base/call.html">call()</a></code> function form base R and input that into <code><a href="reference/scrolling_spectro.html">scrolling_spectro()</a></code> using the argument ‘spectro.call’:</p>
+<p>We can wrap the <code><a href="https://marce10.github.io/warbleR/reference/color_spectro.html" class="external-link">color_spectro()</a></code> call using the <code><a href="https://rdrr.io/r/base/call.html" class="external-link">call()</a></code> function form base R and input that into <code><a href="reference/scrolling_spectro.html">scrolling_spectro()</a></code> using the argument ‘spectro.call’:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># save call</span>
-<span class="va">sp_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span><span class="op">(</span><span class="st">"color.spectro"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, 
-              flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, strength <span class="op">=</span> <span class="fl">3</span>,
+<span class="va">sp_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html" class="external-link">call</a></span><span class="op">(</span><span class="st">"color.spectro"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, 
+              flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, strength <span class="op">=</span> <span class="fl">3</span>,
               dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, base.col <span class="op">=</span> <span class="st">"black"</span>,  
               t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>, interactive <span class="op">=</span> <span class="cn">NULL</span>, bg.col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>
 
 <span class="co"># create dynamic spectrogram</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">512</span>,  
                   t.display <span class="op">=</span> <span class="fl">1.2</span>, pal <span class="op">=</span> <span class="va">reverse.gray.colors.1</span>, 
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>,
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>,
                   width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>,
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, spectro.call <span class="op">=</span> <span class="va">sp_cl</span>, fps <span class="op">=</span> <span class="fl">60</span>,
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, spectro.call <span class="op">=</span> <span class="va">sp_cl</span>, fps <span class="op">=</span> <span class="fl">60</span>,
                   file.name <span class="op">=</span> <span class="st">"yellow_and_green.mp4"</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -267,9 +263,9 @@
 <code class="sourceCode R"><span class="co"># create dynamic spectrogram</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">512</span>, osc <span class="op">=</span> <span class="cn">TRUE</span>,
                   t.display <span class="op">=</span> <span class="fl">1.2</span>, pal <span class="op">=</span> <span class="va">reverse.gray.colors.1</span>, 
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
                   width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, 
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, 
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, 
                   spectro.call <span class="op">=</span> <span class="va">sp_cl</span>, fps <span class="op">=</span> <span class="fl">60</span>,
                   file.name <span class="op">=</span> <span class="st">"yellow_and_green_oscillo.mp4"</span><span class="op">)</span></code></pre></div>
 <center>
@@ -278,10 +274,10 @@
 </center>
 <p>A viridis color palette:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span><span class="op">]</span>
+<code class="sourceCode R"><span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span><span class="op">]</span>
 
-<span class="va">sp_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span><span class="op">(</span><span class="st">"color.spectro"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, 
-              ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
+<span class="va">sp_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html" class="external-link">call</a></span><span class="op">(</span><span class="st">"color.spectro"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, 
+              ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
               dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
               base.col <span class="op">=</span> <span class="st">"white"</span>, t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>,
               strength <span class="op">=</span> <span class="fl">3</span>, interactive <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
@@ -289,9 +285,9 @@
 <span class="co"># create dynamic spectrogram</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, osc <span class="op">=</span> <span class="cn">TRUE</span>,
                   t.display <span class="op">=</span> <span class="fl">1.2</span>, pal <span class="op">=</span> <span class="va">reverse.gray.colors.1</span>, 
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
                   width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, 
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, colwave <span class="op">=</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span>,
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, colwave <span class="op">=</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span>,
                   spectro.call <span class="op">=</span> <span class="va">sp_cl</span>, fps <span class="op">=</span> <span class="fl">60</span>,
                   file.name <span class="op">=</span> <span class="st">"viridis.mp4"</span><span class="op">)</span></code></pre></div>
 <center>
@@ -300,32 +296,32 @@
 </center>
 <p>Or simply a gray scale:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"gray49"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"gray49"</span><span class="op">)</span>
 
-<span class="va">sp_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span><span class="op">(</span><span class="st">"color.spectro"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, 
-              collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
+<span class="va">sp_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html" class="external-link">call</a></span><span class="op">(</span><span class="st">"color.spectro"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, 
+              collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">st</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
               base.col <span class="op">=</span> <span class="st">"white"</span>, t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>, strength <span class="op">=</span> <span class="fl">3</span>, 
               interactive <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># create dynamic spectrogram</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">512</span>, osc <span class="op">=</span> <span class="cn">TRUE</span>,
                   t.display <span class="op">=</span> <span class="fl">1.2</span>, pal <span class="op">=</span> <span class="va">reverse.gray.colors.1</span>, 
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">13</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
                   width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">120</span>, 
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, 
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, 
                   spectro.call <span class="op">=</span> <span class="va">sp_cl</span>, fps <span class="op">=</span> <span class="fl">60</span>,
                   file.name <span class="op">=</span> <span class="st">"gray.mp4"</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
-<p>The ‘spectro.call’ argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>, <code><a href="https://rdrr.io/r/graphics/lines.html">lines()</a></code>) in a single function and then save the call to that function:</p>
+<p>The ‘spectro.call’ argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>, <code><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines()</a></code>) in a single function and then save the call to that function:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># create color column</span>
-<span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span><span class="op">]</span>
+<span class="va">st</span><span class="op">$</span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># create label column</span>
-<span class="va">st</span><span class="op">$</span><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span>
+<span class="va">st</span><span class="op">$</span><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span>
 
 <span class="co"># shrink end of second selection (purely aesthetics)</span>
 <span class="va">st</span><span class="op">$</span><span class="va">end</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">3.87</span>
@@ -334,82 +330,82 @@
 <span class="va">ann_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">wave</span>, <span class="va">X</span><span class="op">)</span><span class="op">{</span>
   
   <span class="co"># print spectrogram</span>
-  <span class="fu"><a href="https://marce10.github.io/warbleR/reference/color.spectro.html">color.spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">wave</span>,  wl <span class="op">=</span> <span class="fl">200</span>, 
-              ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18.6</span><span class="op">)</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
+  <span class="fu"><a href="https://marce10.github.io/warbleR/reference/color.spectro.html" class="external-link">color.spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">wave</span>,  wl <span class="op">=</span> <span class="fl">200</span>, 
+              ovlp <span class="op">=</span> <span class="fl">95</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18.6</span><span class="op">)</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">55</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,
               dB <span class="op">=</span> <span class="st">"B"</span>, X <span class="op">=</span> <span class="va">X</span>, col.clm <span class="op">=</span> <span class="st">"colors"</span>, 
               base.col <span class="op">=</span> <span class="st">"white"</span>, t.mar <span class="op">=</span> <span class="fl">0.07</span>, f.mar <span class="op">=</span> <span class="fl">0.1</span>,
               strength <span class="op">=</span> <span class="fl">3</span>, interactive <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
   
   <span class="co"># annotate each selection in X </span>
-  <span class="kw">for</span><span class="op">(</span><span class="va">e</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>  
+  <span class="kw">for</span><span class="op">(</span><span class="va">e</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>  
     <span class="co"># label</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">X</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">e</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">end</span><span class="op">[</span><span class="va">e</span><span class="op">]</span> <span class="op">-</span> <span class="va">X</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">e</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, 
+    <span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">X</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">e</span><span class="op">]</span> <span class="op">+</span> <span class="op">(</span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">end</span><span class="op">[</span><span class="va">e</span><span class="op">]</span> <span class="op">-</span> <span class="va">X</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">e</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, 
          y <span class="op">=</span> <span class="fl">16.5</span>, labels <span class="op">=</span> <span class="va">X</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">e</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">3.3</span>, 
-         col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html">adjustcolor</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">colors</span><span class="op">[</span><span class="va">e</span><span class="op">]</span>, <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span>
+         col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">colors</span><span class="op">[</span><span class="va">e</span><span class="op">]</span>, <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span>
     
     <span class="co"># line</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">e</span><span class="op">]</span>, <span class="va">X</span><span class="op">$</span><span class="va">end</span><span class="op">[</span><span class="va">e</span><span class="op">]</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">14.5</span>, <span class="fl">14.5</span><span class="op">)</span>, 
-          lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html">adjustcolor</a></span><span class="op">(</span><span class="st">"gray50"</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">e</span><span class="op">]</span>, <span class="va">X</span><span class="op">$</span><span class="va">end</span><span class="op">[</span><span class="va">e</span><span class="op">]</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">14.5</span>, <span class="fl">14.5</span><span class="op">)</span>, 
+          lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"gray50"</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>
   <span class="op">}</span>
   
 <span class="op">}</span>
 
 <span class="co"># save call</span>
-<span class="va">ann_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span><span class="op">(</span><span class="st">"ann_fun"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, X <span class="op">=</span> <span class="va">st</span><span class="op">)</span>
+<span class="va">ann_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html" class="external-link">call</a></span><span class="op">(</span><span class="st">"ann_fun"</span>, wave <span class="op">=</span> <span class="va">hs_wren</span>, X <span class="op">=</span> <span class="va">st</span><span class="op">)</span>
 
 <span class="co"># create annotated dynamic spectrogram</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">hs_wren</span>, wl <span class="op">=</span> <span class="fl">200</span>, t.display <span class="op">=</span> <span class="fl">1.2</span>, 
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18.6</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18.6</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>, 
                   width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">500</span>, res <span class="op">=</span> <span class="fl">200</span>, 
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, speed <span class="op">=</span> <span class="fl">0.5</span>,
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, speed <span class="op">=</span> <span class="fl">0.5</span>,
                   spectro.call <span class="op">=</span> <span class="va">ann_cl</span>, fps <span class="op">=</span> <span class="fl">120</span>,
                   file.name <span class="op">=</span> <span class="st">"../viridis_annotated.mp4"</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="700" height="350" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
-<p>Finally, the argument ‘annotation.call’ can be used to add static labels (i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a call from <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>. This let users customize things as size, color, position, font, and additional arguments taken by <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code>. The call should also include the argmuents ‘start’ and ‘end’ to indicate the time at which the labels are displayed (in s). ‘fading’ is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:</p>
+<p>Finally, the argument ‘annotation.call’ can be used to add static labels (i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a call from <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>. This let users customize things as size, color, position, font, and additional arguments taken by <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>. The call should also include the argmuents ‘start’ and ‘end’ to indicate the time at which the labels are displayed (in s). ‘fading’ is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># read data from figshare</span>
-<span class="va">frogs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://marce10.github.io/warbleR/reference/read_wave.html">read_wave</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/22829075"</span><span class="op">)</span>
+<span class="va">frogs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://marce10.github.io/warbleR/reference/read_wave.html" class="external-link">read_wave</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/22829075"</span><span class="op">)</span>
 
 <span class="co"># cut a couple of species</span>
-<span class="va">shrt_frgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/cutw.html">cutw</a></span><span class="op">(</span><span class="va">frogs</span>, from <span class="op">=</span> <span class="fl">35.3</span>, to <span class="op">=</span> <span class="fl">50.5</span>, output <span class="op">=</span> <span class="st">"Wave"</span><span class="op">)</span>
+<span class="va">shrt_frgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/seewave/man/cutw.html" class="external-link">cutw</a></span><span class="op">(</span><span class="va">frogs</span>, from <span class="op">=</span> <span class="fl">35.3</span>, to <span class="op">=</span> <span class="fl">50.5</span>, output <span class="op">=</span> <span class="st">"Wave"</span><span class="op">)</span>
 
 <span class="co"># make annotation call</span>
-<span class="va">ann_cll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.25</span>, y <span class="op">=</span> <span class="fl">0.87</span>, 
+<span class="va">ann_cll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html" class="external-link">call</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.25</span>, y <span class="op">=</span> <span class="fl">0.87</span>, 
                 labels <span class="op">=</span> <span class="st">"Frog calls"</span>, cex <span class="op">=</span> <span class="fl">1</span>, start <span class="op">=</span> <span class="fl">0.2</span>, end <span class="op">=</span> <span class="fl">14</span>, 
                 col <span class="op">=</span> <span class="st">"#FFEA46CC"</span>, font <span class="op">=</span> <span class="fl">3</span>, fading <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span>
 
 <span class="co"># create dynamic spectro</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">shrt_frgs</span>, wl <span class="op">=</span> <span class="fl">512</span>, ovlp <span class="op">=</span> <span class="fl">95</span>,  
                   t.display <span class="op">=</span> <span class="fl">1.1</span>, pal <span class="op">=</span> <span class="va">cividis</span>,
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5.5</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>,
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5.5</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>,
                   width <span class="op">=</span> <span class="fl">1200</span>, height <span class="op">=</span> <span class="fl">550</span>, res <span class="op">=</span> <span class="fl">200</span>,
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, lcol <span class="op">=</span>  <span class="st">"#FFFFFFCC"</span>, 
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, lcol <span class="op">=</span>  <span class="st">"#FFFFFFCC"</span>, 
                   colbg <span class="op">=</span> <span class="st">"black"</span>, fps <span class="op">=</span> <span class="fl">60</span>, file.name <span class="op">=</span> <span class="st">"../frogs.mp4"</span>,
-                  osc <span class="op">=</span> <span class="cn">TRUE</span>, height.prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>, colwave <span class="op">=</span> <span class="st">"#31688E"</span>, 
+                  osc <span class="op">=</span> <span class="cn">TRUE</span>, height.prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>, colwave <span class="op">=</span> <span class="st">"#31688E"</span>, 
                   lty <span class="op">=</span> <span class="fl">3</span>, annotation.call <span class="op">=</span> <span class="va">ann_cll</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="763.63" height="350" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
-<p>The argument accepts more than one labels as in a regular <code><a href="https://rdrr.io/r/graphics/text.html">text()</a></code> call. In that case ‘start’ and ‘end’ values should be supplied for each label:</p>
+<p>The argument accepts more than one labels as in a regular <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code> call. In that case ‘start’ and ‘end’ values should be supplied for each label:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># make annotation call for 2 annotations</span>
-<span class="va">ann_cll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html">call</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.25</span>, y <span class="op">=</span> <span class="fl">0.87</span>, 
-                labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Dendropsophus ebraccatus"</span>, <span class="st">"Eleutherodactylus coqui"</span><span class="op">)</span>, 
-                cex <span class="op">=</span> <span class="fl">1</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fl">7</span><span class="op">)</span>, 
-                end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5.5</span>, <span class="fl">14.8</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#FFEA46CC"</span>, font <span class="op">=</span> <span class="fl">3</span>, fading <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span>
+<span class="va">ann_cll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/call.html" class="external-link">call</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.25</span>, y <span class="op">=</span> <span class="fl">0.87</span>, 
+                labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dendropsophus ebraccatus"</span>, <span class="st">"Eleutherodactylus coqui"</span><span class="op">)</span>, 
+                cex <span class="op">=</span> <span class="fl">1</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fl">7</span><span class="op">)</span>, 
+                end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5.5</span>, <span class="fl">14.8</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#FFEA46CC"</span>, font <span class="op">=</span> <span class="fl">3</span>, fading <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span>
 
 <span class="co"># create dynamic spectro</span>
 <span class="fu"><a href="reference/scrolling_spectro.html">scrolling_spectro</a></span><span class="op">(</span>wave <span class="op">=</span> <span class="va">shrt_frgs</span>, wl <span class="op">=</span> <span class="fl">512</span>, ovlp <span class="op">=</span> <span class="fl">95</span>,  
                   t.display <span class="op">=</span> <span class="fl">1.1</span>, pal <span class="op">=</span> <span class="va">cividis</span>,
-                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5.5</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>,
+                  grid <span class="op">=</span> <span class="cn">FALSE</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5.5</span><span class="op">)</span>, loop <span class="op">=</span> <span class="fl">3</span>,
                   width <span class="op">=</span> <span class="fl">1200</span>, height <span class="op">=</span> <span class="fl">550</span>, res <span class="op">=</span> <span class="fl">200</span>,
-                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, lcol <span class="op">=</span>  <span class="st">"#FFFFFFCC"</span>, colbg <span class="op">=</span> <span class="st">"black"</span>, 
+                  collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, lcol <span class="op">=</span>  <span class="st">"#FFFFFFCC"</span>, colbg <span class="op">=</span> <span class="st">"black"</span>, 
                   fps <span class="op">=</span> <span class="fl">60</span>, file.name <span class="op">=</span> <span class="st">"../frogs_sp_labels.mp4"</span>, osc <span class="op">=</span> <span class="cn">TRUE</span>, 
-                  height.prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>,colwave <span class="op">=</span> <span class="st">"#31688E"</span>, lty <span class="op">=</span> <span class="fl">3</span>, 
+                  height.prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>,colwave <span class="op">=</span> <span class="st">"#31688E"</span>, lty <span class="op">=</span> <span class="fl">3</span>, 
                   annotation.call <span class="op">=</span> <span class="va">ann_cll</span><span class="op">)</span></code></pre></div>
 <center>
 <iframe allowtransparency="true" style="background: #FFFFFF;" width="763.63" height="350" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -418,14 +414,14 @@
 <hr>
 </div>
 </div>
-<div id="matts-approach-paged-dynamic-spectrograms" class="section level1">
-<h1 class="hasAnchor">
-<a href="#matts-approach-paged-dynamic-spectrograms" class="anchor"></a>Matt’s approach: “Paged Dynamic Spectrograms”</h1>
+<div class="section level1">
+<h1 id="matts-approach-paged-dynamic-spectrograms">Matt’s approach: “Paged Dynamic Spectrograms”<a class="anchor" aria-label="anchor" href="#matts-approach-paged-dynamic-spectrograms"></a>
+</h1>
 <hr>
-<div id="workflow" class="section level3">
-<h3 class="hasAnchor">
-<a href="#workflow" class="anchor"></a>Workflow</h3>
-<ol>
+<div class="section level3">
+<h3 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
+</h3>
+<ol style="list-style-type: decimal">
 <li>Tweak your spectrogram settings using the prep_static_ggspectro() function – aka prepStaticSpec() – storing results in variable. You can also just segment and export static specs at this step.</li>
 <li>Feed variable into paged_spectro() – aka pagedSpec() – to generate a dynamic spectrogram
 <ul>
@@ -441,25 +437,29 @@
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#store output and save spectrogram to working directory</span></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span><span class="fu">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="at">destFolder=</span><span class="st">"wd"</span>,<span class="at">savePNG=</span>T)</span></code></pre></div>
 </div>
-<div id="static-spectrogram-of-a-female-barn-swallow-song" class="section level3">
-<h3 class="hasAnchor">
-<a href="#static-spectrogram-of-a-female-barn-swallow-song" class="anchor"></a>Static spectrogram of a female barn swallow song</h3>
-<p><img src="reference/figures/femaleBarnSwallow_1.png" alt="Static Spectrogram of a female barn swallow song"></p>
+<div class="section level3">
+<h3 id="static-spectrogram-of-a-female-barn-swallow-song">Static spectrogram of a female barn swallow song<a class="anchor" aria-label="anchor" href="#static-spectrogram-of-a-female-barn-swallow-song"></a>
+</h3>
+<div class="figure">
+<img src="reference/figures/femaleBarnSwallow_1.png" alt=""><p class="caption">Static Spectrogram of a female barn swallow song</p>
+</div>
 <div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#let's add axes </span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>femaleBarnSwallow<span class="ot">&lt;-</span><span class="fu">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="at">destFolder=</span><span class="fu">tempdir</span>(),<span class="at">savePNG=</span>T,<span class="at">onlyPlotSpec =</span> F)</span></code></pre></div>
-<p><img src="reference/figures/femaleBarnSwallow_1b.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<div class="figure">
+<img src="reference/figures/femaleBarnSwallow_1b.png" alt=""><p class="caption">Static spectrogram with axis labels for female barn swallow song</p>
+</div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Now generate a dynamic spectrogram</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">paged_spectro</span>(femaleBarnSwallow)</span></code></pre></div>
 </div>
-<div id="dynamic-spectrogram-of-a-female-barn-swallow-song" class="section level3">
-<h3 class="hasAnchor">
-<a href="#dynamic-spectrogram-of-a-female-barn-swallow-song" class="anchor"></a>Dynamic spectrogram of a female barn swallow song</h3>
+<div class="section level3">
+<h3 id="dynamic-spectrogram-of-a-female-barn-swallow-song">Dynamic spectrogram of a female barn swallow song<a class="anchor" aria-label="anchor" href="#dynamic-spectrogram-of-a-female-barn-swallow-song"></a>
+</h3>
 <iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 </div>
-<div id="now-brighten-the-spec-using-the-amptrans-parameter" class="section level3">
-<h3 class="hasAnchor">
-<a href="#now-brighten-the-spec-using-the-amptrans-parameter" class="anchor"></a>Now brighten the spec using the ampTrans parameter</h3>
+<div class="section level3">
+<h3 id="now-brighten-the-spec-using-the-amptrans-parameter">Now brighten the spec using the ampTrans parameter<a class="anchor" aria-label="anchor" href="#now-brighten-the-spec-using-the-amptrans-parameter"></a>
+</h3>
 <ul>
 <li>ampTrans=3 is a nonlinear signal booster. Basically collapses the difference between loudest and quietest values (higher values= brighter specs); 1 (default) means no transformation</li>
 <li>Here, I also lowered the decibel threshold to include some quieter sounds with min_dB=-35; default is -30</li>
@@ -471,13 +471,15 @@
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">prepStaticSpec</span>(f[<span class="dv">1</span>],<span class="at">min_dB=</span><span class="sc">-</span><span class="dv">35</span>, <span class="at">savePNG=</span>T, <span class="at">destFolder=</span><span class="st">"wd"</span>,<span class="at">onlyPlotSpec=</span>F,<span class="at">bgFlood=</span>T,<span class="at">ampTrans=</span><span class="dv">3</span>) </span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pagedSpec</span>(p2) </span></code></pre></div>
-<p><img src="reference/figures/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"></p>
+<div class="figure">
+<img src="reference/figures/femaleBarnSwallow_1c.png" alt=""><p class="caption">Static spectrogram with axis labels for female barn swallow song</p>
+</div>
 <iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 </div>
-<div id="now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files" class="section level3">
-<h3 class="hasAnchor">
-<a href="#now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files" class="anchor"></a>Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)</h3>
+<div class="section level3">
+<h3 id="now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files">Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)<a class="anchor" aria-label="anchor" href="#now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files"></a>
+</h3>
 <ul>
 <li>Long files may take a long time to render, depending on CPU power…
 <ul>
@@ -493,32 +495,34 @@
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pagedSpec</span>(whale)</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Voila 🐋</span></span></code></pre></div>
 </div>
-<div id="static-whale-song-spectrogram" class="section level3">
-<h3 class="hasAnchor">
-<a href="#static-whale-song-spectrogram" class="anchor"></a>Static whale song spectrogram</h3>
-<p><img src="reference/figures/humpback.png" alt="Humpback whale song spectrogram"></p>
+<div class="section level3">
+<h3 id="static-whale-song-spectrogram">Static whale song spectrogram<a class="anchor" aria-label="anchor" href="#static-whale-song-spectrogram"></a>
+</h3>
+<div class="figure">
+<img src="reference/figures/humpback.png" alt=""><p class="caption">Humpback whale song spectrogram</p>
 </div>
-<div id="dynamic-multipage-whale-song-spectrogram" class="section level3">
-<h3 class="hasAnchor">
-<a href="#dynamic-multipage-whale-song-spectrogram" class="anchor"></a>Dynamic multipage whale song spectrogram</h3>
+</div>
+<div class="section level3">
+<h3 id="dynamic-multipage-whale-song-spectrogram">Dynamic multipage whale song spectrogram<a class="anchor" aria-label="anchor" href="#dynamic-multipage-whale-song-spectrogram"></a>
+</h3>
 <iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height="303" width="910" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 </div>
-<div id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme" class="anchor"></a>Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)</h3>
+<div class="section level3">
+<h3 id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme">Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)<a class="anchor" aria-label="anchor" href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme"></a>
+</h3>
 <div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>song<span class="ot">=</span><span class="st">"https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>temp<span class="ot">=</span><span class="fu">prepStaticSpec</span>(song,<span class="at">crop=</span><span class="dv">20</span>,<span class="at">xLim=</span><span class="dv">4</span>,<span class="at">colPal =</span> <span class="fu">c</span>(<span class="st">"white"</span>,<span class="st">"black"</span>))</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pagedSpec</span>(temp,<span class="at">vidName=</span><span class="st">"nightHawk"</span> ,<span class="at">highlightCol =</span> <span class="st">"#d1b0ff"</span>,<span class="at">cursorCol =</span> <span class="st">"#7817ff"</span>)</span></code></pre></div>
 </div>
-<div id="nighthawk-multipage-dynamic-spec" class="section level3">
-<h3 class="hasAnchor">
-<a href="#nighthawk-multipage-dynamic-spec" class="anchor"></a>Nighthawk multipage dynamic spec</h3>
+<div class="section level3">
+<h3 id="nighthawk-multipage-dynamic-spec">Nighthawk multipage dynamic spec<a class="anchor" aria-label="anchor" href="#nighthawk-multipage-dynamic-spec"></a>
+</h3>
 <iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height="303" width="910" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
-<p>Enjoy! Please share your specs with us on Twitter! <a href="https://twitter.com/M_Araya_Salas">@M_Araya_Salas</a> &amp; <a href="https://twitter.com/mattwilkinsbio">@mattwilkinsbio</a></p>
+<p>Enjoy! Please share your specs with us on Twitter! <a href="https://twitter.com/M_Araya_Salas" class="external-link">@M_Araya_Salas</a> &amp; <a href="https://twitter.com/mattwilkinsbio" class="external-link">@mattwilkinsbio</a></p>
 <hr>
-<p>Please cite <a href="https://marce10.github.io/dynaSpec/">dynaSpec</a> as follows:</p>
+<p>Please cite <a href="https://marce10.github.io/dynaSpec/" class="external-link">dynaSpec</a> as follows:</p>
 <p>Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), <em>dynaSpec: dynamic spectrogram visualizations in R</em>. R package version 1.0.0.</p>
 </div>
 </div>
@@ -527,53 +531,63 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=dynaSpec">https://​cloud.r-project.org/​package=dynaSpec</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/maRce10/dynaSpec/">https://​github.com/​maRce10/​dynaSpec/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/maRce10/dynaSpec/issues">https://​github.com/​maRce10/​dynaSpec/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=dynaSpec" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/maRce10/dynaSpec/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/maRce10/dynaSpec/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;= 2)</li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Marcelo Araya-Salas <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3594-619X" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing dynaSpec</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html"><img src="https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg" alt="lifecycle"></a></li>
-<li><a href="https://cran.r-project.org/package=dynaSpec"><img src="https://tinyverse.netlify.com/badge/dynaSpec" alt="Dependencies"></a></li>
-<li><a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active The project has reached a stable, usable state and is being actively developed."></a></li>
-<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/licence-GPL--3-blue.svg" alt="Licence"></a></li>
-<li><a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg" alt="minimal R version"></a></li>
-<li><a href="commits/develop"><img src="https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square" alt="packageversion"></a></li>
-<li><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2022--06--29-yellowgreen.svg" alt="Last-changedate"></a></li>
-<li><a href="https://cran.r-project.org/package=dynaSpec"><img src="https://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec" alt="Total Downloads"></a></li>
+<li>Marcelo Araya-Salas <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3594-619X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg" alt="lifecycle"></a></li>
+<li><a href="https://cran.r-project.org/package=dynaSpec" class="external-link"><img src="https://tinyverse.netlify.com/badge/dynaSpec" alt="Dependencies"></a></li>
+<li><a href="https://www.repostatus.org/#active" class="external-link"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active The project has reached a stable, usable state and is being actively developed."></a></li>
+<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/licence-GPL--3-blue.svg" alt="Licence"></a></li>
+<li><a href="https://cran.r-project.org/" class="external-link"><img src="https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg" alt="minimal R version"></a></li>
+<li><a href="commits/develop"><img src="https://img.shields.io/badge/Package%20version-1.0.1-orange.svg?style=flat-square" alt="packageversion"></a></li>
+<li><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2022--06--30-yellowgreen.svg" alt="Last-changedate"></a></li>
+<li><a href="https://cran.r-project.org/package=dynaSpec" class="external-link"><img src="https://www.r-pkg.org/badges/version/dynaSpec" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec" alt="Total Downloads"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Marcelo Araya-Salas.</p>
+  <p></p>
+<p>Developed by Marcelo Araya-Salas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer>
@@ -581,6 +595,8 @@
 
   
 
+
+  
 
   </body>
 </html>

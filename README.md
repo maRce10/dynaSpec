@@ -10,10 +10,10 @@ and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R
-version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/develop)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2022--06--29-yellowgreen.svg)](/commits/master)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
+version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
+[![packageversion](https://img.shields.io/badge/Package%20version-1.0.1-orange.svg?style=flat-square)](commits/develop)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2022--06--30-yellowgreen.svg)](/commits/master)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
 
@@ -63,7 +63,7 @@ Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static
 and dynamic visualizations of sounds, ready for publication or
 presentation, *without taking screen shots* of another program.
 [Marcelo’s approach](#marcelos-approach-scrolling-dynamic-spectrograms)
-(implemented in the scrolling\_spectro() function) shows a spectrogram
+(implemented in the scrolling_spectro() function) shows a spectrogram
 sliding past a fixed point as sounds are played, similar to that
 utilized in Cornell’s Macaulay Library of Sounds. These dynamic
 spectrograms are produced natively with base graphics. [Matt’s
@@ -71,8 +71,8 @@ approach](#matts-approach-paged-dynamic-spectrograms) creates “paged”
 spectrograms that are revealed by a sliding highlight box as sounds are
 played, akin to Adobe Audition’s spectral view. This approach is in
 ggplot2 natively, and requires setting up spec parameters and segmenting
-sound files with prep\_static\_ggspectro(), the result of which is
-processed with paged\_spectro() to generate a dynamic spectrogram.
+sound files with prep_static_ggspectro(), the result of which is
+processed with paged_spectro() to generate a dynamic spectrogram.
 
 <hr>
 
@@ -82,8 +82,8 @@ processed with paged\_spectro() to generate a dynamic spectrogram.
 
 To run the following examples you will also need to load a few more
 packages as well as
-[warbleR](https://cran.r-project.org/package=warbleR) 1.1.24 (currently
-as the developmental version on github). It can be installed as follows:
+[warbleR](https://cran.r-project.org/package=warbleR) \>= 1.1.24. It can
+be installed as follows:
 
 ``` r
 # From github
@@ -484,11 +484,11 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 
 ### Workflow
 
-1.  Tweak your spectrogram settings using the prep\_static\_ggspectro()
+1.  Tweak your spectrogram settings using the prep_static_ggspectro()
     function – aka prepStaticSpec() – storing results in variable. You
     can also just segment and export static specs at this step.
-2.  Feed variable into paged\_spectro() – aka pagedSpec() – to generate
-    a dynamic spectrogram
+2.  Feed variable into paged_spectro() – aka pagedSpec() – to generate a
+    dynamic spectrogram
     -   It does this by exporting a PNG of the testSpec() ggplot
         function;
     -   Import PNG as a new ggplot raster layer
@@ -528,7 +528,7 @@ song](man/figures/femaleBarnSwallow_1b.png)
     difference between loudest and quietest values (higher values=
     brighter specs); 1 (default) means no transformation
 -   Here, I also lowered the decibel threshold to include some quieter
-    sounds with min\_dB=-35; default is -30
+    sounds with min_dB=-35; default is -30
 -   bgFlood=T makes the axis area the same color as the plot background.
     It will automatically switch to white axis font if background is too
     dark.
@@ -587,7 +587,7 @@ song](man/figures/femaleBarnSwallow_1c.png)
 </iframe>
 
 Enjoy! Please share your specs with us on Twitter!
-[@M\_Araya\_Salas](https://twitter.com/M_Araya_Salas) &
+[@M_Araya_Salas](https://twitter.com/M_Araya_Salas) &
 [@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
 
 ------------------------------------------------------------------------
