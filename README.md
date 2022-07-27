@@ -8,7 +8,7 @@ dynaSpec: dynamic spectrogram visualizations
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
 [![packageversion](https://img.shields.io/badge/Package%20version-1.0.1-orange.svg?style=flat-square)](commits/develop)
@@ -45,11 +45,11 @@ library(seewave)
 
 To install the latest developmental version from
 [github](https://github.com/) you will need the R package
-[devtools](https://cran.r-project.org/package=devtools):
+[remotes](https://cran.r-project.org/package=remotes):
 
 ``` r
 # From github
-devtools::install_github("maRce10/dynaSpec")
+remotes::install_github("maRce10/dynaSpec")
 
 #load package
 library(dynaSpec)
@@ -508,14 +508,18 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ![Static Spectrogram of a female barn swallow
 song](man/figures/femaleBarnSwallow_1.png)
 
-    #let's add axes 
-    femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
+``` r
+#let's add axes 
+femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
+```
 
 ![Static spectrogram with axis labels for female barn swallow
 song](man/figures/femaleBarnSwallow_1b.png)
 
-    #Now generate a dynamic spectrogram
-    paged_spectro(femaleBarnSwallow)
+``` r
+#Now generate a dynamic spectrogram
+paged_spectro(femaleBarnSwallow)
+```
 
 ### Dynamic spectrogram of a female barn swallow song
 
@@ -534,13 +538,13 @@ song](man/figures/femaleBarnSwallow_1b.png)
     dark.
 -   Then generate dynamic spectrogram
 
-<!-- -->
+``` r
+#note that prep_static_spectro() is tha same as prepStaticSpec()
+#Also paged_spectro() is the same as pagedSpec()
 
-    #note that prep_static_spectro() is tha same as prepStaticSpec()
-    #Also paged_spectro() is the same as pagedSpec()
-
-    p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
-    pagedSpec(p2) 
+p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
+pagedSpec(p2) 
+```
 
 ![Static spectrogram with axis labels for female barn swallow
 song](man/figures/femaleBarnSwallow_1c.png)
@@ -559,12 +563,12 @@ song](man/figures/femaleBarnSwallow_1c.png)
     -   here we also limit the yLim of the plot to the vocalized
         frequencies from 0 to 700 Hz (0.7 kHz)
 
-<!-- -->
-
-    whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
-           savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
-    pagedSpec(whale)
-    #Voila 🐋
+``` r
+whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+       savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+pagedSpec(whale)
+#Voila 🐋
+```
 
 ### Static whale song spectrogram
 
@@ -577,9 +581,11 @@ song](man/figures/femaleBarnSwallow_1c.png)
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
 
-    song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
-    temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
-    pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
+``` r
+song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
+temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
+pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
+```
 
 ### Nighthawk multipage dynamic spec
 
