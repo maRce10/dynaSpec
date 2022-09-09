@@ -78,7 +78,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
 
   # error message if wavethresh is not installed
   if (derivative & !requireNamespace("imager", quietly = TRUE))
-    stop("must install 'imager' when using spectral derivatives (derivative = TRUE)")
+    stop2("must install 'imager' when using spectral derivatives (derivative = TRUE)")
   
   if (derivative & ggspectro) warning("spectral derivatives (derivative = TRUE) are not allowed with 'ggspectro'. 'derivative' will be ignored")
   
@@ -93,16 +93,16 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   
   # check call
   if (!is.null(spectro.call)) 
-    if (!is.call(spectro.call)) stop("'spectro.call' is not a call")
+    if (!is.call(spectro.call)) stop2("'spectro.call' is not a call")
   
   # hopsize  
-  if (!is.numeric(hop.size) | hop.size < 0) stop("'hop.size' must be a positive number") 
+  if (!is.numeric(hop.size) | hop.size < 0) stop2("'hop.size' must be a positive number") 
 
   # buffer  
-  if (!is.numeric(buffer) | buffer < 0) stop("'buffer' must be a positive number") 
+  if (!is.numeric(buffer) | buffer < 0) stop2("'buffer' must be a positive number") 
 
   # loop  
-  if (!is.numeric(loop) | loop < 0) stop("'loop' must be a positive number") 
+  if (!is.numeric(loop) | loop < 0) stop2("'loop' must be a positive number") 
 
   # error if buffer and loop > 1
   if (buffer > 0 & loop > 1) {
@@ -112,8 +112,8 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     }  
     
   # If parallel is not numeric
-  if (!is.numeric(parallel)) stop("'parallel' must be a numeric vector of length 1") 
-  if (any(!(parallel %% 1 == 0),parallel < 1)) stop("'parallel' should be a positive integer")
+  if (!is.numeric(parallel)) stop2("'parallel' must be a numeric vector of length 1") 
+  if (any(!(parallel %% 1 == 0),parallel < 1)) stop2("'parallel' should be a positive integer")
   
   # set height prop to 0, 1
   if (!lower.spectro & !osc) height.prop <- c(1, 0)

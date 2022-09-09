@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 library(warbleR)
 ```
 
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![Dependencies](https://tinyverse.netlify.com/badge/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![Project Status: Active  The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r strsplit(gsub("depends: R \\(|\\)", "", grep("DEPENDS", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE), ",")[[1]][1]`-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-`r gsub("version: |version:", "", grep("version", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE)`-orange.svg?style=flat-square)](commits/develop) [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![Dependencies](https://tinyverse.netlify.com/badge/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![Project Status: Active  The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r strsplit(gsub("depends: R \\(|\\)", "", grep("DEPENDS", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE), ",")[[1]][1]`-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-`r gsub("version: |version:", "", grep("version", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE)`-orange.svg?style=flat-square)](commits/develop) [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
 
 
@@ -27,7 +27,7 @@ Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic spectrogr
 
 Install/load the package from CRAN as follows:
 
-``` r
+```{r, eval = FALSE}
 
 # From CRAN would be
 install.packages("dynaSpec")
@@ -41,16 +41,18 @@ library(tuneR)
 library(seewave)
 ```
 
-To install the latest developmental version from [github](https://github.com/) you will need the R package [devtools](https://cran.r-project.org/package=devtools):
+To install the latest developmental version from [github](https://github.com/) you will need the R package [remotes](https://cran.r-project.org/package=remotes):
 
-``` r
+```{r, eval = FALSE}
 
 # From github
-devtools::install_github("maRce10/dynaSpec")
+remotes::install_github("maRce10/dynaSpec")
 
 #load package
 library(dynaSpec)
+
 ```
+
 # Background
 This package is a collaboration between [Marcelo Araya-Salas](https://marceloarayasalas.weebly.com/) and [Matt Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-approach-scrolling-dynamic-spectrograms) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-approach-paged-dynamic-spectrograms) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
 
@@ -59,7 +61,7 @@ This package is a collaboration between [Marcelo Araya-Salas](https://marceloara
 <hr>
 To run the following examples you will also need to load a few more packages as well as [warbleR](https://cran.r-project.org/package=warbleR) >= 1.1.24. It can be installed as follows:
 
-``` r
+```{r, eval = FALSE}
 
 # From github
 devtools::install_github("maRce10/warbleR")
@@ -70,7 +72,7 @@ library(warbleR)
 
 A dynamic spectrogram of a canyon wren song with a viridis color palette:
 
-``` r
+```{r, eval = FALSE}
 
 
 data("canyon_wren")
@@ -90,7 +92,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 
 Black and white spectrogram:
 
-``` r
+```{r, eval = FALSE}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
           t.display = 1.7, pal = reverse.gray.colors.1, 
@@ -108,7 +110,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 
 A spectrogram with black background (colbg = "black"):
 
-``` r
+```{r, eval = FALSE}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
               t.display = 1.7, pal = viridis, 
@@ -125,7 +127,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 
 Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom (osc = TRUE):
 
-``` r
+```{r, eval = FALSE}
 
 scrolling_spectro(wave = canyon_wren, wl = 300, 
               t.display = 1.7, pal = viridis, 
@@ -146,7 +148,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 
 Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and looping 3 times (loop = 3:
 
-``` r
+```{r, eval = FALSE}
 
 data("Phae.long4")
 
@@ -166,7 +168,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 
 Visualizing a northern nightingale wren recording from [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
 
-``` r
+```{r, eval = FALSE}
 
 ngh_wren <- read_wave("https://www.xeno-canto.org/518334/download")
 
@@ -187,7 +189,7 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
 
 Spix's disc-winged bat inquiry call slow down (speed = 0.05):
 
-``` r
+```{r, eval = FALSE}
 
 data("thyroptera.est")
 
@@ -222,7 +224,7 @@ scrolling_spectro(wave = thy_wav, wl = 400,
 
 The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):
 
-``` r
+```{r, eval = FALSE}
 
 # get house wren male female duet recording
 hs_wren <- read_wave("https://ndownloader.figshare.com/files/22722101")
@@ -246,7 +248,7 @@ The male part is shown in green and the female part in yellow.
 
 We can wrap the `color_spectro()` call using the `call()` function form base R and input that into `scrolling_spectro()` using the argument 'spectro.call':
 
-``` r
+```{r, eval = FALSE}
 # save call
 sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, 
               flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
@@ -270,7 +272,7 @@ scrolling_spectro(wave = hs_wren, wl = 512,
 
 This option can be mixed with any of the other customizations in the function, as adding an oscillogram:
 
-``` r
+```{r, eval = FALSE}
 
 # create dynamic spectrogram
 scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
@@ -290,7 +292,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 
 A viridis color palette:
 
-``` r
+```{r, eval = FALSE}
 
 st$colors <- viridis(10)[c(3, 8)]
 
@@ -318,7 +320,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
 
 Or simply a gray scale:
 
-``` r
+```{r, eval = FALSE}
 
 st$colors <- c("gray", "gray49")
 
@@ -345,7 +347,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 
 The 'spectro.call' argument can also be used to add annotations. To do this we need to wrap up both the spectrogram function and the annotation functions (i.e. `text()`, `lines()`) in a single function and then save the call to that function:
 
-``` r
+```{r, eval = FALSE}
 
 # create color column
 st$colors <- viridis(10)[c(3, 8)]
@@ -400,7 +402,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
 
 Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:
 
-``` r
+```{r, eval = FALSE}
 
 # read data from figshare
 frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
@@ -432,7 +434,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 
 The argument accepts more than one labels as in a regular `text()` call. In that case 'start' and 'end' values should be supplied for each label:
 
-``` r
+```{r, eval = FALSE}
 
 # make annotation call for 2 annotations
 ann_cll <- call("text", x = 0.25, y = 0.87, 
@@ -480,13 +482,15 @@ params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
 ### Static spectrogram of a female barn swallow song
 ![Static Spectrogram of a female barn swallow song](man/figures/femaleBarnSwallow_1.png)
 
-```
+```{r, eval = FALSE}
+
 #let's add axes 
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
 ```
 ![Static spectrogram with axis labels for female barn swallow song](man/figures/femaleBarnSwallow_1b.png)
 
-```
+```{r, eval = FALSE}
+
 #Now generate a dynamic spectrogram
 paged_spectro(femaleBarnSwallow)
 ```
@@ -499,7 +503,8 @@ paged_spectro(femaleBarnSwallow)
 * bgFlood=T makes the axis area the same color as the plot background. It will automatically switch to white axis font if background is too dark.
 * Then generate dynamic spectrogram
 
-```
+```{r, eval = FALSE}
+
 #note that prep_static_spectro() is tha same as prepStaticSpec()
 #Also paged_spectro() is the same as pagedSpec()
 
@@ -519,7 +524,8 @@ pagedSpec(p2)
   * xLim=3 specifies the "page window" i.e. how many seconds each "page" of the dynamic spectrogram should display, here 3 sec
   * here we also limit the yLim of the plot to the vocalized frequencies from 0 to 700 Hz (0.7 kHz) 
   
-```
+```{r, eval = FALSE}
+
 whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
        savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 pagedSpec(whale)
@@ -535,7 +541,8 @@ pagedSpec(whale)
 
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
-```
+```{r, eval = FALSE}
+
 song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
 temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
 pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
