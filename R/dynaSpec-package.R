@@ -2,12 +2,11 @@
 #' 
 #' A set of tools to generate dynamic spectrogram visualizations in video format.
 #' 
-#' @import NatureSounds
 #' @import ggplot2
 #' @import seewave
 #' @import gganimate
 #' @import viridis
-#' @import av
+#' @import stats
 #' @importFrom tuneR writeWave readWave readMP3 mono silence bind 
 #' @importFrom png readPNG
 #' @importFrom scales modulus_trans

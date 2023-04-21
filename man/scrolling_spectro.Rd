@@ -95,7 +95,7 @@ A video file in mp4 format in the working directory with the scrolling spectrogr
 \code{scrolling_spectro} create videos of single row spectrograms scrolling from right to left sync'ed with sound.
 }
 \details{
-The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms.
+The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms. Sound files with a sampling rate other than 44.1 kHz will be resampled to 44.1 kHz is required by ffmpeg when embeding audio to video files.
 }
 \examples{
 \dontrun{
