@@ -6,7 +6,6 @@
 #' @import seewave
 #' @import gganimate
 #' @import viridis
-#' @import stats
 #' @importFrom tuneR writeWave readWave readMP3 mono silence bind 
 #' @importFrom png readPNG
 #' @importFrom scales modulus_trans
