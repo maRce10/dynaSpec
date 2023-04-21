@@ -54,7 +54,7 @@
 #' @return A video file in mp4 format in the working directory with the scrolling spectrogram.
 #' @export
 #' @name scrolling_spectro
-#' @details The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms. Sound files with a sampling rate other than 44.1 kHz will be resampled to 44.1 kHz is required by ffmpeg when embeding audio to video files.
+#' @details The function creates videos (mp4 format) of single row spectrograms scrolling from right to left. The audio is sync'ed with the spectrograms. Sound files with a sampling rate other than 44.1 kHz will be resampled to 44.1 kHz as required by ffmpeg when embeding audio to video files.
 #' @seealso \code{\link[seewave]{spectro}}
 #' @examples
 #' \dontrun{
