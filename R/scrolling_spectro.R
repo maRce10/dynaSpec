@@ -80,9 +80,9 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   if (derivative & !requireNamespace("imager", quietly = TRUE))
     stop2("must install 'imager' when using spectral derivatives (derivative = TRUE)")
   
-  if (derivative & ggspectro) warning("spectral derivatives (derivative = TRUE) are not allowed with 'ggspectro'. 'derivative' will be ignored")
+  if (derivative & ggspectro) warning2("spectral derivatives (derivative = TRUE) are not allowed with 'ggspectro'. 'derivative' will be ignored")
   
-  if (osc & lower.spectro) warning("oscillogram (osc = TRUE) are mutually exclusive. 'lower.spectro' will be ignored")
+  if (osc & lower.spectro) warning2("oscillogram (osc = TRUE) are mutually exclusive. 'lower.spectro' will be ignored")
   
   # change lower.spectro if osc = T
   if (osc) lower.spectro <- FALSE
@@ -106,7 +106,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
 
   # error if buffer and loop > 1
   if (buffer > 0 & loop > 1) {
-    warning("buffer cannot be used (> 0) when loop is > 1. Buffer was set to 0")
+    warning2("buffer cannot be used (> 0) when loop is > 1. Buffer was set to 0")
 
     buffer <- 0
     }  
@@ -449,7 +449,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   }, cl = cl)
   
   # stop clusters for windows OS
-  parallel::stopCluster(cl = cl)
+  if (.Platform["OS.type"] == "windows") parallel::stopCluster(cl = cl) else
   rm(cl)
   
   # temporary file names
@@ -477,15 +477,18 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
       wave <- seewave::pastew(wave2 = wave1, wave1 = wave, f = wave@samp.rate,output = "Wave")
 }
     
-    
-  # resample to 44.1 kHz
-  if (wave@samp.rate != 44100)
-    wave <- seewave::resamp(wave = wave, f = wave@samp.rate, g = 44100, output = "Wave")
-    
   suppressWarnings(tuneR::writeWave(object = wave, filename = temp.audio, extensible = FALSE))
   
+  # resample to 44.1 kHz
+  if (wave@samp.rate != 44100){
+    temp.audio.rsmp <- gsub(".wav$", ".rsmp.wav", temp.audio) 
+    cll_resample <- paste0("ffmpeg -i ", temp.audio, " -ar 44100 ", temp.audio.rsmp)
+    out_resmpl <- system(cll_resample, intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE)
+    temp.audio <- temp.audio.rsmp # overwrite name
+  } 
+  
   # put together call for ffmpeg
-  cll1 <- paste0("ffmpeg -framerate ", fps, " -i ", tempdir(), "/", paste0("%0",nchar(frames) + 2, "d.temp.img.tiff")," -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y ", temp.video)
+  cll1 <- paste0("ffmpeg -framerate ", fps, " -i ", tempdir(), "/", paste0("%0", nchar(frames) + 2, "d.temp.img.tiff")," -c:v libx264 -profile:v high -crf 2 -pix_fmt yuv420p -y ", temp.video)
   
   # run ffmpeg to create video
   out1 <- system(cll1, intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE)
