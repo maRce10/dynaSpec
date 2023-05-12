@@ -2,6 +2,7 @@ dynaSpec: dynamic spectrogram visualizations
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![Dependencies](https://tinyverse.netlify.com/badge/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
@@ -12,17 +13,22 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
 [![packageversion](https://img.shields.io/badge/Package%20version-1.0.1-orange.svg?style=flat-square)](commits/develop)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2022--12--22-yellowgreen.svg)](/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2023--05--12-yellowgreen.svg)](/commits/master)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
+<!-- badges: end -->
 
 <img src="man/figures/dynaSpec_sticker.png" alt="sketchy sticker" align="right" width = "25%" height="25%"/>
 
 A set of tools to generate dynamic spectrogram visualizations in video
 format. [FFMPEG](https://ffmpeg.org/download.html) must be installed in
-order for this package to work. The package relies heavily on the
-packages [seewave](https://CRAN.R-project.org/package=seewave) and
+order for this package to work (check [this link for
+instructions](https://www.rdocumentation.org/packages/ndtv/versions/0.13.3/topics/install.ffmpeg)
+and this [link for troubleshooting installation on
+Windows](https://github.com/maRce10/dynaSpec/issues/3)). The package
+relies heavily on the packages
+[seewave](https://CRAN.R-project.org/package=seewave) and
 [tuneR](https://CRAN.R-project.org/package=tuneR).
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
