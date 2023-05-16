@@ -82,7 +82,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   
   if (derivative & ggspectro) warning2("spectral derivatives (derivative = TRUE) are not allowed with 'ggspectro'. 'derivative' will be ignored")
   
-  if (osc & lower.spectro) warning2("oscillogram (osc = TRUE) are mutually exclusive. 'lower.spectro' will be ignored")
+  if (osc & lower.spectro) warning2("lower.spectro (lower.spectro = TRUE)  and oscillogram (osc = TRUE) are mutually exclusive. 'lower.spectro' will be ignored")
   
   # change lower.spectro if osc = T
   if (osc) lower.spectro <- FALSE
