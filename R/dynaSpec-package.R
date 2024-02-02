@@ -8,6 +8,7 @@
 #' @import viridis
 #' @importFrom tuneR writeWave readWave readMP3 mono silence bind 
 #' @importFrom png readPNG
+#' @importFrom warbleR pblapply_wrblr_int
 #' @importFrom scales modulus_trans
 #' @importFrom ari have_ffmpeg_exec ffmpeg_exec
 #' @importFrom png readPN

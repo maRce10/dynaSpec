@@ -76,6 +76,10 @@
 scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, pb = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = "white", spectro.call = NULL, annotation.call = NULL, ...)
 {
 
+  # stop if wave is shorter than t.display
+  if (seewave::duration(wave) <= t.display)
+    stop2("duration of 'wave' must be larger than 't.display'")
+  
   # error message if wavethresh is not installed
   if (derivative & !requireNamespace("imager", quietly = TRUE))
     stop2("must install 'imager' when using spectral derivatives (derivative = TRUE)")
@@ -184,7 +188,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     flim <- c(0, wave@samp.rate / 2000)
 
   # reset margins at the end
-  opar <- graphics::par(mar = graphics::par("mar"), bg = graphics::par("bg"))
+  opar <- graphics::par(mar = graphics::par("mar"), bg = graphics::par("bg"), no.readonly = TRUE)
   on.exit(graphics::par(opar), add = TRUE)
   
   # remove temporary files at the end
@@ -314,15 +318,12 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
   # calculate pixels per second
   px.per.s <- dim(spc_img)[2] / seewave::duration(wave_sil)
   
-  # set pb options 
-  pbapply::pboptions(type = ifelse(as.logical(pb), "timer", "none"))
-  
   # set clusters for windows OS
   if (Sys.info()[1] == "Windows" & parallel > 1)
     cl <- parallel::makePSOCKcluster(getOption("cl.cores", parallel)) else cl <- parallel
   
   #loop to create image files 
-  out <- pbapply::pblapply(1:frames, function(x){
+  out <- warbleR:::pblapply_wrblr_int(X = seq_len(frames), pbar = pb, function(x){
     
     # time limit
     tlim <- c((x - 1) * step_time, (x - 1) * step_time) - buffer
@@ -446,11 +447,7 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
     if (loop > 1)
       for (i in 1:loop)
       file.copy(file.path(tempdir(), img_names[x]), file.path(tempdir(), img_names[x + (frames * i)]))
-  }, cl = cl)
-  
-  # stop clusters for windows OS
-  if (.Platform["OS.type"] == "windows") parallel::stopCluster(cl = cl) else
-  rm(cl)
+  })
   
   # temporary file names
   temp.audio <- file.path(tempdir(), "audio.scroll.spectro.wav")
