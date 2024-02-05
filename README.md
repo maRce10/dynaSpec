@@ -13,7 +13,7 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
 [![packageversion](https://img.shields.io/badge/Package%20version-1.0.1-orange.svg?style=flat-square)](commits/develop)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2023--05--12-yellowgreen.svg)](/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2024--02--05-yellowgreen.svg)](/commits/master)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
@@ -64,6 +64,12 @@ remotes::install_github("maRce10/dynaSpec")
 #load package
 library(dynaSpec)
 ```
+
+Installation of external dependencies can be tricky on operating systems
+other than Linux. An alternative option is to run the package through
+[google colab](https://colab.google/). This [colab
+notebook](https://colab.research.google.com/drive/1t3Wn9OifcZTvxOMVNmz9dF25vnzU3_Fr?usp=sharing)
+explain how to do this step-by-step.
 
 # Background
 
@@ -529,8 +535,12 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 
 ### Static spectrogram of a female barn swallow song
 
-![Static Spectrogram of a female barn swallow
-song](man/figures/femaleBarnSwallow_1.png)
+<figure>
+<img src="man/figures/femaleBarnSwallow_1.png"
+alt="Static Spectrogram of a female barn swallow song" />
+<figcaption aria-hidden="true">Static Spectrogram of a female barn
+swallow song</figcaption>
+</figure>
 
 ``` r
 
@@ -538,8 +548,12 @@ song](man/figures/femaleBarnSwallow_1.png)
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onlyPlotSpec = F)
 ```
 
-![Static spectrogram with axis labels for female barn swallow
-song](man/figures/femaleBarnSwallow_1b.png)
+<figure>
+<img src="man/figures/femaleBarnSwallow_1b.png"
+alt="Static spectrogram with axis labels for female barn swallow song" />
+<figcaption aria-hidden="true">Static spectrogram with axis labels for
+female barn swallow song</figcaption>
+</figure>
 
 ``` r
 
@@ -573,8 +587,12 @@ p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bg
 pagedSpec(p2) 
 ```
 
-![Static spectrogram with axis labels for female barn swallow
-song](man/figures/femaleBarnSwallow_1c.png)
+<figure>
+<img src="man/figures/femaleBarnSwallow_1c.png"
+alt="Static spectrogram with axis labels for female barn swallow song" />
+<figcaption aria-hidden="true">Static spectrogram with axis labels for
+female barn swallow song</figcaption>
+</figure>
 
 <iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
@@ -600,7 +618,12 @@ pagedSpec(whale)
 
 ### Static whale song spectrogram
 
-![Humpback whale song spectrogram](man/figures/humpback.png)
+<figure>
+<img src="man/figures/humpback.png"
+alt="Humpback whale song spectrogram" />
+<figcaption aria-hidden="true">Humpback whale song
+spectrogram</figcaption>
+</figure>
 
 ### Dynamic multipage whale song spectrogram
 

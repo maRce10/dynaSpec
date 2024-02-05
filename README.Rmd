@@ -56,6 +56,9 @@ library(dynaSpec)
 
 ```
 
+
+Installation of external dependencies can be tricky on operating systems other than Linux. An alternative option is to run the package through [google colab](https://colab.google/). This [colab notebook](https://colab.research.google.com/drive/1t3Wn9OifcZTvxOMVNmz9dF25vnzU3_Fr?usp=sharing) explain how to do this step-by-step. 
+
 # Background
 This package is a collaboration between [Marcelo Araya-Salas](https://marceloarayasalas.weebly.com/) and [Matt Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-approach-scrolling-dynamic-spectrograms) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-approach-paged-dynamic-spectrograms) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
 
