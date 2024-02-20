@@ -57,7 +57,6 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
       
     }else{df_i=df}
  
-    ..level.. <- NULL
     
     #Plot that thang
     Glist[[i]]<-ggplot2::ggplot(df_i,ggplot2::aes(x=time,y=freq,z=amplitude))+ggplot2::xlim(segLens[i],segLens[i+1])+ggplot2::ylim(yLim)+
@@ -68,7 +67,7 @@ ggSpec<-function(wav,soundFile,segLens,savePNG,specWidth,specHeight,destFolder,o
           ggplot2::scale_fill_gradient(limits=c(min_dB,0),na.value="transparent",low=colPal[1],high=colPal[2],trans=scales::modulus_trans(p=ampTrans))}
         }+
     #Make contours  
-    ggplot2::stat_contour(geom="polygon",ggplot2::aes(fill=..level..),bins=colbins,na.rm=TRUE)+
+    ggplot2::stat_contour(geom="polygon",ggplot2::aes(fill=ggplot2::after_stat(level)),bins=colbins,na.rm=TRUE)+
     #Set base theme  
     mytheme(bg)+{
        #If user supplied fontAndAxisCol, change those settings (regardless of whether bg is flooded or not)
