@@ -28,7 +28,7 @@ colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
 
 \item{filter}{apply a bandpass filter? Defaults to none (NULL). Expects 'c(0,2)' where sound from 0 to 2kHz would be filtered out}
 
-\item{xLim}{is the time limit in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s)}
+\item{xLim}{is the time limit in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf.}
 
 \item{yLim}{is the frequency limits (y-axis); default is c(0,10) aka 0-10kHz}
 
