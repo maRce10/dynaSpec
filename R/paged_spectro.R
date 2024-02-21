@@ -124,7 +124,7 @@ for(i in 1:length(specParams$segWavs))
   spec_height_px<-attributes(spec_PNG)$dim[1]
     
   #Create data frame for highlighting box animation for i^th wav segment
-  browser()
+  
    range_i<-c((i-1)*specParams$xLim[2],(i-1)*specParams$xLim[2]+specParams$xLim[2])
    cursor<-seq(range_i[1],range_i[2],specParams$xLim[2]/framerate)
   played<-data.frame(xmin=cursor,xmax=rep(range_i[2],length(cursor)),ymin=rep(specParams$yLim[1],length(cursor)),ymax=rep(specParams$yLim[2], length(cursor)))

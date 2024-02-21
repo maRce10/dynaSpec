@@ -18,7 +18,7 @@
 #' @param savePNG save static spectrograms as PNGs? They will be exported to destFolder
 #' @param colPal color palette; one of "viridis","magma","plasma","inferno","cividis" from the \code{\link[viridis]{viridis}} package OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient
 #' @param crop subset of recording to include; if crop=NULL, use whole file; if number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as specific time interval in sec
-#' @param xLim is the time limit in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s)
+#' @param xLim is the time limit in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf.
 #' @param yLim is the frequency limits (y-axis); default is c(0,10) aka 0-10kHz
 #' @param plotLegend include a legend showing amplitude colors?
 #' @param onlyPlotSpec do you want to just plot the spec and leave out the legend, axes, and axis labels?
