@@ -135,12 +135,12 @@ prep_static_ggspectro <-
       #handle refs to a recording page URL from Xeno-Canto that don't have .mp3 in the name
       if (grepl("xeno-canto\\.org/.*", soundFile) &
           !(grepl("\\.mp3", soundFile))) {
-        #get xc code to name the file, as it's difficult to find the .mp3 file without using the API
-        xc_url <- gsub("(^.*\\.org/\\d*).*", "\\1", soundFile)
-        xc_filename <- paste0("XC_", basename(xc_url), ".mp3")
-        xc_download_url <- paste0(xc_url, "/download")
+        #lookup filename using warbler to query the API. Sometimes MP3, sometimes WAV
+        xc_rec_num <- gsub("^.*\\.org/(\\d*).*", "\\1", soundFile)
+        xc_query_result <- warbleR::query_xc(paste0("nr:", xc_rec_num) )
+        xc_filename <- xc_query_result$file.name
+        dl_src <-  xc_query_result$Audio_file
         soundFile <- paste0(destFolder, xc_filename)
-        dl_src <- xc_download_url
         dest_file <- soundFile
         
       } else{
@@ -148,6 +148,7 @@ prep_static_ggspectro <-
         dest_file <- paste0(destFolder, basename(soundFile))
         soundFile <- paste0(destFolder, basename(soundFile))
       }
+      
       #avoid redownloading every time
       if(file.exists(dest_file)){
         message("File found. Skipping download of: ",dest_file)
