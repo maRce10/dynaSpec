@@ -67,7 +67,7 @@ a list with all spectrogram parameters, segmented WAV files (segWavs) and spectr
 }
 \description{
 Can be used to generate single or segmented static spectrograms. Works as standalone,
-but the returned object is also intended to feed into \code{\link{paged_spectro}}. Workflow: 1) use 
+but the returned object is also intended to feed into \code{\link{paged_spectro}}. Workflow: 1) use
 prep_static_ggspectro to crop, filter, segment and tweak all spectrogram parameters; 2) pass these
 settings to \code{\link{paged_spectro}} to generate dynamic spectrogram video.
 }
@@ -84,18 +84,18 @@ prep_static_ggspectro(f[1])
 # let's add axes and boost the signal a smidge
 femaleBarnSwallow <- prep_static_ggspectro(f[1],destFolder="wd",
 onlyPlotSpec = FALSE, bgFlood=TRUE,ampTrans=2)
- 
+
 # feels like we're missing a little bit of the quieter signals; let's lower
 # the minimum amplitude threshold a bit
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder="wd",
 onlyPlotSpec = FALSE, bgFlood=TRUE,ampTrans=2,min_dB=-35)
- 
-#now for a male song  
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE, 
+
+#now for a male song
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE,
 bgFlood=TRUE)
 
 #Nice, but the trill is fading out; I'm gonna signal boost and lower the min_dB
-maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE, 
+maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE,
 bgFlood=TRUE,ampTrans=2,min_dB=-40)
 
 #much stronger, now let's combine them (you need the cowplot package)
