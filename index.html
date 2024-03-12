@@ -445,11 +445,11 @@
 </ul>
 </li>
 </ol>
-<!-- --><div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#list WAVs included with dynaSpec</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>(f<span class="ot">&lt;-</span><span class="fu">system.file</span>(<span class="at">package=</span><span class="st">"dynaSpec"</span>) <span class="sc">%&gt;%</span> <span class="fu">list.files</span>(<span class="at">pattern=</span><span class="st">".wav"</span>,<span class="at">full.names=</span>T))</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#store output and save spectrogram to working directory</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span><span class="fu">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="at">destFolder=</span><span class="st">"wd"</span>,<span class="at">savePNG=</span>T)</span></code></pre></div>
+<!-- --><div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co">#list WAVs included with dynaSpec</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>(f<span class="ot">&lt;-</span><span class="fu">system.file</span>(<span class="at">package=</span><span class="st">"dynaSpec"</span>) <span class="sc">%&gt;%</span> <span class="fu">list.files</span>(<span class="at">pattern=</span><span class="st">".wav"</span>,<span class="at">full.names=</span>T))</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#store output and save spectrogram to working directory</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>params <span class="ot">&lt;-</span><span class="fu">prep_static_ggspectro</span>(f[<span class="dv">1</span>],<span class="at">destFolder=</span><span class="st">"wd"</span>,<span class="at">savePNG=</span>T)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="static-spectrogram-of-a-female-barn-swallow-song">Static spectrogram of a female barn swallow song<a class="anchor" aria-label="anchor" href="#static-spectrogram-of-a-female-barn-swallow-song"></a>
