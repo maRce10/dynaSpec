@@ -97,7 +97,7 @@ if(!missing(vidName)){
     outWAV<-lapply(1:length(specParams$segWavs),function(x) {paste0(tempdir,iName0,"_",x,"_.wav")}) 
     invisible(
       lapply(1:length(specParams$segWavs), function(x){fn=outWAV[[x]]
-          tuneR::writeWave(specParams$segWavs[[x]],file=fn)
+          tuneR::writeWave(specParams$segWavs[[x]],filename=fn)
           cat(paste0("\nSaved temp wav segment: ",fn))}))
       }
     
