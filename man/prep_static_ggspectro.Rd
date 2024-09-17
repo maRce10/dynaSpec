@@ -14,33 +14,33 @@ colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
 \arguments{
 \item{soundFile}{should work with URLs, full and relative paths; handles .mp3 and .wav}
 
-\item{destFolder}{needs to be like "figures/spectrograms/" to be relative to working directory; goes to soundFile folder by default or working directory if soundFile is a URL; can specify "wd" to output to the working directory}
+\item{destFolder}{path to directory to save output. Needs to be like "figures/spectrograms/" to be relative to working directory. Default=parent folder of soundFile. Specify "wd" to output to the working directory, gotten from [get_wd()]}
 
-\item{outFilename}{if left out, will use input name in output filename}
+\item{outFilename}{name for output PNG. default=NULL will use input name in output filename.}
 
-\item{savePNG}{save static spectrograms as PNGs? They will be exported to destFolder}
+\item{savePNG}{logical; Save static spectrograms as PNGs? They will be exported to destFolder.}
 
 \item{colPal}{color palette; one of "viridis","magma","plasma","inferno","cividis" from the \code{\link[viridis]{viridis}} package OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient}
 
-\item{crop}{subset of recording to include; if crop=NULL, use whole file; if number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as specific time interval in sec}
+\item{crop}{subset of recording to include; default crop=NULL will use whole file, up to 10 sec; if a number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as trimming out a specific time interval in sec; if crop=FALSE, will not crop at all, even for recordings over 10 sec.}
 
 \item{bg}{background color (defaults to 1st value of chosen palette)}
 
 \item{filter}{apply a bandpass filter? Defaults to none (NULL). Expects 'c(0,2)' where sound from 0 to 2kHz would be filtered out}
 
-\item{xLim}{is the time limit in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf.}
+\item{xLim}{the time limit (x-axis width) in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf or specify the desired spectrogram x-axis limit.}
 
-\item{yLim}{is the frequency limits (y-axis); default is c(0,10) aka 0-10kHz}
+\item{yLim}{the frequency limits (y-axis); default is c(0,10) aka 0-10kHz}
 
-\item{plotLegend}{include a legend showing amplitude colors?}
+\item{plotLegend}{logical; include a legend showing amplitude colors? default=FALSE}
 
-\item{onlyPlotSpec}{do you want to just plot the spec and leave out the legend, axes, and axis labels?}
+\item{onlyPlotSpec}{logical; do you want to just plot the spec and leave out the legend, axes, and axis labels? default= TRUE}
 
-\item{ampTrans}{amplitude transform for boosting spectrum contrast; defaults to identity (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)}
+\item{ampTrans}{amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)}
 
 \item{min_dB}{the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)}
 
-\item{wl}{window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff}
+\item{wl}{window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff; human speech would look better at 1024 or higher, giving higher frequency resolution.}
 
 \item{ovlp}{how much overlap (as percent) between sliding windows to generate spec? Default 90 looks good, but takes longer}
 

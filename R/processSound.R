@@ -98,11 +98,11 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   timeRemainder <-
     (ceiling(wavDur / xLim[2]) * xLim[2] - wavDur) > 0.001#(wavDur%/%xLim[2]-wavDur/xLim[2]
   #If user wants to have xLim be Infinite (override 5sec max for long files)
-  if(xLim[2] %in% c(Inf,"Inf")){
+  if (xLim[2] %in% c(Inf, "Inf")) {
     wavDur <- max(length(wav@left), length(wav@right)) / wav@samp.rate
     xLim[2] <- wavDur
-  #Else fill out remainders with filler silence
-  }else if (xLim[2] > wavDur | timeRemainder ) {
+    #Else fill out remainders with filler silence
+  } else if (xLim[2] > wavDur | timeRemainder) {
     if (timeRemainder) {
       diffT <- ceiling(wavDur / xLim[2]) * xLim[2] - wavDur
     } else{
@@ -122,7 +122,8 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
     wavDur <- max(length(wav@left), length(wav@right)) / wav@samp.rate
   }
   #Segment wav or make list of 1 if no segmentation
-  segLens <- seq(0, wavDur, xLim[2])
+  #The ceiling code here is to deal with e.g. duration of 29.999 and xLim=10 that would only produce 2 segments
+  segLens <- seq(0, ceiling(wavDur/xLim[2])*xLim[2], xLim[2])
   indx <- 1:(length(segLens) - 1)
   segWavs <-
     lapply(indx, function(i)
@@ -133,7 +134,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
         output = "Wave",
         bit = wav0@bit
       ))
-  #browser()
+  
   return(list(
     newWav = wav,
     segWavs = segWavs,
