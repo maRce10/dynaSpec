@@ -8,15 +8,13 @@
 #' is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can also output temporary segmented files, if desired.
 #' 
 #' @aliases pagedSpectro pagedSpec
-#' @usage paged_spectro(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",
-#' highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 #' @param specParams an object returned from \code{\link{prep_static_ggspectro}}
 #' @param destFolder destination of output video; this setting overwrites setting from specParams object
 #' @param vidName expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()
 #' @param highlightCol default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)
 #' @param highlightAlpha opacity of the highlight box; default is 0.6
 #' @param cursorCol    Color of the leading edge of the highlight box; default "white"
-#' @param delTemps   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
+#' @param delete_temp_files   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
 #' @param framerate by default, set to 30 (currently this is not supported, as animate doesn't honor the setting)
 #' @return Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
 #' @seealso \code{\link{prep_static_ggspectro}}
@@ -58,7 +56,7 @@
 #' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
 
-paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="white",delTemps=TRUE)
+paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="white",delete_temp_files=TRUE)
 {
  xmin<-ymin <- xmax <- ymax <- NULL 
  #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
@@ -225,7 +223,7 @@ for(i in 1:length(specParams$segWavs))
   cat(paste0("file saved @",vidName))
   system(paste0('open "',vidName,'"'))
   
-  if(delTemps){unlink(tempdir,recursive=TRUE);print(paste0("FYI temporary file directory deleted @ ",tempdir))}
+  if(delete_temp_files){unlink(tempdir,recursive=TRUE);print(paste0("FYI temporary file directory deleted @ ",tempdir))}
 }#end else which passed FFMPEG check
 }#end paged_spectro definition
 

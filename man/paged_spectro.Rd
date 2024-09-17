@@ -6,8 +6,16 @@
 \alias{pagedSpec}
 \title{Make a paged dynamic spectrogram similar to spectral display in Adobe Audition}
 \usage{
-paged_spectro(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",
-highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
+paged_spectro(
+  specParams,
+  destFolder,
+  vidName,
+  framerate = 30,
+  highlightCol = "#4B0C6BFF",
+  highlightAlpha = 0.6,
+  cursorCol = "white",
+  delete_temp_files = TRUE
+)
 }
 \arguments{
 \item{specParams}{an object returned from \code{\link{prep_static_ggspectro}}}
@@ -22,9 +30,9 @@ highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 
 \item{highlightAlpha}{opacity of the highlight box; default is 0.6}
 
-\item{cursorCol}{Color of the leading edge of the highlight box; default "#4B0C6BFF"}
+\item{cursorCol}{Color of the leading edge of the highlight box; default "white"}
 
-\item{delTemps}{Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)}
+\item{delete_temp_files}{Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)}
 }
 \value{
 Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
