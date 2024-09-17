@@ -270,6 +270,7 @@ prep_static_ggspectro <-
       isViridis = isViridis,
       xLim = prepped$xLim,
       yLim = yLim,
+      title = title,
       plotLegend = plotLegend,
       onlyPlotSpec = onlyPlotSpec,
       ampTrans = ampTrans,

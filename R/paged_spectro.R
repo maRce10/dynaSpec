@@ -129,12 +129,12 @@ for(i in 1:length(specParams$segWavs))
    cursor<-seq(range_i[1],range_i[2],specParams$xLim[2]/framerate)
   played<-data.frame(xmin=cursor,xmax=rep(range_i[2],length(cursor)),ymin=rep(specParams$yLim[1],length(cursor)),ymax=rep(specParams$yLim[2], length(cursor)))
   
-
   #Make ggplot overlay of highlight box on spectrogram
   vidSegment<-{
     ggplot2::ggplot(played)+ggplot2::xlim(range_i)+ggplot2::ylim(specParams$yLim)+
       #Labels
-      ggplot2::labs(x="Time (s)",y="Frequency (kHz)",fill="Amplitude\n(dB)\n")+
+      ggplot2::labs(x="Time (s)",y="Frequency (kHz)",fill="Amplitude\n(dB)\n",
+                    title=specParams$title)+
       ##Animate() seems to shrink font size a bit
       mytheme_lg(specParams$bg)+
       
