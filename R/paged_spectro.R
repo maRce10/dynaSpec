@@ -15,7 +15,7 @@
 #' @param vidName expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()
 #' @param highlightCol default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)
 #' @param highlightAlpha opacity of the highlight box; default is 0.6
-#' @param cursorCol    Color of the leading edge of the highlight box; default "#4B0C6BFF"
+#' @param cursorCol    Color of the leading edge of the highlight box; default "white"
 #' @param delTemps   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
 #' @param framerate by default, set to 30 (currently this is not supported, as animate doesn't honor the setting)
 #' @return Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
@@ -58,7 +58,7 @@
 #' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
 
-paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
+paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="white",delTemps=TRUE)
 {
  xmin<-ymin <- xmax <- ymax <- NULL 
  #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
