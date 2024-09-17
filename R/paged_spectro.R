@@ -219,11 +219,13 @@ for(i in 1:length(specParams$segWavs))
    
   }
 
-  cat("\n\nAll done!\n")
-  cat(paste0("file saved @",vidName))
+  message("\n\nAll done!\nfile saved @",vidName)
   system(paste0('open "',vidName,'"'))
   
-  if(delete_temp_files){unlink(tempdir,recursive=TRUE);print(paste0("FYI temporary file directory deleted @ ",tempdir))}
+  if(delete_temp_files){
+    unlink(tempdir,recursive=TRUE)
+    message("FYI temporary file directory deleted @ ",tempdir)
+    }
 }#end else which passed FFMPEG check
 }#end paged_spectro definition
 
