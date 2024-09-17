@@ -20,6 +20,7 @@
 #' @param crop subset of recording to include; default crop=NULL will use whole file, up to 10 sec; if a number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as trimming out a specific time interval in sec; if crop=FALSE, will not crop at all, even for recordings over 10 sec.
 #' @param xLim the time limit (x-axis width) in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf or specify the desired spectrogram x-axis limit.
 #' @param yLim the frequency limits (y-axis); default is c(0,10) aka 0-10kHz
+#' @param title string for title of plots; default=NULL
 #' @param plotLegend logical; include a legend showing amplitude colors? default=FALSE
 #' @param onlyPlotSpec logical; do you want to just plot the spec and leave out the legend, axes, and axis labels? default= TRUE
 #' @param ampTrans amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)
@@ -72,12 +73,15 @@
 #' maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE,
 #' bgFlood=TRUE,ampTrans=2,min_dB=-40)
 #'
-#' #much stronger, now let's combine them (you need the cowplot package)
+#' #much stronger, now let's combine them 
+#' (you need the patchwork package to use the / operator to stack plots)
+#' library(patchwork)
+#' (femaleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5)) /
+#' (maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  + 
+#' patchwork::plot_annotation(title="Female and Male barn swallow songs",
+#' caption="Female song (top) is much shorter, but similar complexity to males. See: MR Wilkins et al. (2020) Animal Behaviour 168")
 #'
-#' # cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),
-#' # maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")
-#'
-#' # ggsave("M&F_barn_swallow_song_specs.jpeg")
+#' # ggplot2::ggsave("M&F_barn_swallow_song_specs.jpeg",width=11,height=7)
 #'
 #' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
@@ -98,6 +102,7 @@ prep_static_ggspectro <-
            filter = NULL,
            xLim = NULL,
            yLim = c(0, 10),
+           title=NULL,
            plotLegend = FALSE,
            onlyPlotSpec = TRUE,
            ampTrans = 1,
@@ -212,7 +217,6 @@ prep_static_ggspectro <-
                    xLim = xLim,
                    filter = filter,
                    ampThresh)
-    browser()
     if (length(yLim) == 1) {
       yLim = c(0, yLim)
     }
@@ -227,6 +231,7 @@ prep_static_ggspectro <-
         specWidth = specWidth,
         specHeight = specHeight,
         destFolder = destFolder,
+        title = title,
         colPal = colPal,
         isViridis = isViridis,
         crop = crop,

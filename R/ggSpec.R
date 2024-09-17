@@ -8,6 +8,7 @@ ggSpec <-
            specWidth,
            specHeight,
            destFolder,
+           title,
            ovlp,
            wl,
            wn,
@@ -108,13 +109,15 @@ ggSpec <-
       
       level=NULL #just to shut up the check
       
-      #Plot that thang
-      #      #
+
+# Plot that thang ---------------------------------------------------------
+
       Glist[[i]] <-
         ggplot2::ggplot(df_i, ggplot2::aes(x = time, y = freq, z = amplitude)) +
         ggplot2::xlim(segLens[i], segLens[i + 1]) + ggplot2::ylim(yLim) +
         #Labels
-        ggplot2::labs(x = "Time (s)", y = "Frequency (kHz)", fill = "Amplitude\n(dB)\n") +
+        ggplot2::labs(x = "Time (s)", y = "Frequency (kHz)", fill = "Amplitude\n(dB)\n",
+                      title=title) +
         {
           #Set scale according to viridis or custom color scheme
           if (isViridis) {

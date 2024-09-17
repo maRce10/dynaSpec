@@ -96,7 +96,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   
   #Add silence at the end if (user-supplied) xLim>cropped Duration or xLim doesn't divide into even segments of wave duration
   timeRemainder <-
-    (ceiling(wavDur / xLim[2]) * xLim[2] - wavDur) > 0.001#(wavDur%/%xLim[2]-wavDur/xLim[2]
+    (ceiling(wavDur / xLim[2]) * xLim[2] - wavDur) > 0#(wavDur%/%xLim[2]-wavDur/xLim[2]
   #If user wants to have xLim be Infinite (override 5sec max for long files)
   if (xLim[2] %in% c(Inf, "Inf")) {
     wavDur <- max(length(wav@left), length(wav@right)) / wav@samp.rate
