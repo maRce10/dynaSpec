@@ -40,6 +40,8 @@ colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
 
 \item{ampTrans}{amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)}
 
+\item{resampleRate}{a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Default=15000 shaves off a few seconds without losing much quality. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.}
+
 \item{min_dB}{the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)}
 
 \item{wl}{window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff; human speech would look better at 1024 or higher, giving higher frequency resolution.}

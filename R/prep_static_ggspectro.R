@@ -23,7 +23,7 @@
 #' @param title string for title of plots; default=NULL
 #' @param plotLegend logical; include a legend showing amplitude colors? default=FALSE
 #' @param onlyPlotSpec logical; do you want to just plot the spec and leave out the legend, axes, and axis labels? default= TRUE
-#' @param resampleRate a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Put NULL to keep original sample rate for spectrogram.
+#' @param resampleRate a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Default=15000 shaves off a few seconds without losing much quality. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.
 #' @param ampTrans amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)
 #' @param min_dB the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)
 #' @param filter apply a bandpass filter? Defaults to none (NULL). Expects 'c(0,2)' where sound from 0 to 2kHz would be filtered out
@@ -107,7 +107,7 @@ prep_static_ggspectro <-
            plotLegend = FALSE,
            onlyPlotSpec = TRUE,
            ampTrans = 1,
-           resampleRate = NULL,
+           resampleRate = 15000,
            min_dB = -30,
            wl = 512,
            ovlp = 90,
