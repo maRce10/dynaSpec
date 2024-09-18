@@ -3,6 +3,7 @@
 ggSpec <-
   function(wav,
            soundFile,
+           resampleRate,
            segLens,
            savePNG,
            specWidth,
@@ -34,8 +35,7 @@ ggSpec <-
       nSegs = length(segLens) - 1
     }
     
-    
-    # bg="#ebe834"
+      # bg="#ebe834"
     #Font color adapted from https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
     
     if (is.null(fontAndAxisCol)) {
@@ -56,6 +56,14 @@ ggSpec <-
     # plot(1,1,col="transparent")
     # text(1,1,"READABLE?",cex=5,col=contrastFont)
     
+    
+       
+  if(!is.null(resampleRate)){
+    wav0 <- wav #backup
+   message("Original wav (",wav0@samp.rate,"samples/sec) data points: ",length(wav0@left))
+    wav <- tuneR::downsample(wav,samp.rate=resampleRate)
+    message("Original wav (",wav@samp.rate,"samples/sec) data points: ",length(wav@left))
+  }
     
     #Modified from seewave::ggspectro
     #--->

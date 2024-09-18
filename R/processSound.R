@@ -1,8 +1,12 @@
 # processSound: filter, crop, and segment wav (internal function)
 
 processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
+ 
+  
   smplRt <- wav0@samp.rate
+  
   fileDur0 <- max(length(wav0@left), length(wav0@right)) / smplRt
+  
   ##Figure out crop & spectrogram temporal window width
   
   #If crop provided as single digit, interpret as first X sec
@@ -39,20 +43,43 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   
   #crop is set now for all cases
   
+  
+  # Deal with xLim for segmenting wavs --------------------------------------
+  # if xLim not provided, default to smaller of 5sec or wav duration
+  cropped_dur <- crop[2] - crop[1]
+  
+  if (is.null(xLim)) {
+    xLim <- c(0, min(5, cropped_dur))
+    if (xLim[2] == 5) {
+      message("\n*****\nxLim set to 5 sec by default; define to override\n*****\n")
+    }
+  } else{
+    #If xLim provided as single digit, interpret as X sec
+    if (length(xLim) == 1) {
+      xLim <- c(0, xLim)
+    }
+  }
+  
+  #If user wants to have xLim be Infinite (override 5sec max for long files)
+  if (xLim[2] %in% c(Inf, "Inf")) {
+    xLim[2] <- cropped_dur
+  }
+  
+  
   #assign new wave file for use going forward
   #the bit=wav0@bit is REALLY important! Should be standard, but it doesn't work
-  wav <-
-    if (crop[2] == fileDur0) {
-      wav0
-    } else{
-      seewave::cutw(
-        wav0,
-        from = crop[1],
-        to = crop[2],
-        output = "Wave",
-        bit = wav0@bit
-      )
-    }
+  
+  if (crop[2] == fileDur0) {
+    wav <- wav0
+  } else{
+    wav <- seewave::cutw(
+      wav0,
+      from = crop[1],
+      to = crop[2],
+      output = "Wave",
+      bit = wav0@bit
+    )
+  }
   wavDur <- max(length(wav@left), length(wav@right)) / wav@samp.rate
   
   #Apply filters
@@ -79,38 +106,34 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   
   
   
-  ##Deal with xLim for segmenting wavs
-  # if xLim not provided, default to smaller of 5sec or wav duration
-  
-  if (is.null(xLim)) {
-    xLim <- c(0, min(5, wavDur))
-    if (xLim[2] == 5) {
-      cat("\n*****\nxLim set to 5 sec by default; define to override\n*****\n")
-    }
-  } else{
-    #If xLim provided as single digit, interpret as X sec
-    if (length(xLim) == 1) {
-      xLim <- c(0, xLim)
-    }
-  }
+  # Make wav file match page xlims ------------------------------------------
+  #Given xLim, what is the full length the recording needs to be?
+  max_page_dur <- ceiling(wavDur / xLim[2]) * xLim[2]
   
   #Add silence at the end if (user-supplied) xLim>cropped Duration or xLim doesn't divide into even segments of wave duration
+  
   timeRemainder <-
-    (ceiling(wavDur / xLim[2]) * xLim[2] - wavDur) > 0#(wavDur%/%xLim[2]-wavDur/xLim[2]
-  #If user wants to have xLim be Infinite (override 5sec max for long files)
-  if (xLim[2] %in% c(Inf, "Inf")) {
-    wavDur <- max(length(wav@left), length(wav@right)) / wav@samp.rate
-    xLim[2] <- wavDur
+    (max_page_dur - wavDur)
+  
+  is_timeRemainder <- timeRemainder > 0
+  
+  
+  #If file is longer than max_page_dur, trim it
+  if (wavDur > max_page_dur) {
+    #trim the wav file again to match a multiple of xLim pages
+    wav <- seewave::cutw(
+      wav,
+      from = crop[1],
+      to = max_page_dur,
+      output = "Wave",
+      bit = wav0@bit
+    )
+    
     #Else fill out remainders with filler silence
-  } else if (xLim[2] > wavDur | timeRemainder) {
-    if (timeRemainder) {
-      diffT <- ceiling(wavDur / xLim[2]) * xLim[2] - wavDur
-    } else{
-      diffT <- xLim[2] - wavDur
-    }
+  } else if (is_timeRemainder) {
     fillerWAV <-
       tuneR::silence(
-        duration = diffT,
+        duration = timeRemainder,
         samp.rate = smplRt,
         xunit = "time",
         pcm = T,
@@ -123,7 +146,8 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   }
   #Segment wav or make list of 1 if no segmentation
   #The ceiling code here is to deal with e.g. duration of 29.999 and xLim=10 that would only produce 2 segments
-  segLens <- seq(0, ceiling(wavDur/xLim[2])*xLim[2], xLim[2])
+  
+  segLens <- seq(0, ceiling(wavDur / xLim[2]) * xLim[2], xLim[2])
   indx <- 1:(length(segLens) - 1)
   segWavs <-
     lapply(indx, function(i)
@@ -134,12 +158,22 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
         output = "Wave",
         bit = wav0@bit
       ))
-  
-  return(list(
-    newWav = wav,
-    segWavs = segWavs,
-    wavDur = wavDur,
-    segLens = segLens,
-    xLim = xLim
-  ))
+  n_pages = length(segWavs)
+  message(
+    "Segmented original file into ",
+    n_pages,
+    " WAV files, each ",
+    diff(xLim),
+    " seconds long."
+  )
+  return(
+    list(
+      newWav = wav,
+      n_pages = n_pages,
+      segWavs = segWavs,
+      wavDur = wavDur,
+      segLens = segLens,
+      xLim = xLim
+    )
+  )
 }#End processSound
