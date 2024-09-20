@@ -108,9 +108,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   
   # Make wav file match page xlims ------------------------------------------
   #Given xLim, what is the full length the recording needs to be?
-  max_page_dur <- ceiling(wavDur / xLim[2]) * xLim[2]
-  
-  #Add silence at the end if (user-supplied) xLim>cropped Duration or xLim doesn't divide into even segments of wave duration
+  max_page_dur <- ceiling( round(wavDur,digits=2) / xLim[2]) * xLim[2]
   
   timeRemainder <-
     (max_page_dur - wavDur)
@@ -140,10 +138,12 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
         bit = wav@bit
       )
     wav <- tuneR::bind(wav, fillerWAV)
+  }
+  
     #pastew results in intermittent problems! Don't use! bind seems much more dependable
     #seewave::pastew(wave1=fillerWAV,wave2=wav,at="end",output="Wave",join=T,bit=wav0@bit)
     wavDur <- max(length(wav@left), length(wav@right)) / wav@samp.rate
-  }
+  
   #Segment wav or make list of 1 if no segmentation
   #The ceiling code here is to deal with e.g. duration of 29.999 and xLim=10 that would only produce 2 segments
   

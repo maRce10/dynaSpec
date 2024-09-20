@@ -269,6 +269,7 @@ prep_static_ggspectro <-
       soundFile = soundFile,
       destFolder = destFolder,
       outFilename = outFilename,
+      n_pages= length(prepped$segWavs),
       crop = crop,
       colPal = colPal,
       isViridis = isViridis,
