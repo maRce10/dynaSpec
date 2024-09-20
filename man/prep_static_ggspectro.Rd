@@ -6,10 +6,35 @@
 \alias{prepStaticGGspec}
 \title{Generate ggplot2-based spectrogram(s), which can be passed to paged_spectro}
 \usage{
-prep_static_ggspectro(soundFile,destFolder,outFilename,savePNG=FALSE,colPal="inferno",
-crop=NULL,bg=NULL,filter=NULL,xLim=NULL,yLim=c(0,10),plotLegend=FALSE,onlyPlotSpec=TRUE,
-ampTrans=1,min_dB=-30,wl=512, ovlp=90,wn="blackman",specWidth=9,specHeight=3,
-colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
+prep_static_ggspectro(
+  soundFile,
+  destFolder,
+  outFilename = NULL,
+  savePNG = FALSE,
+  colPal = "inferno",
+  crop = NULL,
+  bg = NULL,
+  filter = NULL,
+  xLim = NULL,
+  yLim = c(0, 10),
+  title = NULL,
+  plotLegend = FALSE,
+  onlyPlotSpec = TRUE,
+  ampTrans = 1,
+  resampleRate = 15000,
+  min_dB = -30,
+  wl = 512,
+  ovlp = 90,
+  wn = "blackman",
+  specWidth = 9,
+  specHeight = 3,
+  colbins = 30,
+  ampThresh = 0,
+  bgFlood = FALSE,
+  fontAndAxisCol = NULL,
+  optim = NULL,
+  ...
+)
 }
 \arguments{
 \item{soundFile}{should work with URLs, full and relative paths; handles .mp3 and .wav}

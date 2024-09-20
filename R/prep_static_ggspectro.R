@@ -7,11 +7,6 @@
 #'
 #' @aliases prepStaticSpec prepStaticGGspec
 #'
-#' @usage prep_static_ggspectro(soundFile,destFolder,outFilename,savePNG=FALSE,colPal="inferno",
-#' crop=NULL,bg=NULL,filter=NULL,xLim=NULL,yLim=c(0,10),plotLegend=FALSE,onlyPlotSpec=TRUE,
-#' ampTrans=1,min_dB=-30,wl=512, ovlp=90,wn="blackman",specWidth=9,specHeight=3,
-#' colbins=30,ampThresh=0,bgFlood=FALSE,fontAndAxisCol=NULL,optim=NULL,...)
-#'
 #' @param soundFile should work with URLs, full and relative paths; handles .mp3 and .wav
 #' @param destFolder path to directory to save output. Needs to be like "figures/spectrograms/" to be relative to working directory. Default=parent folder of soundFile. Specify "wd" to output to the working directory, gotten from [get_wd()]
 #' @param outFilename name for output PNG. default=NULL will use input name in output filename.
