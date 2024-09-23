@@ -433,9 +433,6 @@ scrolling_spectro <- function(wave, file.name = "scroll.spectro.mp4", hop.size =
       annotation.call$labels <- names(ann_alpha)[x]
       # evaluate call
         eval(annotation.call)
-      
-      
-      
       }
     
     # reprint box
