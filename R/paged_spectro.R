@@ -8,15 +8,13 @@
 #' is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can also output temporary segmented files, if desired.
 #' 
 #' @aliases pagedSpectro pagedSpec
-#' @usage paged_spectro(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",
-#' highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
 #' @param specParams an object returned from \code{\link{prep_static_ggspectro}}
 #' @param destFolder destination of output video; this setting overwrites setting from specParams object
 #' @param vidName expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()
 #' @param highlightCol default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)
 #' @param highlightAlpha opacity of the highlight box; default is 0.6
-#' @param cursorCol    Color of the leading edge of the highlight box; default "#4B0C6BFF"
-#' @param delTemps   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
+#' @param cursorCol    Color of the leading edge of the highlight box; default "white"
+#' @param delete_temp_files   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
 #' @param framerate by default, set to 30 (currently this is not supported, as animate doesn't honor the setting)
 #' @return Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
 #' @seealso \code{\link{prep_static_ggspectro}}
@@ -58,7 +56,7 @@
 #' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
 
-paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="#4B0C6BFF",delTemps=TRUE)
+paged_spectro <-function(specParams,destFolder,vidName,framerate=30,highlightCol="#4B0C6BFF",highlightAlpha=.6,cursorCol="white",delete_temp_files=TRUE)
 {
  xmin<-ymin <- xmax <- ymax <- NULL 
  #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
@@ -99,7 +97,7 @@ if(!missing(vidName)){
     outWAV<-lapply(1:length(specParams$segWavs),function(x) {paste0(tempdir,iName0,"_",x,"_.wav")}) 
     invisible(
       lapply(1:length(specParams$segWavs), function(x){fn=outWAV[[x]]
-          tuneR::writeWave(specParams$segWavs[[x]],file=fn)
+          tuneR::writeWave(specParams$segWavs[[x]],filename=fn)
           cat(paste0("\nSaved temp wav segment: ",fn))}))
       }
     
@@ -129,12 +127,12 @@ for(i in 1:length(specParams$segWavs))
    cursor<-seq(range_i[1],range_i[2],specParams$xLim[2]/framerate)
   played<-data.frame(xmin=cursor,xmax=rep(range_i[2],length(cursor)),ymin=rep(specParams$yLim[1],length(cursor)),ymax=rep(specParams$yLim[2], length(cursor)))
   
-
   #Make ggplot overlay of highlight box on spectrogram
   vidSegment<-{
     ggplot2::ggplot(played)+ggplot2::xlim(range_i)+ggplot2::ylim(specParams$yLim)+
       #Labels
-      ggplot2::labs(x="Time (s)",y="Frequency (kHz)",fill="Amplitude\n(dB)\n")+
+      ggplot2::labs(x="Time (s)",y="Frequency (kHz)",fill="Amplitude\n(dB)\n",
+                    title=specParams$title)+
       ##Animate() seems to shrink font size a bit
       mytheme_lg(specParams$bg)+
       
@@ -221,11 +219,13 @@ for(i in 1:length(specParams$segWavs))
    
   }
 
-  cat("\n\nAll done!\n")
-  cat(paste0("file saved @",vidName))
+  message("\n\nAll done!\nfile saved @",vidName)
   system(paste0('open "',vidName,'"'))
   
-  if(delTemps){unlink(tempdir,recursive=TRUE);print(paste0("FYI temporary file directory deleted @ ",tempdir))}
+  if(delete_temp_files){
+    unlink(tempdir,recursive=TRUE)
+    message("FYI temporary file directory deleted @ ",tempdir)
+    }
 }#end else which passed FFMPEG check
 }#end paged_spectro definition
 

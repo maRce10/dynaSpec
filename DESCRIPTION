@@ -1,7 +1,7 @@
 Package: dynaSpec
 Type: Package
 Title: Dynamic Spectrogram Visualizations
-Version: 1.0.2
+Version: 1.0.3
 Date: 2024-02-20
 Description: A set of tools to generate dynamic spectrogram visualizations in video format.
 License: GPL (>= 2)

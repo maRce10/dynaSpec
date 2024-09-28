@@ -3,11 +3,13 @@
 ggSpec <-
   function(wav,
            soundFile,
+           resampleRate,
            segLens,
            savePNG,
            specWidth,
            specHeight,
            destFolder,
+           title,
            ovlp,
            wl,
            wn,
@@ -33,8 +35,7 @@ ggSpec <-
       nSegs = length(segLens) - 1
     }
     
-    
-    # bg="#ebe834"
+      # bg="#ebe834"
     #Font color adapted from https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
     
     if (is.null(fontAndAxisCol)) {
@@ -55,6 +56,14 @@ ggSpec <-
     # plot(1,1,col="transparent")
     # text(1,1,"READABLE?",cex=5,col=contrastFont)
     
+    
+       
+  if(!is.null(resampleRate)){
+    wav0 <- wav #backup
+   message("Original wav (",wav0@samp.rate,"samples/sec) data points: ",length(wav0@left))
+    wav <- tuneR::downsample(wav,samp.rate=resampleRate)
+    message("Original wav (",wav@samp.rate,"samples/sec) data points: ",length(wav@left))
+  }
     
     #Modified from seewave::ggspectro
     #--->
@@ -108,13 +117,15 @@ ggSpec <-
       
       level=NULL #just to shut up the check
       
-      #Plot that thang
-      #      #
+
+# Plot that thang ---------------------------------------------------------
+
       Glist[[i]] <-
         ggplot2::ggplot(df_i, ggplot2::aes(x = time, y = freq, z = amplitude)) +
         ggplot2::xlim(segLens[i], segLens[i + 1]) + ggplot2::ylim(yLim) +
         #Labels
-        ggplot2::labs(x = "Time (s)", y = "Frequency (kHz)", fill = "Amplitude\n(dB)\n") +
+        ggplot2::labs(x = "Time (s)", y = "Frequency (kHz)", fill = "Amplitude\n(dB)\n",
+                      title=title) +
         {
           #Set scale according to viridis or custom color scheme
           if (isViridis) {
