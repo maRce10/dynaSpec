@@ -1,4 +1,4 @@
-# *dynaSpec 1.0.3*
+# *dynaSpec 1.0.2*
 
 * Fix logic for crop and xLim in prep_static_ggspectro()
 * Other fixes to have more predictable behavior of exported MP4 videos using "Matt's approach" with paged_spectro()

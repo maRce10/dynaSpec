@@ -91,7 +91,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/TOiukDxaNbI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/TOiukDxaNbI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -109,7 +109,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -126,7 +126,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -145,7 +145,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -167,7 +167,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="360" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -188,7 +188,7 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey; "width="100%" height="100%" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -221,7 +221,7 @@ scrolling_spectro(wave = thy_wav, wl = 400,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -271,7 +271,7 @@ scrolling_spectro(wave = hs_wren, wl = 512,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -291,7 +291,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -319,7 +319,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -346,7 +346,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -401,7 +401,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -433,7 +433,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -460,7 +460,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
  
@@ -480,7 +480,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 
 ```
 #list WAVs included with dynaSpec
-(f<-system.file(package="dynaSpec") %>% list.files(pattern=".wav",full.names=T))
+(f<-system.file(package="dynaSpec") |> list.files(pattern=".wav",full.names=T))
 
 #store output and save spectrogram to working directory
 params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
@@ -501,7 +501,7 @@ femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),savePNG=T,onl
 paged_spectro(femaleBarnSwallow)
 ```
 ### Dynamic spectrogram of a female barn swallow song
-<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 ### Now brighten the spec using the ampTrans parameter
 * ampTrans=3 is a nonlinear signal booster. Basically collapses the difference between loudest and quietest values (higher values= brighter specs); 1 (default) means no transformation
@@ -519,7 +519,7 @@ pagedSpec(p2)
 ```
 ![Static spectrogram with axis labels for female barn swallow song](man/figures/femaleBarnSwallow_1c.png)
 
-<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 
 ### Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)
@@ -542,7 +542,7 @@ pagedSpec(whale)
 
 
 ### Dynamic multipage whale song spectrogram
-<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height=303 width=910 allow="autoplay; fullscreen" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" width="100%" height="100%" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 
 
@@ -556,7 +556,7 @@ pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817f
 
 
 ### Nighthawk multipage dynamic spec
-<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height=303 width=910  margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" width="100%" height="100%"  margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 
 Enjoy! Please share your specs with us on Twitter! [\@M_Araya_Salas](https://twitter.com/M_Araya_Salas) & [\@mattwilkinsbio](https://twitter.com/mattwilkinsbio)

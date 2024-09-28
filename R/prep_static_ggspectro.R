@@ -75,7 +75,9 @@
 #' (femaleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5)) /
 #' (maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  + 
 #' patchwork::plot_annotation(title="Female and Male barn swallow songs",
-#' caption="Female song (top) is much shorter, but similar complexity to males. See: MR Wilkins et al. (2020) Animal Behaviour 168")
+#' caption="Female song (top) is much shorter, but similar
+#' complexity to males. See: MR Wilkins et al. (2020) Animal
+#'  Behaviour 168")
 #'
 #' # ggplot2::ggsave("M&F_barn_swallow_song_specs.jpeg",width=11,height=7)
 #'

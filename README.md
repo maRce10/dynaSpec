@@ -12,8 +12,8 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
-[![packageversion](https://img.shields.io/badge/Package%20version-1.0.1-orange.svg?style=flat-square)](commits/develop)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2024--02--05-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-1.0.2-orange.svg?style=flat-square)](commits/develop)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2024--09--28-yellowgreen.svg)](/commits/master)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
@@ -69,7 +69,7 @@ Installation of external dependencies can be tricky on operating systems
 other than Linux. An alternative option is to run the package through
 [google colab](https://colab.google/). This [colab
 notebook](https://colab.research.google.com/drive/1t3Wn9OifcZTvxOMVNmz9dF25vnzU3_Fr?usp=sharing)
-explain how to do this step-by-step.
+explain how to do that step-by-step.
 
 # Background
 
@@ -126,7 +126,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/TOiukDxaNbI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/TOiukDxaNbI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -143,7 +143,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -159,7 +159,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -178,7 +178,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="240" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -198,7 +198,7 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="600" height="360" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -219,7 +219,7 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey; " width="100%" height="100%" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -251,7 +251,7 @@ scrolling_spectro(wave = thy_wav, wl = 400,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="250" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -307,7 +307,7 @@ scrolling_spectro(wave = hs_wren, wl = 512,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -327,7 +327,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -354,7 +354,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -380,7 +380,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -437,7 +437,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="700" height="350" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -477,7 +477,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 
@@ -504,7 +504,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ```
 
 <center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="763.63" height="350" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 </center>
 <hr>
@@ -528,7 +528,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 <!-- -->
 
     #list WAVs included with dynaSpec
-    (f<-system.file(package="dynaSpec") %>% list.files(pattern=".wav",full.names=T))
+    (f<-system.file(package="dynaSpec") |> list.files(pattern=".wav",full.names=T))
 
     #store output and save spectrogram to working directory
     params <-prep_static_ggspectro(f[1],destFolder="wd",savePNG=T)
@@ -563,7 +563,7 @@ paged_spectro(femaleBarnSwallow)
 
 ### Dynamic spectrogram of a female barn swallow song
 
-<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 
 ### Now brighten the spec using the ampTrans parameter
@@ -594,7 +594,7 @@ alt="Static spectrogram with axis labels for female barn swallow song" />
 female barn swallow song</figcaption>
 </figure>
 
-<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="910" height="303" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 
 ### Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)
@@ -627,7 +627,7 @@ spectrogram</figcaption>
 
 ### Dynamic multipage whale song spectrogram
 
-<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" height="303" width="910" allow="autoplay; fullscreen" allowfullscreen>
+<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" width="100%" height="100%" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
@@ -641,7 +641,7 @@ pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817f
 
 ### Nighthawk multipage dynamic spec
 
-<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" height="303" width="910" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" width="100%" height="100%" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 
 Enjoy! Please share your specs with us on Twitter!
