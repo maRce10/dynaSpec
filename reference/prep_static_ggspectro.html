@@ -13,7 +13,7 @@ settings to paged_spectro to generate dynamic spectrogram video."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">dynaSpec</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,10 +48,35 @@ settings to <code><a href="paged_spectro.html">paged_spectro</a></code> to gener
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prep_static_ggspectro</span><span class="op">(</span><span class="va">soundFile</span>,<span class="va">destFolder</span>,<span class="va">outFilename</span>,savePNG<span class="op">=</span><span class="cn">FALSE</span>,colPal<span class="op">=</span><span class="st">"inferno"</span>,</span>
-<span>crop<span class="op">=</span><span class="cn">NULL</span>,bg<span class="op">=</span><span class="cn">NULL</span>,filter<span class="op">=</span><span class="cn">NULL</span>,xLim<span class="op">=</span><span class="cn">NULL</span>,yLim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">10</span><span class="op">)</span>,plotLegend<span class="op">=</span><span class="cn">FALSE</span>,onlyPlotSpec<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>ampTrans<span class="op">=</span><span class="fl">1</span>,min_dB<span class="op">=</span><span class="op">-</span><span class="fl">30</span>,wl<span class="op">=</span><span class="fl">512</span>, ovlp<span class="op">=</span><span class="fl">90</span>,wn<span class="op">=</span><span class="st">"blackman"</span>,specWidth<span class="op">=</span><span class="fl">9</span>,specHeight<span class="op">=</span><span class="fl">3</span>,</span>
-<span>colbins<span class="op">=</span><span class="fl">30</span>,ampThresh<span class="op">=</span><span class="fl">0</span>,bgFlood<span class="op">=</span><span class="cn">FALSE</span>,fontAndAxisCol<span class="op">=</span><span class="cn">NULL</span>,optim<span class="op">=</span><span class="cn">NULL</span>,<span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prep_static_ggspectro</span><span class="op">(</span></span>
+<span>  <span class="va">soundFile</span>,</span>
+<span>  <span class="va">destFolder</span>,</span>
+<span>  outFilename <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  savePNG <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  colPal <span class="op">=</span> <span class="st">"inferno"</span>,</span>
+<span>  crop <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xLim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  yLim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plotLegend <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  onlyPlotSpec <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ampTrans <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  resampleRate <span class="op">=</span> <span class="fl">15000</span>,</span>
+<span>  min_dB <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>,</span>
+<span>  wl <span class="op">=</span> <span class="fl">512</span>,</span>
+<span>  ovlp <span class="op">=</span> <span class="fl">90</span>,</span>
+<span>  wn <span class="op">=</span> <span class="st">"blackman"</span>,</span>
+<span>  specWidth <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>  specHeight <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  colbins <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  ampThresh <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  bgFlood <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  fontAndAxisCol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  optim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,15 +88,15 @@ settings to <code><a href="paged_spectro.html">paged_spectro</a></code> to gener
 
 
 <dt id="arg-destfolder">destFolder<a class="anchor" aria-label="anchor" href="#arg-destfolder"></a></dt>
-<dd><p>needs to be like "figures/spectrograms/" to be relative to working directory; goes to soundFile folder by default or working directory if soundFile is a URL; can specify "wd" to output to the working directory</p></dd>
+<dd><p>path to directory to save output. Needs to be like "figures/spectrograms/" to be relative to working directory. Default=parent folder of soundFile. Specify "wd" to output to the working directory, gotten from [get_wd()]</p></dd>
 
 
 <dt id="arg-outfilename">outFilename<a class="anchor" aria-label="anchor" href="#arg-outfilename"></a></dt>
-<dd><p>if left out, will use input name in output filename</p></dd>
+<dd><p>name for output PNG. default=NULL will use input name in output filename.</p></dd>
 
 
 <dt id="arg-savepng">savePNG<a class="anchor" aria-label="anchor" href="#arg-savepng"></a></dt>
-<dd><p>save static spectrograms as PNGs? They will be exported to destFolder</p></dd>
+<dd><p>logical; Save static spectrograms as PNGs? They will be exported to destFolder.</p></dd>
 
 
 <dt id="arg-colpal">colPal<a class="anchor" aria-label="anchor" href="#arg-colpal"></a></dt>
@@ -79,7 +104,7 @@ settings to <code><a href="paged_spectro.html">paged_spectro</a></code> to gener
 
 
 <dt id="arg-crop">crop<a class="anchor" aria-label="anchor" href="#arg-crop"></a></dt>
-<dd><p>subset of recording to include; if crop=NULL, use whole file; if number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as specific time interval in sec</p></dd>
+<dd><p>subset of recording to include; default crop=NULL will use whole file, up to 10 sec; if a number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as trimming out a specific time interval in sec; if crop=FALSE, will not crop at all, even for recordings over 10 sec.</p></dd>
 
 
 <dt id="arg-bg">bg<a class="anchor" aria-label="anchor" href="#arg-bg"></a></dt>
@@ -91,23 +116,31 @@ settings to <code><a href="paged_spectro.html">paged_spectro</a></code> to gener
 
 
 <dt id="arg-xlim">xLim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
-<dd><p>is the time limit in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration &gt;5s). To override the 5s limit, put xLim=Inf.</p></dd>
+<dd><p>the time limit (x-axis width) in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration &gt;5s). To override the 5s limit, put xLim=Inf or specify the desired spectrogram x-axis limit.</p></dd>
 
 
 <dt id="arg-ylim">yLim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
-<dd><p>is the frequency limits (y-axis); default is c(0,10) aka 0-10kHz</p></dd>
+<dd><p>the frequency limits (y-axis); default is c(0,10) aka 0-10kHz</p></dd>
+
+
+<dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
+<dd><p>string for title of plots; default=NULL</p></dd>
 
 
 <dt id="arg-plotlegend">plotLegend<a class="anchor" aria-label="anchor" href="#arg-plotlegend"></a></dt>
-<dd><p>include a legend showing amplitude colors?</p></dd>
+<dd><p>logical; include a legend showing amplitude colors? default=FALSE</p></dd>
 
 
 <dt id="arg-onlyplotspec">onlyPlotSpec<a class="anchor" aria-label="anchor" href="#arg-onlyplotspec"></a></dt>
-<dd><p>do you want to just plot the spec and leave out the legend, axes, and axis labels?</p></dd>
+<dd><p>logical; do you want to just plot the spec and leave out the legend, axes, and axis labels? default= TRUE</p></dd>
 
 
 <dt id="arg-amptrans">ampTrans<a class="anchor" aria-label="anchor" href="#arg-amptrans"></a></dt>
-<dd><p>amplitude transform for boosting spectrum contrast; defaults to identity (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)</p></dd>
+<dd><p>amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)</p></dd>
+
+
+<dt id="arg-resamplerate">resampleRate<a class="anchor" aria-label="anchor" href="#arg-resamplerate"></a></dt>
+<dd><p>a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Default=15000 shaves off a few seconds without losing much quality. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.</p></dd>
 
 
 <dt id="arg-min-db">min_dB<a class="anchor" aria-label="anchor" href="#arg-min-db"></a></dt>
@@ -115,7 +148,7 @@ settings to <code><a href="paged_spectro.html">paged_spectro</a></code> to gener
 
 
 <dt id="arg-wl">wl<a class="anchor" aria-label="anchor" href="#arg-wl"></a></dt>
-<dd><p>window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff</p></dd>
+<dd><p>window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff; human speech would look better at 1024 or higher, giving higher frequency resolution.</p></dd>
 
 
 <dt id="arg-ovlp">ovlp<a class="anchor" aria-label="anchor" href="#arg-ovlp"></a></dt>
@@ -177,42 +210,7 @@ settings to <code><a href="paged_spectro.html">paged_spectro</a></code> to gener
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maRce10/dynaSpec" class="external-link">dynaSpec</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">".wav"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"dynaSpec"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># default behavior should be a decent start for good recordings; doesn't save anything, just plots</span></span></span>
-<span class="r-in"><span><span class="fu">prep_static_ggspectro</span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># to use with paged_spectro or to do other stuff, you need to assign the</span></span></span>
-<span class="r-in"><span><span class="co"># resulting object, but it will still always plot the first spec</span></span></span>
-<span class="r-in"><span><span class="co"># let's add axes and boost the signal a smidge</span></span></span>
-<span class="r-in"><span><span class="va">femaleBarnSwallow</span> <span class="op">&lt;-</span> <span class="fu">prep_static_ggspectro</span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,destFolder<span class="op">=</span><span class="st">"wd"</span>,</span></span>
-<span class="r-in"><span>onlyPlotSpec <span class="op">=</span> <span class="cn">FALSE</span>, bgFlood<span class="op">=</span><span class="cn">TRUE</span>,ampTrans<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># feels like we're missing a little bit of the quieter signals; let's lower</span></span></span>
-<span class="r-in"><span><span class="co"># the minimum amplitude threshold a bit</span></span></span>
-<span class="r-in"><span><span class="va">femaleBarnSwallow</span><span class="op">&lt;-</span><span class="fu">prep_static_ggspectro</span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,destFolder<span class="op">=</span><span class="st">"wd"</span>,</span></span>
-<span class="r-in"><span>onlyPlotSpec <span class="op">=</span> <span class="cn">FALSE</span>, bgFlood<span class="op">=</span><span class="cn">TRUE</span>,ampTrans<span class="op">=</span><span class="fl">2</span>,min_dB<span class="op">=</span><span class="op">-</span><span class="fl">35</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#now for a male song</span></span></span>
-<span class="r-in"><span><span class="va">maleBarnSwallow</span><span class="op">&lt;-</span><span class="fu">prep_static_ggspectro</span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,destFolder<span class="op">=</span><span class="st">"wd"</span>,onlyPlotSpec <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>bgFlood<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Nice, but the trill is fading out; I'm gonna signal boost and lower the min_dB</span></span></span>
-<span class="r-in"><span><span class="va">maleBarnSwallow</span><span class="op">&lt;-</span><span class="fu">prep_static_ggspectro</span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,destFolder<span class="op">=</span><span class="st">"wd"</span>,onlyPlotSpec <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>bgFlood<span class="op">=</span><span class="cn">TRUE</span>,ampTrans<span class="op">=</span><span class="fl">2</span>,min_dB<span class="op">=</span><span class="op">-</span><span class="fl">40</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#much stronger, now let's combine them (you need the cowplot package)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># cowplot::plot_grid(femaleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("female barn swallow song"),</span></span></span>
-<span class="r-in"><span><span class="co"># maleBarnSwallow$spec[[1]]+xlim(0,5)+ggtitle("male barn swallow song"),ncol=1,labels="auto")</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ggsave("M&amp;F_barn_swallow_song_specs.jpeg")</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># see more examples at https://marce10.github.io/dynaSpec/</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-</code></pre></div>
+
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

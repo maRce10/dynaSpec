@@ -17,7 +17,7 @@ is defined by the xLim parameter in prep_static_ggspectro. You can also output t
 
     <a class="navbar-brand me-2" href="../index.html">dynaSpec</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,16 @@ is defined by the xLim parameter in <code><a href="prep_static_ggspectro.html">p
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">paged_spectro</span><span class="op">(</span><span class="va">specParams</span>,<span class="va">destFolder</span>,<span class="va">vidName</span>,framerate<span class="op">=</span><span class="fl">30</span>,highlightCol<span class="op">=</span><span class="st">"#4B0C6BFF"</span>,</span>
-<span>highlightAlpha<span class="op">=</span><span class="fl">.6</span>,cursorCol<span class="op">=</span><span class="st">"#4B0C6BFF"</span>,delTemps<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">paged_spectro</span><span class="op">(</span></span>
+<span>  <span class="va">specParams</span>,</span>
+<span>  <span class="va">destFolder</span>,</span>
+<span>  <span class="va">vidName</span>,</span>
+<span>  framerate <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  highlightCol <span class="op">=</span> <span class="st">"#4B0C6BFF"</span>,</span>
+<span>  highlightAlpha <span class="op">=</span> <span class="fl">0.6</span>,</span>
+<span>  cursorCol <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>  delete_temp_files <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -87,10 +95,10 @@ is defined by the xLim parameter in <code><a href="prep_static_ggspectro.html">p
 
 
 <dt id="arg-cursorcol">cursorCol<a class="anchor" aria-label="anchor" href="#arg-cursorcol"></a></dt>
-<dd><p>Color of the leading edge of the highlight box; default "#4B0C6BFF"</p></dd>
+<dd><p>Color of the leading edge of the highlight box; default "white"</p></dd>
 
 
-<dt id="arg-deltemps">delTemps<a class="anchor" aria-label="anchor" href="#arg-deltemps"></a></dt>
+<dt id="arg-delete-temp-files">delete_temp_files<a class="anchor" aria-label="anchor" href="#arg-delete-temp-files"></a></dt>
 <dd><p>Default= TRUE, deletes temporary files (specs &amp; WAV files used to create concatenated video)</p></dd>
 
 </dl></div>
