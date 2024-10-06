@@ -12,8 +12,6 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
-[![packageversion](https://img.shields.io/badge/Package%20version-1.0.2-orange.svg?style=flat-square)](commits/develop)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2024--09--28-yellowgreen.svg)](/commits/master)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
@@ -74,8 +72,8 @@ explain how to do that step-by-step.
 # Background
 
 This package is a collaboration between [Marcelo
-Araya-Salas](https://marceloarayasalas.weebly.com/) and [Matt
-Wilkins](http://www.mattwilkinsbio.com/). The goal is to create static
+Araya-Salas](https://marce10.github.io/) and [Matt
+Wilkins](https://www.mattwilkinsbio.com/). The goal is to create static
 and dynamic visualizations of sounds, ready for publication or
 presentation, *without taking screen shots* of another program.
 [Marcelo’s approach](#marcelos-approach-scrolling-dynamic-spectrograms)
