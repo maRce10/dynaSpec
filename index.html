@@ -380,8 +380,8 @@
 <h3 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
 </h3>
 <ol style="list-style-type: decimal">
-<li>Tweak your spectrogram settings using the prep_static_ggspectro() function – aka prepStaticSpec() – storing results in variable. You can also just segment and export static specs at this step.</li>
-<li>Feed variable into paged_spectro() – aka pagedSpec() – to generate a dynamic spectrogram
+<li>Tweak your spectrogram settings using the prep_static_ggspectro() function – aka prep_static_ggspectro() – storing results in variable. You can also just segment and export static specs at this step.</li>
+<li>Feed variable into paged_spectro() to generate a dynamic spectrogram
 <ul>
 <li>It does this by exporting a PNG of the testSpec() ggplot function;</li>
 <li>Import PNG as a new ggplot raster layer</li>
@@ -414,8 +414,7 @@ Static spectrogram with axis labels for female barn swallow song
 <div class="section level3">
 <h3 id="dynamic-spectrogram-of-a-female-barn-swallow-song">Dynamic spectrogram of a female barn swallow song<a class="anchor" aria-label="anchor" href="#dynamic-spectrogram-of-a-female-barn-swallow-song"></a>
 </h3>
-<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+<p><a href="https://github.com/user-attachments/assets/618260a3-fdcc-46aa-a36b-e8a8a1d78d9a" class="external-link uri">https://github.com/user-attachments/assets/618260a3-fdcc-46aa-a36b-e8a8a1d78d9a</a></p>
 </div>
 <div class="section level3">
 <h3 id="now-brighten-the-spec-using-the-amptrans-parameter">Now brighten the spec using the ampTrans parameter<a class="anchor" aria-label="anchor" href="#now-brighten-the-spec-using-the-amptrans-parameter"></a>
@@ -428,15 +427,11 @@ Static spectrogram with axis labels for female barn swallow song
 </ul>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co">#note that prep_static_spectro() is tha same as prepStaticSpec()</span></span>
-<span><span class="co">#Also paged_spectro() is the same as pagedSpec()</span></span>
-<span></span>
-<span><span class="va">p2</span><span class="op">&lt;-</span><span class="fu"><a href="reference/prep_static_ggspectro.html">prepStaticSpec</a></span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,min_dB<span class="op">=</span><span class="op">-</span><span class="fl">35</span>, savePNG<span class="op">=</span><span class="cn">T</span>, destFolder<span class="op">=</span><span class="st">"wd"</span>,onlyPlotSpec<span class="op">=</span><span class="cn">F</span>,bgFlood<span class="op">=</span><span class="cn">T</span>,ampTrans<span class="op">=</span><span class="fl">3</span><span class="op">)</span> </span>
-<span><span class="fu"><a href="reference/paged_spectro.html">pagedSpec</a></span><span class="op">(</span><span class="va">p2</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="va">p2</span><span class="op">&lt;-</span><span class="fu"><a href="reference/prep_static_ggspectro.html">prep_static_ggspectro</a></span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,min_dB<span class="op">=</span><span class="op">-</span><span class="fl">35</span>, savePNG<span class="op">=</span><span class="cn">T</span>, destFolder<span class="op">=</span><span class="st">"wd"</span>,onlyPlotSpec<span class="op">=</span><span class="cn">F</span>,bgFlood<span class="op">=</span><span class="cn">T</span>,ampTrans<span class="op">=</span><span class="fl">3</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="reference/paged_spectro.html">paged_spectro</a></span><span class="op">(</span><span class="va">p2</span><span class="op">)</span> </span></code></pre></div>
 <figure><img src="reference/figures/femaleBarnSwallow_1c.png" alt="Static spectrogram with axis labels for female barn swallow song"><figcaption aria-hidden="true">
 Static spectrogram with axis labels for female barn swallow song
-</figcaption></figure><iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+</figcaption></figure><p><a href="https://github.com/user-attachments/assets/ef7a2802-3d19-4d5a-a902-71495f47f10f" class="external-link uri">https://github.com/user-attachments/assets/ef7a2802-3d19-4d5a-a902-71495f47f10f</a></p>
 </div>
 <div class="section level3">
 <h3 id="now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files">Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)<a class="anchor" aria-label="anchor" href="#now-also-supports-mp3-files-web-or-local-and-multi-page-dynamic-spectrograms-ie-cropping-and-segmenting-spectrograms-from-larger-recording-files"></a>
@@ -453,9 +448,9 @@ Static spectrogram with axis labels for female barn swallow song
 </ul>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">whale</span><span class="op">&lt;-</span><span class="fu"><a href="reference/prep_static_ggspectro.html">prepStaticSpec</a></span><span class="op">(</span><span class="st">"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,</span>
+<span><span class="va">whale</span><span class="op">&lt;-</span><span class="fu"><a href="reference/prep_static_ggspectro.html">prep_static_ggspectro</a></span><span class="op">(</span><span class="st">"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,</span>
 <span>       savePNG<span class="op">=</span><span class="cn">T</span>,destFolder<span class="op">=</span><span class="st">"wd"</span>,yLim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">.7</span><span class="op">)</span>,crop<span class="op">=</span><span class="fl">12</span>,xLim<span class="op">=</span><span class="fl">3</span>,ampTrans<span class="op">=</span><span class="fl">3</span><span class="op">)</span> </span>
-<span><span class="fu"><a href="reference/paged_spectro.html">pagedSpec</a></span><span class="op">(</span><span class="va">whale</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/paged_spectro.html">paged_spectro</a></span><span class="op">(</span><span class="va">whale</span><span class="op">)</span></span>
 <span><span class="co">#Voila 🐋</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -468,8 +463,7 @@ Humpback whale song spectrogram
 <div class="section level3">
 <h3 id="dynamic-multipage-whale-song-spectrogram">Dynamic multipage whale song spectrogram<a class="anchor" aria-label="anchor" href="#dynamic-multipage-whale-song-spectrogram"></a>
 </h3>
-<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" width="100%" height="100%" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+<p><a href="https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695" class="external-link uri">https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695</a></p>
 </div>
 <div class="section level3">
 <h3 id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme">Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)<a class="anchor" aria-label="anchor" href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme"></a>
@@ -477,14 +471,13 @@ Humpback whale song spectrogram
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">song</span><span class="op">=</span><span class="st">"https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"</span></span>
-<span><span class="va">temp</span><span class="op">=</span><span class="fu"><a href="reference/prep_static_ggspectro.html">prepStaticSpec</a></span><span class="op">(</span><span class="va">song</span>,crop<span class="op">=</span><span class="fl">20</span>,xLim<span class="op">=</span><span class="fl">4</span>,colPal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>,<span class="st">"black"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/paged_spectro.html">pagedSpec</a></span><span class="op">(</span><span class="va">temp</span>,vidName<span class="op">=</span><span class="st">"nightHawk"</span> ,highlightCol <span class="op">=</span> <span class="st">"#d1b0ff"</span>,cursorCol <span class="op">=</span> <span class="st">"#7817ff"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">temp</span><span class="op">=</span><span class="fu"><a href="reference/prep_static_ggspectro.html">prep_static_ggspectro</a></span><span class="op">(</span><span class="va">song</span>,crop<span class="op">=</span><span class="fl">20</span>,xLim<span class="op">=</span><span class="fl">4</span>,colPal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>,<span class="st">"black"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/paged_spectro.html">paged_spectro</a></span><span class="op">(</span><span class="va">temp</span>,vidName<span class="op">=</span><span class="st">"nightHawk"</span> ,highlightCol <span class="op">=</span> <span class="st">"#d1b0ff"</span>,cursorCol <span class="op">=</span> <span class="st">"#7817ff"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="nighthawk-multipage-dynamic-spec">Nighthawk multipage dynamic spec<a class="anchor" aria-label="anchor" href="#nighthawk-multipage-dynamic-spec"></a>
 </h3>
-<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" width="100%" height="100%" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+<p><a href="https://github.com/user-attachments/assets/ad4b635b-804d-4340-965c-d382376aabb6" class="external-link uri">https://github.com/user-attachments/assets/ad4b635b-804d-4340-965c-d382376aabb6</a></p>
 <p>Enjoy! Please share your specs with us on Twitter! <a href="https://twitter.com/M_Araya_Salas" class="external-link">@M_Araya_Salas</a> &amp; <a href="https://twitter.com/mattwilkinsbio" class="external-link">@mattwilkinsbio</a></p>
 <hr>
 <p>Please cite <a href="https://marce10.github.io/dynaSpec/">dynaSpec</a> as follows:</p>
