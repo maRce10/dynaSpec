@@ -5,7 +5,6 @@ dynaSpec: dynamic spectrogram visualizations
 <!-- badges: start -->
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![Dependencies](https://tinyverse.netlify.com/badge/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -123,9 +122,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
               res = 120, file.name = "default.mp4")
 ```
 
-
-https://github.com/user-attachments/assets/8323b6cd-8ddd-4d4f-9e42-4adad90f2c74
-
+<https://github.com/user-attachments/assets/8323b6cd-8ddd-4d4f-9e42-4adad90f2c74>
 
 Black and white spectrogram:
 
@@ -139,11 +136,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
           collevels = seq(-100, 0, 5))
 ```
 
-
-
-https://github.com/user-attachments/assets/2a9adf9b-3618-4700-8843-4412177da0df
-
-
+<https://github.com/user-attachments/assets/2a9adf9b-3618-4700-8843-4412177da0df>
 
 A spectrogram with black background (colbg = “black”):
 
@@ -156,10 +149,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
               file.name = "black.mp4", colbg = "black")
 ```
 
-
-
-https://github.com/user-attachments/assets/c4dc7ebc-4406-4d86-a828-94a4f6516762
-
+<https://github.com/user-attachments/assets/c4dc7ebc-4406-4d86-a828-94a4f6516762>
 
 Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom
 (osc = TRUE):
@@ -175,11 +165,10 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
               colwave = "#31688E99")
 ```
 
-
-
-https://github.com/user-attachments/assets/0eb2ed26-d2e7-451e-ba00-3c2ec527bafe
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and
 looping 3 times (loop = 3:
@@ -196,11 +185,10 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
     speed = 0.2, axis.type = "none", loop = 3)
 ```
 
-
-
-https://github.com/user-attachments/assets/a35b145e-2295-4050-811a-7d942cb56a92
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 Visualizing a northern nightingale wren recording from
 [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
@@ -215,13 +203,13 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
     t.display = 3, ovlp = 95, pal = custom_pal, 
     grid = FALSE, flim = c(2, 8), width = 700, 
     height = 250, res = 100, collevels = seq(-40, 0, 5),
-    file.name = "nightingale_wren.mp4", colbg = "#2d2d86", lcol = "#FFFFFFE6")
+    file.name = "../nightingale_wren.mp4", colbg = "#2d2d86", lcol = "#FFFFFFE6")
 ```
 
-
-
-https://github.com/user-attachments/assets/1b5e318e-1f52-4345-80a3-9d4c6199b85a
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey; " width="100%" height="100%" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 Spix’s disc-winged bat inquiry call slow down (speed = 0.05):
 
@@ -250,10 +238,10 @@ scrolling_spectro(wave = thy_wav, wl = 400,
     osc = TRUE, colwave = inferno(10, alpha = 0.9)[3])
 ```
 
-
-https://github.com/user-attachments/assets/a0e4fdda-8aeb-4ee2-9192-0a260ba3dfdd
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 ### Further customization
 
@@ -276,7 +264,7 @@ st <- read.csv("https://ndownloader.figshare.com/files/22722404")
 st$colors <- c("green", "yellow")
 
 # highlight selections
-color_spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
+color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
               collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", 
               base.col = "black",  t.mar = 0.07, f.mar = 0.1, strength = 3, 
               interactive = NULL, bg.col = "black")
@@ -292,7 +280,7 @@ base R and input that into `scrolling_spectro()` using the argument
 
 ``` r
 # save call
-sp_cl <- call("color_spectro", wave = hs_wren, wl = 200, ovlp = 95, 
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, 
               flim = c(1, 13), collevels = seq(-55, 0, 5), strength = 3,
               dB = "B", X = st, col.clm = "colors", base.col = "black",  
               t.mar = 0.07, f.mar = 0.1, interactive = NULL, bg.col = "black")
@@ -306,11 +294,10 @@ scrolling_spectro(wave = hs_wren, wl = 512,
                   file.name = "yellow_and_green.mp4")
 ```
 
-
-
-https://github.com/user-attachments/assets/71636997-ddb5-4243-8774-c6843ad76db5
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 This option can be mixed with any of the other customizations in the
 function, as adding an oscillogram:
@@ -327,10 +314,10 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
                   file.name = "yellow_and_green_oscillo.mp4")
 ```
 
-
-
-https://github.com/user-attachments/assets/41ca7f67-c121-4c60-8b66-31fceff00c33
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 A viridis color palette:
 
@@ -338,7 +325,7 @@ A viridis color palette:
 
 st$colors <- viridis(10)[c(3, 8)]
 
-sp_cl <- call("color_spectro", wave = hs_wren, wl = 200, 
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, 
               ovlp = 95, flim = c(1, 13), collevels = seq(-55, 0, 5),
               dB = "B", X = st, col.clm = "colors", 
               base.col = "white", t.mar = 0.07, f.mar = 0.1,
@@ -354,10 +341,10 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
                   file.name = "viridis.mp4")
 ```
 
-
-
-https://github.com/user-attachments/assets/e1bf389e-6056-4df0-a23b-b09d7e65e952
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 Or simply a gray scale:
 
@@ -365,7 +352,7 @@ Or simply a gray scale:
 
 st$colors <- c("gray", "gray49")
 
-sp_cl <- call("color_spectro", wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
+sp_cl <- call("color.spectro", wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
               collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", 
               base.col = "white", t.mar = 0.07, f.mar = 0.1, strength = 3, 
               interactive = NULL)
@@ -380,11 +367,10 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
                   file.name = "gray.mp4")
 ```
 
-
-
-https://github.com/user-attachments/assets/8efc0019-ea82-4ace-8176-3abd0315ae5a
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 The ‘spectro.call’ argument can also be used to add annotations. To do
 this we need to wrap up both the spectrogram function and the annotation
@@ -406,7 +392,7 @@ st$end[2] <- 3.87
 ann_fun <- function(wave, X){
   
   # print spectrogram
-  color_spectro(wave = wave,  wl = 200, 
+  color.spectro(wave = wave,  wl = 200, 
               ovlp = 95, flim = c(1, 18.6), collevels = seq(-55, 0, 5),
               dB = "B", X = X, col.clm = "colors", 
               base.col = "white", t.mar = 0.07, f.mar = 0.1,
@@ -435,14 +421,13 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
                   width = 1000, height = 500, res = 200, 
                   collevels = seq(-100, 0, 1), speed = 0.5,
                   spectro.call = ann_cl, fps = 120,
-                  file.name = "viridis_annotated.mp4")
+                  file.name = "../viridis_annotated.mp4")
 ```
 
-
-
-https://github.com/user-attachments/assets/b72e466a-b88a-4804-8f95-5960b3749e9c
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 Finally, the argument ‘annotation.call’ can be used to add static labels
 (i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a
@@ -474,14 +459,15 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
                   grid = FALSE, flim = c(0, 5.5), loop = 3,
                   width = 1200, height = 550, res = 200,
                   collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", 
-                  colbg = "black", fps = 60, file.name = "frogs.mp4",
+                  colbg = "black", fps = 60, file.name = "../frogs.mp4",
                   osc = TRUE, height.prop = c(3, 1), colwave = "#31688E", 
                   lty = 3, annotation.call = ann_cll)
 ```
 
-
-https://github.com/user-attachments/assets/ee6c170b-9412-475c-be53-f17d3748c992
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 
 The argument accepts more than one labels as in a regular `text()` call.
 In that case ‘start’ and ‘end’ values should be supplied for each label:
@@ -500,16 +486,15 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
                   grid = FALSE, flim = c(0, 5.5), loop = 3,
                   width = 1200, height = 550, res = 200,
                   collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", 
-                  fps = 60, file.name = "frogs_sp_labels.mp4", osc = TRUE, 
+                  fps = 60, file.name = "../frogs_sp_labels.mp4", osc = TRUE, 
                   height.prop = c(3, 1),colwave = "#31688E", lty = 3, 
                   annotation.call = ann_cll)
 ```
 
-
-
-https://github.com/user-attachments/assets/bbd9ea9c-b153-4f4d-a56f-ea851c231151
-
-
+<center>
+<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</center>
 <hr>
 
 # Matt’s approach: “Paged Dynamic Spectrograms”
@@ -586,8 +571,8 @@ paged_spectro(femaleBarnSwallow)
 #note that prep_static_spectro() is tha same as prepStaticSpec()
 #Also paged_spectro() is the same as pagedSpec()
 
-p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
-pagedSpec(p2) 
+p2<-prep_static_ggspectro(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
+paged_spectro(p2) 
 ```
 
 <figure>
@@ -613,9 +598,9 @@ female barn swallow song</figcaption>
 
 ``` r
 
-whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+whale <- prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",
        savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
-pagedSpec(whale)
+paged_spectro(whale)
 #Voila 🐋
 ```
 
@@ -638,8 +623,8 @@ spectrogram</figcaption>
 ``` r
 
 song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
-temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
-pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
+temp=prep_static_ggspectro(song,crop=20,xLim=4,colPal = c("white","black"))
+paged_spectro(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
 ```
 
 ### Nighthawk multipage dynamic spec

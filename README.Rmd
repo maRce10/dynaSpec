@@ -16,7 +16,7 @@ library(warbleR)
 ```
 
 <!-- badges: start -->
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![Dependencies](https://tinyverse.netlify.com/badge/dynaSpec)](https://cran.r-project.org/package=dynaSpec) [![Project Status: Active  The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r strsplit(gsub("depends: R \\(|\\)", "", grep("DEPENDS", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE), ",")[[1]][1]`-6666ff.svg)](https://cran.r-project.org/) 
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![Project Status: Active  The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r strsplit(gsub("depends: R \\(|\\)", "", grep("DEPENDS", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE), ",")[[1]][1]`-6666ff.svg)](https://cran.r-project.org/) 
  [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
 <!-- badges: end -->
@@ -91,11 +91,8 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
               res = 120, file.name = "default.mp4")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/TOiukDxaNbI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
- 
+
+https://github.com/user-attachments/assets/8323b6cd-8ddd-4d4f-9e42-4adad90f2c74 
 
 Black and white spectrogram:
 
@@ -109,10 +106,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
           collevels = seq(-100, 0, 5))
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/5gQjgzijHOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+https://github.com/user-attachments/assets/2a9adf9b-3618-4700-8843-4412177da0df
  
 
 A spectrogram with black background (colbg = "black"):
@@ -126,10 +120,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
               file.name = "black.mp4", colbg = "black")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/n_GNDn2VH-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+https://github.com/user-attachments/assets/c4dc7ebc-4406-4d86-a828-94a4f6516762
  
 
 Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom (osc = TRUE):
@@ -515,8 +506,8 @@ paged_spectro(femaleBarnSwallow)
 #note that prep_static_spectro() is tha same as prepStaticSpec()
 #Also paged_spectro() is the same as pagedSpec()
 
-p2<-prepStaticSpec(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
-pagedSpec(p2) 
+p2<-prep_static_ggspectro(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
+paged_spectro(p2) 
 ```
 ![Static spectrogram with axis labels for female barn swallow song](man/figures/femaleBarnSwallow_1c.png)
 
@@ -533,9 +524,9 @@ pagedSpec(p2)
   
 ```{r, eval = FALSE}
 
-whale<-prepStaticSpec("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+whale <- prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",
        savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
-pagedSpec(whale)
+paged_spectro(whale)
 #Voila 🐋
 ```
 ### Static whale song spectrogram
@@ -551,8 +542,8 @@ pagedSpec(whale)
 ```{r, eval = FALSE}
 
 song="https://www.xeno-canto.org/sounds/uploaded/SPMWIWZKKC/XC490771-190804_1428_CONI.mp3"
-temp=prepStaticSpec(song,crop=20,xLim=4,colPal = c("white","black"))
-pagedSpec(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
+temp=prep_static_ggspectro(song,crop=20,xLim=4,colPal = c("white","black"))
+paged_spectro(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7817ff")
 ```
 
 
