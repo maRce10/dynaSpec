@@ -200,7 +200,7 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
     file.name = "../nightingale_wren.mp4", colbg = "#2d2d86", lcol = "#FFFFFFE6")
 ```
 
-<https://github.com/user-attachments/assets/1b5e318e-1f52-4345-80a3-9d4c6199b85a>
+<https://github.com/user-attachments/assets/23871d8a-e555-4cd9-bae2-0e680fb2c305>
 
 Spix’s disc-winged bat inquiry call slow down (speed = 0.05):
 
@@ -787,9 +787,8 @@ paged_spectro(
 
 <https://github.com/user-attachments/assets/ad4b635b-804d-4340-965c-d382376aabb6>
 
-Enjoy! Please share your specs with us on Twitter!
-[@M_Araya_Salas](https://twitter.com/M_Araya_Salas) &
-[@mattwilkinsbio](https://twitter.com/mattwilkinsbio)
+Enjoy! Please share your specs with us on X
+[@mattwilkinsbio](https://x.com/mattwilkinsbio)
 
 ------------------------------------------------------------------------
 
