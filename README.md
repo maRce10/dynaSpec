@@ -165,10 +165,7 @@ scrolling_spectro(wave = canyon_wren, wl = 300,
               colwave = "#31688E99")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/r25TSKSklLo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/0eb2ed26-d2e7-451e-ba00-3c2ec527bafe>
 
 Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and
 looping 3 times (loop = 3:
@@ -185,17 +182,14 @@ scrolling_spectro(wave = Phae.long4, wl = 300,
     speed = 0.2, axis.type = "none", loop = 3)
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/7AAoaZUkA3k" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/a35b145e-2295-4050-811a-7d942cb56a92>
 
 Visualizing a northern nightingale wren recording from
 [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
 
 ``` r
 
-ngh_wren <- read_wave("https://www.xeno-canto.org/518334/download")
+ngh_wren <- read_sound_file("https://www.xeno-canto.org/518334/download")
 
 custom_pal <- colorRampPalette( c("#2d2d86", "#2d2d86", reverse.terrain.colors(10)[5:10]))
 
@@ -206,10 +200,7 @@ scrolling_spectro(wave = ngh_wren, wl = 600,
     file.name = "../nightingale_wren.mp4", colbg = "#2d2d86", lcol = "#FFFFFFE6")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey; " width="100%" height="100%" src="https://www.youtube.com/embed/OxvKoPyX-4o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/1b5e318e-1f52-4345-80a3-9d4c6199b85a>
 
 Spix’s disc-winged bat inquiry call slow down (speed = 0.05):
 
@@ -238,10 +229,7 @@ scrolling_spectro(wave = thy_wav, wl = 400,
     osc = TRUE, colwave = inferno(10, alpha = 0.9)[3])
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/mFiYPzOe9Nw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/a0e4fdda-8aeb-4ee2-9192-0a260ba3dfdd>
 
 ### Further customization
 
@@ -255,7 +243,7 @@ vocalizations from male and female house wrens with different colors
 ``` r
 
 # get house wren male female duet recording
-hs_wren <- read_wave("https://ndownloader.figshare.com/files/22722101")
+hs_wren <- read_sound_file("https://ndownloader.figshare.com/files/22722101")
 
 # and extended selection table
 st <- read.csv("https://ndownloader.figshare.com/files/22722404")
@@ -294,10 +282,7 @@ scrolling_spectro(wave = hs_wren, wl = 512,
                   file.name = "yellow_and_green.mp4")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/9qMPxYuGUJE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/71636997-ddb5-4243-8774-c6843ad76db5>
 
 This option can be mixed with any of the other customizations in the
 function, as adding an oscillogram:
@@ -314,10 +299,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
                   file.name = "yellow_and_green_oscillo.mp4")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/k6OumiKsRWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/41ca7f67-c121-4c60-8b66-31fceff00c33>
 
 A viridis color palette:
 
@@ -341,10 +323,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, osc = TRUE,
                   file.name = "viridis.mp4")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/HvV2NFuJeIU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/e1bf389e-6056-4df0-a23b-b09d7e65e952>
 
 Or simply a gray scale:
 
@@ -367,10 +346,7 @@ scrolling_spectro(wave = hs_wren, wl = 512, osc = TRUE,
                   file.name = "gray.mp4")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/gd096zAG5NE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/8efc0019-ea82-4ace-8176-3abd0315ae5a>
 
 The ‘spectro.call’ argument can also be used to add annotations. To do
 this we need to wrap up both the spectrogram function and the annotation
@@ -424,10 +400,7 @@ scrolling_spectro(wave = hs_wren, wl = 200, t.display = 1.2,
                   file.name = "../viridis_annotated.mp4")
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/wbpjKfZUUIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/b72e466a-b88a-4804-8f95-5960b3749e9c>
 
 Finally, the argument ‘annotation.call’ can be used to add static labels
 (i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a
@@ -443,7 +416,7 @@ and labels it with a single label:
 ``` r
 
 # read data from figshare
-frogs <- read_wave("https://ndownloader.figshare.com/files/22829075")
+frogs <- read_sound_file("https://ndownloader.figshare.com/files/22829075")
 
 # cut a couple of species
 shrt_frgs <- cutw(frogs, from = 35.3, to = 50.5, output = "Wave")
@@ -464,10 +437,7 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
                   lty = 3, annotation.call = ann_cll)
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/Ux71aMVa_oU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/ee6c170b-9412-475c-be53-f17d3748c992>
 
 The argument accepts more than one labels as in a regular `text()` call.
 In that case ‘start’ and ‘end’ values should be supplied for each label:
@@ -475,26 +445,47 @@ In that case ‘start’ and ‘end’ values should be supplied for each label:
 ``` r
 
 # make annotation call for 2 annotations
-ann_cll <- call("text", x = 0.25, y = 0.87, 
-                labels = c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"), 
-                cex = 1, start = c(0.4, 7), 
-                end = c(5.5, 14.8), col = "#FFEA46CC", font = 3, fading = 0.6)
+ann_cll <- call(
+  "text",
+  x = 0.25,
+  y = 0.87,
+  labels = c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"),
+  cex = 1,
+  start = c(0.4, 7),
+  end = c(5.5, 14.8),
+  col = "#FFEA46CC",
+  font = 3,
+  fading = 0.6
+)
 
 # create dynamic spectro
-scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,  
-                  t.display = 1.1, pal = cividis,
-                  grid = FALSE, flim = c(0, 5.5), loop = 3,
-                  width = 1200, height = 550, res = 200,
-                  collevels = seq(-40, 0, 5), lcol =  "#FFFFFFCC", colbg = "black", 
-                  fps = 60, file.name = "../frogs_sp_labels.mp4", osc = TRUE, 
-                  height.prop = c(3, 1),colwave = "#31688E", lty = 3, 
-                  annotation.call = ann_cll)
+scrolling_spectro(
+  wave = shrt_frgs,
+  wl = 512,
+  ovlp = 95,
+  t.display = 1.1,
+  pal = cividis,
+  grid = FALSE,
+  flim = c(0, 5.5),
+  loop = 3,
+  width = 1200,
+  height = 550,
+  res = 200,
+  collevels = seq(-40, 0, 5),
+  lcol =  "#FFFFFFCC",
+  colbg = "black",
+  fps = 60,
+  file.name = "../frogs_sp_labels.mp4",
+  osc = TRUE,
+  height.prop = c(3, 1),
+  colwave = "#31688E",
+  lty = 3,
+  annotation.call = ann_cll
+)
 ```
 
-<center>
-<iframe allowtransparency="true" style="background: #FFFFFF;" style="border:0px solid lightgrey;" width="100%" height="100%" src="https://www.youtube.com/embed/nFfYr8Tc53Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
-</center>
+<https://github.com/user-attachments/assets/bbd9ea9c-b153-4f4d-a56f-ea851c231151>
+
 <hr>
 
 # Matt’s approach: “Paged Dynamic Spectrograms”
@@ -504,9 +495,9 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ### Workflow
 
 1.  Tweak your spectrogram settings using the prep_static_ggspectro()
-    function – aka prep_static_ggspectro() – storing results in variable. You
+    function – aka prepStaticSpec() – storing results in variable. You
     can also just segment and export static specs at this step.
-2.  Feed variable into paged_spectro() to generate a
+2.  Feed variable into paged_spectro() – aka pagedSpec() – to generate a
     dynamic spectrogram
     - It does this by exporting a PNG of the testSpec() ggplot function;
     - Import PNG as a new ggplot raster layer
@@ -551,8 +542,7 @@ paged_spectro(femaleBarnSwallow)
 
 ### Dynamic spectrogram of a female barn swallow song
 
-
-https://github.com/user-attachments/assets/618260a3-fdcc-46aa-a36b-e8a8a1d78d9a
+<https://github.com/user-attachments/assets/618260a3-fdcc-46aa-a36b-e8a8a1d78d9a>
 
 ### Now brighten the spec using the ampTrans parameter
 
@@ -568,10 +558,12 @@ https://github.com/user-attachments/assets/618260a3-fdcc-46aa-a36b-e8a8a1d78d9a
 
 ``` r
 
+#note that prep_static_spectro() is tha same as prepStaticSpec()
+#Also paged_spectro() is the same as pagedSpec()
+
 p2<-prep_static_ggspectro(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
 paged_spectro(p2) 
 ```
-
 
 <figure>
 <img src="man/figures/femaleBarnSwallow_1c.png"
@@ -580,7 +572,7 @@ alt="Static spectrogram with axis labels for female barn swallow song" />
 female barn swallow song</figcaption>
 </figure>
 
-https://github.com/user-attachments/assets/ef7a2802-3d19-4d5a-a902-71495f47f10f
+<https://github.com/user-attachments/assets/ef7a2802-3d19-4d5a-a902-71495f47f10f>
 
 ### Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)
 
@@ -595,7 +587,7 @@ https://github.com/user-attachments/assets/ef7a2802-3d19-4d5a-a902-71495f47f10f
 
 ``` r
 
-whale<-prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+whale <- prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",
        savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 paged_spectro(whale)
 #Voila 🐋
@@ -612,9 +604,7 @@ spectrogram</figcaption>
 
 ### Dynamic multipage whale song spectrogram
 
-
-https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695
-
+<https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695>
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
 
@@ -627,9 +617,7 @@ paged_spectro(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7
 
 ### Nighthawk multipage dynamic spec
 
-
-https://github.com/user-attachments/assets/ad4b635b-804d-4340-965c-d382376aabb6
-
+<https://github.com/user-attachments/assets/ad4b635b-804d-4340-965c-d382376aabb6>
 
 Enjoy! Please share your specs with us on Twitter!
 [@M_Araya_Salas](https://twitter.com/M_Araya_Salas) &
