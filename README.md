@@ -504,9 +504,9 @@ scrolling_spectro(wave = shrt_frgs, wl = 512, ovlp = 95,
 ### Workflow
 
 1.  Tweak your spectrogram settings using the prep_static_ggspectro()
-    function – aka prepStaticSpec() – storing results in variable. You
+    function – aka prep_static_ggspectro() – storing results in variable. You
     can also just segment and export static specs at this step.
-2.  Feed variable into paged_spectro() – aka pagedSpec() – to generate a
+2.  Feed variable into paged_spectro() to generate a
     dynamic spectrogram
     - It does this by exporting a PNG of the testSpec() ggplot function;
     - Import PNG as a new ggplot raster layer
@@ -551,8 +551,8 @@ paged_spectro(femaleBarnSwallow)
 
 ### Dynamic spectrogram of a female barn swallow song
 
-<iframe src="https://player.vimeo.com/video/432706727" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+
+https://github.com/user-attachments/assets/618260a3-fdcc-46aa-a36b-e8a8a1d78d9a
 
 ### Now brighten the spec using the ampTrans parameter
 
@@ -568,12 +568,10 @@ paged_spectro(femaleBarnSwallow)
 
 ``` r
 
-#note that prep_static_spectro() is tha same as prepStaticSpec()
-#Also paged_spectro() is the same as pagedSpec()
-
 p2<-prep_static_ggspectro(f[1],min_dB=-35, savePNG=T, destFolder="wd",onlyPlotSpec=F,bgFlood=T,ampTrans=3) 
 paged_spectro(p2) 
 ```
+
 
 <figure>
 <img src="man/figures/femaleBarnSwallow_1c.png"
@@ -582,8 +580,7 @@ alt="Static spectrogram with axis labels for female barn swallow song" />
 female barn swallow song</figcaption>
 </figure>
 
-<iframe src="https://player.vimeo.com/video/432727824" style="border:0px" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+https://github.com/user-attachments/assets/ef7a2802-3d19-4d5a-a902-71495f47f10f
 
 ### Now also supports .mp3 files (web or local) and multi-page dynamic spectrograms (i.e. cropping and segmenting spectrograms from larger recording files)
 
@@ -598,7 +595,7 @@ female barn swallow song</figcaption>
 
 ``` r
 
-whale <- prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",
+whale<-prep_static_ggspectro("http://www.oceanmammalinst.org/songs/hmpback3.wav",
        savePNG=T,destFolder="wd",yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
 paged_spectro(whale)
 #Voila 🐋
@@ -615,8 +612,9 @@ spectrogram</figcaption>
 
 ### Dynamic multipage whale song spectrogram
 
-<iframe src="https://player.vimeo.com/video/432723336" style="border:0px" frameborder="0" width="100%" height="100%" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+
+https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695
+
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
 
@@ -629,8 +627,9 @@ paged_spectro(temp,vidName="nightHawk" ,highlightCol = "#d1b0ff",cursorCol = "#7
 
 ### Nighthawk multipage dynamic spec
 
-<iframe src="https://player.vimeo.com/video/432724657" style="border:0px; width: 100%;" width="100%" height="100%" margin="0" padding="0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
-</iframe>
+
+https://github.com/user-attachments/assets/ad4b635b-804d-4340-965c-d382376aabb6
+
 
 Enjoy! Please share your specs with us on Twitter!
 [@M_Araya_Salas](https://twitter.com/M_Araya_Salas) &
