@@ -538,8 +538,8 @@
 <h3 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
 </h3>
 <ol style="list-style-type: decimal">
-<li>Tweak your spectrogram settings using the prep_static_ggspectro() function – aka prepStaticSpec() – storing results in variable. You can also just segment and export static specs at this step.</li>
-<li>Feed variable into paged_spectro() – aka pagedSpec() – to generate a dynamic spectrogram
+<li>Tweak your spectrogram settings using the prep_static_ggspectro() function storing results in variable. You can also just segment and export static specs at this step.</li>
+<li>Feed variable into paged_spectro() to generate a dynamic spectrogram
 <ul>
 <li>It does this by exporting a PNG of the testSpec() ggplot function;</li>
 <li>Import PNG as a new ggplot raster layer</li>
@@ -560,11 +560,14 @@
 Static Spectrogram of a female barn swallow song
 </figcaption></figure><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
+<span><span class="co"># folder to save files (change it to your own)</span></span>
+<span><span class="va">destFolder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co">#let's add axes</span></span>
 <span><span class="va">femaleBarnSwallow</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="reference/prep_static_ggspectro.html">prep_static_ggspectro</a></span><span class="op">(</span></span>
 <span>    <span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>    destFolder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    destFolder <span class="op">=</span> <span class="va">destFolder</span>,</span>
 <span>    savePNG <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>    onlyPlotSpec <span class="op">=</span> <span class="cn">F</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -596,7 +599,7 @@ Static spectrogram with axis labels for female barn swallow song
 <span>    <span class="va">f</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>    min_dB <span class="op">=</span> <span class="op">-</span><span class="fl">35</span>,</span>
 <span>    savePNG <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>    destFolder <span class="op">=</span> <span class="st">"wd"</span>,</span>
+<span>    destFolder <span class="op">=</span> <span class="va">destFolder</span>,</span>
 <span>    onlyPlotSpec <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>    bgFlood <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>    ampTrans <span class="op">=</span> <span class="fl">3</span></span>
@@ -623,10 +626,10 @@ Static spectrogram with axis labels for female barn swallow song
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">whale</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu"><a href="reference/prep_static_ggspectro.html">prep_static_ggspectro</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="reference/prep_static_ggspectro.html">prep_static_ggspectro</a></span><span class="op">(</span>soundFile <span class="op">=</span> </span>
 <span>    <span class="st">"http://www.oceanmammalinst.org/songs/hmpback3.wav"</span>,</span>
 <span>    savePNG <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>    destFolder <span class="op">=</span> <span class="st">"wd"</span>,</span>
+<span>    destFolder <span class="op">=</span> <span class="va">destFolder</span>,</span>
 <span>    yLim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">.7</span><span class="op">)</span>,</span>
 <span>    crop <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>    xLim <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -645,7 +648,7 @@ Humpback whale song spectrogram
 <div class="section level3">
 <h3 id="dynamic-multipage-whale-song-spectrogram">Dynamic multipage whale song spectrogram<a class="anchor" aria-label="anchor" href="#dynamic-multipage-whale-song-spectrogram"></a>
 </h3>
-<p><a href="https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695" class="external-link uri">https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695</a></p>
+<p><a href="https://github.com/user-attachments/assets/8308b21b-e930-44a8-888b-f99739c8fb6e" class="external-link uri">https://github.com/user-attachments/assets/8308b21b-e930-44a8-888b-f99739c8fb6e</a></p>
 </div>
 <div class="section level3">
 <h3 id="example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme">Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)<a class="anchor" aria-label="anchor" href="#example-using-xeno-canto-to-generate-a-multi-page-dynamic-spectrogram-of-a-common-nighthawk-call-w-different-color-scheme"></a>
