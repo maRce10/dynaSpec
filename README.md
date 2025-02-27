@@ -630,10 +630,9 @@ scrolling_spectro(
 ### Workflow
 
 1.  Tweak your spectrogram settings using the prep_static_ggspectro()
-    function – aka prepStaticSpec() – storing results in variable. You
-    can also just segment and export static specs at this step.
-2.  Feed variable into paged_spectro() – aka pagedSpec() – to generate a
-    dynamic spectrogram
+    function storing results in variable. You can also just segment and
+    export static specs at this step.
+2.  Feed variable into paged_spectro() to generate a dynamic spectrogram
     - It does this by exporting a PNG of the testSpec() ggplot function;
     - Import PNG as a new ggplot raster layer
     - Overlay a series of translucent highlight boxes that disolve away
@@ -658,11 +657,14 @@ swallow song</figcaption>
 
 ``` r
 
+# folder to save files (change it to your own)
+destFolder <- tempdir()
+
 #let's add axes
 femaleBarnSwallow <-
   prep_static_ggspectro(
     f[1],
-    destFolder = tempdir(),
+    destFolder = destFolder,
     savePNG = T,
     onlyPlotSpec = F
   )
@@ -704,7 +706,7 @@ p2 <-
     f[1],
     min_dB = -35,
     savePNG = T,
-    destFolder = "wd",
+    destFolder = destFolder,
     onlyPlotSpec = F,
     bgFlood = T,
     ampTrans = 3
@@ -736,10 +738,10 @@ female barn swallow song</figcaption>
 ``` r
 
 whale <-
-  prep_static_ggspectro(
+  prep_static_ggspectro(soundFile = 
     "http://www.oceanmammalinst.org/songs/hmpback3.wav",
     savePNG = T,
-    destFolder = "wd",
+    destFolder = destFolder,
     yLim = c(0, .7),
     crop = 12,
     xLim = 3,
@@ -760,7 +762,7 @@ spectrogram</figcaption>
 
 ### Dynamic multipage whale song spectrogram
 
-<https://github.com/user-attachments/assets/ed75fd8f-1a0e-475a-95b9-2df809caa695>
+<https://github.com/user-attachments/assets/8308b21b-e930-44a8-888b-f99739c8fb6e>
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
 
