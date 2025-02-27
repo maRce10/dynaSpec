@@ -115,11 +115,18 @@ palette:
 
 data("canyon_wren")
 
-scrolling_spectro(wave = canyon_wren, wl = 300, 
-              t.display = 1.7, pal = viridis, 
-              grid = FALSE, flim = c(1, 9), 
-              width = 1000, height = 500, 
-              res = 120, file.name = "default.mp4")
+scrolling_spectro(
+  wave = canyon_wren,
+  wl = 300,
+  t.display = 1.7,
+  pal = viridis,
+  grid = FALSE,
+  flim = c(1, 9),
+  width = 1000,
+  height = 500,
+  res = 120,
+  file.name = "default.mp4"
+)
 ```
 
 <https://github.com/user-attachments/assets/8323b6cd-8ddd-4d4f-9e42-4adad90f2c74>
@@ -128,12 +135,19 @@ Black and white spectrogram:
 
 ``` r
 
-scrolling_spectro(wave = canyon_wren, wl = 300, 
-          t.display = 1.7, pal = reverse.gray.colors.1, 
-          grid = FALSE, flim = c(1, 9), 
-          width = 1000, height = 500, 
-          res = 120, file.name = "black_and_white.mp4",
-          collevels = seq(-100, 0, 5))
+scrolling_spectro(
+  wave = canyon_wren,
+  wl = 300,
+  t.display = 1.7,
+  pal = reverse.gray.colors.1,
+  grid = FALSE,
+  flim = c(1, 9),
+  width = 1000,
+  height = 500,
+  res = 120,
+  file.name = "black_and_white.mp4",
+  collevels = seq(-100, 0, 5)
+)
 ```
 
 <https://github.com/user-attachments/assets/2a9adf9b-3618-4700-8843-4412177da0df>
@@ -142,11 +156,19 @@ A spectrogram with black background (colbg = “black”):
 
 ``` r
 
-scrolling_spectro(wave = canyon_wren, wl = 300, 
-              t.display = 1.7, pal = viridis, 
-              grid = FALSE, flim = c(1, 9), 
-              width = 1000, height = 500, res = 120, 
-              file.name = "black.mp4", colbg = "black")
+scrolling_spectro(
+  wave = canyon_wren,
+  wl = 300,
+  t.display = 1.7,
+  pal = viridis,
+  grid = FALSE,
+  flim = c(1, 9),
+  width = 1000,
+  height = 500,
+  res = 120,
+  file.name = "black.mp4",
+  colbg = "black"
+)
 ```
 
 <https://github.com/user-attachments/assets/c4dc7ebc-4406-4d86-a828-94a4f6516762>
@@ -156,13 +178,22 @@ Slow down to 1/2 speed (speed = 0.5) with a oscillogram at the bottom
 
 ``` r
 
-scrolling_spectro(wave = canyon_wren, wl = 300, 
-              t.display = 1.7, pal = viridis, 
-              grid = FALSE, flim = c(1, 9), 
-              width = 1000, height = 500, res = 120, 
-              file.name = "slow.mp4", colbg = "black",
-              speed = 0.5, osc = TRUE, 
-              colwave = "#31688E99")
+scrolling_spectro(
+  wave = canyon_wren,
+  wl = 300,
+  t.display = 1.7,
+  pal = viridis,
+  grid = FALSE,
+  flim = c(1, 9),
+  width = 1000,
+  height = 500,
+  res = 120,
+  file.name = "slow.mp4",
+  colbg = "black",
+  speed = 0.5,
+  osc = TRUE,
+  colwave = "#31688E99"
+)
 ```
 
 <https://github.com/user-attachments/assets/0eb2ed26-d2e7-451e-ba00-3c2ec527bafe>
@@ -174,12 +205,24 @@ looping 3 times (loop = 3:
 
 data("Phae.long4")
 
-scrolling_spectro(wave = Phae.long4, wl = 300, 
-    t.display = 1.7, ovlp = 90, pal = magma, 
-    grid = FALSE, flim = c(1, 10), width = 1000, 
-    height = 500, res = 120, collevels = seq(-50, 0, 5), 
-    file.name = "no_axis.mp4", colbg = "black", 
-    speed = 0.2, axis.type = "none", loop = 3)
+scrolling_spectro(
+  wave = Phae.long4,
+  wl = 300,
+  t.display = 1.7,
+  ovlp = 90,
+  pal = magma,
+  grid = FALSE,
+  flim = c(1, 10),
+  width = 1000,
+  height = 500,
+  res = 120,
+  collevels = seq(-50, 0, 5),
+  file.name = "no_axis.mp4",
+  colbg = "black",
+  speed = 0.2,
+  axis.type = "none",
+  loop = 3
+)
 ```
 
 <https://github.com/user-attachments/assets/a35b145e-2295-4050-811a-7d942cb56a92>
@@ -189,15 +232,28 @@ Visualizing a northern nightingale wren recording from
 
 ``` r
 
-ngh_wren <- read_sound_file("https://www.xeno-canto.org/518334/download")
+ngh_wren <-
+  read_sound_file("https://www.xeno-canto.org/518334/download")
 
-custom_pal <- colorRampPalette( c("#2d2d86", "#2d2d86", reverse.terrain.colors(10)[5:10]))
+custom_pal <-
+  colorRampPalette(c("#2d2d86", "#2d2d86", reverse.terrain.colors(10)[5:10]))
 
-scrolling_spectro(wave = ngh_wren, wl = 600, 
-    t.display = 3, ovlp = 95, pal = custom_pal, 
-    grid = FALSE, flim = c(2, 8), width = 700, 
-    height = 250, res = 100, collevels = seq(-40, 0, 5),
-    file.name = "../nightingale_wren.mp4", colbg = "#2d2d86", lcol = "#FFFFFFE6")
+scrolling_spectro(
+  wave = ngh_wren,
+  wl = 600,
+  t.display = 3,
+  ovlp = 95,
+  pal = custom_pal,
+  grid = FALSE,
+  flim = c(2, 8),
+  width = 700,
+  height = 250,
+  res = 100,
+  collevels = seq(-40, 0, 5),
+  file.name = "../nightingale_wren.mp4",
+  colbg = "#2d2d86",
+  lcol = "#FFFFFFE6"
+)
 ```
 
 <https://github.com/user-attachments/assets/23871d8a-e555-4cd9-bae2-0e680fb2c305>
@@ -212,21 +268,49 @@ data("thyroptera.est")
 thy_wav <- attributes(thyroptera.est)$wave.objects[[12]]
 
 # add silence at both "sides""
-thy_wav <- pastew(tuneR::silence(duration = 0.05, 
-            samp.rate = thy_wav@samp.rate, xunit = "time"),
-            thy_wav, output = "Wave")
+thy_wav <- pastew(
+  tuneR::silence(
+    duration = 0.05,
+    samp.rate = thy_wav@samp.rate,
+    xunit = "time"
+  ),
+  thy_wav,
+  output = "Wave"
+)
 
-thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, 
-            samp.rate = thy_wav@samp.rate, xunit = "time"),
-            output = "Wave")
+thy_wav <- pastew(
+  thy_wav,
+  tuneR::silence(
+    duration = 0.04,
+    samp.rate = thy_wav@samp.rate,
+    xunit = "time"
+  ),
+  output = "Wave"
+)
 
-scrolling_spectro(wave = thy_wav, wl = 400, 
-    t.display = 0.08, ovlp = 95, pal = inferno, 
-    grid = FALSE, flim = c(12, 37), width = 700, 
-    height = 250, res = 100, collevels = seq(-40, 0, 5),
-    file.name = "thyroptera_osc.mp4", colbg = "black", lcol = "#FFFFFFE6", 
-    speed = 0.05, fps = 200, buffer = 0, loop = 4, lty = 1, 
-    osc = TRUE, colwave = inferno(10, alpha = 0.9)[3])
+scrolling_spectro(
+  wave = thy_wav,
+  wl = 400,
+  t.display = 0.08,
+  ovlp = 95,
+  pal = inferno,
+  grid = FALSE,
+  flim = c(12, 37),
+  width = 700,
+  height = 250,
+  res = 100,
+  collevels = seq(-40, 0, 5),
+  file.name = "thyroptera_osc.mp4",
+  colbg = "black",
+  lcol = "#FFFFFFE6",
+  speed = 0.05,
+  fps = 200,
+  buffer = 0,
+  loop = 4,
+  lty = 1,
+  osc = TRUE,
+  colwave = inferno(10, alpha = 0.9)[3]
+)
 ```
 
 <https://github.com/user-attachments/assets/a0e4fdda-8aeb-4ee2-9192-0a260ba3dfdd>
@@ -243,7 +327,8 @@ vocalizations from male and female house wrens with different colors
 ``` r
 
 # get house wren male female duet recording
-hs_wren <- read_sound_file("https://ndownloader.figshare.com/files/22722101")
+hs_wren <-
+  read_sound_file("https://ndownloader.figshare.com/files/22722101")
 
 # and extended selection table
 st <- read.csv("https://ndownloader.figshare.com/files/22722404")
@@ -252,10 +337,22 @@ st <- read.csv("https://ndownloader.figshare.com/files/22722404")
 st$colors <- c("green", "yellow")
 
 # highlight selections
-color.spectro(wave = hs_wren, wl = 200, ovlp = 95, flim = c(1, 13), 
-              collevels = seq(-55, 0, 5), dB = "B", X = st, col.clm = "colors", 
-              base.col = "black",  t.mar = 0.07, f.mar = 0.1, strength = 3, 
-              interactive = NULL, bg.col = "black")
+color.spectro(
+  wave = hs_wren,
+  wl = 200,
+  ovlp = 95,
+  flim = c(1, 13),
+  collevels = seq(-55, 0, 5),
+  dB = "B",
+  X = st,
+  col.clm = "colors",
+  base.col = "black",
+  t.mar = 0.07,
+  f.mar = 0.1,
+  strength = 3,
+  interactive = NULL,
+  bg.col = "black"
+)
 ```
 
 <img src="man/figures/colored_spectro_house_wren_duet.png" alt="house wren duet">
