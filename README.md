@@ -859,7 +859,7 @@ spectrogram</figcaption>
 
 ### Dynamic multipage whale song spectrogram
 
-<https://github.com/user-attachments/assets/8308b21b-e930-44a8-888b-f99739c8fb6e>
+<https://github.com/user-attachments/assets/bdc5b668-431f-43a9-942e-0f1f97078b1c>
 
 ### Example using Xeno-Canto to generate a multi-page dynamic spectrogram of a common nighthawk call (w/ different color scheme)
 
