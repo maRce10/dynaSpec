@@ -64,8 +64,8 @@ library(dynaSpec)
 
 Installation of external dependencies can be tricky on operating systems
 other than Linux. An alternative option is to run the package through
-[google colab](https://colab.google/). This [colab
-notebook](https://colab.research.google.com/drive/1t3Wn9OifcZTvxOMVNmz9dF25vnzU3_Fr?usp=sharing)
+google colab. This [colab
+notebook](https://colab.research.google.com/github/maRce10/dynaSpec/blob/master/dynaSpec.ipynb)
 explain how to do that step-by-step.
 
 # Background
@@ -93,15 +93,10 @@ processed with paged_spectro() to generate a dynamic spectrogram.
 
 <hr>
 
-To run the following examples you will also need to load a few more
-packages as well as
-[warbleR](https://cran.r-project.org/package=warbleR) \>= 1.1.24. It can
-be installed as follows:
+To run the following examples you will also need to load the package
+[warbleR](https://cran.r-project.org/package=warbleR):
 
 ``` r
-
-# From github
-devtools::install_github("maRce10/warbleR")
 
 #load package
 library(warbleR)
@@ -322,16 +317,16 @@ visualizations. For instance, the following code makes use of the
 `color_spectro()` function from
 [warbleR](https://cran.r-project.org/package=warbleR) to highlight
 vocalizations from male and female house wrens with different colors
-(after downloading the selection table and sound file from figshare):
+(after downloading the selection table and sound file from github):
 
 ``` r
 
 # get house wren male female duet recording
 hs_wren <-
-  read_sound_file("https://ndownloader.figshare.com/files/22722101")
+  read_sound_file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.wav")
 
 # and extended selection table
-st <- read.csv("https://ndownloader.figshare.com/files/22722404")
+st <- read.csv("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.csv")
 
 # create color column
 st$colors <- c("green", "yellow")
@@ -612,15 +607,15 @@ should also include the argmuents ‘start’ and ‘end’ to indicate the time
 at which the labels are displayed (in s). ‘fading’ is optional and
 allows fade-in and fade-out effects on labels (in s as well). The
 following code downloads a recording containing several frog species
-recorded in Costa Rica from figshare, cuts a clip including two species
+recorded in Costa Rica from github, cuts a clip including two species
 and labels it with a single label:
 
 ``` r
 
 
-# read data from figshare
+# read data from github
 frogs <-
-  read_sound_file("https://ndownloader.figshare.com/files/22829075")
+  read_sound_file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/CostaRican_frogs.wav")
 
 # cut a couple of species
 shrt_frgs <- cutw(frogs,

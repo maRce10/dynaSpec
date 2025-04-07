@@ -8,3 +8,4 @@
 ^\.github$
 ^testing$
 ^videos$
+^.*\.ipynb$

@@ -1,3 +1,10 @@
+# *dynaSpec 1.0.3*
+
+* Fix broken colab URL link
+* Improve sound quality of nightingale wren sound file
+* Fix embeded video links in both github and pkgdown website
+
+
 # *dynaSpec 1.0.2*
 
 * Fix logic for crop and xLim in prep_static_ggspectro()

@@ -106,7 +106,7 @@ library(dynaSpec)
 ```
 
 
-Installation of external dependencies can be tricky on operating systems other than Linux. An alternative option is to run the package through [google colab](https://colab.google/). This [colab notebook](https://colab.research.google.com/drive/1t3Wn9OifcZTvxOMVNmz9dF25vnzU3_Fr?usp=sharing) explain how to do that step-by-step. 
+Installation of external dependencies can be tricky on operating systems other than Linux. An alternative option is to run the package through google colab. This [colab notebook](https://colab.research.google.com/github/maRce10/dynaSpec/blob/master/dynaSpec.ipynb) explain how to do that step-by-step. 
 
 # Background
 This package is a collaboration between [Marcelo Araya-Salas](https://marce10.github.io/) and [Matt Wilkins](https://www.mattwilkinsbio.com/). The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-approach-scrolling-dynamic-spectrograms) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-approach-paged-dynamic-spectrograms) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
@@ -114,12 +114,9 @@ This package is a collaboration between [Marcelo Araya-Salas](https://marce10.gi
 <hr>
 # Marcelo's Approach: "Scrolling Dynamic Spectrograms"  
 <hr>
-To run the following examples you will also need to load a few more packages as well as [warbleR](https://cran.r-project.org/package=warbleR) >= 1.1.24. It can be installed as follows:
+To run the following examples you will also need to load the package [warbleR](https://cran.r-project.org/package=warbleR):
 
 ```{r, eval = FALSE}
-
-# From github
-devtools::install_github("maRce10/warbleR")
 
 #load package
 library(warbleR)
@@ -337,16 +334,16 @@ https://github.com/user-attachments/assets/a0e4fdda-8aeb-4ee2-9192-0a260ba3dfdd
 
 ### Further customization
 
-The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from figshare):
+The argument 'spectro.call' allows to insert customized spectrogram visualizations. For instance, the following code makes use of the `color_spectro()` function from [warbleR](https://cran.r-project.org/package=warbleR) to highlight vocalizations from male and female house wrens with different colors (after downloading the selection table and sound file from github):
 
 ```{r, eval = FALSE}
 
 # get house wren male female duet recording
 hs_wren <-
-  read_sound_file("https://ndownloader.figshare.com/files/22722101")
+  read_sound_file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.wav")
 
 # and extended selection table
-st <- read.csv("https://ndownloader.figshare.com/files/22722404")
+st <- read.csv("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.csv")
 
 # create color column
 st$colors <- c("green", "yellow")
@@ -615,14 +612,14 @@ scrolling_spectro(
 
 https://github.com/user-attachments/assets/b72e466a-b88a-4804-8f95-5960b3749e9c
 
-Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from figshare, cuts a clip including two species and labels it with a single label:
+Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from github, cuts a clip including two species and labels it with a single label:
 
 ```{r, eval = FALSE}
 
 
-# read data from figshare
+# read data from github
 frogs <-
-  read_sound_file("https://ndownloader.figshare.com/files/22829075")
+  read_sound_file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/CostaRican_frogs.wav")
 
 # cut a couple of species
 shrt_frgs <- cutw(frogs,
