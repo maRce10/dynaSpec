@@ -19,9 +19,8 @@
 #' @return Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
 #' @seealso \code{\link{prep_static_ggspectro}}
 #' @author Matthew R Wilkins (\email{matt@@galacticpolymath.com})
-#' @references {
+#' @references 
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
-#' }
 #' @export
 #' @examples \dontrun{
 #' #show wav files included with dynaSpec

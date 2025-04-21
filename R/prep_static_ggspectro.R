@@ -38,9 +38,8 @@
 #' @return a list with all spectrogram parameters, segmented WAV files (segWavs) and spectrograms spec; importantly, spec is a list of n=number of "pages"/segments; the first page is displayed by default
 #' @seealso \code{\link{paged_spectro}}
 #' @author Matthew R Wilkins (\email{matt@@galacticpolymath.com})
-#' @references {
+#' @references
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
-#' }
 #' @export
 #' @name prep_static_ggspectro
 #' @examples \dontrun{
