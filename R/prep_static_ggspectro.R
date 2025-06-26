@@ -69,11 +69,11 @@
 #' maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE,
 #' bgFlood=TRUE,ampTrans=2,min_dB=-40)
 #'
-#' #much stronger, now let's combine them 
+#' #much stronger, now let's combine them
 #' (you need the patchwork package to use the / operator to stack plots)
 #' library(patchwork)
 #' (femaleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5)) /
-#' (maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  + 
+#' (maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  +
 #' patchwork::plot_annotation(title="Female and Male barn swallow songs",
 #' caption="Female song (top) is much shorter, but similar
 #' complexity to males. See: MR Wilkins et al. (2020) Animal
@@ -91,7 +91,7 @@
 
 prep_static_ggspectro <-
   function(soundFile,
-           destFolder,
+           destFolder = NULL,
            outFilename = NULL,
            savePNG = FALSE,
            colPal = "inferno",
@@ -100,7 +100,7 @@ prep_static_ggspectro <-
            filter = NULL,
            xLim = NULL,
            yLim = c(0, 10),
-           title=NULL,
+           title = NULL,
            plotLegend = FALSE,
            onlyPlotSpec = TRUE,
            ampTrans = 1,
@@ -119,7 +119,7 @@ prep_static_ggspectro <-
            ...)
   {
     #Put in soundFile directory if unspecified
-    if (missing(destFolder)) {
+    if (is.null(destFolder)) {
       if (is.url(soundFile)) {
         destFolder = getwd()
       } else{
@@ -128,10 +128,15 @@ prep_static_ggspectro <-
     }
     destFolder0 <- destFolder
     #handle relative destFolder path that ends with /, but doesn't start with /
-    if(!fs::is_absolute_path(destFolder0)){
-      destFolder <- fs::path(fs::path_dir(soundFile),destFolder0)
+    if (!fs::is_absolute_path(destFolder0)) {
+      destFolder <- fs::path(fs::path_dir(soundFile), destFolder0)
       fs::dir_create(destFolder)
-      message("Relative destFolder supplied:'",destFolder0,"'. Will save files to soundFile parent dir:\n > ",destFolder)
+      message(
+        "Relative destFolder supplied:'",
+        destFolder0,
+        "'. Will save files to soundFile parent dir:\n > ",
+        destFolder
+      )
     }
     
     #Put soundFile in working dir if requested
@@ -149,7 +154,7 @@ prep_static_ggspectro <-
           !(grepl("\\.mp3", soundFile))) {
         #lookup filename using warbler to query the API. Sometimes MP3, sometimes WAV
         xc_rec_num <- gsub("^.*\\.org/(\\d*).*", "\\1", soundFile)
-        xc_query_result <- warbleR::query_xc(paste0("nr:", xc_rec_num) )
+        xc_query_result <- warbleR::query_xc(paste0("nr:", xc_rec_num))
         xc_filename <- xc_query_result$file.name
         dl_src <-  xc_query_result$Audio_file
         soundFile <- paste0(destFolder, xc_filename)
@@ -162,10 +167,10 @@ prep_static_ggspectro <-
       }
       
       #avoid redownloading every time
-      if(file.exists(dest_file)){
-        message("File found. Skipping download of: ",dest_file)
-      }else{
-        utils::download.file(dl_src,destfile = dest_file)
+      if (file.exists(dest_file)) {
+        message("File found. Skipping download of: ", dest_file)
+      } else{
+        utils::download.file(dl_src, destfile = dest_file)
       }
     }
     
@@ -180,9 +185,9 @@ prep_static_ggspectro <-
     
     #Are we dealing with a custom or a viridis palette?
     if (length(colPal) == 1) {
-      isViridis <- T
+      isViridis <- TRUE
     } else{
-      isViridis <- F
+      isViridis <- FALSE
     }
     
     #set background color as palette level 1 if missing
@@ -196,7 +201,7 @@ prep_static_ggspectro <-
     }
     
     #Convert MP3s to WAV
-    if (tools::file_ext(soundFile) %in% c("mp3","MP3")) {
+    if (tools::file_ext(soundFile) %in% c("mp3", "MP3")) {
       print("***Converting mp3 to wav***")
       wav0 <- tuneR::readMP3(soundFile)
     } else{
@@ -211,11 +216,13 @@ prep_static_ggspectro <-
     #######
     #crop, filter, normalize, deal with missing parameters for soundFile
     prepped <-
-      processSound(wav0,
-                   crop = crop,
-                   xLim = xLim,
-                   filter = filter,
-                   ampThresh=ampThresh)
+      processSound(
+        wav0,
+        crop = crop,
+        xLim = xLim,
+        filter = filter,
+        ampThresh = ampThresh
+      )
     
     if (length(yLim) == 1) {
       yLim = c(0, yLim)
@@ -266,7 +273,7 @@ prep_static_ggspectro <-
       soundFile = soundFile,
       destFolder = destFolder,
       outFilename = outFilename,
-      n_pages= length(prepped$segWavs),
+      n_pages = length(prepped$segWavs),
       crop = crop,
       colPal = colPal,
       isViridis = isViridis,
