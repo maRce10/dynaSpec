@@ -312,7 +312,7 @@ paged_spectro <- function(specParams,
                          gsub(".wav", "", unlist(outWAV)),
                          ".mp4' duration ",
                          specParams$xLim[2])
-      writeLines(tmpPaths, paste0(tempdir, "mp4Segments.txt"))
+      writeLines(tmpPaths, fs::path(tempdir, "mp4Segments.txt"))
       #Turns out this was wrong or has been fixed!! MP4s CAN be combined!
       # #Unfortunately, can't just slap MP4 files together, so have to have an intermediate .ts file step
       # ffmpegTransCode<-paste0(ffmpeg_exec(),' -y -i "',unlist(file_path_sans_ext(outWAV)),'.mp4" -vsync 1 -c copy "',unlist(file_path_sans_ext(outWAV)),'.mkv"')

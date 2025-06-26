@@ -108,7 +108,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   
   # Make wav file match page xlims ------------------------------------------
   #Given xLim, what is the full length the recording needs to be?
-  max_page_dur <- ceiling( round(wavDur,digits=2) / xLim[2]) * xLim[2]
+  max_page_dur <- ceiling( round(wavDur,digits=2) / round(xLim[2],digits=2)) * xLim[2]
   
   timeRemainder <-
     (max_page_dur - wavDur)
