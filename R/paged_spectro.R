@@ -66,11 +66,14 @@ paged_spectro <- function(specParams,
 {
   xmin <- ymin <- xmax <- ymax <- NULL
   #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
-  if (!ari::have_ffmpeg_exec()) {
+  if (!have_ffmpeg_exec2()) {
     cat("\n*****This script needs ffmpeg to work*****\n")
     cat("If you have a mac, with HomeBrew installed, you can fix this easily
       in terminal with:\n")
     cat("\n>\tbrew install ffmpeg\n")
+    cat("If you have are on a linux computer:\n")
+    cat("\n>\tsudo apt install ffmpeg\n")
+    
     cat("\nIf not, download and install it from ffmpeg.org")
   } else{
     if (is.null(destFolder)) {
@@ -330,7 +333,7 @@ paged_spectro <- function(specParams,
       #slight stutter for continuous sounds across segments, but the alternative step below doesn't work quite right, so good enough
       system(
         paste0(
-          ari::ffmpeg_exec(),
+          ffmpeg_exec2(),
           ' -f concat -ss 00:00:00.000 -safe 0 -i "',
           fs::path(tempdir, "mp4Segments.txt"),
           '" -codec copy -y "',
@@ -343,11 +346,11 @@ paged_spectro <- function(specParams,
       #Concat Step 2
       #Add audio track back in (couldn't figure how to combine these steps)
       #THIS STEP CURRENTLY DOESN'T WORK WELL (DROPS LAST FEW FRAMES B/C MISMATCH IN A/V LENGTHS)
-      # system(paste0(ari::ffmpeg_exec(),' -ss 0 -i "',paste0(tempdir,"deleteme.mp4"),'" -i "',newWavOut,'"  -c:v libx264 -map 0:v:0 -map 1:a:0 -c:a aac -ac 1 -b:a 192k -y -vsync 1 -t ',cropFileDur3,' "',vidName,'"'))
+      # system(paste0(ffmpeg_exec2(),' -ss 0 -i "',paste0(tempdir,"deleteme.mp4"),'" -i "',newWavOut,'"  -c:v libx264 -map 0:v:0 -map 1:a:0 -c:a aac -ac 1 -b:a 192k -y -vsync 1 -t ',cropFileDur3,' "',vidName,'"'))
       
       
       #Old Concat Step 1 (when step 2 is implemented); results in deleteme.mp4 intermediate
-      # system(paste0(ari::ffmpeg_exec(),' -f concat -safe 0 -i "',paste0(tempdir,"mp4Segments.txt"),'" -codec copy -y "',paste0(tempdir,"deleteme.mp4"),'"'))
+      # system(paste0(ffmpeg_exec2(),' -f concat -safe 0 -i "',paste0(tempdir,"mp4Segments.txt"),'" -codec copy -y "',paste0(tempdir,"deleteme.mp4"),'"'))
       
       
     }

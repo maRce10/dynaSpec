@@ -8,7 +8,7 @@
 \usage{
 prep_static_ggspectro(
   soundFile,
-  destFolder,
+  destFolder = NULL,
   outFilename = NULL,
   savePNG = FALSE,
   colPal = "inferno",
@@ -127,11 +127,11 @@ bgFlood=TRUE)
 maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE,
 bgFlood=TRUE,ampTrans=2,min_dB=-40)
 
-#much stronger, now let's combine them 
+#much stronger, now let's combine them
 (you need the patchwork package to use the / operator to stack plots)
 library(patchwork)
 (femaleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5)) /
-(maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  + 
+(maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  +
 patchwork::plot_annotation(title="Female and Male barn swallow songs",
 caption="Female song (top) is much shorter, but similar
 complexity to males. See: MR Wilkins et al. (2020) Animal
@@ -143,9 +143,7 @@ complexity to males. See: MR Wilkins et al. (2020) Animal
 }
 }
 \references{
-{
 Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
-}
 }
 \seealso{
 \code{\link{paged_spectro}}

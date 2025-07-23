@@ -8,8 +8,8 @@
 \usage{
 paged_spectro(
   specParams,
-  destFolder,
-  vidName,
+  destFolder = NULL,
+  vidName = NULL,
   framerate = 30,
   highlightCol = "#4B0C6BFF",
   highlightAlpha = 0.6,
@@ -40,7 +40,7 @@ Nothing is returned, though progress and file save locations are output to user.
 \description{
 This function works on an object generated with \code{\link{prep_static_ggspectro}}, an alias for prepStaticSpec().
 Video generation is very time consuming, and all the desired spectrogram parameters should be set
-in the prep step. The output is an mp4 video of a dynamic spectrogram video. If the input sound file was 
+in the prep step. The output is an mp4 video of a dynamic spectrogram video. If the input sound file was
 segmented in the prep step, the resulting video will be a concatenation of multiple dynamic spectrogram "pages."
 Each page has a sliding window revealing the part of the static spectrogram being played. Temporal width of each page
 is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can also output temporary segmented files, if desired.
@@ -48,7 +48,7 @@ is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can
 \examples{
 \dontrun{
 #show wav files included with dynaSpec
-f <- list.files(pattern=".wav", full.names = TRUE, 
+f <- list.files(pattern=".wav", full.names = TRUE,
      path = system.file(package="dynaSpec"))
 
 femaleBarnSwallow<-prep_static_ggspectro(f[1],destFolder=tempdir(),
@@ -64,14 +64,14 @@ paged_spectro(femaleBarnSwallow,destFolder=tempdir())
 # Note, we're saving PNGs of our specs in the working directory; to add
 # axis labels, we set onlyPlotSpec to F, and to make the same background
 # color for the entire figure, we set bgFlood= TRUE;
-# The yLim is set to only go to 0.7kHz, where the sounds are for these big whales; 
+# The yLim is set to only go to 0.7kHz, where the sounds are for these big whales;
 #also applying an amplitude transform to boost signal.
 #This is a longer file, so we're taking the first 12 seconds with crop=12
 #xLim=3 means each "page" will be 3 seconds, so we'll have 4 dynamic spec pages that get combined
 
 humpback <- prep_static_ggspectro(
 "http://www.oceanmammalinst.org/songs/hmpback3.wav",destFolder=tempdir(),savePNG= FALSE,
-onlyPlotSpec=FALSE,bgFlood= TRUE,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3) 
+onlyPlotSpec=FALSE,bgFlood= TRUE,yLim=c(0,.7),crop=12,xLim=3,ampTrans=3)
 
 #to generate multipage dynamic spec (movie), run the following
 paged_spectro(humpback,destFolder=tempdir())
@@ -80,9 +80,7 @@ paged_spectro(humpback,destFolder=tempdir())
 }
 }
 \references{
-{
 Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
-}
 }
 \seealso{
 \code{\link{prep_static_ggspectro}}
