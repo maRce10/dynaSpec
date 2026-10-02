@@ -1,4 +1,14 @@
+# *dynaSpec 1.0.6*
+
+* Fixed downloading of 'Xeno-Canto' recordings from recording page URLs in `prep_static_ggspectro()`, which relied on the now deprecated `warbleR::query_xc()`. Files are now downloaded directly from the recording's download link
+* Sound files from URLs are now downloaded in binary mode (fixes corrupted downloads on Windows)
+
+# *dynaSpec 1.0.5*
+
+* Minor changes to improve stability
+
 # *dynaSpec 1.0.4*
+
 * Fixed destFolder parameter in prep_static_ggspectro() and paged_spectro()
 * Should have more expected results for file save locations outside the working directory
 * Fixed issue where extra page sometimes created with paged_spectro()

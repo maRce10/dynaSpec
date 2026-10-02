@@ -151,11 +151,19 @@ prep_static_ggspectro <-
       #handle refs to a recording page URL from Xeno-Canto that don't have .mp3 in the name
       if (grepl("xeno-canto\\.org/.*", soundFile) &
           !(grepl("\\.mp3", soundFile))) {
-        #lookup filename using warbler to query the API. Sometimes MP3, sometimes WAV
+        # download directly from the recording's download link. The file can be
+        # MP3 or WAV, so take the real file name from the response headers
         xc_rec_num <- gsub("^.*\\.org/(\\d*).*", "\\1", soundFile)
-        xc_query_result <- warbleR::query_xc(paste0("nr:", xc_rec_num))
-        xc_filename <- xc_query_result$file.name
-        dl_src <-  xc_query_result$Audio_file
+        dl_src <- paste0("https://xeno-canto.org/", xc_rec_num, "/download")
+        xc_filename <- paste0("XC", xc_rec_num, ".mp3")
+        hdrs <- tryCatch(curlGetHeaders(dl_src), error = function(e) character(0))
+        cd <- grep("^content-disposition:", hdrs, ignore.case = TRUE, value = TRUE)
+        if (length(cd) > 0) {
+          fn <- sub('^.*?filename="?([^";]+)"?.*$', "\\1", trimws(cd[length(cd)]), perl = TRUE)
+          if (nzchar(fn) && !identical(fn, trimws(cd[length(cd)]))) {
+            xc_filename <- gsub("[/\\\\]", "_", fn)
+          }
+        }
         soundFile <- paste0(destFolder, xc_filename)
         dest_file <- soundFile
         
@@ -169,7 +177,7 @@ prep_static_ggspectro <-
       if (file.exists(dest_file)) {
         message("File found. Skipping download of: ", dest_file)
       } else{
-        utils::download.file(dl_src, destfile = dest_file)
+        utils::download.file(dl_src, destfile = dest_file, mode = "wb")
       }
     }
     
