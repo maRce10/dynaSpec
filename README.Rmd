@@ -5,27 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r code to create index.md, eval = FALSE, echo=FALSE}
-# creates pkgdown/index.md (home page of the website) from README.md,
-# embedding videos and fixing image paths. Run after rendering README.md
-
-# Read the content of the README.md file
-file_content <- readLines("README.md", warn = FALSE)
-
-# video player template
-replacement_template <- '<video src="URL_PLACEHOLDER" controls width="100%"></video>'
-
-# Replace lines with video links (<https://github.com/user-attachments/...>)
-is_video <- grepl("^<?https://github\\.com/user-attachments/assets/[^ ]+>?\\s*$", file_content)
-urls <- gsub("^<|>?\\s*$", "", file_content[is_video])
-file_content[is_video] <- vapply(urls, function(u) sub("URL_PLACEHOLDER", u, replacement_template, fixed = TRUE), character(1))
-
-# fix image paths
-file_content <- gsub("man/figures/", "reference/figures/", file_content)
-
-# Write the modified content to index.md
-writeLines(file_content, "./pkgdown/index.md")
-```
+<!-- the website home page (pkgdown/index.md) is created from README.md by pkgdown/make_index.R (run automatically in the pkgdown GitHub Actions workflow) -->
 
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->

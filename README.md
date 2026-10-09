@@ -1,6 +1,8 @@
 dynaSpec: dynamic spectrogram visualizations
 ================
 
+<!-- the website home page (pkgdown/index.md) is created from README.md by pkgdown/make_index.R (run automatically in the pkgdown GitHub Actions workflow) -->
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <!-- badges: start -->
