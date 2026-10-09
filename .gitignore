@@ -12,3 +12,4 @@ download
 *.gz
 videos
 pkgdown/index.md
+docs
