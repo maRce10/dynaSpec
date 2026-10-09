@@ -9,3 +9,8 @@
 ^testing$
 ^videos$
 ^.*\.ipynb$
+^CITATION\.cff$
+^codemeta\.json$
+^codecov\.yml$
+# figures only used by the vignette (loaded from GitHub)
+^man/figures/(colored_spectro_house_wren_duet|femaleBarnSwallow_1[bc]?|humpback)\.png$

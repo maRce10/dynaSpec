@@ -52,6 +52,31 @@ test_that("prep_static_ggspectro resolves 'wd' and relative destFolder to workin
   expect_true(dir.exists(file.path(wd, "out", "specs")))
 })
 
+test_that("prep_static_ggspectro is silent with verbose = FALSE and plot = FALSE", {
+  skip_on_cran()
+  null_device()
+
+  dest <- file.path(tempdir(), "prep_test_quiet")
+  on.exit(unlink(dest, recursive = TRUE), add = TRUE)
+
+  # segmented file (would otherwise print several messages)
+  expect_silent(p <- prep_static_ggspectro(example_wavs()[2], destFolder = dest, xLim = 2, verbose = FALSE, plot = FALSE))
+  expect_gt(p$n_pages, 1)
+})
+
+test_that("prep_static_ggspectro warns about deprecated 'optim'", {
+  skip_on_cran()
+  null_device()
+
+  dest <- file.path(tempdir(), "prep_test_optim")
+  on.exit(unlink(dest, recursive = TRUE), add = TRUE)
+
+  expect_warning(
+    prep_static_ggspectro(example_wavs()[1], destFolder = dest, optim = TRUE, verbose = FALSE, plot = FALSE),
+    "deprecated"
+  )
+})
+
 test_that("prep_static_ggspectro accepts custom 2-color palettes", {
   skip_on_cran()
   null_device()

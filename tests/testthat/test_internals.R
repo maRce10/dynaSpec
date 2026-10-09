@@ -11,10 +11,13 @@ test_that("processSound keeps crop start and pads to full pages", {
 })
 
 test_that("processSound sets crop end to file duration", {
-  expect_output(
-    p <- suppressMessages(dynaSpec:::processSound(wv, filter = NULL, ampThresh = 0, crop = c(2, 9), xLim = 2)),
+  expect_message(
+    p <- dynaSpec:::processSound(wv, filter = NULL, ampThresh = 0, crop = c(2, 9), xLim = 2),
     "crop end set to file duration"
   )
+
+  # silent when verbose = FALSE
+  expect_silent(dynaSpec:::processSound(wv, filter = NULL, ampThresh = 0, crop = c(2, 9), xLim = 2, verbose = FALSE))
   expect_equal(p$wavDur, 4)
 })
 

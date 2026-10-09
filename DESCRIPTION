@@ -1,17 +1,18 @@
 Package: dynaSpec
 Type: Package
 Title: Dynamic Spectrogram Visualizations
-Version: 1.0.6
+Version: 1.1.0
 Description: A set of tools to generate dynamic spectrogram visualizations in video format.
 License: GPL (>= 2)
-Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2, viridis, scales, gganimate, pbapply, fs, checkmate
-Depends: R (>= 3.2.1)
+Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, scales, gganimate, pbapply, fs, checkmate
+Depends: R (>= 4.1.0)
 LazyData: TRUE
 SystemRequirements: ffmpeg
-URL: https://github.com/maRce10/dynaSpec
+URL: https://marce10.github.io/dynaSpec/, https://github.com/maRce10/dynaSpec
 BugReports: https://github.com/maRce10/dynaSpec/issues
 NeedsCompilation: no
-Suggests: parallel, imager, av, warbleR, patchwork, testthat (>= 3.0.0), withr
+Suggests: parallel, imager, av, warbleR, patchwork, testthat (>= 3.0.0), withr, knitr, rmarkdown, covr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US
 Encoding: UTF-8

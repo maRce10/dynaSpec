@@ -1,8 +1,7 @@
 # processSound: filter, crop, and segment wav (internal function)
 
-processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
- 
-  
+processSound <- function(wav0, filter, ampThresh, crop, xLim, verbose = TRUE, ...) {
+
   smplRt <- wav0@samp.rate
   
   fileDur0 <- max(length(wav0@left), length(wav0@right)) / smplRt
@@ -22,21 +21,13 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
     if (crop[2] > fileDur0) {
       crop[2] <- fileDur0
       if (crop[1] >= crop[2]) crop[1] <- 0
-      cat(
-        paste0(
-          "\n**** Crop longer than file duration: ",
-          round(fileDur0, 2),
-          ", crop end set to file duration\n"
-        )
-      )
+      if (verbose) message("Crop longer than file duration (", round(fileDur0, 2), " s), crop end set to file duration")
     }
   } else{
     #If crop not supplied, default crop to duration, unless >10 sec, warning user
     if (fileDur0 > 10) {
       crop = c(0, 10)
-      cat(
-        "\n*****\nCropping to 1st 10 sec due to slow processing of large WAV files.\nTo override, set crop=F or crop=c(startInSec,stopInSec)\n*****\n"
-      )
+      if (verbose) message("Cropping to 1st 10 sec due to slow processing of large WAV files. To override, set crop = FALSE or crop = c(startInSec, stopInSec)")
     } else{
       crop = c(0, fileDur0)
     }
@@ -52,7 +43,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   if (is.null(xLim)) {
     xLim <- c(0, min(5, cropped_dur))
     if (xLim[2] == 5) {
-      message("\n*****\nxLim set to 5 sec by default; define to override\n*****\n")
+      if (verbose) message("xLim set to 5 sec by default; define to override")
     }
   } else{
     #If xLim provided as single digit, interpret as X sec
@@ -160,7 +151,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
         bit = wav0@bit
       ))
   n_pages = length(segWavs)
-  message(
+  if (verbose) message(
     "Segmented original file into ",
     n_pages,
     " WAV files, each ",

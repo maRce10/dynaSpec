@@ -14,7 +14,6 @@ ggSpec <-
            wl,
            wn,
            yLim,
-           xLim,
            colPal,
            colbins,
            ampTrans,
@@ -25,8 +24,7 @@ ggSpec <-
            fontAndAxisCol,
            min_dB,
            bgFlood,
-           optim,
-           timeAdj,
+           verbose = TRUE,
            ...)
   {
     if (missing(segLens)) {
@@ -35,7 +33,6 @@ ggSpec <-
       nSegs = length(segLens) - 1
     }
     
-      # bg="#ebe834"
     #Font color adapted from https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
     
     if (is.null(fontAndAxisCol)) {
@@ -44,33 +41,24 @@ ggSpec <-
     } else{
       autoFontCol = FALSE
     }
-    #For testing font contrast against bg
-    # par(bg=bg)
-    # plot(1,1,col="transparent")
-    # text(1,1,"READABLE?",cex=5,col=contrastFont)
-    
-    
-       
+
   if(!is.null(resampleRate)){
     # keep the Nyquist frequency at or above the upper frequency limit
     if (resampleRate < yLim[2] * 2000) {
       resampleRate <- yLim[2] * 2000
-      message("resampleRate increased to ", resampleRate, " Hz so the spectrogram reaches the upper yLim (", yLim[2], " kHz)")
+      if (verbose) message("resampleRate increased to ", resampleRate, " Hz so the spectrogram reaches the upper yLim (", yLim[2], " kHz)")
     }
 
     # only downsample (upsampling is not supported)
     if (resampleRate < wav@samp.rate) {
-      message("Original wav (",wav@samp.rate," samples/sec) data points: ",length(wav@left))
+      if (verbose) message("Original wav (",wav@samp.rate," samples/sec) data points: ",length(wav@left))
       wav <- tuneR::downsample(wav,samp.rate=resampleRate)
-      message("Downsampled wav (",wav@samp.rate," samples/sec) data points: ",length(wav@left))
+      if (verbose) message("Downsampled wav (",wav@samp.rate," samples/sec) data points: ",length(wav@left))
     }
   }
     
     #Modified from seewave::ggspectro
     #--->
-    # norm =FALSE is important for having similar gain across different recordings
-    # spectrogram<-seewave::spectro(wav,plot=FALSE,ovlp=ovlp,wl=wl,wn=wn,norm=FALSE)
-    #normalize(wav,center=FALSE,pcm=TRUE)
     spectrogram <-
       seewave::spectro(
         wav,
@@ -87,19 +75,14 @@ ggSpec <-
     df <- data.frame(time, freq, amplitude)
     
     
-    #experimental code to simplify the tibble for generating spec data
-    if (!is.null(optim)) {
-      #nothing here yet
-    }
-    
     #####
     #Plot spec for every segment, saving specs as list for output
     Glist <- list()
     for (i in 1:(nSegs)) {
       #subset df for segments
       if (nSegs > 1) {
-        if (i == 1) {
-          cat("\nSpectrogram ggplots of segmented WAVs being generated\n")
+        if (i == 1 && verbose) {
+          message("Spectrogram ggplots of segmented WAVs being generated")
         }
         if (i == nSegs) {
           df_i <-
@@ -210,7 +193,7 @@ ggSpec <-
                         width = specWidth,
                         height = specHeight,
                         units = "in")
-        cat(paste0("\nStatic spec saved @", fn_i))
+        if (verbose) message("Static spectrogram saved at: ", fn_i)
       }
       
     }#end for loop

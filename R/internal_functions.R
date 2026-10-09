@@ -95,7 +95,7 @@ contrast_col_int <- function(bg) {
 
   ### general arguments -------------------------------------------------------
 
-  for (i in c("fix.time", "pb", "play", "ggspectro", "lower.spectro", "derivative", "osc", "savePNG", "plotLegend", "onlyPlotSpec", "bgFlood", "delete_temp_files")) {
+  for (i in c("fix.time", "pb", "play", "ggspectro", "lower.spectro", "derivative", "osc", "savePNG", "plotLegend", "onlyPlotSpec", "bgFlood", "delete_temp_files", "plot", "verbose")) {
     if (!is.null(args[[i]]))
       checkmate::assert_flag(args[[i]], add = check_collection, .var.name = i)
   }

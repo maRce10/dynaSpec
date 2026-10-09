@@ -83,6 +83,14 @@ test_that("prep_static_ggspectro checks custom palettes and limits", {
 
 ## paged_spectro() -----------------------------------------------------------
 
+test_that("new verbose, plot and parallel arguments are checked", {
+  f <- example_wavs()[1]
+  expect_error(prep_static_ggspectro(f, plot = "yes"), "'plot'", fixed = TRUE)
+  expect_error(prep_static_ggspectro(f, verbose = 1), "'verbose'", fixed = TRUE)
+  expect_error(paged_spectro(list(a = 1), parallel = 0), "'parallel'", fixed = TRUE)
+  expect_error(paged_spectro(list(a = 1), verbose = NA), "'verbose'", fixed = TRUE)
+})
+
 test_that("paged_spectro reports invalid arguments", {
   err <- expect_error(
     paged_spectro(list(a = 1), highlightAlpha = 2, cursorCol = "zzz", framerate = 2.5),

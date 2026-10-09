@@ -32,7 +32,9 @@
 #' @param ampThresh amplitude threshold as a percent to cut out of recording (try 5 to start); default= no filtering (high data loss with this; not recommended; play with min_dB  and ampTrans first)
 #' @param bgFlood do you want the background color to spill into the axis margins? Default=FALSE (i.e. white margins)
 #' @param fontAndAxisCol the color of legend text if onlyPlotSpec=TRUE (since margins will be white, with black text); if bgFlood=TRUE, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color
-#' @param optim NULL by default; this is an experimental feature to simplify the dataframe of the FFT-processed waveform used to generate the spectrogram (currently does nothing)
+#' @param plot logical; plot the (first) spectrogram? Default is `TRUE`.
+#' @param verbose logical; print progress messages? Default is `TRUE`.
+#' @param optim Deprecated (it never had any effect) and will be removed in a future version.
 #' @param ... Other arguments to be passed for rendering the spec (i.e. to seewave::spectro)
 #'
 #' @return a list with all spectrogram parameters, segmented WAV files (segWavs) and spectrograms spec; importantly, spec is a list of n=number of "pages"/segments; the first page is displayed by default
@@ -83,11 +85,6 @@
 #' # see more examples at https://marce10.github.io/dynaSpec/
 #' }
 
-##################
-#set defaults for stepping into function for testing
-# colPal="inferno";crop=NULL;bg=NULL;filter=NULL;xLim=NULL;yLim=c(0,10);plotLegend=FALSE;onlyPlotSpec=TRUE;ampTrans=2.5;min_dB=-30;wl=512;ovlp=90;wn="blackman";specWidth=6;specHeight=2;colbins=30;ampThresh=0;bgFlood=FALSE;fontAndAxisCol=NULL
-##################
-
 prep_static_ggspectro <-
   function(soundFile,
            destFolder = NULL,
@@ -114,17 +111,22 @@ prep_static_ggspectro <-
            ampThresh = 0,
            bgFlood = FALSE,
            fontAndAxisCol = NULL,
+           plot = TRUE,
+           verbose = TRUE,
            optim = NULL,
            ...)
   {
     # check arguments
     check_results <- .check_arguments(
       fun = "prep_static_ggspectro",
-      args = list(soundFile = soundFile, destFolder = destFolder, outFilename = outFilename, savePNG = savePNG, colPal = colPal, crop = crop, bg = bg, filter = filter, xLim = xLim, yLim = yLim, title = title, plotLegend = plotLegend, onlyPlotSpec = onlyPlotSpec, ampTrans = ampTrans, resampleRate = resampleRate, min_dB = min_dB, wl = wl, ovlp = ovlp, wn = wn, specWidth = specWidth, specHeight = specHeight, colbins = colbins, ampThresh = ampThresh, bgFlood = bgFlood, fontAndAxisCol = fontAndAxisCol)
+      args = list(soundFile = soundFile, destFolder = destFolder, outFilename = outFilename, savePNG = savePNG, colPal = colPal, crop = crop, bg = bg, filter = filter, xLim = xLim, yLim = yLim, title = title, plotLegend = plotLegend, onlyPlotSpec = onlyPlotSpec, ampTrans = ampTrans, resampleRate = resampleRate, min_dB = min_dB, wl = wl, ovlp = ovlp, wn = wn, specWidth = specWidth, specHeight = specHeight, colbins = colbins, ampThresh = ampThresh, bgFlood = bgFlood, fontAndAxisCol = fontAndAxisCol, plot = plot, verbose = verbose)
     )
 
     # report errors
     .report_assertions(check_results)
+
+    if (!is.null(optim))
+      warning2("'optim' is deprecated and ignored (it never had any effect); it will be removed in a future version")
 
     #Put in soundFile directory if unspecified (working directory for URLs)
     if (is.null(destFolder)) {
@@ -144,7 +146,7 @@ prep_static_ggspectro <-
     #create destination folder if needed
     if (!dir.exists(destFolder)) {
       fs::dir_create(destFolder)
-      message("Created destination folder: ", destFolder)
+      if (verbose) message("Created destination folder: ", destFolder)
     }
 
     if (!grepl("/$", destFolder)) {
@@ -179,9 +181,9 @@ prep_static_ggspectro <-
       
       #avoid redownloading every time
       if (file.exists(dest_file)) {
-        message("File found. Skipping download of: ", dest_file)
+        if (verbose) message("File found. Skipping download of: ", dest_file)
       } else{
-        utils::download.file(dl_src, destfile = dest_file, mode = "wb")
+        utils::download.file(dl_src, destfile = dest_file, mode = "wb", quiet = !verbose)
       }
     }
     
@@ -192,7 +194,7 @@ prep_static_ggspectro <-
     }
     if (!grepl(".png|PNG", outFilename)) {
       outFilename = paste0(outFilename, ".png")
-    }#if user didn't put suffix onto output filename, add .jpeg
+    }#if user didn't put suffix onto output filename, add .png
     
     #Are we dealing with a custom or a viridis palette?
     if (length(colPal) == 1) {
@@ -213,7 +215,7 @@ prep_static_ggspectro <-
     
     #Convert MP3s to WAV
     if (tools::file_ext(soundFile) %in% c("mp3", "MP3")) {
-      print("***Converting mp3 to wav***")
+      if (verbose) message("Converting mp3 to wav")
       wav0 <- tuneR::readMP3(soundFile)
     } else{
       wav0 <- tuneR::readWave(soundFile)
@@ -232,7 +234,8 @@ prep_static_ggspectro <-
         crop = crop,
         xLim = xLim,
         filter = filter,
-        ampThresh = ampThresh
+        ampThresh = ampThresh,
+        verbose = verbose
       )
     
     if (length(yLim) == 1) {
@@ -253,15 +256,11 @@ prep_static_ggspectro <-
         title = title,
         colPal = colPal,
         isViridis = isViridis,
-        crop = crop,
         bg = bg,
-        filter = filter,
-        xLim = prepped$xLim,
         yLim = yLim,
         plotLegend = plotLegend,
         onlyPlotSpec = onlyPlotSpec,
         ampTrans = ampTrans,
-        ampThresh = ampThresh,
         min_dB = min_dB,
         wl = wl,
         ovlp = ovlp,
@@ -269,14 +268,15 @@ prep_static_ggspectro <-
         colbins = colbins,
         bgFlood = bgFlood,
         fontAndAxisCol = fontAndAxisCol,
-        optim = optim,
+        verbose = verbose,
         ...
       )
     
-    plot(specOutList$specList[[1]])
-    
-    if (length(prepped$segWavs) > 1) {
-      cat("\nFor segmented spectrogram, only segment 1 shown\n")
+    if (plot) {
+      plot(specOutList$specList[[1]])
+
+      if (verbose && length(prepped$segWavs) > 1)
+        message("For segmented spectrogram, only segment 1 shown")
     }
     
     #Make list of all info needed to recreate spec look in videos

@@ -1,0 +1,74 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "identifier": "dynaSpec",
+  "name": "dynaSpec: Dynamic Spectrogram Visualizations",
+  "description": "A set of tools to generate dynamic spectrogram visualizations in video format.",
+  "version": "1.1.0",
+  "license": "https://spdx.org/licenses/GPL-2.0-or-later",
+  "codeRepository": "https://github.com/maRce10/dynaSpec",
+  "issueTracker": "https://github.com/maRce10/dynaSpec/issues",
+  "url": "https://marce10.github.io/dynaSpec/",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R (>= 4.1.0)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Marcelo",
+      "familyName": "Araya-Salas",
+      "email": "marcelo.araya@ucr.ac.cr",
+      "@id": "https://orcid.org/0000-0003-3594-619X"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Matthew R.",
+      "familyName": "Wilkins",
+      "email": "matt@galacticpolymath.com"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Marcelo",
+      "familyName": "Araya-Salas",
+      "email": "marcelo.araya@ucr.ac.cr",
+      "@id": "https://orcid.org/0000-0003-3594-619X"
+    }
+  ],
+  "keywords": ["bioacoustics", "spectrogram", "animal sounds", "video", "animation", "R"],
+  "softwareRequirements": [
+    {"@type": "SoftwareApplication", "identifier": "R", "name": "R", "version": ">= 4.1.0"},
+    {"@type": "SoftwareApplication", "identifier": "ffmpeg", "name": "ffmpeg"},
+    {"@type": "SoftwareApplication", "identifier": "checkmate", "name": "checkmate", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "fs", "name": "fs", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "gganimate", "name": "gganimate", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "ggplot2", "name": "ggplot2", "version": ">= 3.4.0", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "pbapply", "name": "pbapply", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "png", "name": "png", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "scales", "name": "scales", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "seewave", "name": "seewave", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "tuneR", "name": "tuneR", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "viridis", "name": "viridis", "provider": {"@id": "https://cran.r-project.org"}}
+  ],
+  "softwareSuggestions": [
+    {"@type": "SoftwareApplication", "identifier": "av", "name": "av", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "covr", "name": "covr", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "imager", "name": "imager", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "knitr", "name": "knitr", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "patchwork", "name": "patchwork", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "rmarkdown", "name": "rmarkdown", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "testthat", "name": "testthat", "version": ">= 3.0.0", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "warbleR", "name": "warbleR", "provider": {"@id": "https://cran.r-project.org"}},
+    {"@type": "SoftwareApplication", "identifier": "withr", "name": "withr", "provider": {"@id": "https://cran.r-project.org"}}
+  ]
+}

@@ -19,7 +19,7 @@ jobs:
     name: Render README
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Prepare repository
         run: git checkout "${GITHUB_REF:11}"
       - uses: r-lib/actions/setup-pandoc@v2

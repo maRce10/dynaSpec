@@ -14,7 +14,9 @@ paged_spectro(
   highlightAlpha = 0.6,
   cursorCol = "white",
   delete_temp_files = TRUE,
-  play = TRUE
+  play = TRUE,
+  parallel = 1,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -24,7 +26,7 @@ paged_spectro(
 
 \item{vidName}{expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()}
 
-\item{framerate}{number of highlight-box positions per page; default 30 (the video frame rate itself is set by gganimate)}
+\item{framerate}{frames per second of the video; default 30. Lower values render faster (rendering time is proportional to the number of frames).}
 
 \item{highlightCol}{default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)}
 
@@ -35,9 +37,13 @@ paged_spectro(
 \item{delete_temp_files}{Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video). Temporary files are stored in a uniquely named subfolder of destFolder.}
 
 \item{play}{Logical argument to control if the video is played after generated. Default is \code{TRUE}.}
+
+\item{parallel}{Numeric vector of length 1. Number of cores used to render pages in parallel (only used when the sound was split into several pages). Default is 1 (no parallel computing).}
+
+\item{verbose}{Logical argument to control if progress messages are printed. Default is \code{TRUE}.}
 }
 \value{
-Invisibly returns the path to the video file; progress and file save locations are output to user. Video plays after rendering if \code{play = TRUE}.
+Invisibly returns the path to the video file. Video plays after rendering if \code{play = TRUE}.
 }
 \description{
 This function works on an object generated with \code{\link[=prep_static_ggspectro]{prep_static_ggspectro()}} (or its alias \code{prepStaticSpec()}).
@@ -48,7 +54,7 @@ Each page has a sliding window revealing the part of the static spectrogram bein
 is defined by the xLim parameter in \code{\link[=prep_static_ggspectro]{prep_static_ggspectro()}}. You can also output temporary segmented files, if desired.
 }
 \details{
-'ffmpeg' and the 'av' package are required to render videos.
+'ffmpeg' and the 'av' package are required to render videos. If 'destFolder' does not exist it is created.
 }
 \examples{
 \dontrun{

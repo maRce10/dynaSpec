@@ -14,6 +14,7 @@ License: GPL (>= 2)
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://marce10.github.io/dynaSpec/}
   \item \url{https://github.com/maRce10/dynaSpec}
   \item Report bugs at \url{https://github.com/maRce10/dynaSpec/issues}
 }

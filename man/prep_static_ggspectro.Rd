@@ -31,6 +31,8 @@ prep_static_ggspectro(
   ampThresh = 0,
   bgFlood = FALSE,
   fontAndAxisCol = NULL,
+  plot = TRUE,
+  verbose = TRUE,
   optim = NULL,
   ...
 )
@@ -86,7 +88,11 @@ prep_static_ggspectro(
 
 \item{fontAndAxisCol}{the color of legend text if onlyPlotSpec=TRUE (since margins will be white, with black text); if bgFlood=TRUE, this will be the color of axis margins, labels and legend text. If you don't supply this, it will be picked automatically to be white or black based on supplied bg color}
 
-\item{optim}{NULL by default; this is an experimental feature to simplify the dataframe of the FFT-processed waveform used to generate the spectrogram (currently does nothing)}
+\item{plot}{logical; plot the (first) spectrogram? Default is \code{TRUE}.}
+
+\item{verbose}{logical; print progress messages? Default is \code{TRUE}.}
+
+\item{optim}{Deprecated (it never had any effect) and will be removed in a future version.}
 
 \item{...}{Other arguments to be passed for rendering the spec (i.e. to seewave::spectro)}
 }
