@@ -8,7 +8,7 @@ dynaSpec: dynamic spectrogram visualizations
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Licence](https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-%3E=%203.2.1-6666ff.svg)](https://cran.r-project.org/)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
@@ -30,7 +30,7 @@ relies heavily on the packages
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
-Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic
+Araya-Salas, Marcelo & Wilkins, Matthew R. (2020), *dynaSpec: dynamic
 spectrogram visualizations in R*. R package version 1.0.0.
 
 Install/load the package from CRAN as follows:
@@ -66,7 +66,7 @@ Installation of external dependencies can be tricky on operating systems
 other than Linux. An alternative option is to run the package through
 google colab. This [colab
 notebook](https://colab.research.google.com/github/maRce10/dynaSpec/blob/master/dynaSpec.ipynb)
-explain how to do that step-by-step.
+explains how to do that step-by-step.
 
 # Background
 
@@ -193,8 +193,8 @@ scrolling_spectro(
 
 <https://github.com/user-attachments/assets/0eb2ed26-d2e7-451e-ba00-3c2ec527bafe>
 
-Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and
-looping 3 times (loop = 3:
+Long-billed hermit song at 1/5 speed (speed = 0.2), removing axes and
+looping 3 times (loop = 3):
 
 ``` r
 
@@ -332,7 +332,7 @@ st <- read.csv("https://github.com/maRce10/example_sounds/raw/refs/heads/main/ho
 st$colors <- c("green", "yellow")
 
 # highlight selections
-color.spectro(
+color_spectro(
   wave = hs_wren,
   wl = 200,
   ovlp = 95,
@@ -361,7 +361,7 @@ base R and input that into `scrolling_spectro()` using the argument
 ``` r
 # save call
 sp_cl <- call(
-  "color.spectro",
+  "color_spectro",
   wave = hs_wren,
   wl = 200,
   ovlp = 95,
@@ -433,7 +433,7 @@ A viridis color palette:
 st$colors <- viridis(10)[c(3, 8)]
 
 sp_cl <- call(
-  "color.spectro",
+  "color_spectro",
   wave = hs_wren,
   wl = 200,
   ovlp = 95,
@@ -480,7 +480,7 @@ st$colors <- c("gray", "gray49")
 
 sp_cl <-
   call(
-    "color.spectro",
+    "color_spectro",
     wave = hs_wren,
     wl = 200,
     ovlp = 95,
@@ -537,7 +537,7 @@ st$end[2] <- 3.87
 # function to highlight selections
 ann_fun <- function(wave, X) {
   # print spectrogram
-  color.spectro(
+  color_spectro(
     wave = wave,
     wl = 200,
     ovlp = 95,
@@ -603,7 +603,7 @@ Finally, the argument ‘annotation.call’ can be used to add static labels
 (i.e. non-scrolling). It works similar to ‘spectro.call’, but requires a
 call from `text()`. This let users customize things as size, color,
 position, font, and additional arguments taken by `text()`. The call
-should also include the argmuents ‘start’ and ‘end’ to indicate the time
+should also include the arguments ‘start’ and ‘end’ to indicate the time
 at which the labels are displayed (in s). ‘fading’ is optional and
 allows fade-in and fade-out effects on labels (in s as well). The
 following code downloads a recording containing several frog species
@@ -725,9 +725,9 @@ scrolling_spectro(
     function storing results in variable. You can also just segment and
     export static specs at this step.
 2.  Feed variable into paged_spectro() to generate a dynamic spectrogram
-    - It does this by exporting a PNG of the testSpec() ggplot function;
+    - It does this by exporting a PNG of the prep_static_ggspectro() ggplot;
     - Import PNG as a new ggplot raster layer
-    - Overlay a series of translucent highlight boxes that disolve away
+    - Overlay a series of translucent highlight boxes that dissolve away
       using gganimate
 
 <!-- -->

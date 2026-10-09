@@ -1,0 +1,12 @@
+bibentry(
+  bibtype = "Manual",
+  title = "dynaSpec: dynamic spectrogram visualizations in R",
+  author = c(person("Marcelo", "Araya-Salas"), person("Matthew R.", "Wilkins")),
+  year = "2020",
+  note = paste("R package version", meta$Version),
+  url = "https://marce10.github.io/dynaSpec/",
+  textVersion = paste0(
+    "Araya-Salas M & Wilkins M R. (2020). dynaSpec: dynamic spectrogram visualizations in R. R package version ",
+    meta$Version, "."
+  )
+)

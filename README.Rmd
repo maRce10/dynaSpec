@@ -64,7 +64,7 @@ library(warbleR)
 ```
 
 <!-- badges: start -->
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![Project Status: Active  The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![Licence](https://img.shields.io/badge/https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r strsplit(gsub("depends: R \\(|\\)", "", grep("DEPENDS", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE), ",")[[1]][1]`-6666ff.svg)](https://cran.r-project.org/) 
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![Project Status: Active  The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![Licence](https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r strsplit(gsub("depends: R \\(|\\)", "", grep("DEPENDS", ignore.case = TRUE, readLines(con = "./DESCRIPTION"), value = TRUE), ignore.case = TRUE), ",")[[1]][1]`-6666ff.svg)](https://cran.r-project.org/) 
  [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dynaSpec)](https://cran.r-project.org/package=dynaSpec)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)](https://cranlogs.r-pkg.org/badges/grand-total/dynaSpec)
 <!-- badges: end -->
@@ -75,7 +75,7 @@ A set of tools to generate dynamic spectrogram visualizations in video format. [
 
 Please cite [dynaSpec](https://marce10.github.io/dynaSpec/) as follows:
 
-Araya-Salas, Marcelo & Wilkins, Matthew R.. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas, Marcelo & Wilkins, Matthew R. (2020), *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 
 Install/load the package from CRAN as follows:
 
@@ -106,7 +106,7 @@ library(dynaSpec)
 ```
 
 
-Installation of external dependencies can be tricky on operating systems other than Linux. An alternative option is to run the package through google colab. This [colab notebook](https://colab.research.google.com/github/maRce10/dynaSpec/blob/master/dynaSpec.ipynb) explain how to do that step-by-step. 
+Installation of external dependencies can be tricky on operating systems other than Linux. An alternative option is to run the package through google colab. This [colab notebook](https://colab.research.google.com/github/maRce10/dynaSpec/blob/master/dynaSpec.ipynb) explains how to do that step-by-step. 
 
 # Background
 This package is a collaboration between [Marcelo Araya-Salas](https://marce10.github.io/) and [Matt Wilkins](https://www.mattwilkinsbio.com/). The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation, *without taking screen shots* of another program. [Marcelo's approach](#marcelos-approach-scrolling-dynamic-spectrograms) (implemented in the scrolling_spectro() function) shows a spectrogram sliding past a fixed point as sounds are played, similar to that utilized in Cornell's Macaulay Library of Sounds. These dynamic spectrograms are produced natively with base graphics. [Matt's approach](#matts-approach-paged-dynamic-spectrograms) creates "paged" spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition's spectral view. This approach is in ggplot2 natively, and requires setting up spec parameters and segmenting sound files with prep_static_ggspectro(), the result of which is processed with paged_spectro() to generate a dynamic spectrogram.
@@ -214,7 +214,7 @@ scrolling_spectro(
 
 https://github.com/user-attachments/assets/0eb2ed26-d2e7-451e-ba00-3c2ec527bafe
 
-Long-billed hermit song at 1/5 speed (speed = 0.5), removing axes and looping 3 times (loop = 3:
+Long-billed hermit song at 1/5 speed (speed = 0.2), removing axes and looping 3 times (loop = 3):
 
 ```{r, eval = FALSE}
 
@@ -349,7 +349,7 @@ st <- read.csv("https://github.com/maRce10/example_sounds/raw/refs/heads/main/ho
 st$colors <- c("green", "yellow")
 
 # highlight selections
-color.spectro(
+color_spectro(
   wave = hs_wren,
   wl = 200,
   ovlp = 95,
@@ -376,7 +376,7 @@ We can wrap the `color_spectro()` call using the `call()` function form base R a
 ```{r, eval = FALSE}
 # save call
 sp_cl <- call(
-  "color.spectro",
+  "color_spectro",
   wave = hs_wren,
   wl = 200,
   ovlp = 95,
@@ -449,7 +449,7 @@ A viridis color palette:
 st$colors <- viridis(10)[c(3, 8)]
 
 sp_cl <- call(
-  "color.spectro",
+  "color_spectro",
   wave = hs_wren,
   wl = 200,
   ovlp = 95,
@@ -496,7 +496,7 @@ st$colors <- c("gray", "gray49")
 
 sp_cl <-
   call(
-    "color.spectro",
+    "color_spectro",
     wave = hs_wren,
     wl = 200,
     ovlp = 95,
@@ -550,7 +550,7 @@ st$end[2] <- 3.87
 # function to highlight selections
 ann_fun <- function(wave, X) {
   # print spectrogram
-  color.spectro(
+  color_spectro(
     wave = wave,
     wl = 200,
     ovlp = 95,
@@ -612,7 +612,7 @@ scrolling_spectro(
 
 https://github.com/user-attachments/assets/b72e466a-b88a-4804-8f95-5960b3749e9c
 
-Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the argmuents 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from github, cuts a clip including two species and labels it with a single label:
+Finally, the argument 'annotation.call' can be used to add static labels (i.e. non-scrolling). It works similar to 'spectro.call', but requires a call from `text()`. This let users customize things as size, color, position, font, and additional arguments taken by `text()`. The call should also include the arguments 'start' and 'end' to indicate the time at which the labels are displayed (in s). 'fading' is optional and allows fade-in and fade-out effects on labels (in s as well). The following code downloads a recording containing several frog species recorded in Costa Rica from github, cuts a clip including two species and labels it with a single label:
 
 ```{r, eval = FALSE}
 
@@ -723,9 +723,9 @@ https://github.com/user-attachments/assets/bbd9ea9c-b153-4f4d-a56f-ea851c231151
 ### Workflow 
 1.  Tweak your spectrogram settings using the prep_static_ggspectro() function storing results in variable. You can also just segment and export static specs at this step.
 2.  Feed variable into paged_spectro() to generate a dynamic spectrogram
-    * It does this by exporting a PNG of the testSpec() ggplot function;
+    * It does this by exporting a PNG of the prep_static_ggspectro() ggplot;
     * Import PNG as a new ggplot raster layer
-    * Overlay a series of translucent highlight boxes that disolve away using gganimate
+    * Overlay a series of translucent highlight boxes that dissolve away using gganimate
 
 ```
 #list WAVs included with dynaSpec

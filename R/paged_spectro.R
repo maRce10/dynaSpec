@@ -1,27 +1,29 @@
 #' Make a paged dynamic spectrogram similar to spectral display in Adobe Audition
 #'
-#' This function works on an object generated with \code{\link{prep_static_ggspectro}}, an alias for prepStaticSpec().
+#' This function works on an object generated with [prep_static_ggspectro()] (or its alias `prepStaticSpec()`).
 #' Video generation is very time consuming, and all the desired spectrogram parameters should be set
 #' in the prep step. The output is an mp4 video of a dynamic spectrogram video. If the input sound file was
 #' segmented in the prep step, the resulting video will be a concatenation of multiple dynamic spectrogram "pages."
 #' Each page has a sliding window revealing the part of the static spectrogram being played. Temporal width of each page
-#' is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can also output temporary segmented files, if desired.
+#' is defined by the xLim parameter in [prep_static_ggspectro()]. You can also output temporary segmented files, if desired.
 #'
-#' @aliases pagedSpectro pagedSpec
-#' @param specParams an object returned from \code{\link{prep_static_ggspectro}}
+#' @aliases pagedSpec
+#' @param specParams an object returned from [prep_static_ggspectro()]
 #' @param destFolder destination of output video; this setting overwrites setting from specParams object
 #' @param vidName expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()
 #' @param highlightCol default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)
 #' @param highlightAlpha opacity of the highlight box; default is 0.6
 #' @param cursorCol    Color of the leading edge of the highlight box; default "white"
-#' @param delete_temp_files   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)
-#' @param framerate by default, set to 30 (currently this is not supported, as animate doesn't honor the setting)
-#' @return Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
-#' @seealso \code{\link{prep_static_ggspectro}}
+#' @param delete_temp_files   Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video). Temporary files are stored in a uniquely named subfolder of destFolder.
+#' @param framerate number of highlight-box positions per page; default 30 (the video frame rate itself is set by gganimate)
+#' @param play Logical argument to control if the video is played after generated. Default is `TRUE`.
+#' @return Invisibly returns the path to the video file; progress and file save locations are output to user. Video plays after rendering if `play = TRUE`.
+#' @details 'ffmpeg' and the 'av' package are required to render videos.
+#' @seealso [prep_static_ggspectro()]
 #' @author Matthew R Wilkins (\email{matt@@galacticpolymath.com})
-#' @references 
+#' @references
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
-#' @export
+#' @export paged_spectro pagedSpec
 #' @examples \dontrun{
 #' #show wav files included with dynaSpec
 #' f <- list.files(pattern=".wav", full.names = TRUE,
@@ -34,7 +36,7 @@
 #' maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder=tempdir(),
 #'                  onlyPlotSpec = FALSE, bgFlood= TRUE,min_dB=-40)
 #'
-#' paged_spectro(femaleBarnSwallow,destFolder=tempdir())
+#' paged_spectro(maleBarnSwallow,destFolder=tempdir())
 #'
 #' # Make a multipage dynamic spec of a humpback whale song
 #' # Note, we're saving PNGs of our specs in the working directory; to add
@@ -62,10 +64,24 @@ paged_spectro <- function(specParams,
                           highlightCol = "#4B0C6BFF",
                           highlightAlpha = .6,
                           cursorCol = "white",
-                          delete_temp_files = TRUE)
+                          delete_temp_files = TRUE,
+                          play = TRUE)
 {
   xmin <- ymin <- xmax <- ymax <- NULL
   #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
+
+  # check arguments
+  check_results <- .check_arguments(
+    fun = "paged_spectro",
+    args = list(specParams = specParams, destFolder = destFolder, vidName = vidName, framerate = framerate, highlightCol = highlightCol, highlightAlpha = highlightAlpha, cursorCol = cursorCol, delete_temp_files = delete_temp_files, play = play)
+  )
+
+  # report errors
+  .report_assertions(check_results)
+
+  if (!requireNamespace("av", quietly = TRUE))
+    stop2("must install 'av' to render videos with paged_spectro()")
+
   if (!have_ffmpeg_exec2()) {
     cat("\n*****This script needs ffmpeg to work*****\n")
     cat("If you have a mac, with HomeBrew installed, you can fix this easily
@@ -121,8 +137,9 @@ paged_spectro <- function(specParams,
       }
     }
     
-    tempdir <- fs::path(destFolder, "temp")
-    dir.create(tempdir, showWarnings = TRUE)
+    # uniquely named temporary folder (so no user folder is ever deleted)
+    tempdir <- tempfile(pattern = "dynaSpec_temp_", tmpdir = destFolder)
+    dir.create(tempdir)
     
     
     #always export the newWav version that has been cropped/padded according to user parameters
@@ -192,7 +209,6 @@ paged_spectro <- function(specParams,
           ggplot2::labs(
             x = "Time (s)",
             y = "Frequency (kHz)",
-            fill = "Amplitude\n(dB)\n",
             title = specParams$title
           ) +
           ##Animate() seems to shrink font size a bit
@@ -272,7 +288,7 @@ paged_spectro <- function(specParams,
               yend = ymax
             ),
             col = cursorCol,
-            size = 2
+            linewidth = 2
           ) +
           
           #Add animation
@@ -287,12 +303,12 @@ paged_spectro <- function(specParams,
       #### Export animated ggplot specs
       #save Audio File with sound in 1 step only if not segmented
       if (length(specParams$segWavs) == 1) {
-        #note, height is set to 500px due to an issue w/ output being garbled at some resolutions; width according to aspect ratio
+        #note, height is set to 500px due to an issue w/ output being garbled at some resolutions; width according to aspect ratio (rounded to an even number, required by the video encoder)
         gganimate::animate(
           vidSegment,
           renderer = gganimate::av_renderer(vidName, audio = newWavOut),
           duration = specParams$xLim[2],
-          width = 500 * (spec_width_px / spec_height_px),
+          width = 2 * round(250 * (spec_width_px / spec_height_px)), # must be even for libx264
           height = 500,
           units = "px"
         ) #Need to save audio for segments!!
@@ -301,7 +317,7 @@ paged_spectro <- function(specParams,
           vidSegment,
           renderer = gganimate::av_renderer(outTmpVid, audio = outWAV[[i]]),
           duration = specParams$xLim[2],
-          width = 500 * (spec_width_px / spec_height_px),
+          width = 2 * round(250 * (spec_width_px / spec_height_px)), # must be even for libx264
           height = 500,
           units = "px"
         ) #Need to save audio for segments!!
@@ -310,9 +326,10 @@ paged_spectro <- function(specParams,
     
     #if necessary, combine segments
     if (length(specParams$segWavs) > 1) {
+      segVids <- fs::path(tempdir, paste0(iName0, "_", seq_along(specParams$segWavs), "_.mp4"))
       tmpPaths <- paste0("file '",
-                         gsub(".wav", "", unlist(outWAV)),
-                         ".mp4' duration ",
+                         segVids,
+                         "' duration ",
                          specParams$xLim[2])
       writeLines(tmpPaths, fs::path(tempdir, "mp4Segments.txt"))
       #Turns out this was wrong or has been fixed!! MP4s CAN be combined!
@@ -331,15 +348,15 @@ paged_spectro <- function(specParams,
       #Concat Step 1
       #concatenate mp4 segments
       #slight stutter for continuous sounds across segments, but the alternative step below doesn't work quite right, so good enough
-      system(
+      run_ffmpeg_int(
         paste0(
-          ffmpeg_exec2(),
-          ' -f concat -ss 00:00:00.000 -safe 0 -i "',
+          '-f concat -ss 00:00:00.000 -safe 0 -i "',
           fs::path(tempdir, "mp4Segments.txt"),
           '" -codec copy -y "',
           vidName,
           '"'
-        )
+        ),
+        "concatenating video segments"
       )
       
       
@@ -356,12 +373,15 @@ paged_spectro <- function(specParams,
     }
     
     message("\n\nAll done!\nfile saved @", vidName)
-    system(paste0('open "', vidName, '"'))
-    
+    if (play)
+      open_file_int(vidName)
+
     if (delete_temp_files) {
       unlink(tempdir, recursive = TRUE)
       message("\n*FYI temporary file directory deleted @ ", tempdir)
     }
+
+    invisible(vidName)
   }#end else which passed FFMPEG check
 }#end paged_spectro definition
 

@@ -3,18 +3,14 @@
 \docType{data}
 \name{canyon_wren}
 \alias{canyon_wren}
-\title{Acoustic recording of a \emph{Catherpes mexicanus} (canyon wren) song.}
+\title{Acoustic recording of a \emph{Catherpes mexicanus} (canyon wren) song}
 \format{
-One Wave object: \describe{
-  
-  \item{canyon_wren}{\emph{Catherpes mexicanus} recording}
-  
-  }
+A Wave object (\link[tuneR:Wave]{tuneR::Wave}) with a \emph{Catherpes mexicanus} recording.
 }
 \usage{
 data(canyon_wren)
 }
 \description{
-Acoustic recording of a \emph{Catherpes mexicanus} (canyon wren) song.
+Acoustic recording of a \emph{Catherpes mexicanus} (canyon wren) song
 }
 \keyword{datasets}

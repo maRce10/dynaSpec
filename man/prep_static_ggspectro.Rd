@@ -3,7 +3,6 @@
 \name{prep_static_ggspectro}
 \alias{prep_static_ggspectro}
 \alias{prepStaticSpec}
-\alias{prepStaticGGspec}
 \title{Generate ggplot2-based spectrogram(s), which can be passed to paged_spectro}
 \usage{
 prep_static_ggspectro(
@@ -39,19 +38,19 @@ prep_static_ggspectro(
 \arguments{
 \item{soundFile}{should work with URLs, full and relative paths; handles .mp3 and .wav}
 
-\item{destFolder}{path to directory to save output. Needs to be like "figures/spectrograms/" to be relative to working directory. Default=parent folder of soundFile. Specify "wd" to output to the working directory, gotten from [get_wd()]}
+\item{destFolder}{path to directory to save output (created if it does not exist). Relative paths (e.g. "figures/spectrograms/") are interpreted relative to the working directory. Default = parent folder of soundFile (or the working directory if soundFile is a URL). Specify "wd" to output to the working directory, as returned by \code{\link[base:getwd]{base::getwd()}}.}
 
 \item{outFilename}{name for output PNG. default=NULL will use input name in output filename.}
 
 \item{savePNG}{logical; Save static spectrograms as PNGs? They will be exported to destFolder.}
 
-\item{colPal}{color palette; one of "viridis","magma","plasma","inferno","cividis" from the \code{\link[viridis]{viridis}} package OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient}
+\item{colPal}{color palette; one of "viridis","magma","plasma","inferno","cividis" from the viridis package (see \code{\link[viridis:viridis]{viridis::viridis()}}) OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient}
 
 \item{crop}{subset of recording to include; default crop=NULL will use whole file, up to 10 sec; if a number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as trimming out a specific time interval in sec; if crop=FALSE, will not crop at all, even for recordings over 10 sec.}
 
 \item{bg}{background color (defaults to 1st value of chosen palette)}
 
-\item{filter}{apply a bandpass filter? Defaults to none (NULL). Expects 'c(0,2)' where sound from 0 to 2kHz would be filtered out}
+\item{filter}{apply a band-stop filter? Defaults to none (NULL). Expects a frequency range in kHz, e.g. 'c(0,2)', where sound from 0 to 2kHz would be filtered out}
 
 \item{xLim}{the time limit (x-axis width) in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf or specify the desired spectrogram x-axis limit.}
 
@@ -65,7 +64,7 @@ prep_static_ggspectro(
 
 \item{ampTrans}{amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)}
 
-\item{resampleRate}{a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Default=15000 shaves off a few seconds without losing much quality. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.}
+\item{resampleRate}{a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to \code{\link[tuneR:downsample]{tuneR::downsample()}}. Default=15000 shaves off a few seconds without losing much quality. If lower than twice the upper frequency limit (\code{yLim[2]}) it is increased to that value so the spectrogram covers the whole frequency range; recordings with a sampling rate below resampleRate are not resampled. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.}
 
 \item{min_dB}{the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)}
 
@@ -73,7 +72,7 @@ prep_static_ggspectro(
 
 \item{ovlp}{how much overlap (as percent) between sliding windows to generate spec? Default 90 looks good, but takes longer}
 
-\item{wn}{window name (slight tweaks on algorithm that affect smoothness of output) see \code{\link[seewave]{spectro}}}
+\item{wn}{window name (slight tweaks on algorithm that affect smoothness of output) see \code{\link[seewave:spectro]{seewave::spectro()}}}
 
 \item{specWidth}{what width (in inches) would you like to make your PNG output be, if saving a static spec?}
 
@@ -96,9 +95,9 @@ a list with all spectrogram parameters, segmented WAV files (segWavs) and spectr
 }
 \description{
 Can be used to generate single or segmented static spectrograms. Works as standalone,
-but the returned object is also intended to feed into \code{\link{paged_spectro}}. Workflow: 1) use
+but the returned object is also intended to feed into \code{\link[=paged_spectro]{paged_spectro()}}. Workflow: 1) use
 prep_static_ggspectro to crop, filter, segment and tweak all spectrogram parameters; 2) pass these
-settings to \code{\link{paged_spectro}} to generate dynamic spectrogram video.
+settings to \code{\link[=paged_spectro]{paged_spectro()}} to generate dynamic spectrogram video.
 }
 \examples{
 \dontrun{
@@ -128,7 +127,7 @@ maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder="wd",onlyPlotSpec = FALSE
 bgFlood=TRUE,ampTrans=2,min_dB=-40)
 
 #much stronger, now let's combine them
-(you need the patchwork package to use the / operator to stack plots)
+#(you need the patchwork package to use the / operator to stack plots)
 library(patchwork)
 (femaleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5)) /
 (maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  +
@@ -143,10 +142,10 @@ complexity to males. See: MR Wilkins et al. (2020) Animal
 }
 }
 \references{
-Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M & Wilkins M R. (2020). \emph{dynaSpec: dynamic spectrogram visualizations in R}. R package version 1.0.0.
 }
 \seealso{
-\code{\link{paged_spectro}}
+\code{\link[=paged_spectro]{paged_spectro()}}
 }
 \author{
 Matthew R Wilkins (\email{matt@galacticpolymath.com})

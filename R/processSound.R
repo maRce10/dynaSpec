@@ -18,14 +18,15 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
         crop <- c(0, crop)
       }
     }
-    #If supplied crop longer than wav, treated as max length & crop set to duration
+    #If supplied crop end is longer than wav, crop end set to duration
     if (crop[2] > fileDur0) {
-      crop <- c(0, fileDur0)
+      crop[2] <- fileDur0
+      if (crop[1] >= crop[2]) crop[1] <- 0
       cat(
         paste0(
           "\n**** Crop longer than file duration: ",
           round(fileDur0, 2),
-          ", treated as max length & ignored"
+          ", crop end set to file duration\n"
         )
       )
     }
@@ -69,7 +70,7 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   #assign new wave file for use going forward
   #the bit=wav0@bit is REALLY important! Should be standard, but it doesn't work
   
-  if (crop[2] == fileDur0) {
+  if (crop[1] == 0 && crop[2] == fileDur0) {
     wav <- wav0
   } else{
     wav <- seewave::cutw(
@@ -118,10 +119,10 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, ...) {
   
   #If file is longer than max_page_dur, trim it
   if (wavDur > max_page_dur) {
-    #trim the wav file again to match a multiple of xLim pages
+    #trim the wav file again to match a multiple of xLim pages (wav is already cropped, so start at 0)
     wav <- seewave::cutw(
       wav,
-      from = crop[1],
+      from = 0,
       to = max_page_dur,
       output = "Wave",
       bit = wav0@bit

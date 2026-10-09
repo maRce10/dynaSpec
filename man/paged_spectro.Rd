@@ -2,7 +2,6 @@
 % Please edit documentation in R/paged_spectro.R
 \name{paged_spectro}
 \alias{paged_spectro}
-\alias{pagedSpectro}
 \alias{pagedSpec}
 \title{Make a paged dynamic spectrogram similar to spectral display in Adobe Audition}
 \usage{
@@ -14,17 +13,18 @@ paged_spectro(
   highlightCol = "#4B0C6BFF",
   highlightAlpha = 0.6,
   cursorCol = "white",
-  delete_temp_files = TRUE
+  delete_temp_files = TRUE,
+  play = TRUE
 )
 }
 \arguments{
-\item{specParams}{an object returned from \code{\link{prep_static_ggspectro}}}
+\item{specParams}{an object returned from \code{\link[=prep_static_ggspectro]{prep_static_ggspectro()}}}
 
 \item{destFolder}{destination of output video; this setting overwrites setting from specParams object}
 
 \item{vidName}{expects "FileName", .mp4 not necessary; if not supplied, will be named after the file you used in prep_static_ggspectro()}
 
-\item{framerate}{by default, set to 30 (currently this is not supported, as animate doesn't honor the setting)}
+\item{framerate}{number of highlight-box positions per page; default 30 (the video frame rate itself is set by gganimate)}
 
 \item{highlightCol}{default "#4B0C6BFF" (a purple color to match the default viridis 'inferno' palette)}
 
@@ -32,18 +32,23 @@ paged_spectro(
 
 \item{cursorCol}{Color of the leading edge of the highlight box; default "white"}
 
-\item{delete_temp_files}{Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video)}
+\item{delete_temp_files}{Default= TRUE, deletes temporary files (specs & WAV files used to create concatenated video). Temporary files are stored in a uniquely named subfolder of destFolder.}
+
+\item{play}{Logical argument to control if the video is played after generated. Default is \code{TRUE}.}
 }
 \value{
-Nothing is returned, though progress and file save locations are output to user. Video should play after rendering.
+Invisibly returns the path to the video file; progress and file save locations are output to user. Video plays after rendering if \code{play = TRUE}.
 }
 \description{
-This function works on an object generated with \code{\link{prep_static_ggspectro}}, an alias for prepStaticSpec().
+This function works on an object generated with \code{\link[=prep_static_ggspectro]{prep_static_ggspectro()}} (or its alias \code{prepStaticSpec()}).
 Video generation is very time consuming, and all the desired spectrogram parameters should be set
 in the prep step. The output is an mp4 video of a dynamic spectrogram video. If the input sound file was
 segmented in the prep step, the resulting video will be a concatenation of multiple dynamic spectrogram "pages."
 Each page has a sliding window revealing the part of the static spectrogram being played. Temporal width of each page
-is defined by the xLim parameter in \code{\link{prep_static_ggspectro}}. You can also output temporary segmented files, if desired.
+is defined by the xLim parameter in \code{\link[=prep_static_ggspectro]{prep_static_ggspectro()}}. You can also output temporary segmented files, if desired.
+}
+\details{
+'ffmpeg' and the 'av' package are required to render videos.
 }
 \examples{
 \dontrun{
@@ -58,7 +63,7 @@ paged_spectro(femaleBarnSwallow,destFolder=tempdir())
 maleBarnSwallow<-prep_static_ggspectro(f[2],destFolder=tempdir(),
                  onlyPlotSpec = FALSE, bgFlood= TRUE,min_dB=-40)
 
-paged_spectro(femaleBarnSwallow,destFolder=tempdir())
+paged_spectro(maleBarnSwallow,destFolder=tempdir())
 
 # Make a multipage dynamic spec of a humpback whale song
 # Note, we're saving PNGs of our specs in the working directory; to add
@@ -80,10 +85,10 @@ paged_spectro(humpback,destFolder=tempdir())
 }
 }
 \references{
-Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
+Araya-Salas M & Wilkins M R. (2020). \emph{dynaSpec: dynamic spectrogram visualizations in R}. R package version 1.0.0.
 }
 \seealso{
-\code{\link{prep_static_ggspectro}}
+\code{\link[=prep_static_ggspectro]{prep_static_ggspectro()}}
 }
 \author{
 Matthew R Wilkins (\email{matt@galacticpolymath.com})

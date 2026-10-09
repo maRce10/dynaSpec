@@ -1,11 +1,7 @@
-#' Acoustic recording of a \emph{Catherpes mexicanus} (canyon wren) song. 
-#' 
-#' @format One Wave object: \describe{
-#'   
-#'   \item{canyon_wren}{\emph{Catherpes mexicanus} recording}
-#'   
-#'   }
-#'   
+#' Acoustic recording of a *Catherpes mexicanus* (canyon wren) song
+#'
+#' @format A Wave object ([tuneR::Wave]) with a *Catherpes mexicanus* recording.
+#'
 #' @usage data(canyon_wren)
-#' 
-"canyon_wren" 
+#'
+"canyon_wren"

@@ -2,6 +2,24 @@
 
 * Fixed downloading of 'Xeno-Canto' recordings from recording page URLs in `prep_static_ggspectro()`, which relied on the now deprecated `warbleR::query_xc()`. Files are now downloaded directly from the recording's download link
 * Sound files from URLs are now downloaded in binary mode (fixes corrupted downloads on Windows)
+* All exported functions now validate their arguments up front (using 'checkmate'), reporting every invalid argument in a single error message
+* `scrolling_spectro()`: 'parallel' now actually uses parallel computing (via 'pbapply'; no longer relies on non-exported 'warbleR' functions)
+* `scrolling_spectro()`: fixed extra frame copies when `loop > 1`
+* `scrolling_spectro()`: selection tables in 'spectro.call' are now correctly aligned when `loop = 1`, and selections at the end of the clip are repeated at the start when looping
+* `scrolling_spectro()`: `axis.type = "minimal"` is now implemented (1 s and 1 kHz scale bars)
+* `scrolling_spectro()`: 'annotation.call' 'start' and 'end' times now match the time at which sounds reach the play line
+* `scrolling_spectro()`: informative errors when 'ffmpeg' is missing or fails; file paths with spaces are now supported
+* `scrolling_spectro()`: video frames are now saved as PNG instead of TIFF (TIFF files written by R could not be decoded by recent ffmpeg versions, so no video was produced)
+* `scrolling_spectro()`: fixed error when 'flim' is not supplied (default full frequency range)
+* `paged_spectro()`: fixed encoding error when the spectrogram aspect ratio produced an odd video width
+* Added 'testthat' tests
+* `scrolling_spectro()`: no warnings about 'lower.spectro' or 'buffer' unless those arguments are supplied explicitly
+* `prep_static_ggspectro()`: fixed 'destFolder' handling ("wd" and relative paths now resolve to the working directory)
+* `prep_static_ggspectro()`: 'resampleRate' is increased when needed so the spectrogram covers the whole 'yLim' range, and recordings are no longer upsampled
+* `prep_static_ggspectro()`: 'savePNG' now saves the right plot for each segment; 'crop' start is no longer ignored when the crop end equals (or exceeds) the file duration
+* `paged_spectro()`: videos now open on Windows and Linux (new 'play' argument); temporary files are stored in a uniquely named folder
+* `prepStaticSpec()` and `pagedSpec()` aliases are now exported
+* Fixed deprecated 'ggplot2' syntax, package help page, dependency declarations, CITATION file and multiple documentation issues
 
 # *dynaSpec 1.0.5*
 

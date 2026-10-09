@@ -1,31 +1,31 @@
 #' Generate ggplot2-based spectrogram(s), which can be passed to paged_spectro
 #'
 #' Can be used to generate single or segmented static spectrograms. Works as standalone,
-#' but the returned object is also intended to feed into \code{\link{paged_spectro}}. Workflow: 1) use
+#' but the returned object is also intended to feed into [paged_spectro()]. Workflow: 1) use
 #' prep_static_ggspectro to crop, filter, segment and tweak all spectrogram parameters; 2) pass these
-#' settings to \code{\link{paged_spectro}} to generate dynamic spectrogram video.
+#' settings to [paged_spectro()] to generate dynamic spectrogram video.
 #'
-#' @aliases prepStaticSpec prepStaticGGspec
+#' @aliases prepStaticSpec
 #'
 #' @param soundFile should work with URLs, full and relative paths; handles .mp3 and .wav
-#' @param destFolder path to directory to save output. Needs to be like "figures/spectrograms/" to be relative to working directory. Default=parent folder of soundFile. Specify "wd" to output to the working directory, gotten from [get_wd()]
+#' @param destFolder path to directory to save output (created if it does not exist). Relative paths (e.g. "figures/spectrograms/") are interpreted relative to the working directory. Default = parent folder of soundFile (or the working directory if soundFile is a URL). Specify "wd" to output to the working directory, as returned by [base::getwd()].
 #' @param outFilename name for output PNG. default=NULL will use input name in output filename.
 #' @param savePNG logical; Save static spectrograms as PNGs? They will be exported to destFolder.
-#' @param colPal color palette; one of "viridis","magma","plasma","inferno","cividis" from the \code{\link[viridis]{viridis}} package OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient
+#' @param colPal color palette; one of "viridis","magma","plasma","inferno","cividis" from the viridis package (see [viridis::viridis()]) OR a 2 value vector (e.g. c("white","black")), defining the start and end of a custom color gradient
 #' @param crop subset of recording to include; default crop=NULL will use whole file, up to 10 sec; if a number, interpreted as crop first X.X sec; if c(X1,X2), interpreted as trimming out a specific time interval in sec; if crop=FALSE, will not crop at all, even for recordings over 10 sec.
 #' @param xLim the time limit (x-axis width) in seconds for all spectrograms; i.e. page width in seconds for multi-page dynamic spectrograms (defaults to WAV file length, unless file duration >5s). To override the 5s limit, put xLim=Inf or specify the desired spectrogram x-axis limit.
 #' @param yLim the frequency limits (y-axis); default is c(0,10) aka 0-10kHz
 #' @param title string for title of plots; default=NULL
 #' @param plotLegend logical; include a legend showing amplitude colors? default=FALSE
 #' @param onlyPlotSpec logical; do you want to just plot the spec and leave out the legend, axes, and axis labels? default= TRUE
-#' @param resampleRate a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Default=15000 shaves off a few seconds without losing much quality. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.
+#' @param resampleRate a number in Hz to downsample audio for spectrogram only. This will simplify audio data and speed up generation of spectrogram. Passed to [tuneR::downsample()]. Default=15000 shaves off a few seconds without losing much quality. If lower than twice the upper frequency limit (`yLim[2]`) it is increased to that value so the spectrogram covers the whole frequency range; recordings with a sampling rate below resampleRate are not resampled. Put NULL to keep original sample rate for spectrogram. Audiofile will not be resampled for MP4.
 #' @param ampTrans amplitude transform for boosting spectrum contrast; default=1 (actual dB values); specify a decimal number for the lambda value of scales::modulus_trans(); 2.5 is a good place to start. (This amplifies your loud values the most, while not increasing background noise much at all)
 #' @param min_dB the minimum decibel (quietest sound) to include in the spec; defaults to -30 (-40 would include quieter sounds; -20 would cut out all but very loud sounds)
-#' @param filter apply a bandpass filter? Defaults to none (NULL). Expects 'c(0,2)' where sound from 0 to 2kHz would be filtered out
+#' @param filter apply a band-stop filter? Defaults to none (NULL). Expects a frequency range in kHz, e.g. 'c(0,2)', where sound from 0 to 2kHz would be filtered out
 #' @param bg  background color (defaults to 1st value of chosen palette)
 #' @param wl  window length for the spectrogram (low values= higher temporal res; high values= higher freq. res). Default 512 is a good tradeoff; human speech would look better at 1024 or higher, giving higher frequency resolution.
 #' @param ovlp how much overlap (as percent) between sliding windows to generate spec? Default 90 looks good, but takes longer
-#' @param wn window name (slight tweaks on algorithm that affect smoothness of output) see \code{\link[seewave]{spectro}}
+#' @param wn window name (slight tweaks on algorithm that affect smoothness of output) see [seewave::spectro()]
 #' @param specWidth what width (in inches) would you like to make your PNG output be, if saving a static spec?
 #' @param specHeight what height (in inches) would you like to make your PNG output be, if saving a static spec?
 #' @param colbins default 30: increasing can smooth the color contours, but take longer to generate spec
@@ -36,11 +36,11 @@
 #' @param ... Other arguments to be passed for rendering the spec (i.e. to seewave::spectro)
 #'
 #' @return a list with all spectrogram parameters, segmented WAV files (segWavs) and spectrograms spec; importantly, spec is a list of n=number of "pages"/segments; the first page is displayed by default
-#' @seealso \code{\link{paged_spectro}}
+#' @seealso [paged_spectro()]
 #' @author Matthew R Wilkins (\email{matt@@galacticpolymath.com})
 #' @references
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
-#' @export
+#' @export prep_static_ggspectro prepStaticSpec
 #' @name prep_static_ggspectro
 #' @examples \dontrun{
 #' require(dynaSpec)
@@ -69,7 +69,7 @@
 #' bgFlood=TRUE,ampTrans=2,min_dB=-40)
 #'
 #' #much stronger, now let's combine them
-#' (you need the patchwork package to use the / operator to stack plots)
+#' #(you need the patchwork package to use the / operator to stack plots)
 #' library(patchwork)
 #' (femaleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5)) /
 #' (maleBarnSwallow$spec[[1]]+ggplot2::xlim(0,5))  +
@@ -117,34 +117,38 @@ prep_static_ggspectro <-
            optim = NULL,
            ...)
   {
-    #Put in soundFile directory if unspecified
+    # check arguments
+    check_results <- .check_arguments(
+      fun = "prep_static_ggspectro",
+      args = list(soundFile = soundFile, destFolder = destFolder, outFilename = outFilename, savePNG = savePNG, colPal = colPal, crop = crop, bg = bg, filter = filter, xLim = xLim, yLim = yLim, title = title, plotLegend = plotLegend, onlyPlotSpec = onlyPlotSpec, ampTrans = ampTrans, resampleRate = resampleRate, min_dB = min_dB, wl = wl, ovlp = ovlp, wn = wn, specWidth = specWidth, specHeight = specHeight, colbins = colbins, ampThresh = ampThresh, bgFlood = bgFlood, fontAndAxisCol = fontAndAxisCol)
+    )
+
+    # report errors
+    .report_assertions(check_results)
+
+    #Put in soundFile directory if unspecified (working directory for URLs)
     if (is.null(destFolder)) {
       if (is.url(soundFile)) {
         destFolder = getwd()
       } else{
         destFolder = dirname(tools::file_path_as_absolute(soundFile))
       }
-    }
-    destFolder0 <- destFolder
-    #handle relative destFolder path that ends with /, but doesn't start with /
-    if (!fs::is_absolute_path(destFolder0)) {
-      destFolder <- fs::path(fs::path_dir(soundFile), destFolder0)
-      fs::dir_create(destFolder)
-      message(
-        "Relative destFolder supplied:'",
-        destFolder0,
-        "'. Will save files to soundFile parent dir:\n > ",
-        destFolder
-      )
-    }
-    
-    #Put soundFile in working dir if requested
-    if (destFolder0 == "wd") {
+    } else if (identical(destFolder, "wd")) {
+      #Put files in working dir if requested
       destFolder <- getwd()
+    } else if (!fs::is_absolute_path(destFolder)) {
+      #relative paths are relative to the working directory
+      destFolder <- file.path(getwd(), destFolder)
     }
-    
-    if (!grepl("/$", destFolder0)) {
-      destFolder = paste0(destFolder0, "/")
+
+    #create destination folder if needed
+    if (!dir.exists(destFolder)) {
+      fs::dir_create(destFolder)
+      message("Created destination folder: ", destFolder)
+    }
+
+    if (!grepl("/$", destFolder)) {
+      destFolder = paste0(destFolder, "/")
     }#if destFolder missing terminal /, add it
     
     if (is.url(soundFile)) {

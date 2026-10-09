@@ -4,16 +4,18 @@ Title: Dynamic Spectrogram Visualizations
 Version: 1.0.6
 Description: A set of tools to generate dynamic spectrogram visualizations in video format.
 License: GPL (>= 2)
-Imports: utils, grDevices, graphics, seewave, tuneR, grid, png, ggplot2, viridis, scales, gganimate, warbleR
+Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2, viridis, scales, gganimate, pbapply, fs, checkmate
 Depends: R (>= 3.2.1)
 LazyData: TRUE
 SystemRequirements: ffmpeg
 URL: https://github.com/maRce10/dynaSpec
 BugReports: https://github.com/maRce10/dynaSpec/issues
 NeedsCompilation: no
-Suggests: parallel, imager, fs
-RoxygenNote: 7.3.2
-Repository: CRANs
+Suggests: parallel, imager, av, warbleR, patchwork, testthat (>= 3.0.0), withr
+Config/testthat/edition: 3
 Language: en-US
 Encoding: UTF-8
-Authors@R: c(person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "marcelo.araya@ucr.ac.cr", comment = c(ORCID = "0000-0003-3594-619X")))
+Roxygen: list(markdown = TRUE)
+Authors@R: c(person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "marcelo.araya@ucr.ac.cr", comment = c(ORCID = "0000-0003-3594-619X")),
+    person("Matthew R.", "Wilkins", role = "aut", email = "matt@galacticpolymath.com"))
+Config/roxygen2/version: 8.1.0

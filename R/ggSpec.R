@@ -40,14 +40,7 @@ ggSpec <-
     
     if (is.null(fontAndAxisCol)) {
       autoFontCol = TRUE
-      bgRGB <- grDevices::col2rgb(bg)
-      fontAndAxisCol <-
-        if (bgRGB["red", 1] * 0.299 + bgRGB["green", 1] * 0.587 + bgRGB["blue", 1] *
-            0.114 > 149) {
-          "#000000"
-        } else{
-          "#ffffff"
-        }
+      fontAndAxisCol <- contrast_col_int(bg)
     } else{
       autoFontCol = FALSE
     }
@@ -59,10 +52,18 @@ ggSpec <-
     
        
   if(!is.null(resampleRate)){
-    wav0 <- wav #backup
-   message("Original wav (",wav0@samp.rate,"samples/sec) data points: ",length(wav0@left))
-    wav <- tuneR::downsample(wav,samp.rate=resampleRate)
-    message("Original wav (",wav@samp.rate,"samples/sec) data points: ",length(wav@left))
+    # keep the Nyquist frequency at or above the upper frequency limit
+    if (resampleRate < yLim[2] * 2000) {
+      resampleRate <- yLim[2] * 2000
+      message("resampleRate increased to ", resampleRate, " Hz so the spectrogram reaches the upper yLim (", yLim[2], " kHz)")
+    }
+
+    # only downsample (upsampling is not supported)
+    if (resampleRate < wav@samp.rate) {
+      message("Original wav (",wav@samp.rate," samples/sec) data points: ",length(wav@left))
+      wav <- tuneR::downsample(wav,samp.rate=resampleRate)
+      message("Downsampled wav (",wav@samp.rate," samples/sec) data points: ",length(wav@left))
+    }
   }
     
     #Modified from seewave::ggspectro
@@ -205,6 +206,7 @@ ggSpec <-
         }
         fn_i = fs::path(subDest, paste0(baseNom, "_", i), ext = "png")
         ggplot2::ggsave(fn_i,
+                        plot = Glist[[i]],
                         width = specWidth,
                         height = specHeight,
                         units = "in")

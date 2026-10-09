@@ -7,7 +7,7 @@
 #' @return TRUE or FALSE 
 
 is.url <-function(x) { 
-    grepl("www.|http:|https:", x)
+    grepl("^(https?|ftp)://|^www\\.", x)
 }
 
 #' @description Custom ggplot theme helper functions
