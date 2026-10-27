@@ -12,7 +12,7 @@
 \item{e2}{A layer (e.g. \code{\link[=spectrogram]{spectrogram()}}, \code{\link[=selections]{selections()}} or \code{\link[=scrolling]{scrolling()}}).}
 }
 \value{
-A \code{\link[=dynaspec]{dynaspec()}} object. Spectrogram, oscillogram, player and style layers replace previous ones (arguments of spectrogram and style layers are combined); selections and annotations are added.
+A \code{\link[=dynaspec]{dynaspec()}} object. Spectrogram, oscillogram, envelope, spectrum, overview, player and style layers replace previous ones of the same kind (arguments of spectrogram, theme and style layers are combined); selections and captions are added.
 }
 \description{
 Add layers to dynamic spectrograms

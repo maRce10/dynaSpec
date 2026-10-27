@@ -4,18 +4,37 @@
 \alias{player}
 \title{Player settings of dynamic spectrogram web pages}
 \usage{
-player(speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE)
+player(speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, buttons = "time")
 }
 \arguments{
-\item{speeds}{Numeric vector with the playback speeds offered as buttons (between 0.0625 and 16). The first value is the initial speed. Use a single value to hide speed buttons. Default is \code{c(1, 0.5, 0.25, 0.125)}.}
+\item{speeds}{Numeric vector with the playback speeds offered by the speed slider (between 0.0625 and 16). The slider snaps to these values, ordered from the slowest (left) to the fastest (right). The first value is the initial speed. Use a single value to hide the slider. Default is \code{c(1, 0.5, 0.25, 0.125)}.}
 
 \item{keep.pitch}{Logical argument to control if the pitch is initially kept when playback speed changes. Listeners can switch this with the 'keep pitch' button. If \code{FALSE} slowing down a sound also lowers its pitch (as when slowing down a tape), which makes fast sound features (e.g. pulses) easier to hear. If \code{TRUE} the web browser time-stretches the sound to keep its pitch. Default is \code{FALSE}.}
+
+\item{buttons}{Character vector with the additional controls shown next to the play button:
+\itemize{
+\item \code{"time"}: current time and duration of the sound
+\item \code{"loop"}: button to play the sound repeatedly
+\item \code{"volume"}: mute button and volume slider
+\item \code{"download"}: button to save the sound (as a '.wav' or '.mp3' file, as embedded in the web page)
+\item \code{"fullscreen"}: button to show the player in full screen (e.g. in presentations)
+}
+Use \code{character()} to show only the play button and speed slider. Default is \code{"time"}. Buttons are only shown in web pages (not in videos).}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}.
 }
 \description{
-\code{player()} sets the playback buttons of web pages.
+\code{player()} sets the playback controls of web pages.
+}
+\examples{
+\dontrun{
+data("canyon_wren")
+
+dynaspec(canyon_wren, flim = c(1, 10)) +
+  spectrogram(wl = 300) +
+  player(buttons = c("time", "loop", "volume", "download", "fullscreen"))
+}
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}

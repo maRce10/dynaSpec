@@ -4,12 +4,12 @@ Title: Dynamic Spectrogram Visualizations
 Version: 2.0.0.9000
 Description: Interactive and dynamic spectrogram visualizations (web pages and videos) built with a layered syntax.
 License: GPL (>= 2)
-Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, pbapply, fs, checkmate
+Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, cli, fs, checkmate
 Depends: R (>= 4.1.0)
 LazyData: TRUE
 SystemRequirements: ffmpeg
 NeedsCompilation: no
-Suggests: parallel, imager, warbleR, NatureSounds, testthat (>= 3.0.0), withr, knitr, rmarkdown, covr
+Suggests: base64enc, parallel, imager, warbleR, NatureSounds, testthat (>= 3.0.0), withr, knitr, rmarkdown, covr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US

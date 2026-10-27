@@ -29,15 +29,18 @@ knitr::opts_chunk$set(
 
 **dynaSpec** creates dynamic spectrograms: spectrograms that move along with the sound, ready for presentations, teaching or sharing online, *without taking screen recordings* of another program. They are shown as interactive web pages (with the sound embedded, click-to-play and buttons to slow the sound down), which work in R Markdown and Quarto documents, and can also be saved as videos (mp4). It builds on [seewave](https://CRAN.R-project.org/package=seewave) and [tuneR](https://CRAN.R-project.org/package=tuneR).
 
-Dynamic spectrograms are built in layers, as 'ggplot2' graphs: `dynaspec()` takes the sound, and layers are added with `+`:
+Dynamic spectrograms are built in layers, as 'ggplot2' graphs: `dynaspec()` takes the sound, and layers are added with `+` (only the panels added are shown):
 
 | Layer | What it does |
 |---|---|
-| `spectrogram()` | How the spectrogram is computed and drawn (window length, palette, amplitude range, ...) |
-| `oscillogram()` | Adds an oscillogram (waveform) |
+| `spectrogram()` | Adds a spectrogram (window length, palette, amplitude range, ...) |
+| `oscillogram()`, `envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
+| `spectrum()` | Adds a power spectrum next to the spectrogram |
+| `overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
 | `selections()` | Highlights parts of the sound with translucent boxes (e.g. from a selection table) |
-| `annotations()` | Labels parts of the sound |
-| `player()` | Playback speed buttons of web pages |
+| `captions()` | Text at a fixed position shown during a time range, like subtitles |
+| `dynatheme()`, `dynatheme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
+| `player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
 | `static()`, `scrolling()` or `paged()` | Style of the dynamic spectrogram (see below) |
 
 The package offers three styles of dynamic spectrogram:
@@ -50,7 +53,7 @@ The package offers three styles of dynamic spectrogram:
 
 **Contents:** [Installation](#installation) · [Quick start](#quick-start) · [Background](#background) · [Citation](#citation)
 
-> 📖 **Examples of the three styles are in the vignette [Creating dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)** (or run `vignette("dynaSpec")` in R).
+> 📖 **Examples of the three styles are in the vignette [Creating dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)** (or run `vignette("dynaSpec")` in R). Customization options are shown in the article [Customizing dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html).
 
 ## Installation
 

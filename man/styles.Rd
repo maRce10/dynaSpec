@@ -10,10 +10,8 @@
 scrolling(
   t.display,
   fix.time,
-  overview,
   buffer,
   loop,
-  axis.type,
   lcol,
   lty,
   lwd,
@@ -28,13 +26,10 @@ scrolling(
 
 paged(
   t.display,
-  axis.type,
   title,
   highlight.col,
   highlight.alpha,
   lcol,
-  bg.flood,
-  colaxis,
   plot.legend,
   spec.width,
   spec.height,
@@ -43,22 +38,18 @@ paged(
   ...
 )
 
-static(rows, width, height, res, cex.lab, lcol, alt, fps, spectro)
+static(rows, width, height, res, lcol, alt, fps, play.line)
 }
 \arguments{
 \item{t.display}{Time (in s) shown at once: the time window of scrolling spectrograms (default 1.5) or the duration of each page of paged spectrograms (default: the whole sound, up to 5 s).}
 
 \item{fix.time}{Logical: does the time axis stay fixed (\code{TRUE}, default) or move along with the scrolling spectrogram?}
 
-\item{overview}{Logical: show the whole sound in a lower spectrogram, with the part being shown highlighted (scrolling spectrograms without oscillogram)? Default is \code{TRUE}.}
-
-\item{buffer}{Time (in s) before the scrolling spectrogram starts moving. Default is 1 (0 when looping).}
+\item{buffer}{Time (in s) before the scrolling spectrogram starts moving. Default is 0.}
 
 \item{loop}{Number of times the sound is repeated in scrolling videos (web pages loop until paused when > 1). Default is 1.}
 
-\item{axis.type}{Character string: "standard" (axes with labels), "minimal" (1 s and 1 kHz scale bars; scrolling only) or "none". Defaults are "standard" (scrolling) and "none" (paged).}
-
-\item{lcol}{Color of the play line (or cursor of paged spectrograms). Defaults are "#07889B99" (scrolling), "white" (paged) and "#c0392b" (static).}
+\item{lcol}{Color of the play line (or cursor of paged spectrograms). Defaults are "#07889B99" (scrolling), "white" (paged) and \code{viridis::mako(10)[9]} (static).}
 
 \item{lty, lwd}{Type and width of the play line of scrolling spectrograms (defaults 2 and 2).}
 
@@ -80,21 +71,15 @@ static(rows, width, height, res, cex.lab, lcol, alt, fps, spectro)
 
 \item{highlight.col, highlight.alpha}{Color and opacity of the highlight box of paged spectrograms (defaults "#4B0C6BFF" and 0.6).}
 
-\item{bg.flood}{Logical: does the background color of paged spectrograms spill into the axis margins? Default is \code{FALSE}.}
-
-\item{colaxis}{Color of axes and text of paged spectrograms (default: picked to contrast with the background).}
-
 \item{plot.legend}{Logical: show the amplitude color scale of paged spectrograms? Default is \code{FALSE}.}
 
 \item{spec.width, spec.height}{Size (in inches) of the pages of paged spectrograms (defaults 9 and 3).}
 
 \item{rows}{Number of rows in which static spectrograms are split (each row shows a consecutive segment of the same duration). Default is 1.}
 
-\item{cex.lab}{Size of the axis titles of static spectrograms. Default is 1.2.}
-
 \item{alt}{Alternative text of static spectrograms in web pages (for screen readers).}
 
-\item{spectro}{Logical: show the spectrogram in static spectrograms? (\code{FALSE} shows only the oscillogram). Default is \code{TRUE}.}
+\item{play.line}{Logical: show the line moving along the sound in static spectrograms? With \code{FALSE} web pages show the figure without the moving line (clicking on it still plays the sound from that point) and videos show the figure with the sound. Default is \code{TRUE}.}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}.

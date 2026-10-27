@@ -12,11 +12,12 @@ selections(
   lwd = 1,
   labels = NULL,
   cex = 1,
-  freq = TRUE
+  freq = TRUE,
+  sound.file = NULL
 )
 }
 \arguments{
-\item{X}{Data frame with the selections: columns 'start' and 'end' (in s) and, optionally, 'bottom.freq' and 'top.freq' (in kHz) to restrict boxes to a frequency range (e.g. a selection table from 'warbleR' or 'ohun').}
+\item{X}{Data frame with the selections: columns 'start' and 'end' (in s) and, optionally, 'bottom.freq' and 'top.freq' (in kHz) to restrict boxes to a frequency range. Selection tables from 'warbleR' (or tables from 'ohun' or 'Rraven') can be used directly (see details). Extended selection tables are not supported.}
 
 \item{col}{Color of the boxes, or the name of a column of 'X' with the color of each box. Default is "#E69F00".}
 
@@ -31,12 +32,17 @@ selections(
 \item{cex}{Size of the labels. Default is 1.}
 
 \item{freq}{Logical to control if the frequency range of selections is used (when 'X' has 'bottom.freq' and 'top.freq' columns). If \code{FALSE} boxes span the whole frequency range. Default is \code{TRUE}.}
+
+\item{sound.file}{Name of the sound file whose selections are shown, when 'X' has a 'sound.files' column with several sound files. Default is \code{NULL}: when the sound of \code{\link[=dynaspec]{dynaspec()}} is a file, the selections of that file are shown (matching the file name); otherwise 'X' must contain a single sound file.}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}. Several selection layers can be added.
 }
 \description{
 \code{selections()} highlights parts of the sound in a \code{\link[=dynaspec]{dynaspec()}} object with translucent boxes (e.g. calls, songs or the parts of a duet).
+}
+\details{
+Tables with a 'sound.files' column (e.g. 'warbleR' selection tables) can contain selections of several sound files; only those of the sound shown are used (see 'sound.file').
 }
 \examples{
 data(canyon_wren)
@@ -48,5 +54,5 @@ x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
   selections(st, col = "colors", labels = "labels")
 }
 \seealso{
-\code{\link[=dynaspec]{dynaspec()}}, \code{\link[=annotations]{annotations()}}
+\code{\link[=dynaspec]{dynaspec()}}, \code{\link[=captions]{captions()}}
 }

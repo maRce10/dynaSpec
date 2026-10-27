@@ -4,12 +4,12 @@
 \alias{oscillogram}
 \title{Oscillogram layer of dynamic spectrograms}
 \usage{
-oscillogram(position = "below", col = "black", height = NULL)
+oscillogram(position = "below", col = NULL, height = NULL)
 }
 \arguments{
 \item{position}{Character string: "below" or "above" the spectrogram (only for \code{\link[=static]{static()}}; \code{\link[=scrolling]{scrolling()}} always shows it below). Default is "below".}
 
-\item{col}{Color of the oscillogram. Default is "black".}
+\item{col}{Color of the oscillogram. Default is \code{NULL}: 'col.wave' of \code{\link[=dynatheme]{dynatheme()}}, or "black".}
 
 \item{height}{Numeric vector of length 1 with the height of the oscillogram relative to that of the spectrogram (e.g. 0.5 is half as high). Default is \code{NULL} (style default).}
 }
@@ -17,7 +17,7 @@ oscillogram(position = "below", col = "black", height = NULL)
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}.
 }
 \description{
-\code{oscillogram()} adds an oscillogram (waveform) to a \code{\link[=dynaspec]{dynaspec()}} object. Oscillograms are shown by \code{\link[=static]{static()}} (above or below the spectrogram) and \code{\link[=scrolling]{scrolling()}} (below the spectrogram) styles.
+\code{oscillogram()} adds an oscillogram (waveform) to a \code{\link[=dynaspec]{dynaspec()}} object. Oscillograms are shown by \code{\link[=static]{static()}} (alone, or above or below the spectrogram) and \code{\link[=scrolling]{scrolling()}} (below the spectrogram) styles.
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}

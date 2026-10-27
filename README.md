@@ -19,26 +19,30 @@ version](https://img.shields.io/badge/R%3E%3D-4.1.0-6666ff.svg)](https://cran.r-
 
 <img src="man/figures/dynaSpec_sticker.png" alt="sketchy sticker" align="right" width = "25%" height="25%"/>
 
-**dynaSpec** creates dynamic spectrograms: spectrograms that move
-along with the sound, ready for presentations, teaching or sharing
-online, *without taking screen recordings* of another program. They are
-shown as interactive web pages (with the sound embedded, click-to-play
-and buttons to slow the sound down), which work in R Markdown and Quarto
+**dynaSpec** creates dynamic spectrograms: spectrograms that move along
+with the sound, ready for presentations, teaching or sharing online,
+*without taking screen recordings* of another program. They are shown as
+interactive web pages (with the sound embedded, click-to-play and
+buttons to slow the sound down), which work in R Markdown and Quarto
 documents, and can also be saved as videos (mp4). It builds on
 [seewave](https://CRAN.R-project.org/package=seewave) and
 [tuneR](https://CRAN.R-project.org/package=tuneR).
 
 Dynamic spectrograms are built in layers, as ‘ggplot2’ graphs:
-`dynaspec()` takes the sound, and layers are added with `+`:
+`dynaspec()` takes the sound, and layers are added with `+` (only the
+panels added are shown):
 
-| Layer                                  | What it does                                                                           |
-| -------------------------------------- | -------------------------------------------------------------------------------------- |
-| `spectrogram()`                        | How the spectrogram is computed and drawn (window length, palette, amplitude range, …) |
-| `oscillogram()`                        | Adds an oscillogram (waveform)                                                         |
-| `selections()`                         | Highlights parts of the sound with translucent boxes (e.g. from a selection table)     |
-| `annotations()`                        | Labels parts of the sound                                                              |
-| `player()`                             | Playback speed buttons of web pages                                                    |
-| `static()`, `scrolling()` or `paged()` | Style of the dynamic spectrogram (see below)                                           |
+| Layer                                  | What it does                                                                       |
+| -------------------------------------- | ---------------------------------------------------------------------------------- |
+| `spectrogram()`                        | Adds a spectrogram (window length, palette, amplitude range, …)                    |
+| `oscillogram()`, `envelope()`          | Add an oscillogram or an amplitude envelope (above or below the spectrogram)       |
+| `spectrum()`                           | Adds a power spectrum next to the spectrogram                                      |
+| `overview()`                           | Adds a lower panel with the whole sound to scrolling spectrograms                  |
+| `selections()`                         | Highlights parts of the sound with translucent boxes (e.g. from a selection table) |
+| `captions()`                           | Text at a fixed position shown during a time range, like subtitles                 |
+| `dynatheme()`                          | Axis titles, text sizes and fonts, colors and background                           |
+| `player()`                             | Playback speed buttons of web pages                                                |
+| `static()`, `scrolling()` or `paged()` | Style of the dynamic spectrogram (see below)                                       |
 
 The package offers three styles of dynamic spectrogram:
 
@@ -53,7 +57,9 @@ start](#quick-start) · [Background](#background) · [Citation](#citation)
 
 > 📖 **Examples of the three styles are in the vignette [Creating dynamic
 > spectrograms](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)**
-> (or run `vignette("dynaSpec")` in R).
+> (or run `vignette("dynaSpec")` in R). Customization options are shown
+> in the article [Customizing dynamic
+> spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html).
 
 ## Installation
 
@@ -140,8 +146,8 @@ A taste of what you can do (a video made with dynaSpec):
 
 Please cite dynaSpec as follows:
 
-Araya-Salas, M. & Wilkins, M. R. (2026). *dynaSpec: dynamic
-spectrogram visualizations in R*. R package version 0.0.0.9000.
+Araya-Salas, M. & Wilkins, M. R. (2026). *dynaSpec: dynamic spectrogram
+visualizations in R*. R package version 2.0.0.9000.
 <https://github.com/maRce10/dynaSpec>
 
 Bugs and feature requests can be reported at

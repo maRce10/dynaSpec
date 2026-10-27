@@ -11,20 +11,22 @@ dynaspec(wave, flim = NULL, crop = NULL)
 
 \item{flim}{Numeric vector of length 2 with the frequency limits (in kHz). Default is \code{NULL} (from 0 to the Nyquist frequency, or the style default).}
 
-\item{crop}{Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of \code{\link[=selections]{selections()}} and \code{\link[=annotations]{annotations()}} refer to the original (uncropped) sound. Default is \code{NULL} (whole sound).}
+\item{crop}{Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of \code{\link[=selections]{selections()}} and \code{\link[=captions]{captions()}} refer to the original (uncropped) sound. Default is \code{NULL} (whole sound).}
 }
 \value{
 An object of class 'dynaspec'.
 }
 \description{
-\code{dynaspec()} starts a dynamic spectrogram of a sound. Layers are added with \code{+}, as in 'ggplot2' graphs: \code{\link[=spectrogram]{spectrogram()}} and \code{\link[=oscillogram]{oscillogram()}} set the panels, \code{\link[=selections]{selections()}} and \code{\link[=annotations]{annotations()}} highlight and label parts of the sound, and \code{\link[=scrolling]{scrolling()}}, \code{\link[=paged]{paged()}} or \code{\link[=static]{static()}} set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and \code{\link[=save_dynaspec]{save_dynaspec()}} saves it as a web page, a video or still images.
+\code{dynaspec()} starts a dynamic spectrogram of a sound. Layers are added with \code{+}, as in 'ggplot2' graphs: \code{\link[=spectrogram]{spectrogram()}} and \code{\link[=oscillogram]{oscillogram()}} add the panels, \code{\link[=selections]{selections()}} and \code{\link[=captions]{captions()}} highlight and label parts of the sound, and \code{\link[=scrolling]{scrolling()}}, \code{\link[=paged]{paged()}} or \code{\link[=static]{static()}} set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and \code{\link[=save_dynaspec]{save_dynaspec()}} saves it as a web page, a video or still images.
 }
 \details{
-The three styles show the same spectrogram in different ways:
+Panels are added as layers, as in 'ggplot2': only the panels added are shown (\code{\link[=spectrogram]{spectrogram()}}, \code{\link[=oscillogram]{oscillogram()}}, \code{\link[=envelope]{envelope()}} or several of them, and \code{\link[=spectrum]{spectrum()}} next to the spectrogram). \code{dynaspec()} alone shows an empty panel with a time axis and the play line (selections and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.
+
+The three styles show the sound in different ways:
 \itemize{
 \item \code{\link[=scrolling]{scrolling()}}: the spectrogram scrolls along a fixed play line.
 \item \code{\link[=paged]{paged()}}: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.
-\item \code{\link[=static]{static()}} (default): a play line moves over the whole spectrogram (and oscillogram), which can be split in several rows.
+\item \code{\link[=static]{static()}} (default): a play line moves over the whole figure (spectrogram, oscillogram or both), which can be split in several rows.
 }
 
 Web pages include buttons to slow down playback (see \code{\link[=player]{player()}}), and clicking on the spectrogram plays the sound from that point. Figures and sounds are embedded in the HTML code, so web pages can be shared as single files or pasted into any web page. Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut or downsample long recordings before creating web pages.
@@ -33,6 +35,9 @@ Settings not supplied in layers take the defaults of each style (e.g. paged spec
 }
 \examples{
 data(canyon_wren)
+
+# empty panel with time axis (only the panels added as layers are shown)
+dynaspec(canyon_wren)
 
 # static spectrogram with oscillogram (printing shows it in the viewer or browser)
 x <- dynaspec(canyon_wren, flim = c(1, 10)) +
@@ -55,7 +60,10 @@ save_dynaspec(x + scrolling(t.display = 1.7), "canyon_wren.mp4")
 
 # highlight and label parts of the song
 st <- data.frame(start = c(0.5, 3.5), end = c(2, 5), labels = c("start", "end"))
-x + selections(st, labels = "labels") + annotations("canyon wren", start = 0, end = 5.3)
+x + selections(st, labels = "labels") + captions("canyon wren", start = 0, end = 5.3)
+
+# only the oscillogram
+dynaspec(canyon_wren) + oscillogram()
 }
 }
 \references{

@@ -44,13 +44,6 @@ test_that("contrast_col_int picks black or white", {
   expect_equal(dynaSpec:::contrast_col_int(viridis::inferno(1)), "#ffffff")
 })
 
-test_that("fading_text_dynaspec_int fades in and out", {
-  x <- dynaSpec:::fading_text_dynaspec_int(rep(0, 20), start = 5, end = 15, fading = 3, labels = "a")
-  expect_equal(unname(x[5:7]), c(0, 0.5, 1))
-  expect_equal(unname(x[13:15]), c(1, 0.5, 0))
-  expect_equal(unname(x[c(1:4, 16:20)]), rep(0, 9))
-  expect_true(all(names(x)[5:15] == "a"))
-})
 
 test_that("ffmpeg helpers fail gracefully", {
   local_mocked_bindings(ffmpeg_exec2 = function(quote = FALSE) stop("Could not find ffmpeg"))

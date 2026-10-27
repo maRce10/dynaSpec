@@ -27,7 +27,7 @@ spectrogram(wl, ovlp, wn, pal, collevels, colbg, amp.trans, ...)
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}.
 }
 \description{
-\code{spectrogram()} sets how the spectrogram of a \code{\link[=dynaspec]{dynaspec()}} object is computed and drawn.
+\code{spectrogram()} adds a spectrogram to a \code{\link[=dynaspec]{dynaspec()}} object and sets how it is computed and drawn. Adding it again changes its settings.
 }
 \details{
 Only the arguments supplied are used; other settings take the defaults of each style (see \code{\link[=scrolling]{scrolling()}}, \code{\link[=paged]{paged()}} and \code{\link[=static]{static()}}).

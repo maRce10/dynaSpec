@@ -119,11 +119,11 @@ test_that("scrolling_spectro creates web pages", {
   # 'speed' is the initial speed
   expect_match(res, 'data-speeds="0.5,1,0.25,0.125"', fixed = TRUE)
 
-  # settings: times include the buffer (1 s), annotations in sound time + buffer
+  # settings: no buffer by default, annotations in sound time
   cfg <- sub("</script>.*", "", sub('.*<script type="application/json">', "", res))
-  expect_match(cfg, '"buffer":1', fixed = TRUE)
+  expect_match(cfg, '"buffer":0', fixed = TRUE)
   expect_match(cfg, '"durWave":2', fixed = TRUE)
-  expect_match(cfg, '"start":[1.2,2]', fixed = TRUE)
+  expect_match(res, '"start":[0.2,1]', fixed = TRUE)
   expect_match(cfg, '"lower":"spectro"', fixed = TRUE)
 
   # oscillogram strip and moving time axis

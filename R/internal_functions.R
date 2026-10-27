@@ -1,4 +1,38 @@
 # internal functions not to be called by users
+
+# apply FUN to X with an optional progress bar (cli) and parallel computing (adapted from suwo). X is a sequence
+# of indices
+.pbapply_dyn <- function(X, FUN, cl = 1, pbar = TRUE, title = "", ...) {
+  FUN <- match.fun(FUN)
+  cl <- as.integer(cl)
+
+  if (identical(Sys.getenv("TESTTHAT"), "true"))
+    cl <- 1L
+
+  # no parallel
+  if (cl == 1) {
+    if (!pbar)
+      return(lapply(X, FUN, ...))
+    return(lapply(X = cli::cli_progress_along(name = title, x = X, clear = FALSE), FUN = function(i) FUN(X[i], ...)))
+  }
+
+  # parallel (in chunks of 'cl' elements, so the progress bar is updated after each chunk)
+  is_windows <- .Platform$OS.type == "windows"
+  if (is_windows) {
+    clust <- parallel::makePSOCKcluster(cl)
+    on.exit(parallel::stopCluster(clust), add = TRUE)
+  }
+  run_chunk <- function(idx) {
+    if (is_windows) parallel::parLapply(clust, X[idx], FUN, ...) else parallel::mclapply(X[idx], FUN, ..., mc.cores = cl)
+  }
+  chunks <- split(seq_along(X), ceiling(seq_along(X) / cl))
+
+  out <- vector("list", length(X))
+  steps <- if (pbar) cli::cli_progress_along(name = title, x = chunks, clear = FALSE) else seq_along(chunks)
+  for (i in steps)
+    out[chunks[[i]]] <- run_chunk(chunks[[i]])
+  out
+}
 # stop function that doesn't print call
 stop2 <- function (...)
 {
@@ -95,7 +129,7 @@ contrast_col_int <- function(bg) {
 
   ### general arguments -------------------------------------------------------
 
-  for (i in c("fix.time", "play", "ggspectro", "lower.spectro", "derivative", "osc", "save.png", "plot.legend", "bg.flood", "delete.temp", "plot", "verbose", "keep.pitch", "spectro")) {
+  for (i in c("fix.time", "play", "ggspectro", "lower.spectro", "derivative", "osc", "save.png", "plot.legend", "bg.flood", "delete.temp", "plot", "verbose", "keep.pitch", "spectro", "play.line")) {
     if (!is.null(args[[i]]))
       checkmate::assert_flag(args[[i]], add = check_collection, .var.name = i)
   }
@@ -193,7 +227,7 @@ contrast_col_int <- function(bg) {
   if (fun == "scrolling_spectro" && checkmate::test_class(args$wave, "Wave") && checkmate::test_number(args$t.display) && seewave::duration(args$wave) <= args$t.display)
     push("t.display", "Must be shorter than the duration of 'wave'")
 
-  ### static_spectro() and sound_buttons() arguments -------------------------
+  ### static_spectro() arguments ------------------------------------------------
 
   if (!is.null(args$html.file.name)) {
     checkmate::assert_string(args$html.file.name, pattern = if (fun == "static_spectro") "\\.(html?|mp4|png)$" else "\\.html?$", ignore.case = TRUE, add = check_collection, .var.name = "file.name")
@@ -201,6 +235,11 @@ contrast_col_int <- function(bg) {
 
   if (!is.null(args$speeds)) {
     checkmate::assert_numeric(args$speeds, lower = 0.0625, upper = 16, min.len = 1, any.missing = FALSE, unique = TRUE, add = check_collection, .var.name = "speeds")
+  }
+
+  if (!is.null(args$buttons)) {
+    checkmate::assert_character(args$buttons, any.missing = FALSE, unique = TRUE, add = check_collection, .var.name = "buttons")
+    checkmate::assert_subset(args$buttons, c("time", "loop", "volume", "download", "fullscreen"), add = check_collection, .var.name = "buttons")
   }
 
   if (!is.null(args$collevels)) {
@@ -305,7 +344,7 @@ check_wave_int <- function(x) {
   TRUE
 }
 
-### HTML players (static_spectro(), sound_buttons(), and web pages of scrolling_spectro() and paged_spectro()) ---
+### HTML players (static_spectro(), and web pages of scrolling_spectro() and paged_spectro()) ---
 
 # sound to embed: wave object (for plotting) and data uri
 # sound files are embedded as they are; Wave objects are written as wav
@@ -327,16 +366,22 @@ sound_data_int <- function(x, read = TRUE) {
 }
 
 # oscillogram downsampled to min/max amplitude per pixel column
-oscillo_player_int <- function(wave, xlim, colwave, n, axisX = FALSE, cex.lab = 1, offset = 0, max.amp = max(abs(wave@left), 1e-12)) {
+oscillo_player_int <- function(wave, xlim, colwave, n, axisX = FALSE, cex.lab = 1, offset = 0, max.amp = max(abs(wave@left), 1e-12), empty = FALSE, theme = list()) {
   amp <- wave@left / max.amp
   tm <- offset + (seq_along(amp) - 1) / wave@samp.rate
 
   # small vertical margin so peaks do not touch the box
-  graphics::plot(NA, xlim = xlim, ylim = c(-1.05, 1.05), xaxs = "i", yaxs = "i", xaxt = "n", yaxt = "n", xlab = "", ylab = "", bty = "o")
-  graphics::mtext("Amp.", side = 2, line = 0.5, cex = cex.lab, las = 1)
+  panel_frame_int(xlim, c(-1.05, 1.05), theme)
+  on.exit(theme_box_int(theme), add = TRUE)
+  if (!empty && !isTRUE(theme$hide))
+    graphics::mtext("Amp.", side = 2, line = 0.5, cex = cex.lab, las = 1, xpd = NA, font = theme_int(theme, "font.lab", 1), col = theme_int(theme, "col.lab", "black"))
 
   if (axisX)
-    time_axis_int(to_x = identity, xlim = xlim, cex.lab = cex.lab)
+    do.call(time_axis_int, c(list(to_x = identity, xlim = xlim, cex.lab = cex.lab), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis"))]))
+
+  # empty panel (time axis only)
+  if (empty)
+    return(invisible(NULL))
 
   if (length(amp) > 4 * n) {
     bins <- cut(tm, breaks = n, labels = FALSE)
@@ -348,23 +393,175 @@ oscillo_player_int <- function(wave, xlim, colwave, n, axisX = FALSE, cex.lab = 
     graphics::lines(tm, amp, col = colwave)
 }
 
+# theme setting (supplied in dynatheme()) or its default
+theme_int <- function(theme, name, default) if (is.null(theme[[name]])) default else theme[[name]]
+
+# check the settings of dynatheme() (only those supplied)
+check_theme_int <- function(args) {
+  check_results <- .check_arguments("dynatheme", args[intersect(names(args), c("cex.lab", "axis.type", "bg"))])
+  for (i in intersect(names(args), c("xlab", "ylab", "family")))
+    checkmate::assert_string(args[[i]], add = check_results, .var.name = i)
+  for (i in intersect(names(args), c("cex.axis", "cex.title")))
+    checkmate::assert_number(args[[i]], lower = 0.01, add = check_results, .var.name = i)
+  if (!is.null(args$tick.length)) checkmate::assert_number(args$tick.length, lower = 0, add = check_results, .var.name = "tick.length")
+  if (!is.null(args$font.lab)) checkmate::assert_choice(args$font.lab, 1:4, add = check_results, .var.name = "font.lab")
+  if (!is.null(args$las)) checkmate::assert_choice(args$las, 0:1, add = check_results, .var.name = "las")
+  for (i in intersect(names(args), c("box", "grid")))
+    checkmate::assert_flag(args[[i]], add = check_results, .var.name = i)
+  for (i in intersect(names(args), c("col.lab", "bg", "col.box", "col.grid", "col.panel", "col.title", "colbg", "col.wave", "col.line", "col.highlight", "col.bar", "bg.bar")))
+    if (!checkmate::test_string(args[[i]]) || inherits(try(grDevices::col2rgb(args[[i]]), silent = TRUE), "try-error"))
+      check_results$push(paste0("'", i, "': Must be a valid color"))
+  if (!is.null(args$pal) && !is.function(args$pal) && !checkmate::test_character(args$pal, min.len = 1, max.len = 2))
+    check_results$push("'pal': Must be a color palette function, a palette name or two colors (paged spectrograms)")
+  .report_assertions(check_results)
+  args
+}
+
+# preset themes: complete themes (replace previous themes when added) whose settings can be changed in '...'
+theme_preset_int <- function(preset, ...) {
+  th <- layer_int("theme", utils::modifyList(preset, check_theme_int(list(...))))
+  th$complete <- TRUE
+  th
+}
+
+# CSS font family of web pages for an R font family
+css_family_int <- function(family) {
+  switch(family,
+    sans = "Helvetica, Arial, sans-serif",
+    serif = "\"Times New Roman\", Times, serif",
+    mono = "\"Courier New\", Courier, monospace",
+    paste0("\"", family, "\", sans-serif")
+  )
+}
+
+# graphical parameters of the theme for base R devices (font family and tick length)
+theme_par_int <- function(theme, tick.length = 0.5) {
+  graphics::par(family = theme_int(theme, "family", "sans"), tcl = -theme_int(theme, "tick.length", tick.length))
+}
+
+# box around the current panel (unless box = FALSE in the theme)
+theme_box_int <- function(theme, default = "black") {
+  if (!isFALSE(theme$box))
+    graphics::box(col = theme_int(theme, "col.box", theme_int(theme, "col.lab", default)))
+}
+
+# grid lines at the frequency axis ticks (when grid = TRUE in the theme)
+theme_grid_int <- function(theme, at = graphics::axTicks(2)) {
+  if (isTRUE(theme$grid))
+    graphics::abline(h = at, col = theme_int(theme, "col.grid", "#7F7F7F66"), lty = 3)
+}
+
+# empty panel (no axes) with the panel background of the theme
+panel_frame_int <- function(xlim, ylim, theme, bg = theme_int(theme, "col.panel", NA)) {
+  graphics::plot(NA, xlim = xlim, ylim = ylim, xaxs = "i", yaxs = "i", axes = FALSE, xlab = "", ylab = "")
+  usr <- graphics::par("usr")
+  if (!is.na(bg))
+    graphics::rect(usr[1], usr[3], usr[2], usr[4], col = bg, border = NA)
+}
+
+# description of the panels of a static spectrogram (alternative text of web pages)
+panel_names_int <- function(spectro, panels, spectrum) {
+  nms <- c(osc = "oscillogram", env = "amplitude envelope")[vapply(panels, `[[`, character(1), "type")]
+  nms <- c(if (spectro) "spectrogram", nms, if (!is.null(spectrum)) "power spectrum")
+  out <- if (length(nms) > 1) paste(paste(nms[-length(nms)], collapse = ", "), "and", nms[length(nms)]) else nms
+  paste0(toupper(substring(out, 1, 1)), substring(out, 2))
+}
+
+# amplitude envelope of a sound (absolute amplitude smoothed with a moving window), and its times
+envelope_int <- function(wave, n = 2000) {
+  amp <- abs(wave@left)
+  # window of ~5 ms (at least 1 sample)
+  w <- max(1, round(wave@samp.rate * 0.005))
+  # centered moving average (cumulative sums; shorter windows at both ends)
+  cs <- c(0, cumsum(amp))
+  lo <- pmax(seq_along(amp) - w %/% 2, 1)
+  hi <- pmin(seq_along(amp) + w %/% 2, length(amp))
+  env <- (cs[hi + 1] - cs[lo]) / (hi - lo + 1)
+  # keep at most 'n' points per sound (maximum of each bin)
+  if (length(env) > n) {
+    bins <- cut(seq_along(env), breaks = n, labels = FALSE)
+    tm <- vapply(split(seq_along(env), bins), mean, numeric(1))
+    env <- vapply(split(env, bins), max, numeric(1))
+  } else tm <- seq_along(env)
+  list(time = (tm - 1) / wave@samp.rate, env = env)
+}
+
+# amplitude envelope panel (time in s on the x axis)
+envelope_player_int <- function(wave, xlim, col, axisX = FALSE, cex.lab = 1, offset = 0, max.env = NULL, theme = list()) {
+  e <- envelope_int(wave)
+  y <- e$env / if (is.null(max.env)) max(e$env, 1e-12) else max.env
+  panel_frame_int(xlim, c(0, 1.05), theme)
+  if (!isTRUE(theme$hide))
+    graphics::mtext("Env.", side = 2, line = 0.5, cex = cex.lab, las = 1, xpd = NA, font = theme_int(theme, "font.lab", 1), col = theme_int(theme, "col.lab", "black"))
+  if (axisX)
+    do.call(time_axis_int, c(list(to_x = identity, xlim = xlim, cex.lab = cex.lab), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis"))]))
+  x <- offset + e$time
+  graphics::polygon(c(x[1], x, x[length(x)]), c(0, y, 0), col = grDevices::adjustcolor(col, 0.6), border = col)
+  theme_box_int(theme)
+}
+
+# mean power spectrum of a sound (frequency in kHz, linear amplitude), restricted to the frequency limits
+spectrum_int <- function(wave, wl = 512, flim = NULL) {
+  sp <- seewave::meanspec(wave, f = wave@samp.rate, wl = wl, plot = FALSE, norm = FALSE)
+  if (!is.null(flim)) sp <- sp[sp[, 1] >= flim[1] & sp[, 1] <= flim[2], , drop = FALSE]
+  list(freq = sp[, 1], amp = sp[, 2])
+}
+
+# power spectrum panel next to the spectrogram (frequency on the y axis, same range as the spectrogram)
+# ('axis': frequency axis on its left side, used when the spectrum is on the left of the spectrogram)
+spectrum_player_int <- function(sp, ylim, side = "right", col = "black", max.amp = NULL, label = TRUE, cex.lab = 1, axis = FALSE, theme = list()) {
+  x <- sp$amp / if (is.null(max.amp)) max(sp$amp, 1e-12) else max.amp
+  col_lab <- theme_int(theme, "col.lab", "black")
+  panel_frame_int(if (side == "left") c(1.05, 0) else c(0, 1.05), ylim, theme)
+  theme_grid_int(theme, at = pretty(ylim))
+  graphics::polygon(c(0, x, 0), c(sp$freq[1], sp$freq, sp$freq[length(sp$freq)]), col = grDevices::adjustcolor(col, 0.6), border = col)
+  if (axis) {
+    # as the frequency axis of the spectrogram
+    graphics::axis(2, las = theme_int(theme, "las", 1), col = col_lab, col.axis = col_lab, cex.axis = theme_int(theme, "cex.axis", 1))
+    graphics::title(ylab = theme_int(theme, "ylab", "Frequency (kHz)"), cex.lab = cex.lab, col.lab = col_lab, font.lab = theme_int(theme, "font.lab", 1))
+  }
+  theme_box_int(theme)
+  if (label)
+    graphics::mtext("Power", side = 3, line = 0.1, cex = 0.8 * cex.lab * theme_int(theme, "cex.title", 1), col = theme_int(theme, "col.title", col_lab))
+}
+
+# spectrogram panel of static spectrograms: computed with seewave::spectro() and drawn in the current panel
+# (seewave::spectro() plots set the background of the whole page to 'colbg', covering other panels and the figure
+# background). As in seewave, analysis windows are spread evenly from 0 to the duration of the sound. Other
+# arguments are passed to seewave::spectro()
+spectro_int <- function(wave, f, wl, ovlp, flim, pal, collevels, colbg = "white", dBref = NULL, axisY = TRUE,
+                        flab = "Frequency (kHz)", cex.lab = 1, cex.axis = 1, col.lab = "black", theme = list(), ...) {
+  sp <- seewave::spectro(wave, f = f, wl = wl, ovlp = ovlp, flim = flim, norm = FALSE, dBref = dBref, plot = FALSE, ...)
+  graphics::plot.new()
+  graphics::plot.window(xlim = range(sp$time), ylim = range(sp$freq), xaxs = "i", yaxs = "i")
+  usr <- graphics::par("usr")
+  graphics::rect(usr[1], usr[3], usr[2], usr[4], col = colbg, border = NA)
+  graphics::.filled.contour(sp$time, sp$freq, t(sp$amp), levels = collevels, col = pal(length(collevels) - 1))
+  theme_grid_int(theme)
+  theme_box_int(theme, col.lab)
+  if (axisY) {
+    graphics::axis(2, las = theme_int(theme, "las", 1), col = col.lab, col.axis = col.lab, cex.axis = cex.axis)
+    graphics::title(ylab = flab, cex.lab = cex.lab, col.lab = col.lab)
+  }
+}
+
 # time axis; 'to_x' converts times to x axis coordinates
-time_axis_int <- function(to_x, xlim, cex.lab) {
+time_axis_int <- function(to_x, xlim, cex.lab, xlab = "Time (s)", font.lab = 1, col.lab = "black", cex.axis = 1) {
   # ticks slightly outside the plotted range are kept (the spectrogram starts and ends half a window inside the sound)
   tol <- diff(xlim) * 0.01
   at <- pretty(xlim)
   at <- at[at >= xlim[1] - tol & at <= xlim[2] + tol]
   # axis() drops ticks outside the plotting region, so those are moved to its edge (less than a pixel away)
   usr <- graphics::par("usr")
-  graphics::axis(1, at = pmin(pmax(to_x(at), usr[1]), usr[2]), labels = at)
-  graphics::mtext("Time (s)", side = 1, line = 3, cex = cex.lab)
+  graphics::axis(1, at = pmin(pmax(to_x(at), usr[1]), usr[2]), labels = at, col = col.lab, col.axis = col.lab, cex.axis = cex.axis)
+  graphics::mtext(xlab, side = 1, line = max(3, 1.8 + cex.lab), cex = cex.lab, font = font.lab, col = col.lab)
 }
 
 # web page of scrolling_spectro(): a frame with the parts that do not move (axes, play line, lower spectrogram),
 # with the full spectrogram (and oscillogram) below it, moved by the web page in sync with the sound
 scrolling_html_int <- function(frame_file, spectro_file, osc_file, lower, plt, height.prop, wave, wave_sil, t.display, buffer,
-                               step_time, step_time_low, fps, loop, fix.time, axis, width, res, annotation, annotation.args,
-                               speeds, keep.pitch, lcol) {
+                               step_time, step_time_low, fps, loop, fix.time, axis, width, res, captions = NULL,
+                               speeds, keep.pitch, buttons = "time", download.name = "sound", lcol, theme = list()) {
   # plotting region (proportions of the frame from the top); the upper part has the scrolling spectrogram
   split <- plt[3] + (plt[4] - plt[3]) * height.prop[2] / height.prop[1]
   dur_wave <- seewave::duration(wave)
@@ -374,19 +571,6 @@ scrolling_html_int <- function(frame_file, spectro_file, osc_file, lower, plt, h
     wave <- seewave::pastew(wave2 = tuneR::silence(duration = buffer, samp.rate = wave@samp.rate, xunit = "time"), wave1 = wave, f = wave@samp.rate, output = "Wave")
   snd <- sound_data_int(wave)
 
-  # annotations: one label at a time, fading in and out
-  ann <- NULL
-  if (!is.null(annotation)) {
-    a <- annotation.args
-    ann <- list(
-      labels = as.character(a$labels), start = a$start + buffer, end = a$end + buffer,
-      fading = if (is.null(a$fading)) 0 else a$fading,
-      x = plt[1] + (plt[2] - plt[1]) * a$x[1], y = 1 - (plt[3] + (plt[4] - plt[3]) * a$y[1]),
-      col = col2hex_int(if (is.null(a$col)) "black" else a$col[1]), cex = if (is.null(a$cex)) 1 else a$cex[1],
-      font = if (is.null(a$font)) 1 else a$font[1], pos = if (is.null(a$pos)) 0 else a$pos[1]
-    )
-  }
-
   tick_step <- diff(pretty(c(0, t.display)))[1]
 
   cfg <- list(
@@ -394,17 +578,20 @@ scrolling_html_int <- function(frame_file, spectro_file, osc_file, lower, plt, h
     buffer = buffer, k = step_time * fps, kl = step_time_low * fps / t.display, loop = loop > 1, lower = lower,
     left = plt[1], right = plt[2], upTop = 1 - plt[4], upBottom = 1 - split, lowTop = 1 - split, lowBottom = 1 - plt[3],
     movingAxis = axis && !fix.time, tickStep = tick_step, tickDigits = max(0, -floor(log10(tick_step) + 1e-9)),
-    width = width, res = res, ann = ann
+    width = width, res = res,
+    bg = col2hex_int(theme_int(theme, "bg", "white")), colLab = col2hex_int(theme_int(theme, "col.lab", "black")),
+    cexAxis = theme_int(theme, "cex.axis", 1)
   )
 
   paste0(
-    '<div class="dynaspec-scroll" data-speeds="', paste(speeds, collapse = ","), '" data-keep-pitch="', tolower(keep.pitch),
-    '" data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
+    '<div class="dynaspec-scroll"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme),
+    ' data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
     '<script type="application/json">', json_int(cfg), '</script>\n',
     '<img class="ds-frame" src="', base64_uri_int(frame_file, "image/png"), '" alt="Scrolling spectrogram">\n',
     '<img class="ds-strip" src="', base64_uri_int(spectro_file, "image/png"), '" alt="">\n',
     if (!is.null(osc_file)) paste0('<img class="ds-strip ds-osc" src="', base64_uri_int(osc_file, "image/png"), '" alt="">\n'),
     '<audio controls preload="auto"', if (loop > 1) " loop", ' src="', snd$uri, '"></audio>\n',
+    captions_json_int(captions, res = res, width = width, offset = buffer),
     '</div>\n',
     player_js_int()
   )
@@ -426,7 +613,8 @@ json_int <- function(x) {
 
 # web page of paged_spectro(): one image per page ('pages': list of page images (data uris) and the extents of
 # their highlight boxes)
-paged_html_int <- function(pages, wave, highlightCol, highlightAlpha, cursorCol, speeds, keep.pitch) {
+paged_html_int <- function(pages, wave, highlightCol, highlightAlpha, cursorCol, speeds, keep.pitch, buttons = "time", download.name = "sound",
+                           captions = NULL, res = 100, width = 1000, theme = list()) {
   ext <- do.call(rbind, lapply(pages, `[[`, "ext"))
   snd <- sound_data_int(wave)
   n_pages <- length(pages)
@@ -435,10 +623,11 @@ paged_html_int <- function(pages, wave, highlightCol, highlightAlpha, cursorCol,
     '<div class="dynaspec-paged" data-duration="', seewave::duration(wave),
     '" data-rows="', paste(apply(round(ext, 5), 1, paste, collapse = ","), collapse = ";"),
     '" data-highlight="', col2hex_int(highlightCol), '" data-alpha="', highlightAlpha, '" data-cursor="', col2hex_int(cursorCol),
-    '" data-speeds="', paste(speeds, collapse = ","), '" data-keep-pitch="', tolower(keep.pitch),
-    '" data-color="', col2hex_int(highlightCol), '" data-text-color="', contrast_col_int(highlightCol), '">\n',
+    '"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme),
+    ' data-color="', col2hex_int(highlightCol), '" data-text-color="', contrast_col_int(highlightCol), '">\n',
     paste0('<img src="', vapply(pages, `[[`, character(1), "uri"), '" alt="Spectrogram, page ', seq_len(n_pages), ' of ', n_pages, '">', collapse = "\n"),
     '\n<audio controls preload="auto" src="', snd$uri, '"></audio>\n',
+    captions_json_int(captions, res = res, width = width),
     '</div>\n',
     player_js_int()
   )
@@ -446,7 +635,7 @@ paged_html_int <- function(pages, wave, highlightCol, highlightAlpha, cursorCol,
 
 # video of one page of a paged spectrogram: the translucent highlight box (from the cursor to the end of the
 # page) and the cursor move over the page image along the sound ('ext': time range and box extents)
-paged_video_int <- function(png_file, wave, ext, file.name, highlightCol, highlightAlpha, cursorCol, fps) {
+paged_video_int <- function(png_file, wave, ext, file.name, highlightCol, highlightAlpha, cursorCol, fps, captions = NULL, res = 100) {
   wav_file <- tempfile(fileext = ".wav")
   on.exit(unlink(wav_file), add = TRUE)
   tuneR::writeWave(if (wave@pcm) wave else tuneR::normalize(wave, unit = "16"), filename = wav_file)
@@ -469,15 +658,19 @@ paged_video_int <- function(png_file, wave, ext, file.name, highlightCol, highli
     "[a][box]overlay=x='", x0, "+", speed, "*t':y=", y0, "[v1];",
     "[b]crop=", W - x1, ":", H, ":", x1, ":0[r];",
     "[v1][r]overlay=x=", x1, ":y=0[v2];",
-    "[v2][2]overlay=x='", x0 - lw / 2, "+", speed, "*t':y=", y0, ",pad=ceil(iw/2)*2:ceil(ih/2)*2,format=yuv420p[v]"
+    "[v2][2]overlay=x='", x0 - lw / 2, "+", speed, "*t':y=", y0, "[v3]"
   )
+
+  # captions of this page (times relative to the start of the page; inputs after the audio)
+  caps <- caption_overlays_int(captions, width = W, height = H, res = res, fps = fps, first = 4, in_label = "v3", offset = ext[["t0"]], dur = dur)
+  filter <- paste(c(filter, caps$filters, paste0("[", caps$out, "]pad=ceil(iw/2)*2:ceil(ih/2)*2,format=yuv420p[v]")), collapse = ";")
 
   run_ffmpeg_int(
     paste0(
       '-y -loop 1 -framerate ', fps, ' -i "', png_file, '"',
       ' -f lavfi -i "color=c=', sub("#", "0x", col2hex_int(highlightCol)), ':s=', x1 - x0, 'x', bh, ':r=', fps, '"',
       ' -f lavfi -i "color=c=', sub("#", "0x", col2hex_int(cursorCol)), ':s=', lw, 'x', bh, ':r=', fps, '"',
-      ' -i "', wav_file, '" -filter_complex "', filter, '" -map "[v]" -map 3:a',
+      ' -i "', wav_file, '" ', paste(caps$inputs, collapse = " "), ' -filter_complex "', filter, '" -map "[v]" -map 3:a',
       ' -c:v libx264 -tune stillimage -r ', fps, ' -c:a aac -b:a 192k -ac ', if (wave@stereo) 2 else 1, ' -t ', dur,
       ' "', file.name, '"'
     ),
@@ -489,7 +682,7 @@ paged_video_int <- function(png_file, wave, ext, file.name, highlightCol, highli
 
 # video of a static_spectro() figure with the play line moving along the sound
 # 'ext' has one row per segment (t0, t1, and left, right, top and bottom as proportions of the figure)
-playhead_video_int <- function(png_file, wave, ext, file.name, lcol, fps, width, height) {
+playhead_video_int <- function(png_file, wave, ext, file.name, lcol, fps, width, height, line = TRUE, captions = NULL, res = 100) {
   wav_file <- tempfile(fileext = ".wav")
   on.exit(unlink(wav_file), add = TRUE)
   tuneR::writeWave(if (wave@pcm) wave else tuneR::normalize(wave, unit = "16"), filename = wav_file)
@@ -498,9 +691,9 @@ playhead_video_int <- function(png_file, wave, ext, file.name, lcol, fps, width,
   lw <- max(2, round(width / 500))
   col <- sub("#", "0x", col2hex_int(lcol))
 
-  # one line (color source) per row, shown while that row plays. The overlay filter evaluates the
-  # position expressions on every frame (unlike drawbox in ffmpeg < 5)
-  n_rows <- nrow(ext)
+  # one line (color source) per row, shown while that row plays (no lines when 'line' is FALSE). The overlay
+  # filter evaluates the position expressions on every frame (unlike drawbox in ffmpeg < 5)
+  n_rows <- if (line) nrow(ext) else 0
   lines <- vapply(seq_len(n_rows), function(k) {
     e <- ext[k, ]
     line_h <- round((e[["bottom"]] - e[["top"]]) * height)
@@ -510,17 +703,20 @@ playhead_video_int <- function(png_file, wave, ext, file.name, lcol, fps, width,
     sprintf("[v%d][%d]overlay=x='%f+%f*(t-%f)':y=%d:enable='%s'[v%d]", k - 1, k + 1, x0, dx, e[["t0"]], round(e[["top"]] * height), enable, k)
   }, character(1))
 
-  # video dimensions must be even
-  filter <- paste(c("[0]pad=ceil(iw/2)*2:ceil(ih/2)*2:color=white[v0]", lines), collapse = ";")
-
   sources <- vapply(seq_len(n_rows), function(k) {
     sprintf('-f lavfi -i "color=c=%s:s=%dx%d:r=%s"', col, lw, max(1, round((ext[k, "bottom"] - ext[k, "top"]) * height)), fps)
   }, character(1))
 
+  # captions over the video (inputs after the line sources)
+  caps <- caption_overlays_int(captions, width = width, height = height, res = res, fps = fps, first = n_rows + 2, in_label = paste0("v", n_rows), dur = dur)
+
+  # video dimensions must be even
+  filter <- paste(c("[0]pad=ceil(iw/2)*2:ceil(ih/2)*2:color=white[v0]", lines, caps$filters), collapse = ";")
+
   run_ffmpeg_int(
     paste0(
-      '-y -loop 1 -framerate ', fps, ' -i "', png_file, '" -i "', wav_file, '" ', paste(sources, collapse = " "),
-      ' -filter_complex "', filter, '" -map "[v', n_rows, ']" -map 1:a',
+      '-y -loop 1 -framerate ', fps, ' -i "', png_file, '" -i "', wav_file, '" ', paste(c(sources, caps$inputs), collapse = " "),
+      ' -filter_complex "', filter, '" -map "[', caps$out, ']" -map 1:a',
       ' -c:v libx264 -tune stillimage -pix_fmt yuv420p -r ', fps,
       # explicit number of channels (the aac encoder rejects the channel layout of mono files written by tuneR)
       ' -c:a aac -b:a 192k -ac ', if (wave@stereo) 2 else 1, ' -t ', dur,
@@ -530,6 +726,51 @@ playhead_video_int <- function(png_file, wave, ext, file.name, lcol, fps, width,
   )
 
   invisible(file.name)
+}
+
+# captions (captions() layers) of web pages: settings read by the player script. 'res' and 'width' are those of the
+# figure (text sizes are scaled to the size of the figure), and 'offset' is added to their times
+captions_json_int <- function(captions, res, width, offset = 0) {
+  if (length(captions) == 0)
+    return("")
+  layers <- lapply(captions, function(cp) list(
+    labels = as.character(cp$labels), start = cp$start + offset, end = cp$end + offset, fading = cp$fading,
+    x = cp$x, y = 1 - cp$y, col = col2hex_int(cp$col), cex = cp$cex, font = cp$font, family = css_family_int(theme_int(cp, "family", "sans"))
+  ))
+  paste0('<script type="application/json" class="ds-captions">', json_int(list(layers = layers, res = res, width = width)), '</script>\n')
+}
+
+# captions of videos: each label is drawn in a transparent image of the size of the frame, which ffmpeg fades in and
+# out over the video. Returns the ffmpeg inputs and the filters overlaying them on the video labelled 'in_label'
+# (inputs are numbered from 'first'); times are shifted by 'offset' (e.g. the start of a page)
+caption_overlays_int <- function(captions, width, height, res, fps, first, in_label, offset = 0, dur = Inf) {
+  inputs <- character(0)
+  filters <- character(0)
+  label <- in_label
+  k <- first
+  for (cp in captions) {
+    for (i in seq_along(cp$labels)) {
+      t0 <- cp$start[i] - offset
+      t1 <- cp$end[i] - offset
+      if (t1 <= 0 || t0 >= dur) next
+      png_file <- tempfile(fileext = ".png")
+      grDevices::png(png_file, width = width, height = height, res = res, bg = "transparent")
+      graphics::par(mar = rep(0, 4))
+      graphics::plot.new()
+      graphics::plot.window(xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i")
+      graphics::text(cp$x, cp$y, labels = cp$labels[i], col = cp$col, cex = cp$cex, font = cp$font, family = theme_int(cp, "family", "sans"))
+      grDevices::dev.off()
+
+      inputs <- c(inputs, sprintf('-loop 1 -framerate %s -i "%s"', fps, png_file))
+      fade <- if (cp$fading > 0) sprintf(",fade=t=in:st=%f:d=%f:alpha=1,fade=t=out:st=%f:d=%f:alpha=1", max(t0, 0), cp$fading, max(t1 - cp$fading, 0), cp$fading) else ""
+      out <- sprintf("cap%d", k)
+      filters <- c(filters, sprintf("[%d]format=rgba%s[c%d]", k, fade, k),
+                   sprintf("[%s][c%d]overlay=0:0:enable='between(t,%f,%f)'[%s]", label, k, t0, t1, out))
+      label <- out
+      k <- k + 1
+    }
+  }
+  list(inputs = inputs, filters = filters, out = label)
 }
 
 # base64 encode a file as a data uri
@@ -554,6 +795,19 @@ base64_enc_int <- function(x) {
 col2hex_int <- function(col) {
   rgb <- grDevices::col2rgb(col)
   grDevices::rgb(rgb[1], rgb[2], rgb[3], maxColorValue = 255)
+}
+
+# attributes of web players with the player() settings (speed buttons, keep pitch, additional buttons and name
+# of downloaded sounds)
+# (and colors of the controls and font family of the dynatheme())
+player_attrs_int <- function(speeds, keep.pitch, buttons, download.name, theme = list()) {
+  paste0(
+    ' data-speeds="', paste(speeds, collapse = ","), '" data-keep-pitch="', tolower(keep.pitch),
+    '" data-buttons="', paste(buttons, collapse = ","), '" data-name="', html_escape_int(download.name), '"',
+    if (!is.null(theme$col.bar)) paste0(' data-bar-col="', col2hex_int(theme$col.bar), '" data-bar-line="', col2hex_int(grDevices::adjustcolor(theme$col.bar, 0.45)), '"'),
+    if (!is.null(theme$bg.bar)) paste0(' data-bar-bg="', col2hex_int(theme$bg.bar), '"'),
+    if (!is.null(theme$family)) paste0(' data-family="', html_escape_int(css_family_int(theme$family)), '"')
+  )
 }
 
 html_escape_int <- function(x) {
@@ -627,7 +881,7 @@ player_js_int <- function() {
     css.textContent =
       ".dynaspec-player .ds-wrap,.dynaspec-paged .ds-wrap{position:relative;cursor:pointer}" +
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
-      ".dynaspec-player audio,.dynaspec-sounds audio,.dynaspec-paged audio{display:none}" +
+      ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
@@ -637,15 +891,26 @@ player_js_int <- function() {
       ".ds-vp{position:absolute;overflow:hidden;z-index:1}" +
       ".ds-vp img.ds-strip{position:absolute;top:0;height:100%;max-width:none;margin:0;display:block}" +
       ".ds-over{position:absolute;z-index:3;pointer-events:none}" +
-      ".ds-text{position:absolute;z-index:4;pointer-events:none;white-space:nowrap;font-family:Helvetica,Arial,sans-serif;line-height:1}" +
-      ".ds-bar .ds-page{font-variant-numeric:tabular-nums;color:#555}" +
+      ".ds-text{position:absolute;z-index:4;pointer-events:none;white-space:nowrap;font-family:var(--ds-font,Helvetica,Arial,sans-serif);line-height:1}" +
+      ".ds-bar .ds-page{font-variant-numeric:tabular-nums;color:var(--ds-fg,#555)}" +
       ".ds-head{position:absolute;width:2px;margin-left:-1px;pointer-events:none}" +
       ".ds-bar{display:flex;flex-wrap:wrap;gap:.4em;align-items:center;margin:.4em 0 1.2em;font-size:.9em}" +
-      ".ds-bar button{border:1px solid #bbb;background:#fff;color:#222;border-radius:4px;padding:.15em .7em;line-height:1.5;cursor:pointer}" +
+      ".ds-bar button{border:1px solid var(--ds-line,#bbb);background:var(--ds-bg,#fff);color:var(--ds-fg,#222);border-radius:4px;padding:.15em .7em;line-height:1.5;cursor:pointer}" +
       ".ds-bar .ds-play{min-width:5.5em;font-weight:600}" +
-      ".ds-bar .ds-time{font-variant-numeric:tabular-nums;color:#555;margin-left:.3em}" +
-      ".ds-bar .ds-sep{color:#999;margin:0 .2em}" +
-      ".ds-bar .ds-pitch{margin-left:.6em}";
+      ".ds-bar .ds-time{font-variant-numeric:tabular-nums;color:var(--ds-fg,#555);margin-left:.3em}" +
+      ".ds-bar .ds-sep{color:var(--ds-fg,#999);opacity:.75;margin:0 .2em}" +
+      ".ds-bar .ds-rate{color:var(--ds-fg,inherit)}" +
+      ".ds-bar .ds-speed{display:inline-flex;align-items:center;gap:.4em}" +
+      ".ds-bar .ds-speed input{margin:0}" +
+      ".ds-bar .ds-rate{font-variant-numeric:tabular-nums;min-width:2.2em;font-weight:600}" +
+      ".ds-bar .ds-pitch{margin-left:.6em}" +
+      ".ds-bar .ds-loop{margin-left:.6em}" +
+      ".ds-bar .ds-vol{display:inline-flex;align-items:center;gap:.3em;margin-left:.6em}" +
+      ".ds-bar .ds-vol input{width:5em;margin:0}" +
+      ".ds-bar .ds-fs{margin-left:auto}" +
+      // full screen: player centered, as large as possible while showing the whole figure and the buttons
+      ".dynaspec-player:fullscreen,.dynaspec-paged:fullscreen,.dynaspec-scroll:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-player:fullscreen>*,.dynaspec-paged:fullscreen>*,.dynaspec-scroll:fullscreen>*{width:100%;margin-left:auto;margin-right:auto}";
     document.head.appendChild(css);
 
     var setup = function (a, keep) {
@@ -664,28 +929,41 @@ player_js_int <- function() {
       b.style.boxShadow = on ? "inset 0 0 0 1px rgba(0,0,0,0.35)" : "";
     };
 
-    // speed buttons and keep pitch toggle; returns a function giving the current speed
+    // speed slider (snapping to the speeds of player(), slowest on the left) and keep pitch toggle; returns a
+    // function giving the current speed
+    var nSliders = 0;
     var speedGroup = function (bar, speeds, color, keep, audios, onChange) {
-      var rate = speeds[0], btns = [];
+      var rate = speeds[0];
       if (speeds.length < 2) return function () { return rate; };
+      var sorted = speeds.slice().sort(function (x, y) { return x - y; });
+      var group = document.createElement("span");
+      group.className = "ds-speed";
       var sep = document.createElement("span");
       sep.className = "ds-sep";
       sep.textContent = "speed";
-      bar.appendChild(sep);
-      var paint = function () {
-        btns.forEach(function (b) { paintBtn(b, b.dsRate === rate, color); });
+      var slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = 0; slider.max = sorted.length - 1; slider.step = 1;
+      slider.value = sorted.indexOf(rate);
+      slider.style.accentColor = color[0];
+      slider.style.width = 1.6 * sorted.length + "em";
+      slider.setAttribute("aria-label", "playback speed");
+      // tick marks at the fixed speeds
+      var ticks = document.createElement("datalist");
+      ticks.id = "ds-speeds-" + (++nSliders);
+      sorted.forEach(function (s, i) { var o = document.createElement("option"); o.value = i; ticks.appendChild(o); });
+      slider.setAttribute("list", ticks.id);
+      var out = document.createElement("span");
+      out.className = "ds-rate";
+      var show = function () {
+        out.textContent = label(rate);
+        slider.title = rate === 1 ? "real time" : rate < 1 ? "slowed down" : "sped up";
+        slider.setAttribute("aria-valuetext", label(rate));
       };
-      speeds.forEach(function (s) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.dsRate = s;
-        b.textContent = label(s);
-        b.title = s === 1 ? "real time" : s < 1 ? "slowed down" : "sped up";
-        b.addEventListener("click", function () { rate = s; paint(); onChange(rate); });
-        btns.push(b);
-        bar.appendChild(b);
-      });
-      paint();
+      slider.addEventListener("input", function () { rate = sorted[+slider.value]; show(); onChange(rate); });
+      show();
+      [sep, slider, ticks, out].forEach(function (x) { group.appendChild(x); });
+      bar.appendChild(group);
 
       // keep pitch toggle
       var p = document.createElement("button");
@@ -704,6 +982,136 @@ player_js_int <- function() {
       bar.appendChild(p);
 
       return function () { return rate; };
+    };
+
+    // additional controls set by player(buttons): time readout, loop, volume, download and full screen. time is
+    // the time readout of the player and redraw updates the player (e.g. after entering full screen)
+    var extraButtons = function (div, bar, wrap, a, time, color, redraw) {
+      var d = div.dataset, opts = d.buttons ? d.buttons.split(",") : [];
+      var has = function (x) { return opts.indexOf(x) > -1; };
+      // colors of the controls and font family of the dynatheme()
+      if (d.barCol) { div.style.setProperty("--ds-fg", d.barCol); div.style.setProperty("--ds-line", d.barLine); }
+      if (d.barBg) {
+        div.style.setProperty("--ds-bg", d.barBg);
+        bar.style.background = d.barBg;
+        bar.style.padding = ".35em .5em";
+        bar.style.marginTop = "0";
+      }
+      if (d.family) div.style.setProperty("--ds-font", d.family);
+      var button = function (cls, text, title) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = cls;
+        b.textContent = text;
+        b.title = title;
+        bar.appendChild(b);
+        return b;
+      };
+      if (!has("time")) time.style.display = "none";
+
+      if (has("loop")) {
+        var lp = button("ds-loop", "\\u21BB loop", "");
+        var setLoop = function () {
+          lp.setAttribute("aria-pressed", a.loop);
+          lp.title = a.loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+          paintBtn(lp, a.loop, color);
+        };
+        lp.addEventListener("click", function () { a.loop = !a.loop; setLoop(); });
+        setLoop();
+      }
+
+      if (has("volume")) {
+        var vol = document.createElement("span");
+        vol.className = "ds-vol";
+        var mute = document.createElement("button");
+        mute.type = "button";
+        var slider = document.createElement("input");
+        slider.type = "range";
+        slider.min = 0; slider.max = 1; slider.step = 0.05; slider.value = a.volume;
+        slider.style.accentColor = color[0];
+        slider.setAttribute("aria-label", "volume");
+        var setVol = function () {
+          var off = a.muted || a.volume === 0;
+          mute.textContent = off ? "\\uD83D\\uDD07" : "\\uD83D\\uDD0A";
+          mute.title = off ? "unmute" : "mute";
+          mute.setAttribute("aria-pressed", off);
+          slider.value = a.muted ? 0 : a.volume;
+        };
+        mute.addEventListener("click", function () {
+          if (a.volume === 0) { a.volume = 1; a.muted = false; } else a.muted = !a.muted;
+          setVol();
+        });
+        slider.addEventListener("input", function () { a.volume = +slider.value; a.muted = false; setVol(); });
+        vol.appendChild(mute);
+        vol.appendChild(slider);
+        bar.appendChild(vol);
+        setVol();
+      }
+
+      if (has("download")) {
+        var mp3 = a.src.indexOf("data:audio/mpeg") === 0;
+        button("ds-dl", "\\u2913 download", "save the sound").addEventListener("click", function () {
+          var link = document.createElement("a");
+          link.href = a.src;
+          link.download = (d.name || "sound") + (mp3 ? ".mp3" : ".wav");
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+      }
+
+      if (has("fullscreen") && div.requestFullscreen && document.fullscreenEnabled) {
+        var fs = button("ds-fs", "\\u26F6 full screen", "show in full screen");
+        fs.addEventListener("click", function () {
+          // the request can be refused (e.g. in embedded frames)
+          if (document.fullscreenElement === div) document.exitFullscreen(); else div.requestFullscreen().catch(function () {});
+        });
+        document.addEventListener("fullscreenchange", function () {
+          var on = document.fullscreenElement === div, img = wrap.querySelector("img");
+          fs.textContent = on ? "\\u2715 exit full screen" : "\\u26F6 full screen";
+          fs.title = on ? "exit full screen" : "show in full screen";
+          // widest size at which the figure and the buttons fit in the screen
+          var w = on && img.naturalHeight ? Math.max(200, (window.innerHeight - bar.offsetHeight - 64) * img.naturalWidth / img.naturalHeight) + "px" : "";
+          wrap.style.maxWidth = bar.style.maxWidth = w;
+          redraw();
+        });
+      }
+    };
+
+    // captions: text at a fixed position of the figure shown (fading in and out) during a time range. Settings
+    // are in a script element of class ds-captions; returns a function that updates captions at time t
+    var captionsInit = function (div, wrap) {
+      var el = div.querySelector("script.ds-captions");
+      if (!el) return function () {};
+      var c = JSON.parse(el.textContent);
+      var arr = function (x) { return Array.isArray(x) ? x : [x]; };
+      var items = c.layers.map(function (l) {
+        var node = document.createElement("div");
+        node.className = "ds-text";
+        node.style.color = l.col;
+        node.style.fontWeight = l.font === 2 || l.font === 4 ? "bold" : "normal";
+        node.style.fontStyle = l.font === 3 || l.font === 4 ? "italic" : "normal";
+        if (l.family) node.style.fontFamily = l.family;
+        node.style.left = 100 * l.x + "%";
+        node.style.top = 100 * l.y + "%";
+        node.style.transform = "translate(-50%,-50%)";
+        wrap.appendChild(node);
+        return {node: node, l: l, labels: arr(l.labels), start: arr(l.start), end: arr(l.end)};
+      });
+      return function (t) {
+        // text size follows the size of the figure (12 points at the resolution of the figure)
+        var px = 12 * c.res / 72 * wrap.clientWidth / c.width;
+        items.forEach(function (it) {
+          var op = 0, txt = "", f = Math.max(it.l.fading, 1e-3);
+          it.labels.forEach(function (lab, i) {
+            var t0 = it.start[i], t1 = it.end[i];
+            if (t >= t0 && t <= t1) { var o = Math.min(1, (t - t0) / f, (t1 - t) / f); if (o > op) { op = o; txt = lab; } }
+          });
+          it.node.textContent = txt;
+          it.node.style.opacity = op;
+          it.node.style.fontSize = it.l.cex * px + "px";
+        });
+      };
     };
 
     var initPlayer = function (div) {
@@ -730,6 +1138,8 @@ player_js_int <- function() {
       var head = document.createElement("div");
       head.className = "ds-head";
       head.style.background = d.color;
+      // no moving line when play.line is FALSE (clicking on the figure still plays from that point)
+      if (d.line === "false") head.style.display = "none";
       wrap.appendChild(head);
 
       var bar = document.createElement("div");
@@ -744,10 +1154,12 @@ player_js_int <- function() {
       time.className = "ds-time";
       bar.appendChild(time);
       wrap.insertAdjacentElement("afterend", bar);
+      var captions = captionsInit(div, wrap);
 
       var raf, fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
       var draw = function () {
         var t = Math.min(a.currentTime, dur), r = rowAt(t);
+        captions(t);
         head.style.left = 100 * (r.left + (r.right - r.left) * (t - r.t0) / (r.t1 - r.t0)) + "%";
         head.style.top = 100 * r.top + "%";
         head.style.height = 100 * (r.bottom - r.top) + "%";
@@ -755,6 +1167,7 @@ player_js_int <- function() {
         if (!a.paused) raf = requestAnimationFrame(draw);
       };
       draw();
+      extraButtons(div, bar, wrap, a, time, [d.color, d.textColor], draw);
       a.addEventListener("play", function () { play.textContent = "\\u275A\\u275A pause"; draw(); });
       a.addEventListener("pause", function () { play.textContent = "\\u25B6 play"; cancelAnimationFrame(raf); draw(); });
       a.addEventListener("ended", function () { a.currentTime = 0; draw(); });
@@ -827,10 +1240,12 @@ player_js_int <- function() {
       time.className = "ds-time";
       bar.appendChild(time);
       wrap.insertAdjacentElement("afterend", bar);
+      var captions = captionsInit(div, wrap);
 
       var raf, shown = 0, fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
       var draw = function () {
         var t = Math.min(a.currentTime, dur), k = pageAt(t), p = pages[k];
+        captions(t);
         if (k !== shown) { imgs[shown].style.display = "none"; imgs[k].style.display = "block"; shown = k; }
         var x = p.left + (p.right - p.left) * Math.min(1, (t - p.t0) / (p.t1 - p.t0));
         [box, cursor].forEach(function (el) {
@@ -844,6 +1259,7 @@ player_js_int <- function() {
         if (!a.paused) raf = requestAnimationFrame(draw);
       };
       draw();
+      extraButtons(div, bar, wrap, a, time, [d.color, d.textColor], draw);
       var go = function (k) {
         a.currentTime = pages[Math.max(0, Math.min(pages.length - 1, k))].t0;
         draw();
@@ -879,6 +1295,7 @@ player_js_int <- function() {
 
       var wrap = document.createElement("div");
       wrap.className = "ds-wrap";
+      wrap.style.background = c.bg;
       frame.parentNode.insertBefore(wrap, frame);
       wrap.appendChild(frame);
 
@@ -926,26 +1343,12 @@ player_js_int <- function() {
         var tick = document.createElement("div");
         tick.className = "ds-over";
         tick.style.width = "1px";
-        tick.style.background = "#000";
+        tick.style.background = c.colLab;
+        el.style.color = c.colLab;
         wrap.appendChild(el);
         wrap.appendChild(tick);
         return {text: el, tick: tick};
       };
-
-      // annotations
-      var ann = null;
-      if (c.ann) {
-        ann = document.createElement("div");
-        ann.className = "ds-text";
-        ann.style.color = c.ann.col;
-        ann.style.fontWeight = c.ann.font === 2 || c.ann.font === 4 ? "bold" : "normal";
-        ann.style.fontStyle = c.ann.font === 3 || c.ann.font === 4 ? "italic" : "normal";
-        ann.style.left = pct(c.ann.x);
-        ann.style.top = pct(c.ann.y);
-        ann.style.transform = ["translate(-50%,-50%)", "translate(-50%,0.3em)", "translate(calc(-100% - 0.5em),-50%)", "translate(-50%,calc(-100% - 0.3em))", "translate(0.5em,-50%)"][c.ann.pos] || "translate(-50%,-50%)";
-        wrap.appendChild(ann);
-        ["labels", "start", "end"].forEach(function (k) { if (!Array.isArray(c.ann[k])) c.ann[k] = [c.ann[k]]; });
-      }
 
       var bar = document.createElement("div");
       bar.className = "ds-bar";
@@ -959,6 +1362,7 @@ player_js_int <- function() {
       time.className = "ds-time";
       bar.appendChild(time);
       wrap.insertAdjacentElement("afterend", bar);
+      var captions = captionsInit(div, wrap);
 
       var dur = c.duration, raf, fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
       var draw = function () {
@@ -990,7 +1394,7 @@ player_js_int <- function() {
             tk.text.style.display = tk.tick.style.display = on ? "block" : "none";
             if (!on) return;
             tk.text.textContent = v.toFixed(c.tickDigits);
-            tk.text.style.fontSize = px + "px";
+            tk.text.style.fontSize = c.cexAxis * px + "px";
             tk.text.style.left = pct(x);
             // labels and ticks placed as in R axes (measured on frames drawn by R)
             tk.text.style.top = "calc(" + pct(c.lowBottom) + " + " + 1.35 * px + "px)";
@@ -1000,22 +1404,14 @@ player_js_int <- function() {
           });
         }
 
-        if (ann) {
-          var op = 0, txt = "";
-          c.ann.labels.forEach(function (l, i) {
-            var t0 = c.ann.start[i], t1 = c.ann.end[i], f = Math.max(c.ann.fading, 1e-3);
-            if (t >= t0 && t <= t1) { var o = Math.min(1, (t - t0) / f, (t1 - t) / f); if (o > op) { op = o; txt = l; } }
-          });
-          ann.textContent = txt;
-          ann.style.opacity = op;
-          ann.style.fontSize = c.ann.cex * px + "px";
-        }
+        captions(t);
 
         time.textContent = fmt(t) + " / " + fmt(dur) + " s";
         if (!a.paused) raf = requestAnimationFrame(draw);
       };
       draw();
       window.addEventListener("resize", draw);
+      extraButtons(div, bar, wrap, a, time, [d.color, d.textColor], draw);
       a.addEventListener("play", function () { play.textContent = "\\u275A\\u275A pause"; draw(); });
       a.addEventListener("pause", function () { play.textContent = "\\u25B6 play"; cancelAnimationFrame(raf); draw(); });
       a.addEventListener("ended", function () { a.currentTime = 0; draw(); });
@@ -1038,26 +1434,6 @@ player_js_int <- function() {
       });
     };
 
-    var initSounds = function (div) {
-      var speeds = div.dataset.speeds.split(",").map(Number), getRate;
-      var keep = div.dataset.keepPitch === "true";
-      var bar = document.createElement("div");
-      bar.className = "ds-bar";
-      div.querySelectorAll("audio").forEach(function (a) {
-        setup(a, keep);
-        var b = document.createElement("button");
-        b.type = "button";
-        b.textContent = "\\u25B6 " + a.title;
-        b.addEventListener("click", function () {
-          a.currentTime = 0;
-          a.playbackRate = getRate();
-          a.play();
-        });
-        bar.appendChild(b);
-      });
-      getRate = speedGroup(bar, speeds, [div.dataset.color, div.dataset.textColor], keep, Array.prototype.slice.call(div.querySelectorAll("audio")), function () {});
-      div.appendChild(bar);
-    };
 
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
@@ -1072,10 +1448,6 @@ player_js_int <- function() {
         div.setAttribute("data-ready", "");
         initScrolling(div);
       });
-      document.querySelectorAll(".dynaspec-sounds:not([data-ready])").forEach(function (div) {
-        div.setAttribute("data-ready", "");
-        initSounds(div);
-      });
     };
   }
   window.dynaSpecPlayers();
@@ -1085,29 +1457,6 @@ player_js_int <- function() {
 
 ### scrolling_spectro() helpers -------------------------------------------------------------------------
 
-#internal dynaSpec function called by scrolling_spectro. Fades in and out annotated text. Not to be called by users.
-# x is a vector with alpha (transparesence values)
-# start and end are the position of the fading in and out
-# fading is the length of the fading period, text is the annotation text
-fading_text_dynaspec_int <- function(x, start, end, alpha = 1, fading, labels){
-  
-  if (fading == 0) fading <- 1
-  
-  #fading-in part
-  fi <- seq(0, alpha, length.out = fading)
-  
-  # fade out 
-  fo <- rev(fi)
-
-  # modify x
-  x[start:end] <- alpha
-  x[start:(start + fading -1)] <- fi
-  x[(end - fading + 1):(end)] <- fo
-  
-  names(x)[start:end] <- labels
-  
-  return(x)
-}
 
 #internal dynaSpec function called by scrolling_spectro. Modified from seewave::oscillo. Not to be called by users.
 
@@ -1391,15 +1740,21 @@ draw_page_int <- function(sp, i) {
   # text color: supplied, contrasting with the background when it floods the figure, or black
   axes <- !sp$onlyPlotSpec
   flood <- sp$onlyPlotSpec || sp$bgFlood
-  txt_col <- if (!sp$autoFontCol) sp$fontAndAxisCol else if (flood) contrast_col_int(sp$bg) else "black"
+  th <- if (is.null(sp$theme)) list() else sp$theme
+  lab_cex <- theme_int(th, "cex.lab", 1)
+  fig_bg <- theme_int(th, "bg", if (flood) sp$bg else "white")
+  txt_col <- theme_int(th, "col.lab", if (!sp$autoFontCol) sp$fontAndAxisCol else contrast_col_int(fig_bg))
   has_title <- !is.null(sp$title) && nzchar(sp$title)
 
   op <- graphics::par(
-    bg = if (flood) sp$bg else "white",
-    mar = c(if (axes) 4.2 else 0, if (axes) 5.4 else 0, if (has_title) 3 else if (axes) 1.2 else 0, if (sp$plotLegend) 7 else if (axes) 1.2 else 0),
-    col.axis = txt_col, col.lab = txt_col, col.main = txt_col, fg = txt_col, las = 1
+    bg = fig_bg,
+    mar = c(if (axes) 2.2 + 2 * lab_cex else 0, if (axes) 2.8 + 2.6 * lab_cex else 0, if (has_title) 3 else if (axes) 1.2 else 0, if (sp$plotLegend) 7 else if (axes) 1.2 else 0),
+    col.axis = txt_col, col.lab = txt_col, col.main = theme_int(th, "col.title", txt_col), fg = txt_col, las = theme_int(th, "las", 1),
+    family = theme_int(th, "family", "sans")
   )
   on.exit(graphics::par(op), add = TRUE)
+  box_col <- theme_int(th, "col.box", "gray20")
+  tcl <- -theme_int(th, "tick.length", 0.3)
 
   # axis ranges expanded 5% on each side (as in previous versions)
   graphics::plot.new()
@@ -1409,19 +1764,30 @@ draw_page_int <- function(sp, i) {
 
   if (length(d$time) > 1 && length(d$freq) > 1)
     graphics::.filled.contour(x = d$time, y = d$freq, z = t(d$amp), levels = levels, col = cols)
+  theme_grid_int(th, at = pretty(sp$yLim))
 
-  # selections and annotations
+  # selections
   draw_layers_int(sp$layers, panel = "spectro", ylim = usr[3:4])
 
   if (axes) {
-    graphics::axis(1, cex.axis = 16 / 12, tcl = -0.3, mgp = c(3, 0.6, 0), col = "gray20", col.axis = txt_col)
-    graphics::axis(2, cex.axis = 16 / 12, tcl = -0.3, mgp = c(3, 0.6, 0), col = "gray20", col.axis = txt_col)
-    graphics::title(xlab = "Time (s)", ylab = "Frequency (kHz)", cex.lab = 20 / 12, font.lab = 2, line = 2.7)
-    graphics::box(col = "gray20")
+    cex_axis <- 16 / 12 * theme_int(th, "cex.axis", 1)
+    graphics::axis(1, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = txt_col)
+    graphics::axis(2, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = txt_col)
+    font_lab <- theme_int(th, "font.lab", 2)
+    cex_lab <- 20 / 12 * lab_cex
+    graphics::title(xlab = theme_int(th, "xlab", "Time (s)"), cex.lab = cex_lab, font.lab = font_lab, line = 1.2 + 1.5 * lab_cex)
+    # the frequency axis title is shrunk if it is longer than the figure height
+    ylab <- theme_int(th, "ylab", "Frequency (kHz)")
+    # (it is centered on the plotting region, so it can extend twice the distance to the closest figure edge)
+    plt <- graphics::par("plt")
+    room <- 2 * min(mean(plt[3:4]), 1 - mean(plt[3:4])) * graphics::par("din")[2]
+    cex_y <- min(cex_lab, cex_lab * 0.95 * room / graphics::strwidth(ylab, units = "inches", cex = cex_lab, font = font_lab))
+    graphics::title(ylab = ylab, cex.lab = cex_y, font.lab = font_lab, line = 1.2 + 1.5 * lab_cex)
+    if (!isFALSE(th$box)) graphics::box(col = box_col)
   }
 
   if (has_title)
-    graphics::title(main = sp$title, cex.main = 20 / 12, font.main = 2, adj = 0, line = 1)
+    graphics::title(main = sp$title, cex.main = 20 / 12 * theme_int(th, "cex.title", 1), font.main = 2, adj = 0, line = 1)
 
   # amplitude color bar in the right margin
   if (sp$plotLegend) {
@@ -1451,9 +1817,9 @@ page_png_int <- function(sp, i, file, res) {
 
 ### layers of dynaspec objects drawn by the engines ---------------------------------------------------------
 
-# draw selections (boxes) and annotations (labels) of a dynaspec object in the current plot. 'to_x' converts
+# draw selections (boxes and their labels) of a dynaspec object in the current plot. 'to_x' converts
 # times (s) of the sound to x coordinates of the plot. 'panel' is "spectro" (selections use their frequency
-# range if available, and labels and annotations are drawn) or "osc" (selections span the whole panel)
+# range if available, and labels are drawn) or "osc" (selections span the whole panel)
 draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = graphics::par("usr")[3:4]) {
   if (is.null(layers))
     return(invisible(NULL))
@@ -1469,16 +1835,10 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
                    border = if (is.null(sel$border)) NA else sel$border, lwd = sel$lwd)
 
     # selection labels at the top of each box
-    if (panel == "spectro" && !is.null(sel$labels) && sel$labels %in% names(X))
+    if (panel %in% c("spectro", "empty") && !is.null(sel$labels) && sel$labels %in% names(X))
       graphics::text(to_x((X$start + X$end) / 2), top - 0.04 * diff(ylim), labels = X[[sel$labels]], adj = c(0.5, 1),
                      col = cols, cex = sel$cex, font = 2)
   }
-
-  # annotations are drawn at the center of their time range (scrolling spectrograms fade them in and out instead)
-  if (panel == "spectro")
-    for (ann in layers$annotations)
-      graphics::text(to_x((ann$start + ann$end) / 2), ylim[1] + ann$y * diff(ylim), labels = ann$labels,
-                     col = ann$col, cex = ann$cex, font = ann$font)
 
   invisible(NULL)
 }
@@ -1486,7 +1846,7 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
 ### engines (static, scrolling and paged spectrograms) -------------------------------------------------------
 
 # static spectrogram engine (dynaspec() + static()): figure with a play line moving over it. 'layers' are the
-# selections and annotations of the dynaspec object
+# selections of the dynaspec object
 static_spectro_int <- function(wave,
                            file.name = NULL,
                            wl = 512,
@@ -1505,19 +1865,25 @@ static_spectro_int <- function(wave,
                            width = 1000,
                            height = 500,
                            rows = 1,
-                           lcol = "#c0392b",
+                           lcol = viridis::mako(10)[9],
                            speeds = c(1, 0.5, 0.25, 0.125),
                            keep.pitch = FALSE,
+                           buttons = "time",
+                           download.name = "sound",
                            alt = NULL,
                            fps = 30,
                            play = TRUE,
+                           play.line = TRUE,
                            layers = NULL,
+                           panels = NULL,
+                           spectrum = NULL,
+                           theme = list(),
                            ...)
 {
   # check arguments
   check_results <- .check_arguments(
     fun = "static_spectro",
-    args = list(wave = wave, html.file.name = file.name, wl = wl, ovlp = ovlp, flim = flim, pal = pal, collevels = collevels, spectro = spectro, osc = osc, osc.position = osc.position, cex.lab = cex.lab, height.prop = height.prop, colwave = colwave, colbg = colbg, res = res, width = width, height = height, rows = rows, lcol = lcol, speeds = speeds, keep.pitch = keep.pitch, alt = alt, fps = fps, play = play)
+    args = list(wave = wave, html.file.name = file.name, wl = wl, ovlp = ovlp, flim = flim, pal = pal, collevels = collevels, spectro = spectro, osc = osc, osc.position = osc.position, cex.lab = cex.lab, height.prop = height.prop, colwave = colwave, colbg = colbg, res = res, width = width, height = height, rows = rows, lcol = lcol, speeds = speeds, keep.pitch = keep.pitch, buttons = buttons, alt = alt, fps = fps, play = play, play.line = play.line)
   )
 
   # report errors
@@ -1531,8 +1897,10 @@ static_spectro_int <- function(wave,
   if (video && !have_ffmpeg_exec2())
     stop2("'ffmpeg' could not be found. It must be installed (and available in the system path) to create videos (see https://github.com/maRce10/dynaSpec#ffmpeg)")
 
-  if (isFALSE(spectro) && isFALSE(osc))
-    stop2("at least one of 'spectro' and 'osc' must be TRUE")
+  # without spectrogram and oscillogram an empty panel with time axis is shown (drawn as an oscillogram without
+  # waveform)
+  empty <- isFALSE(spectro) && isFALSE(osc)
+  if (empty) osc <- TRUE
 
   # read sound and audio data to embed
   snd <- sound_data_int(wave)
@@ -1558,45 +1926,81 @@ static_spectro_int <- function(wave,
   png_file <- tempfile(fileext = ".png")
   on.exit(unlink(png_file), add = TRUE)
 
-  below <- osc && osc.position == "below"
+  # vertical panels of each row (top to bottom): panels above the spectrogram, the spectrogram and panels below it.
+  # Panels other than the spectrogram are oscillograms ("osc"), amplitude envelopes ("env") or an empty panel with
+  # time axis ("empty"); 'height' is relative to the height of the spectrogram
+  if (is.null(panels))
+    panels <- if (osc && !empty) list(list(type = "osc", position = osc.position, col = colwave, height = height.prop[2] / height.prop[1])) else list()
+  if (empty)
+    panels <- list(list(type = "empty", position = "below", col = colwave, height = 1))
+  above <- Filter(function(p) spectro && p$position == "above", panels)
+  below_panels <- Filter(function(p) !spectro || p$position != "above", panels)
+  stack <- c(above, if (spectro) list(list(type = "spectro", height = 1)), below_panels)
+  n_stack <- length(stack)
+  rel <- vapply(stack, function(p) if (is.null(p$height)) 0.5 else p$height, numeric(1))
+  spec_slot <- which(vapply(stack, `[[`, character(1), "type") == "spectro")
+  if (!spectro) spectrum <- NULL
 
-  # margins (in lines) of the spectrogram and oscillogram panels. The bottom panel of the last row has the time
-  # axis; the other rows have a small gap instead
-  spec_mar <- function(axis) c(if (below) 0.2 else if (axis) 4 else 0.5, 4, if (osc && !below) 0.2 else 1, 1)
-  osc_mar <- function(axis) if (!spectro) c(if (axis) 4 else 0.5, 4, 1, 1) else c(if (below) { if (axis) 4 else 0.5 } else 0, 4, if (below) 0.2 else 1, 1)
+  # margins (in lines) of each slot: the bottom panel of the last row has the time axis; the other rows have a
+  # small gap instead
+  axes <- theme_int(theme, "axis.type", "standard") != "none"
+  # (left and bottom margins grow with the size of axis titles)
+  lab_lines <- max(4, 2.8 + cex.lab)
+  # (with a power spectrum on the left side, the frequency axis is drawn on the left of the spectrum instead)
+  spec_left <- !is.null(spectrum) && spectrum$side == "left"
+  # (the time axis title is placed at line 1.8 + cex.lab, and the 'Power' label of spectra above the top panel)
+  bottom_lines <- max(4, 1.9 + 1.75 * cex.lab)
+  top_lines <- if (!is.null(spectrum) && spec_slot == 1) max(1, 0.1 + 0.68 * cex.lab * theme_int(theme, "cex.title", 1)) else 1
+  slot_mar <- function(i, axis) c(if (i < n_stack) 0.2 else if (axis && axes) bottom_lines else 0.5, if (axes && !spec_left) lab_lines else 1, if (i == 1) top_lines else 0, if (is.null(spectrum) || spec_left) 1 else 0.3)
 
-  # panel heights (in inches) that keep 'height.prop' between plotting regions, with the same plotting
+  # slot heights (in inches) that keep relative heights between plotting regions, with the same plotting
   # regions in all rows ('height' is the height of a row with time axis)
   lines_in <- 0.2 # height of a line of text in the png device (12 points * 1.2)
-  panel_mar <- function(axis) c(if (spectro) sum(spec_mar(axis)[c(1, 3)]), if (osc) sum(osc_mar(axis)[c(1, 3)])) * lines_in
-  plot_in <- height / res - sum(panel_mar(TRUE))
+  slot_marg <- function(axis) vapply(seq_len(n_stack), function(i) sum(slot_mar(i, axis)[c(1, 3)]), numeric(1)) * lines_in
+  plot_in <- height / res - sum(slot_marg(TRUE))
   if (plot_in <= 0)
     stop2("'height' is too small to fit the figure (increase 'height' or decrease 'res')")
-  panel_heights <- function(axis) plot_in * (if (spectro && osc) height.prop / sum(height.prop) else 1) + panel_mar(axis)
-  fig_height <- round(res * ((rows - 1) * sum(panel_heights(FALSE)) + sum(panel_heights(TRUE))))
+  slot_heights <- function(axis) plot_in * rel / sum(rel) + slot_marg(axis)
+  fig_height <- round(res * ((rows - 1) * sum(slot_heights(FALSE)) + sum(slot_heights(TRUE))))
 
   # maximum image size of the png device
   if (fig_height > 32767)
     stop2("the figure is too tall (decrease 'height' or 'rows')")
 
-  # one row per segment; within a row the spectrogram is plotted first (its time range is used for the oscillogram)
-  np <- spectro + osc
-  order_row <- if (np == 2 && !below) 2:1 else seq_len(np)
+  # layout: within a row the spectrogram is plotted first (its time range is used by the other panels), then the
+  # power spectrum (in its own column, next to the spectrogram) and then the other panels
+  plot_order <- c(spec_slot, setdiff(seq_len(n_stack), spec_slot))
+  n_per_row <- n_stack + !is.null(spectrum)
+  main_col <- unlist(lapply(seq_len(rows) - 1, function(k) k * n_per_row + match(seq_len(n_stack), plot_order) + if (is.null(spectrum)) 0 else (seq_len(n_stack) != spec_slot)))
+  lay <- if (is.null(spectrum)) matrix(main_col, ncol = 1) else {
+    spec_col <- unlist(lapply(seq_len(rows) - 1, function(k) ifelse(seq_len(n_stack) == spec_slot, k * n_per_row + 2, 0)))
+    if (spectrum$side == "left") cbind(spec_col, main_col) else cbind(main_col, spec_col)
+  }
+  # (a spectrum on the left side also takes the margin of the frequency axis)
+  spec_width <- if (spec_left && axes) spectrum$width + (lab_lines - 1) * lines_in * res / width else spectrum$width
+  widths <- if (is.null(spectrum)) 1 else if (spec_left) c(spec_width, 1 - spec_width) else c(1 - spec_width, spec_width)
 
-  grDevices::png(filename = png_file, width = width, height = fig_height, res = res, bg = colbg)
+  fig_bg <- theme_int(theme, "bg", colbg)
+  grDevices::png(filename = png_file, width = width, height = fig_height, res = res, bg = fig_bg)
   dev <- grDevices::dev.cur()
+  theme_par_int(theme)
   ext <- tryCatch({
-    graphics::layout(matrix(unlist(lapply(seq_len(rows) - 1, function(k) k * np + order_row)), ncol = 1),
-                     heights = unlist(lapply(seq_len(rows), function(k) panel_heights(k == rows)[order_row])))
+    graphics::layout(lay, heights = unlist(lapply(seq_len(rows), function(k) slot_heights(k == rows))), widths = widths)
 
     # layout() shrinks text when there are 3 or more panels; keep the same size as with a single row
     graphics::par(cex = 1)
 
-    # reference for dB and amplitude (so all rows share the same scale)
+    # reference for dB, amplitude, envelopes and spectra (so all rows share the same scale)
     if (spectro)
       max_amp <- max(seewave::spectro(wav, f = f, wl = wl, ovlp = ovlp, plot = FALSE, norm = FALSE, dB = NULL,
                                       wn = if (is.null(dots$wn)) "hanning" else dots$wn, zp = if (is.null(dots$zp)) 0 else dots$zp)$amp)
     max_wave <- max(abs(wav@left), 1e-12)
+    if (any(vapply(panels, `[[`, character(1), "type") == "env"))
+      max_env <- max(envelope_int(wav)$env, 1e-12)
+    if (!is.null(spectrum)) {
+      spectra <- lapply(seq_len(rows), function(k) spectrum_int(wav[(row_lims[k] + 1):row_lims[k + 1]], wl = wl, flim = flim))
+      max_spec <- max(unlist(lapply(spectra, `[[`, "amp")), 1e-12)
+    }
 
     ndc_y <- function(y) 1 - graphics::grconvertY(y, "user", "ndc")
 
@@ -1605,44 +2009,64 @@ static_spectro_int <- function(wave,
       t0 <- row_lims[k] / f
       t1 <- row_lims[k + 1] / f
       axis <- k == rows
+      tops <- bottoms <- numeric(n_stack)
 
-      if (spectro) {
-        graphics::par(mar = spec_mar(axis), bg = colbg)
-        suppressMessages(seewave::spectro(wave = seg, f = f, wl = wl, ovlp = ovlp, flim = flim, palette = pal, collevels = collevels, scale = FALSE, osc = FALSE, grid = FALSE, colbg = colbg, axisX = FALSE, tlab = "", cexlab = cex.lab, norm = FALSE, dBref = max_amp, ...))
+      for (i in plot_order) {
+        p <- stack[[i]]
+        bottom_slot <- i == n_stack
+        graphics::par(mar = slot_mar(i, axis), bg = fig_bg, font.lab = theme_int(theme, "font.lab", 1))
 
-        # seewave::spectro() spreads the analysis windows evenly from 0 to the duration of the sound, but the
-        # center of the first window is at wl / 2 and that of the last one is wl / 2 before the end. Times are
-        # converted between the spectrogram x axis and the sound so the play line matches the sound
-        n_seg <- length(seg@left)
-        last_step <- utils::tail(seq(1, n_seg + 1 - wl, wl - (ovlp * wl / 100)), 1) - 1
-        to_x <- function(t) (t - t0 - wl / (2 * f)) * n_seg / last_step
-        to_time <- function(x) t0 + wl / (2 * f) + x * last_step / n_seg
+        if (p$type == "spectro") {
+          col_lab <- theme_int(theme, "col.lab", "black")
+          spectro_int(seg, f = f, wl = wl, ovlp = ovlp, flim = flim, pal = pal, collevels = collevels, colbg = colbg, dBref = max_amp,
+                      axisY = axes && !spec_left, flab = theme_int(theme, "ylab", "Frequency (kHz)"), cex.lab = cex.lab,
+                      cex.axis = theme_int(theme, "cex.axis", 1), col.lab = col_lab, theme = theme, ...)
 
-        usr <- graphics::par("usr")
+          # seewave::spectro() spreads the analysis windows evenly from 0 to the duration of the sound, but the
+          # center of the first window is at wl / 2 and that of the last one is wl / 2 before the end. Times are
+          # converted between the spectrogram x axis and the sound so the play line matches the sound
+          n_seg <- length(seg@left)
+          last_step <- utils::tail(seq(1, n_seg + 1 - wl, wl - (ovlp * wl / 100)), 1) - 1
+          to_x <- function(t) (t - t0 - wl / (2 * f)) * n_seg / last_step
+          to_time <- function(x) t0 + wl / (2 * f) + x * last_step / n_seg
 
-        # selections and annotations
-        draw_layers_int(layers, to_x = to_x, panel = "spectro", ylim = usr[3:4])
+          usr <- graphics::par("usr")
 
-        # time axis (only if the spectrogram is the bottom panel)
-        if (!below && axis)
-          time_axis_int(to_x = to_x, xlim = to_time(usr[1:2]), cex.lab = cex.lab)
+          # selections
+          draw_layers_int(layers, to_x = to_x, panel = "spectro", ylim = usr[3:4])
 
-        ext <- c(t0 = t0, t1 = t1, left = graphics::grconvertX(to_x(t0), "user", "ndc"), right = graphics::grconvertX(to_x(t1), "user", "ndc"),
-                 top = ndc_y(usr[4]), bottom = ndc_y(usr[3]))
+          # time axis (only if the spectrogram is the bottom panel)
+          if (bottom_slot && axis && axes)
+            do.call(time_axis_int, c(list(to_x = to_x, xlim = to_time(usr[1:2]), cex.lab = cex.lab), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis"))]))
+
+          left <- graphics::grconvertX(to_x(t0), "user", "ndc")
+          right <- graphics::grconvertX(to_x(t1), "user", "ndc")
+          xlim <- to_time(usr[1:2])
+
+          # power spectrum next to the spectrogram (same frequency axis)
+          if (!is.null(spectrum)) {
+            graphics::par(mar = c(slot_mar(i, axis)[c(1, 3)], if (spec_left) c(if (axes) lab_lines else 1, 0.3) else c(1, 0.3))[c(1, 3, 2, 4)])
+            spectrum_player_int(spectra[[k]], ylim = usr[3:4], side = spectrum$side, col = spectrum$col, max.amp = max_spec, label = k == 1, cex.lab = cex.lab, axis = spec_left && axes, theme = theme)
+          }
+        } else {
+          if (!spectro) xlim <- c(t0, t1)
+          if (p$type == "env")
+            envelope_player_int(seg, xlim = xlim, col = p$col, axisX = bottom_slot && axis && axes, cex.lab = cex.lab, offset = t0, max.env = max_env, theme = if (axes) theme else c(theme, list(hide = TRUE)))
+          else
+            oscillo_player_int(seg, xlim = xlim, colwave = p$col, n = width, axisX = bottom_slot && axis && axes, cex.lab = cex.lab, offset = t0, max.amp = max_wave, empty = p$type == "empty", theme = if (axes) theme else c(theme, list(hide = TRUE)))
+          draw_layers_int(layers, to_x = identity, panel = if (p$type == "empty") "empty" else "osc", ylim = graphics::par("usr")[3:4])
+          if (!spectro) {
+            left <- graphics::grconvertX(t0, "user", "ndc")
+            right <- graphics::grconvertX(t1, "user", "ndc")
+          }
+        }
+        u <- graphics::par("usr")
+        tops[i] <- ndc_y(u[4])
+        bottoms[i] <- ndc_y(u[3])
       }
 
-      if (osc) {
-        graphics::par(mar = osc_mar(axis), bg = colbg)
-        oscillo_player_int(seg, xlim = if (spectro) to_time(usr[1:2]) else c(t0, t1), colwave = colwave, n = width, axisX = (below || !spectro) && axis, cex.lab = cex.lab, offset = t0, max.amp = max_wave)
-        osc_usr <- graphics::par("usr")
-        draw_layers_int(layers, to_x = identity, panel = "osc", ylim = osc_usr[3:4])
-
-        if (!spectro)
-          ext <- c(t0 = t0, t1 = t1, left = graphics::grconvertX(t0, "user", "ndc"), right = graphics::grconvertX(t1, "user", "ndc"),
-                   top = ndc_y(osc_usr[4]), bottom = ndc_y(osc_usr[3])) else
-          if (below) ext["bottom"] <- ndc_y(osc_usr[3]) else ext["top"] <- ndc_y(osc_usr[4])
-      }
-      ext
+      # the play line spans all panels of the row
+      c(t0 = t0, t1 = t1, left = left, right = right, top = tops[1], bottom = bottoms[n_stack])
     }, numeric(6)))
   }, finally = grDevices::dev.off(dev))
 
@@ -1655,7 +2079,7 @@ static_spectro_int <- function(wave,
 
   # video of the figure with the play line
   if (video) {
-    playhead_video_int(png_file = png_file, wave = snd$wave, ext = ext, file.name = file.name, lcol = lcol, fps = fps, width = width, height = fig_height)
+    playhead_video_int(png_file = png_file, wave = snd$wave, ext = ext, file.name = file.name, lcol = lcol, fps = fps, width = width, height = fig_height, line = play.line, captions = layers$captions, res = res)
     if (play)
       open_file_int(normalizePath(file.name))
     return(invisible(file.name))
@@ -1665,9 +2089,10 @@ static_spectro_int <- function(wave,
   html <- paste0(
     '<div class="dynaspec-player" data-duration="', dur,
     '" data-rows="', paste(apply(round(ext, 5), 1, paste, collapse = ","), collapse = ";"),
-    '" data-speeds="', paste(speeds, collapse = ","), '" data-keep-pitch="', tolower(keep.pitch), '" data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
-    '<img src="', base64_uri_int(png_file, "image/png"), '" alt="', html_escape_int(if (is.null(alt)) paste0(if (!spectro) "Oscillogram" else if (osc) "Oscillogram and spectrogram" else "Spectrogram", " of a ", round(dur, 2), " s sound") else alt), '">\n',
+    '"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme), ' data-line="', tolower(play.line), '" data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
+    '<img src="', base64_uri_int(png_file, "image/png"), '" alt="', html_escape_int(if (is.null(alt)) paste0(if (empty) "Time axis" else panel_names_int(spectro, panels, spectrum), " of a ", round(dur, 2), " s sound") else alt), '">\n',
     '<audio controls preload="auto" src="', snd$uri, '"></audio>\n',
+    captions_json_int(layers$captions, res = res, width = width),
     '</div>\n',
     player_js_int()
   )
@@ -1676,14 +2101,14 @@ static_spectro_int <- function(wave,
 }
 
 # scrolling spectrogram engine (dynaspec() + scrolling()): videos and web pages of spectrograms scrolling along a
-# play line. 'layers' are the selections of the dynaspec object (annotations are passed in 'annotation.call')
-scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, verbose = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 1, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = "white", spectro.call = NULL, annotation.call = NULL, speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, layers = NULL, ...)
+# play line. 'layers' are the selections and 'captions' the captions of the dynaspec object
+scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, verbose = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 0, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = "white", spectro.call = NULL, annotation.call = NULL, speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, buttons = "time", download.name = "sound", layers = NULL, osc.type = "osc", theme = list(), captions = NULL, ...)
 {
 
   # check arguments
   check_results <- .check_arguments(
     fun = "scrolling_spectro",
-    args = list(wave = wave, file.name = file.name, hop.size = hop.size, wl = wl, ovlp = ovlp, flim = flim, pal = pal, speed = speed, fps = fps, t.display = t.display, fix.time = fix.time, res = res, width = width, height = height, parallel = parallel, verbose = verbose, play = play, loop = loop, lcol = lcol, lty = lty, lwd = lwd, axis.type = axis.type, buffer = buffer, ggspectro = ggspectro, lower.spectro = lower.spectro, height.prop = height.prop, derivative = derivative, osc = osc, colwave = colwave, colbg = colbg, spectro.call = spectro.call, annotation.call = annotation.call, speeds = speeds, keep.pitch = keep.pitch)
+    args = list(wave = wave, file.name = file.name, hop.size = hop.size, wl = wl, ovlp = ovlp, flim = flim, pal = pal, speed = speed, fps = fps, t.display = t.display, fix.time = fix.time, res = res, width = width, height = height, parallel = parallel, verbose = verbose, play = play, loop = loop, lcol = lcol, lty = lty, lwd = lwd, axis.type = axis.type, buffer = buffer, ggspectro = ggspectro, lower.spectro = lower.spectro, height.prop = height.prop, derivative = derivative, osc = osc, colwave = colwave, colbg = colbg, spectro.call = spectro.call, annotation.call = annotation.call, speeds = speeds, keep.pitch = keep.pitch, buttons = buttons)
   )
 
   # report errors
@@ -1693,7 +2118,9 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   spectro_args <- list(...)
 
   # no grid lines (as in static spectrograms) unless requested
-  if (is.null(spectro_args$grid)) spectro_args$grid <- FALSE
+  # grid lines (spectrogram(grid = TRUE) or dynatheme(grid = TRUE))
+  if (is.null(spectro_args$grid)) spectro_args$grid <- isTRUE(theme$grid)
+  if (isTRUE(spectro_args$grid) && is.null(spectro_args$colgrid)) spectro_args$colgrid <- theme_int(theme, "col.grid", "#7F7F7F66")
 
   # web page instead of video
   html <- grepl("\\.html?$", file.name, ignore.case = TRUE)
@@ -1777,27 +2204,13 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   # relative size of white rectangle in lower spectrogram
   white_window <- (t.display) / (seewave::duration(wave)) * t.display
 
-  # annotation arguments (evaluated) for web pages
-  annotation_args <- if (!is.null(annotation.call)) lapply(as.list(annotation.call)[-1], eval)
-
-  # create a color transparency vector for labeling annotations
-  if (!is.null(annotation.call)){
-
-  # create vector
-  ann_alpha <- rep(0, frames)
-
-    # loop over labels
-    # a sound at time 's' reaches the play line at frame (s + buffer) * fps + 1
-    for (w in seq_len(length(annotation.call$labels)))
-    ann_alpha <- fading_text_dynaspec_int(x = ann_alpha, start = round((annotation.call$start[w] + buffer) * fps) + 1, end = round((annotation.call$end[w] + buffer) * fps) + 1, fading = if (!is.null(annotation.call$fading)) round(annotation.call$fading * fps) else 1, labels = annotation.call$labels[w])
-
-    # remove fading from call
-     annotation.call$fading <- NULL
-
-     # remove start and end
-    annotation.call$start <- NULL
-    annotation.call$end <- NULL
-
+  # labels given as a call to text() ('annotation.call') are converted to captions (positions as proportions of the figure)
+  if (!is.null(annotation.call)) {
+    a <- lapply(as.list(annotation.call)[-1], eval)
+    captions <- c(captions, list(list(labels = as.character(a$labels), start = a$start, end = a$end,
+      x = a$x[1], y = a$y[1], fading = if (is.null(a$fading)) 0 else a$fading, col = if (is.null(a$col)) "black" else a$col[1],
+      cex = if (is.null(a$cex)) 1 else a$cex[1], font = if (is.null(a$font)) 1 else a$font[1])))
+    annotation.call <- NULL
   }
 
   # make vector with name of images
@@ -1922,7 +2335,16 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
     graphics::par(mar = rep(0, 4))
 
     # plot spectro
-    oscillo_dynaspec_int(wave = wave_sil, f = wave_sil@samp.rate, xaxt = "n", yaxt = "n", colwave = colwave, bg = colbg)
+    # oscillogram or amplitude envelope ('osc.type')
+    panel_bg <- theme_int(theme, "col.panel", colbg)
+    if (osc.type == "env") {
+      graphics::par(bg = panel_bg)
+      e <- envelope_int(wave_sil, n = round(wdt))
+      graphics::plot(NA, xlim = c(0, seewave::duration(wave_sil)), ylim = c(0, 1.05), xaxs = "i", yaxs = "i", axes = FALSE, xlab = "", ylab = "")
+      y <- e$env / max(e$env, 1e-12)
+      graphics::polygon(c(e$time[1], e$time, e$time[length(e$time)]), c(0, y, 0), col = grDevices::adjustcolor(colwave, 0.6), border = colwave)
+    } else
+      oscillo_dynaspec_int(wave = wave_sil, f = wave_sil@samp.rate, xaxt = "n", yaxt = "n", colwave = colwave, bg = panel_bg)
     draw_layers_int(loop_layers_int(layers, seewave::duration(wave), loop > 1), to_x = function(t) t + t.display / 2, panel = "osc", ylim = graphics::par("usr")[3:4])
 
     # close plot
@@ -1943,7 +2365,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   axis_col <- contrast_col_int(colbg)
 
   # draw frame x of the video in 'file'. With 'html_frame = TRUE' draw only the parts that do not move (for
-  # web pages, which add the scrolling spectrogram, window rectangles, annotations and moving time axis).
+  # web pages, which add the scrolling spectrogram, window rectangles, captions and moving time axis).
   # Returns the plotting region ('plt') of the frame
   draw_frame <- function(x, file, html_frame = FALSE) {
     # time limit
@@ -1967,7 +2389,13 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
     tlim_low <- tlim_low + c(white_window * -1, white_window) / 2
 
     # start png device (tiff files from R are not readable by recent ffmpeg versions)
-    grDevices::png(file, res = res, width = width, height = height, bg = if (html_frame) "transparent" else "white")
+    grDevices::png(file, res = res, width = width, height = height, bg = if (html_frame) "transparent" else theme_int(theme, "bg", "white"))
+
+    # axis colors, fonts and sizes (dynatheme())
+    col_lab <- theme_int(theme, "col.lab", "black")
+    graphics::par(col.axis = col_lab, col.lab = col_lab, fg = col_lab, font.lab = theme_int(theme, "font.lab", 1),
+                  cex.lab = theme_int(theme, "cex.lab", 1), cex.axis = theme_int(theme, "cex.axis", 1))
+    theme_par_int(theme)
 
     # set regular margins
     if (axis.type != "standard")
@@ -1986,7 +2414,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
 
     # plot anything at specific time and freq
     # (time axis labels move along when time is not fixed, so they are added by the web page in html frames)
-    graphics::plot(0,0, type = "n", xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = if (axis.type == "standard") "Time (s)" else "", ylab = if (axis.type == "standard") "Frequency (kHz)" else "", xaxs = "i", yaxs = "i", bty = "o", xaxt = if (axis.type == "standard" && (fix.time || !html_frame)) "s" else "n", yaxt = "n")
+    graphics::plot(0,0, type = "n", xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = if (axis.type == "standard") theme_int(theme, "xlab", "Time (s)") else "", ylab = if (axis.type == "standard") theme_int(theme, "ylab", "Frequency (kHz)") else "", xaxs = "i", yaxs = "i", bty = "n", xaxt = if (axis.type == "standard" && (fix.time || !html_frame)) "s" else "n", yaxt = "n")
 
     # get plotting area coordinates
     plt <- graphics::par("plt")
@@ -2036,7 +2464,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
       labs <- pretty(org.flim, n = 5)
       labs <- labs[labs >= org.flim[1] & labs <= org.flim[2]]
 
-      graphics::axis(side = 2, at = labs, labels = labs)
+      graphics::axis(side = 2, at = labs, labels = labs, las = theme_int(theme, "las", 0))
     }
 
     # add 1 s / 1 kHz scale bars
@@ -2052,29 +2480,24 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
 
     # add lower spectro division line
     if (lower.spectro | osc)
-      graphics::abline(h = org.flim[1])
+      graphics::abline(h = org.flim[1], col = theme_int(theme, "col.box", col_lab))
 
-    # annotations
-    if (!is.null(annotation.call) && !html_frame){
-
-      # fix x and y to values relative to usr
-      annotation.call$x <- ((usr[2] - usr[1]) * annotation.call$x) + usr[1]
-      annotation.call$y <- ((usr[4] - usr[3]) * annotation.call$y) + usr[3]
-
-      if (is.null(annotation.call$col)) annotation.call$col <- "black"
-
-      # overwrite col in call
-      annotation.call$col <- grDevices::adjustcolor(annotation.call$col, alpha.f = ann_alpha[x])
-
-      # overwrite label in call
-
-      annotation.call$labels <- names(ann_alpha)[x]
-      # evaluate call
-        eval(annotation.call)
+    # captions (sound times + buffer; fading in and out)
+    if (!html_frame)
+      for (cp in captions) {
+        tt <- (x - 1) / fps
+        for (i in seq_along(cp$labels)) {
+          t0 <- cp$start[i] + buffer
+          t1 <- cp$end[i] + buffer
+          if (tt < t0 || tt > t1) next
+          alpha <- if (cp$fading > 0) min(1, (tt - t0) / cp$fading, (t1 - tt) / cp$fading) else 1
+          graphics::text(graphics::grconvertX(cp$x, "ndc", "user"), graphics::grconvertY(cp$y, "ndc", "user"), labels = cp$labels[i],
+                         col = grDevices::adjustcolor(cp$col, alpha.f = alpha), cex = cp$cex, font = cp$font, family = theme_int(cp, "family", "sans"), xpd = NA)
+        }
       }
 
     # reprint box
-    graphics::box()
+    theme_box_int(theme, col_lab)
 
     grDevices::dev.off()
 
@@ -2092,25 +2515,16 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
       osc_file = if (osc) file.path(temp_dir, "temp.full.oscillo.png"), lower = if (osc) "osc" else if (lower.spectro) "spectro" else "none",
       plt = plt, height.prop = height.prop, wave = wave, wave_sil = wave_sil, t.display = t.display, buffer = buffer,
       step_time = step_time, step_time_low = step_time_low, fps = fps, loop = loop, fix.time = fix.time,
-      axis = axis.type == "standard", width = width, res = res, annotation = annotation.call,
-      annotation.args = annotation_args, speeds = unique(c(speed, speeds)), keep.pitch = keep.pitch, lcol = lcol
+      axis = axis.type == "standard", width = width, res = res, captions = captions,
+      speeds = unique(c(speed, speeds)), keep.pitch = keep.pitch, buttons = buttons, download.name = download.name,
+      lcol = lcol, theme = theme
     )
 
     return(output_html_int(page, file.name = file.name, play = play))
   }
 
-  # set clusters for windows OS
-  if (Sys.info()[1] == "Windows" & parallel > 1) {
-    cl <- parallel::makePSOCKcluster(getOption("cl.cores", parallel))
-    on.exit(parallel::stopCluster(cl), add = TRUE)
-  } else cl <- parallel
-
-  # turn progress bar on or off
-  pbo <- pbapply::pboptions(type = if (verbose) "timer" else "none")
-  on.exit(pbapply::pboptions(pbo), add = TRUE)
-
-  #loop to create image files
-  out <- pbapply::pblapply(X = seq_len(frames), cl = if (identical(cl, 1)) NULL else cl, FUN = function(x){
+  #loop to create image files (with progress bar)
+  out <- .pbapply_dyn(X = seq_len(frames), cl = parallel, pbar = verbose, title = "Rendering video frames", FUN = function(x){
 
     draw_frame(x, file.path(temp_dir, img_names[x]))
 
@@ -2217,10 +2631,11 @@ prep_paged_int <-
     dots <- list(...)
 
     # name for output files when 'wave' is a Wave object ('sound.name', or the name of the object), and layers
-    # (selections and annotations) of dynaspec objects
+    # (selections and captions) of dynaspec objects
     wave_name <- if (!is.null(dots$sound.name)) dots$sound.name else if (!missing(wave) && inherits(wave, "Wave")) make.names(paste(deparse(substitute(wave)), collapse = "")) else NULL
     layers <- dots$layers
-    dots$sound.name <- dots$layers <- NULL
+    theme <- dots$theme
+    dots$sound.name <- dots$layers <- dots$theme <- NULL
 
     # single values of flim are upper limits
     if (length(flim) == 1) flim <- c(0, flim)
@@ -2376,7 +2791,8 @@ prep_paged_int <-
       spec = spec,
       newWav = prepped$newWav,
       segWavs = prepped$segWavs,
-      layers = layers
+      layers = layers,
+      theme = theme
     )
 
     # save pages as png files
@@ -2412,6 +2828,8 @@ paged_spectro_int <- function(wave,
                           delete.temp = TRUE,
                           speeds = c(1, 0.5, 0.25, 0.125),
                           keep.pitch = FALSE,
+                          buttons = "time",
+                          download.name = "sound",
                           play = TRUE,
                           parallel = 1,
                           verbose = TRUE)
@@ -2428,7 +2846,7 @@ paged_spectro_int <- function(wave,
   # check arguments
   check_results <- .check_arguments(
     fun = "paged_spectro",
-    args = list(wave = if (!is_params) wave, specParams = if (is_params) wave, file.name = file.name, fps = fps, highlight.col = highlight.col, highlight.alpha = highlight.alpha, lcol = lcol, delete.temp = delete.temp, speeds = speeds, keep.pitch = keep.pitch, play = play, parallel = parallel, verbose = verbose)
+    args = list(wave = if (!is_params) wave, specParams = if (is_params) wave, file.name = file.name, fps = fps, highlight.col = highlight.col, highlight.alpha = highlight.alpha, lcol = lcol, delete.temp = delete.temp, speeds = speeds, keep.pitch = keep.pitch, buttons = buttons, play = play, parallel = parallel, verbose = verbose)
   )
 
   # report errors
@@ -2509,7 +2927,10 @@ paged_spectro_int <- function(wave,
     })
 
     page_html <- paged_html_int(pages = pages, wave = specParams$newWav, highlightCol = highlightCol, highlightAlpha = highlightAlpha,
-                                cursorCol = cursorCol, speeds = speeds, keep.pitch = keep.pitch)
+                                cursorCol = cursorCol, speeds = speeds, keep.pitch = keep.pitch, buttons = buttons,
+                                download.name = download.name, captions = specParams$layers$captions,
+                                res = 1000 / specParams$specHeight, width = 1000 / specParams$specHeight * specParams$specWidth,
+                                theme = if (is.null(specParams$theme)) list() else specParams$theme)
 
     if (verbose) message("Web page saved at: ", vidName)
 
@@ -2521,23 +2942,13 @@ paged_spectro_int <- function(wave,
     png_file <- page_png(i, "video")
     ext <- page_png_int(specParams, i, png_file, res = 500 / specParams$specHeight)
     paged_video_int(png_file = png_file, wave = specParams$segWavs[[i]], ext = ext, file.name = fs::path(temp_folder, paste0(iName0, "_", i, "_.mp4")),
-                    highlightCol = highlightCol, highlightAlpha = highlightAlpha, cursorCol = cursorCol, fps = framerate)
+                    highlightCol = highlightCol, highlightAlpha = highlightAlpha, cursorCol = cursorCol, fps = framerate,
+                    captions = specParams$layers$captions, res = 500 / specParams$specHeight)
   }
 
-  # set clusters for windows OS
+  # render pages (with progress bar)
   segmented <- n_pages > 1
-  if (Sys.info()[1] == "Windows" & parallel > 1 & segmented) {
-    cl <- parallel::makePSOCKcluster(min(parallel, n_pages))
-    on.exit(parallel::stopCluster(cl), add = TRUE)
-  } else cl <- if (parallel > 1) parallel else NULL
-
-  # turn progress bar on or off
-  pbo <- pbapply::pboptions(type = if (verbose & segmented) "timer" else "none")
-  on.exit(pbapply::pboptions(pbo), add = TRUE)
-
-  if (verbose) message("Rendering ", n_pages, " page(s)", if (parallel > 1 & segmented) paste0(" using ", min(parallel, n_pages), " cores"), " ...")
-
-  pbapply::pblapply(X = seq_len(n_pages), cl = if (segmented) cl else NULL, FUN = render_page)
+  .pbapply_dyn(X = seq_len(n_pages), cl = min(parallel, n_pages), pbar = verbose, title = "Rendering video pages", FUN = render_page)
 
   # combine pages
   segVids <- fs::path(temp_folder, paste0(iName0, "_", seq_len(n_pages), "_.mp4"))
@@ -2561,7 +2972,7 @@ paged_spectro_int <- function(wave,
 new_dynaspec_int <- function(wave, name, flim = NULL, crop = NULL) {
   structure(
     list(wave = wave, name = name, flim = flim, crop = crop,
-         spectrogram = list(), oscillogram = NULL, selections = list(), annotations = list(), player = list(),
+         spectrogram = NULL, panels = list(), spectrum = NULL, overview = NULL, theme = list(), selections = list(), captions = list(), player = list(),
          style = list(type = "static", args = list())),
     class = "dynaspec"
   )
@@ -2577,10 +2988,24 @@ provided_args_int <- function(call, env) {
   lapply(args, eval, envir = env)
 }
 
-# shift times of selections and annotations (e.g. when sounds are cropped)
+# keep the selections of the sound shown (tables with a 'sound.files' column, e.g. warbleR selection tables)
+sound_file_selections_int <- function(sel, x) {
+  X <- sel$X
+  if (!"sound.files" %in% names(X) || !is.null(sel$sound.file) || length(unique(X$sound.files)) == 1)
+    return(sel)
+  if (!is.character(x$wave))
+    stop2("the selection table has selections of several sound files; choose one with 'sound.file' in selections()")
+  keep <- X$sound.files == basename(x$wave)
+  if (!any(keep))
+    warning2("no selections of sound file '", basename(x$wave), "' in the selection table")
+  sel$X <- X[keep, , drop = FALSE]
+  sel
+}
+
+# shift times of selections and captions (e.g. when sounds are cropped)
 shift_layers_int <- function(layers, d) {
   layers$selections <- lapply(layers$selections, function(sel) { sel$X$start <- sel$X$start + d; sel$X$end <- sel$X$end + d; sel })
-  layers$annotations <- lapply(layers$annotations, function(a) { a$start <- a$start + d; a$end <- a$end + d; a })
+  layers$captions <- lapply(layers$captions, function(a) { a$start <- a$start + d; a$end <- a$end + d; a })
   layers
 }
 
@@ -2592,46 +3017,105 @@ spectro_args_int <- function(sp) {
   sp
 }
 
+# settings of the theme used by other layers when not supplied there: spectrogram palette and background, colors of
+# panels, play line and highlight box, and font family of captions
+theme_layers_int <- function(x) {
+  th <- x$theme
+  if (length(th) == 0) return(x)
+  if (!is.null(x$spectrogram))
+    for (i in intersect(c("pal", "colbg"), names(th)))
+      if (is.null(x$spectrogram[[i]])) x$spectrogram[[i]] <- th[[i]]
+  x$panels <- lapply(x$panels, function(p) { if (is.null(p$col)) p$col <- th$col.wave; p })
+  if (!is.null(x$spectrum) && is.null(x$spectrum$col)) x$spectrum$col <- th$col.wave
+  if (!is.null(th$col.line) && is.null(x$style$args$lcol)) x$style$args$lcol <- th$col.line
+  if (!is.null(th$col.highlight) && identical(x$style$type, "paged") && is.null(x$style$args$highlight.col))
+    x$style$args$highlight.col <- th$col.highlight
+  if (!is.null(th$family)) x$captions <- lapply(x$captions, function(cp) { cp$family <- th$family; cp })
+  x
+}
+
+# color palette as a function (palettes can also be the name of a 'viridis' palette or two colors for a gradient)
+pal_fun_int <- function(pal) {
+  if (is.function(pal) || is.null(pal)) return(pal)
+  function(n) paged_palette_int(pal, n)
+}
+
 # static spectrograms
 save_static_int <- function(x, wave, layers, out, ext, play) {
   sp <- spectro_args_int(x$spectrogram)
-  osc <- x$oscillogram
+  if (!is.null(sp$pal)) sp$pal <- pal_fun_int(sp$pal)
+  panels <- side_panels_int(x)
   args <- c(
     list(wave = wave, file.name = out, flim = x$flim, play = play, layers = layers,
-         spectro = TRUE, osc = !is.null(osc)),
-    if (!is.null(osc)) c(list(osc.position = osc$position, colwave = osc$col), if (!is.null(osc$height)) list(height.prop = c(1, osc$height))),
-    sp, x$style$args, x$player
+         spectro = !is.null(x$spectrogram), osc = length(panels) > 0, panels = panels,
+         spectrum = if (!is.null(x$spectrum)) utils::modifyList(x$spectrum, list(col = panel_col_int(x$spectrum, "spectrum"))),
+         theme = minimal_axis_int(x$theme, "static")),
+    if (!is.null(x$theme$cex.lab)) list(cex.lab = 1.2 * x$theme$cex.lab),
+    sp, x$style$args, x$player, list(download.name = x$name)
   )
+  if (!is.null(x$overview))
+    warning2("overview() is only shown in scrolling spectrograms")
   do.call(static_spectro_int, args, quote = TRUE)
 }
 
-# scrolling spectrograms (annotations are passed as 'annotation.call')
-save_scrolling_int <- function(x, wave, layers, out, play, verbose) {
-  sp <- spectro_args_int(x$spectrogram)
-  osc <- x$oscillogram
-  st <- x$style$args
-  if (!is.null(st$overview)) { st$lower.spectro <- st$overview; st$overview <- NULL }
+# minimal axes (scale bars) are only available in scrolling spectrograms
+minimal_axis_int <- function(theme, style) {
+  if (identical(theme$axis.type, "minimal")) {
+    warning2("axis.type = \"minimal\" is only available in scrolling spectrograms; standard axes are used")
+    theme$axis.type <- "standard"
+  }
+  theme
+}
 
-  ann <- layers$annotations
-  if (length(ann) > 0 && is.null(st$annotation.call))
-    st$annotation.call <- as.call(c(as.name("text"), list(
-      x = ann[[1]]$x, y = ann[[1]]$y, labels = unlist(lapply(ann, `[[`, "labels")),
-      start = unlist(lapply(ann, `[[`, "start")), end = unlist(lapply(ann, `[[`, "end")),
-      fading = ann[[1]]$fading, col = ann[[1]]$col, cex = ann[[1]]$cex, font = ann[[1]]$font)))
+# oscillogram and envelope panels of static spectrograms (in the order they were added)
+side_panels_int <- function(x) {
+  lapply(x$panels, function(p) list(type = p$type, position = p$position, col = panel_col_int(p), height = if (is.null(p$height)) 0.5 else p$height))
+}
+
+# color of oscillogram, envelope and spectrum panels (supplied, from the theme or the default)
+panel_col_int <- function(p, type = p$type) {
+  if (!is.null(p$col)) p$col else if (identical(type, "osc")) "black" else "#31688E"
+}
+
+# scrolling spectrograms
+save_scrolling_int <- function(x, wave, layers, out, play, verbose) {
+  if (is.null(x$spectrogram))
+    stop2("scrolling spectrograms need a spectrogram: add spectrogram() (e.g. dynaspec(wave) + spectrogram() + scrolling())")
+  sp <- spectro_args_int(x$spectrogram)
+  if (!is.null(sp$pal)) sp$pal <- pal_fun_int(sp$pal)
+  st <- x$style$args
+
+  # one lower panel: oscillogram, amplitude envelope or overview (lower spectrogram of the whole sound)
+  lower <- c(vapply(x$panels, `[[`, character(1), "type"), if (!is.null(x$overview)) "overview")
+  if (length(lower) > 1)
+    warning2("scrolling spectrograms show a single lower panel; only the first one added is shown (", lower[1], ")")
+  if (!is.null(x$spectrum))
+    warning2("spectrum() is only shown in static spectrograms")
+  st$lower.spectro <- length(lower) > 0 && lower[1] == "overview"
+  osc <- if (length(lower) > 0 && lower[1] != "overview") x$panels[[1]]
+  if (!is.null(x$overview) && st$lower.spectro && !is.null(x$overview$height))
+    st$height.prop <- c(1, x$overview$height)
 
   args <- c(
-    list(wave = wave, file.name = out, flim = x$flim, play = play, verbose = verbose, layers = list(selections = layers$selections)),
-    if (!is.null(osc)) c(list(osc = TRUE, colwave = osc$col), if (!is.null(osc$height)) list(height.prop = c(1, osc$height))),
-    sp, st, x$player
+    list(wave = wave, file.name = out, flim = x$flim, play = play, verbose = verbose, layers = list(selections = layers$selections),
+         captions = layers$captions),
+    if (!is.null(osc)) c(list(osc = TRUE, colwave = panel_col_int(osc), osc.type = osc$type), if (!is.null(osc$height)) list(height.prop = c(1, osc$height))),
+    list(theme = x$theme), if (!is.null(x$theme$axis.type)) list(axis.type = x$theme$axis.type),
+    sp, st, x$player, list(download.name = x$name)
   )
   do.call(scrolling_spectro_int, args, quote = TRUE)
 }
 
 # paged spectrograms (style arguments are split between the preparation of the pages and the engine)
 save_paged_int <- function(x, wave, layers, out, ext, play, verbose) {
+  if (is.null(x$spectrogram))
+    stop2("paged spectrograms need a spectrogram: add spectrogram() (e.g. dynaspec(wave) + spectrogram() + paged())")
+  unused <- c(if (length(x$panels) > 0) "oscillogram() and envelope()", if (!is.null(x$spectrum)) "spectrum()", if (!is.null(x$overview)) "overview()")
+  if (length(unused) > 0)
+    warning2(paste(unused, collapse = ", "), " are not shown in paged spectrograms")
   st <- x$style$args
   engine_names <- c("fps", "highlight.col", "highlight.alpha", "lcol", "delete.temp", "parallel")
-  engine_args <- c(st[intersect(names(st), engine_names)], x$player)
+  engine_args <- c(st[intersect(names(st), engine_names)], x$player, list(download.name = x$name))
   prep_args <- st[setdiff(names(st), engine_names)]
 
   # spectrogram settings ('collevels' sets the amplitude range and number of color bands)
@@ -2649,6 +3133,9 @@ save_paged_int <- function(x, wave, layers, out, ext, play, verbose) {
   prep_args$png.name <- paste0(x$name, ".png")
   prep_args$sound.name <- x$name
   prep_args$layers <- layers
+  th <- minimal_axis_int(x$theme, "paged")
+  prep_args$theme <- th
+  if (!is.null(th$axis.type)) prep_args$axis.type <- th$axis.type
 
   # pages as png files
   if (ext == "png") {

@@ -35,15 +35,6 @@ test_that("static_spectro reports invalid arguments", {
   expect_error(static_engine(short_wren(), flim = c(30, 40)), "Nyquist")
 })
 
-test_that("sound_buttons creates one button per sound", {
-  res <- sound_buttons(list(a = short_wren(1), b = example_wavs()[1]))
-  expect_match(res, 'class="dynaspec-sounds"', fixed = TRUE)
-  expect_equal(lengths(regmatches(res, gregexpr("<audio", res))), 2)
-  expect_match(res, 'title="b"', fixed = TRUE)
-  expect_error(sound_buttons(list(short_wren()), labels = c("a", "b")), "labels")
-  expect_error(sound_buttons("no_file.wav"), "does not exist")
-})
-
 test_that("base64 encoding is correct", {
   expect_equal(dynaSpec:::base64_enc_int(charToRaw("Man")), "TWFu")
   expect_equal(dynaSpec:::base64_enc_int(charToRaw("Ma")), "TWE=")
@@ -60,8 +51,8 @@ test_that("players are previewed in the viewer", {
 
 test_that("keep.pitch is passed to the player", {
   expect_match(static_engine(short_wren(1), wl = 300, width = 300, height = 200, play = FALSE), 'data-keep-pitch="false"', fixed = TRUE)
-  expect_match(sound_buttons(short_wren(1), keep.pitch = TRUE, play = FALSE), 'data-keep-pitch="true"', fixed = TRUE)
-  expect_error(sound_buttons(short_wren(1), keep.pitch = "yes"), "keep.pitch")
+  expect_match(static_engine(short_wren(1), wl = 300, width = 300, height = 200, keep.pitch = TRUE, play = FALSE), 'data-keep-pitch="true"', fixed = TRUE)
+  expect_error(static_engine(short_wren(1), keep.pitch = "yes"), "keep.pitch")
 })
 
 test_that("oscillogram can be plotted above or below the spectrogram", {
@@ -80,7 +71,9 @@ test_that("oscillogram can be plotted above or below the spectrogram", {
 test_that("static_spectro can show only the oscillogram", {
   res <- static_engine(short_wren(1), spectro = FALSE, width = 300, height = 200, play = FALSE)
   expect_match(res, 'alt="Oscillogram of a 1 s sound"', fixed = TRUE)
-  expect_error(static_engine(short_wren(1), spectro = FALSE, osc = FALSE), "at least one")
+  # without spectrogram and oscillogram: empty panel with time axis
+  res <- static_engine(short_wren(1), spectro = FALSE, osc = FALSE, width = 300, height = 200, play = FALSE)
+  expect_match(res, 'alt="Time axis', fixed = TRUE)
 })
 
 test_that("static_spectro splits sounds in rows", {
@@ -113,7 +106,8 @@ test_that("static_spectro creates a video with the play line", {
   frame <- tempfile(fileext = ".png")
   on.exit(unlink(c(out, frame)), add = TRUE)
 
-  res <- static_engine(short_wren(), file.name = out, wl = 300, width = 400, height = 200, rows = 2, play = FALSE)
+  # red line, easy to find in frames
+  res <- static_engine(short_wren(), file.name = out, wl = 300, width = 400, height = 200, rows = 2, lcol = "#c0392b", play = FALSE)
   expect_equal(res, out)
   expect_true(file.exists(out))
 
@@ -122,13 +116,15 @@ test_that("static_spectro creates a video with the play line", {
   t <- 1.5
   dynaSpec:::run_ffmpeg_int(paste0('-y -ss ', t, ' -i "', out, '" -frames:v 1 "', frame, '"'), "extracting a frame")
   img <- png::readPNG(frame)
+  # strict color threshold for the position; looser one for the ends (compression mixes colors over the waveform)
   red <- img[, , 1] > 0.6 & img[, , 2] < 0.35 & img[, , 3] < 0.35
   line_x <- mean(which(colSums(red) > 0))
-  line_y <- range(which(rowSums(red) > 0))
+  reddish <- img[, , 1] > 0.5 & img[, , 2] < 0.45 & img[, , 3] < 0.45
+  line_y <- range(which(rowSums(reddish[, round(line_x) + (-3:3)]) > 0))
   e <- ext[2, ]
   expect_equal(line_x, (e$left + (e$right - e$left) * (t - e$t0) / (e$t1 - e$t0)) * 400, tolerance = 2 / 400)
   # figure height (upper row has no time axis, so it is shorter than 'height'); the video may be padded by 1 pixel to an even size
-  fig_h <- 2 * 200 - 70
+  fig_h <- nrow(img)
   # (video compression blurs the colored ends of the line by a couple of pixels)
   expect_lt(abs(line_y[1] - e$top * fig_h), 6)
   expect_lt(abs(line_y[2] - e$bottom * fig_h), 6)

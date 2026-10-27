@@ -1,16 +1,31 @@
 ---
-title: "Creating dynamic spectrograms"
-output: rmarkdown::html_vignette
+title: package overview
+subtitle: "dynaSpec: dynamic spectrogram visualizations"
+pagetitle: dynaSpec package overview
+author:
+- <a href="https://marce10.github.io/">Marcelo Araya-Salas</a> & Matthew R. Wilkins
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_document:
+    self_contained: yes
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 vignette: >
-  %\VignetteIndexEntry{Creating dynamic spectrograms}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+   %\VignetteIndexEntry{1. Package overview}
+   %\usepackage[utf8]{inputenc}
+   %\VignetteEncoding{UTF-8}
+   %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 # all examples are run (and shown as interactive players), except when building the package for CRAN, where
-# only the lighter examples are run so the package stays small (< 5 MB) and no files are downloaded. To build
-# for CRAN set the environment variable DYNASPEC_CRAN before building, e.g.:
+# only the lighter examples are run so the package stays small (< 5 MB). To build for CRAN set the environment
+# variable DYNASPEC_CRAN before building, e.g.:
 #   Sys.setenv(DYNASPEC_CRAN = "true"); devtools::build()
 full <- !identical(Sys.getenv("DYNASPEC_CRAN"), "true")
 
@@ -22,236 +37,173 @@ knitr::opts_chunk$set(
 )
 ```
 
-dynaSpec creates dynamic spectrograms: spectrograms that move along with the sound. They are built in layers, as 'ggplot2' graphs: `dynaspec()` takes the sound, and layers are added with `+`:
+&nbsp;
+
+::: {.alert .alert-info}
+
+The [dynaSpec](https://marce10.github.io/dynaSpec/) package creates dynamic
+spectrograms: spectrograms that move along with the sound. They can be shown as
+interactive web pages or saved as videos. This vignette shows the basic usage of
+all features. The article
+[Customizing dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html)
+on the package website shows how to customize them. For detailed information on
+each function, please refer to the
+[function reference](https://marce10.github.io/dynaSpec/reference/index.html)
+or use the help files within R (e.g., `?dynaspec`).
+
+:::
+
+# Installation
+
+Install the latest development version from GitHub:
 
 ```{r, eval = FALSE}
-dynaspec(wave, flim = c(1, 10)) +      # the sound (and frequency and time ranges)
-  spectrogram(wl = 300, pal = viridis) + # how the spectrogram is computed and drawn
-  oscillogram() +                        # add an oscillogram
-  selections(st) +                       # highlight parts of the sound
-  annotations("song", start = 0, end = 2) + # label parts of the sound
-  player(speeds = c(1, 0.5)) +           # playback buttons
-  scrolling(t.display = 1.7)             # style: scrolling(), paged() or static()
+remotes::install_github("maRce10/dynaSpec")
+
+#load package
+library(dynaSpec)
 ```
 
-There are three styles of dynamic spectrograms:
+Web pages do not need any external software. To create videos dynaSpec uses
+[ffmpeg](https://ffmpeg.org/download.html), which must be installed and
+available in the system path (see the installation instructions in the
+[README](https://github.com/maRce10/dynaSpec#ffmpeg)).
 
-- [Static spectrograms](#static-spectrograms) (`static()`, the default): a play line moves over the whole spectrogram (and oscillogram)
-- [Scrolling spectrograms](#scrolling-spectrograms) (`scrolling()`): the spectrogram scrolls along a fixed play line
-- [Paged spectrograms](#paged-spectrograms) (`paged()`): pages of the spectrogram are revealed as the sound plays
+# Layers
 
-Printing a `dynaspec` object shows an interactive web page: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed buttons to slow the sound down. In the R console web pages are shown in the RStudio viewer (or the web browser), and in R Markdown and Quarto documents (like this vignette) they are embedded in the document. Figures and sounds are embedded in the HTML code, so the pages can also be saved with `save_dynaspec()` and shared as single files or pasted into any web page. `save_dynaspec()` also creates videos (`.mp4`), which can be used where web pages cannot, such as presentation slides or social media (see [Saving web pages, videos and images](#saving-web-pages-videos-and-images)).
+Dynamic spectrograms are built in layers, as 'ggplot2' graphs: `dynaspec()` takes the sound, and layers are added with `+`:
+
+```{r, eval = FALSE}
+dynaspec(wave, flim = c(1, 10)) +          # the sound (and frequency and time ranges)
+  spectrogram(wl = 300) +                   # panels: spectrogram, oscillogram, envelope, spectrum
+  oscillogram() +
+  selections(st) +                          # highlight parts of the sound
+  captions("song", start = 0, end = 2) +    # text shown during a time range
+  dynatheme(xlab = "Time (s)") +            # axis titles, text and colors
+  player(speeds = c(1, 0.5)) +              # playback buttons of web pages
+  scrolling(t.display = 1.7)                # style: static() (default), scrolling() or paged()
+```
+
+| Layer | What it does |
+|---|---|
+| `spectrogram()` | Adds a spectrogram (window length, palette, amplitude range, ...) |
+| `oscillogram()`, `envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
+| `spectrum()` | Adds a power spectrum next to the spectrogram |
+| `overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
+| `selections()` | Highlights parts of the sound with translucent boxes (e.g. from a selection table) |
+| `captions()` | Text at a fixed position shown during a time range, like subtitles |
+| `dynatheme()`, `dynatheme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
+| `player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
+| `static()`, `scrolling()`, `paged()` | Style of the dynamic spectrogram |
+
+Printing a `dynaspec` object shows an interactive web page: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed slider to slow the sound down. In the R console web pages are shown in the RStudio viewer (or the web browser), and in R Markdown and Quarto documents (like this vignette) they are embedded in the document. `save_dynaspec()` saves them as web pages, videos or images (see [Saving](#saving-web-pages-videos-and-images)).
 
 ```{r, eval = TRUE}
 library(dynaSpec)
-library(viridis)
-library(seewave)
 ```
 
-Some examples use recordings from the package [NatureSounds](https://cran.r-project.org/package=NatureSounds) or downloaded from the web.
+The examples use the canyon wren song and the barn swallow recordings included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
 
-## Static spectrograms
+# Panels
 
-Static spectrograms show the whole sound at once: a line moves over the spectrogram and oscillogram as the sound plays. This is the default style:
+Only the panels added as layers are shown. A spectrogram:
 
 ```{r, eval = TRUE}
 data("canyon_wren")
 
-dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300) +
-  oscillogram()
+wren <- dynaspec(canyon_wren, flim = c(1, 10)) +
+  spectrogram(wl = 300)
+
+wren
 ```
 
-As in the other styles, the speed buttons slow the sound down. Slowing down also lowers the pitch (as when slowing down a tape), which makes fast features such as pulses easier to hear. The *keep pitch* button switches to slowing down while keeping the original pitch.
-
-Layers can be stored in an object and modified by adding more layers. Arguments of spectrogram and style layers are combined with the previous ones, while oscillogram and player layers replace the previous ones. For instance, the oscillogram can go above the spectrogram, and colors can be customized. The color of the play line and active buttons is set with `lcol`:
+Layers can be stored in an object (as `wren` above) and added later. A spectrogram with an oscillogram below it:
 
 ```{r}
-cols <- mako(10)
-
-wren <- dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300, pal = mako, collevels = seq(-140, 0, 1))
-
-wren +
-  oscillogram(position = "above", col = cols[3]) +
-  static(lcol = cols[9])
+wren + oscillogram()
 ```
 
-Without `oscillogram()` only the spectrogram is shown, and `static(spectro = FALSE)` shows only the oscillogram. Long sounds can be split in several rows with `rows` (`height` sets the height of each row):
+Oscillograms and amplitude envelopes can go above or below the spectrogram, and a power spectrum can be added on its left or right side:
+
+```{r}
+wren +
+  oscillogram(position = "above") +
+  envelope() +
+  spectrum(side = "right")
+```
+
+Without `spectrogram()` only the other panels are shown (e.g. only the oscillogram), and `dynaspec()` alone shows an empty panel with a time axis and the play line:
+
+```{r}
+dynaspec(canyon_wren) + oscillogram()
+```
+
+`flim` sets the frequency range (in kHz) and `crop` the part of the sound used (in s):
+
+```{r}
+dynaspec(canyon_wren, flim = c(1, 10), crop = c(1, 3)) +
+  spectrogram(wl = 300)
+```
+
+# Styles
+
+## Static spectrograms
+
+The default style: a line moves over the whole figure as the sound plays. Long sounds can be split in several rows (`rows`; `height` sets the height of each row), and `play.line = FALSE` hides the moving line:
 
 ```{r}
 wren + static(rows = 2, height = 350)
 ```
 
-Several players can be included in the same document or web page; only one sound plays at a time.
-
-### Sound buttons
-
-`sound_buttons()` creates a row of buttons, each one playing a sound, along with the speed buttons. This is useful to compare sounds:
-
-```{r, eval = TRUE}
-first_song <- cutw(canyon_wren, from = 0, to = 1.4, output = "Wave")
-last_song <- cutw(canyon_wren, from = 3.8, to = 5.2, output = "Wave")
-
-sound_buttons(list("Start of the song" = first_song, "End of the song" = last_song))
-```
-
-------------------------------------------------------------------------
-
 ## Scrolling spectrograms
 
-*Marcelo's approach.* The spectrogram scrolls along a fixed play line, as in the Macaulay Library. `t.display` sets the time window (in s) shown at once. A scrolling spectrogram of the canyon wren song with a viridis color palette:
+The spectrogram scrolls along a fixed play line, as in the Macaulay Library. `t.display` sets the time window (in s) shown at once, and `overview()` adds a lower panel with the whole sound, in which the part being shown is highlighted:
 
 ```{r, eval = TRUE}
-wren <- dynaspec(canyon_wren, flim = c(1, 9)) +
-  spectrogram(wl = 300, pal = viridis) +
-  scrolling(t.display = 1.7, width = 1000, height = 500, res = 120)
-
-wren
+dynaspec(canyon_wren, flim = c(1, 9)) +
+  spectrogram(wl = 300) +
+  overview() +
+  scrolling(t.display = 1.7)
 ```
 
-By default the lower panel shows the whole sound, with the part being shown highlighted (use `scrolling(overview = FALSE)` to remove it). Black and white spectrogram:
-
-```{r}
-wren + spectrogram(pal = reverse.gray.colors.1, collevels = seq(-100, 0, 5))
-```
-
-A spectrogram with black background (`colbg = "black"`):
-
-```{r}
-wren + spectrogram(colbg = "black")
-```
-
-Start playing at 1/2 speed (`speed = 0.5`, which can be changed with the speed buttons) with an oscillogram at the bottom:
-
-```{r}
-wren +
-  spectrogram(colbg = "black") +
-  oscillogram(col = "#31688E99") +
-  scrolling(speed = 0.5)
-```
-
-Long-billed hermit song at 1/5 speed (`speed = 0.2`), removing axes and looping (`loop = 3`; web pages loop until paused):
-
-```{r}
-data("Phae.long4", package = "NatureSounds")
-
-dynaspec(Phae.long4, flim = c(1, 10)) +
-  spectrogram(wl = 300, ovlp = 90, pal = magma, collevels = seq(-50, 0, 5), colbg = "black") +
-  scrolling(t.display = 1.7, width = 1000, height = 500, res = 120, speed = 0.2, axis.type = "none", loop = 3)
-```
-
-The first 20 s of a northern nightingale wren recording from [xeno-canto](https://www.xeno-canto.org) using a custom color palette. Sounds must be in R (as 'Wave' objects) or in local files ('.wav' or '.mp3'), so the recording is downloaded first:
-
-```{r}
-nightingale_wren <- tempfile(fileext = ".mp3")
-download.file("https://xeno-canto.org/518334/download", nightingale_wren, mode = "wb")
-
-custom_pal <- colorRampPalette(c("#2d2d86", "#2d2d86", reverse.terrain.colors(10)[5:10]))
-
-dynaspec(nightingale_wren, flim = c(2, 8), crop = 20) +
-  spectrogram(wl = 600, ovlp = 95, pal = custom_pal, collevels = seq(-40, 0, 5), colbg = "#2d2d86") +
-  scrolling(t.display = 3, width = 700, height = 250, res = 100, lcol = "#FFFFFFE6")
-```
-
-Spix's disc-winged bat inquiry call slowed down 16 times (`speed = 0.0625`, the slowest speed web browsers can play):
-
-```{r}
-data("thyroptera.est", package = "NatureSounds")
-
-# extract one call
-thy_wav <- attributes(thyroptera.est)$wave.objects[[12]]
-
-# convert to 16 bits (as the silence added below)
-thy_wav <- tuneR::normalize(thy_wav, unit = "16")
-
-# add silence at both sides
-thy_wav <- pastew(tuneR::silence(duration = 0.05, samp.rate = thy_wav@samp.rate, xunit = "time"),
-                  thy_wav, output = "Wave")
-thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, samp.rate = thy_wav@samp.rate, xunit = "time"),
-                  output = "Wave")
-
-dynaspec(thy_wav, flim = c(12, 37)) +
-  spectrogram(wl = 400, ovlp = 95, pal = inferno, collevels = seq(-40, 0, 5), colbg = "black") +
-  oscillogram(col = inferno(10, alpha = 0.9)[3]) +
-  scrolling(t.display = 0.08, width = 700, height = 250, res = 100, lcol = "#FFFFFFE6", lty = 1,
-            speed = 0.0625, buffer = 0, loop = 4)
-```
-
-Selections and labels can also be added to scrolling spectrograms (see [Highlighting and labeling sounds](#highlighting-and-labeling-sounds)). The article [Customizing scrolling spectrograms](https://marce10.github.io/dynaSpec/articles/customizing_scrolling_spectrograms.html) on the package website has more examples.
-
-------------------------------------------------------------------------
+Scrolling spectrograms show a single lower panel: an overview, an oscillogram or an envelope.
 
 ## Paged spectrograms
 
-*Matt's approach.* The spectrogram is split into "pages", and a translucent box reveals the part of each page being played, as in Adobe Audition's spectral view. Pages turn as the sound plays.
-
-Two example recordings of barn swallows are included in the package:
+The spectrogram is split into pages (`t.display` sets the duration of each page), and a translucent box reveals the part of each page being played, as in Adobe Audition's spectral view. Pages turn as the sound plays:
 
 ```{r, eval = TRUE}
 # example WAV files included with dynaSpec
 f <- list.files(system.file(package = "dynaSpec"), pattern = "\\.wav$", full.names = TRUE)
 
-dynaspec(f[1]) + paged()
+dynaspec(f[2]) +
+  spectrogram() +
+  paged(t.display = 2)
 ```
 
-Settings not supplied take the defaults of each style. For instance, paged spectrograms use the 'inferno' palette and no axes by default. Let's add axes:
+Settings not supplied take the defaults of each style. For instance, paged spectrograms use the 'inferno' palette and no axes by default.
 
-```{r, eval = TRUE}
-swallow <- dynaspec(f[1]) + paged(axis.type = "standard")
+# Playback
 
-swallow
-```
-
-### Brighten the spectrogram
-
-* `amp.trans = 3` is a nonlinear signal booster. It collapses the difference between the loudest and quietest values (higher values = brighter spectrograms); 1 (default) means no transformation
-* `collevels = seq(-35, 0, 1)` lowers the amplitude threshold to include some quieter sounds (the default lower limit is -30 dB)
-* `bg.flood = TRUE` makes the axis area the same color as the plot background. Axis font switches automatically to white if the background is too dark
+The speed slider slows the sound down. Slowing down also lowers the pitch (as when slowing down a tape), which makes fast features such as pulses easier to hear. The *keep pitch* button switches to slowing down while keeping the original pitch. `player()` sets the speeds offered (the first one is the initial speed) and whether the pitch is kept by default:
 
 ```{r}
-swallow +
-  spectrogram(amp.trans = 3, collevels = seq(-35, 0, 1)) +
-  paged(bg.flood = TRUE)
+wren + player(speeds = c(0.5, 1, 0.25), keep.pitch = TRUE)
 ```
 
-### Multi-page spectrograms from longer recordings
-
-In this example:
-
-* `crop = 12` only uses the first 12 seconds of the file (an interval can be given as `crop = c(start, end)`)
-* `t.display = 3` sets the "page window", i.e. how many seconds each page displays
-* `flim = c(0, 0.7)` limits the frequency axis to the range used by humpback whales (0-700 Hz)
-* axes and labels are not plotted by default (`axis.type = "none"`)
+`buttons` adds more controls: a time readout (shown by default), a loop button, a volume control, a button to download the sound and a full screen button:
 
 ```{r}
-whale <- tempfile(fileext = ".wav")
-download.file("http://www.oceanmammalinst.org/songs/hmpback3.wav", whale, mode = "wb")
-
-dynaspec(whale, flim = c(0, 0.7), crop = 12) +
-  spectrogram(amp.trans = 3) +
-  paged(t.display = 3)
-#Voila 🐋
+wren + player(buttons = c("time", "loop", "volume", "download", "fullscreen"))
 ```
 
-### A common nighthawk call from Xeno-Canto with a custom color scheme
+Several players can be included in the same document or web page; only one sound plays at a time.
 
-MP3 files are converted automatically. Custom palettes for paged spectrograms can be defined by two colors (start and end of the gradient), the name of a 'viridis' palette (e.g. "magma") or a palette function:
+# Highlighting and labeling sounds
 
-```{r}
-nighthawk <- tempfile(fileext = ".mp3")
-download.file("https://xeno-canto.org/490771/download", nighthawk, mode = "wb")
+`selections()` highlights parts of the sound with translucent boxes. It takes a data frame with the start and end of each selection (in s), as the selection tables of [warbleR](https://cran.r-project.org/package=warbleR) and [ohun](https://cran.r-project.org/package=ohun). If it has 'bottom.freq' and 'top.freq' columns (in kHz) the boxes only span that frequency range, and colors and labels can be taken from its columns. With tables of several sound files (column 'sound.files') only the selections of the sound shown are used.
 
-dynaspec(nighthawk, crop = 20) +
-  spectrogram(pal = c("white", "black")) +
-  paged(t.display = 4, highlight.col = "#d1b0ff", lcol = "#7817ff")
-```
-
-------------------------------------------------------------------------
-
-## Highlighting and labeling sounds
-
-`selections()` highlights parts of the sound with translucent boxes, taking a data frame with the start and end of each selection (in s), as the selection tables of [warbleR](https://cran.r-project.org/package=warbleR) and [ohun](https://cran.r-project.org/package=ohun). If the data frame has 'bottom.freq' and 'top.freq' columns (in kHz) the boxes only span that frequency range. Colors and labels can be taken from columns of the data frame. `annotations()` adds labels shown during a time range of the sound. Both work in the three styles:
+`captions()` adds text at a fixed position of the figure, shown (and optionally fading in and out) during a time range, like subtitles:
 
 ```{r, eval = TRUE}
 st <- data.frame(
@@ -263,45 +215,57 @@ st <- data.frame(
   colors = c("#E69F00", "#56B4E9")
 )
 
-wren <- dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300) +
-  selections(st, col = "colors", labels = "labels")
-
-wren
+wren +
+  selections(st, col = "colors", labels = "labels") +
+  captions("Canyon wren", start = 0, end = 5.3, x = 0.85, y = 0.92, font = 3, fading = 0.3)
 ```
 
-In scrolling spectrograms the labels of `annotations()` stay at a fixed position, and fade in and out (`fading`, in s) while their time range reaches the play line:
+Both work in the three styles.
+
+# Themes
+
+`dynatheme()` sets the look of the figure in the same way for all styles: axis titles, text sizes and fonts, colors of axes and text, boxes, grid lines, backgrounds, the colors of the plot (e.g. the spectrogram palette, used when not supplied in `spectrogram()`) and the colors of the player controls:
 
 ```{r}
-wren +
-  annotations("canyon wren", start = 0, end = 5.3, x = 0.2, y = 0.9, font = 3, fading = 0.3) +
-  scrolling(t.display = 1.7)
+dynaspec(canyon_wren, flim = c(1, 10)) +
+  spectrogram(wl = 300, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
+  dynatheme(xlab = "Tiempo (s)", ylab = "Frecuencia (kHz)", cex.lab = 1.3, font.lab = 2)
 ```
 
-------------------------------------------------------------------------
+Preset themes set several settings at once: `dynatheme_dark()`, `dynatheme_presentation()`, `dynatheme_paper()`, `dynatheme_minimal()`, `dynatheme_transparent()` and `dynatheme_void()`. Their settings can be changed in the call:
 
-## Saving web pages, videos and images
+```{r}
+wren + oscillogram() + dynatheme_dark(cex.lab = 1.3)
+```
+
+# Saving web pages, videos and images
 
 `save_dynaspec()` saves `dynaspec` objects. The extension of the file sets the output:
 
-* `.html`: interactive web page
+* `.html`: interactive web page, which can be shared as a single file or pasted into any web page
 * `.mp4`: video, with the same settings. Videos can be used where web pages cannot, such as presentation slides (e.g. PowerPoint) or social media. [ffmpeg](https://ffmpeg.org/download.html) must be installed to create videos (see the installation instructions in the [README](https://github.com/maRce10/dynaSpec#installation))
 * `.png`: still image of static spectrograms, or one image per page of paged spectrograms
 
 ```{r, eval = FALSE}
-wren <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + oscillogram()
-
 save_dynaspec(wren, "canyon_wren.html")
 save_dynaspec(wren, "canyon_wren.png")
 save_dynaspec(wren, "canyon_wren_static.mp4")
 save_dynaspec(wren + scrolling(t.display = 1.7), "canyon_wren_scrolling.mp4")
-save_dynaspec(swallow, "femaleBarnSwallow.mp4")
 ```
 
-Videos of static and paged spectrograms are created in a few seconds. Videos of scrolling spectrograms are time consuming, as every frame is rendered. This can be sped up by using several cores (e.g. `scrolling(parallel = 4)`) and by lowering the number of frames per second (`scrolling(fps = 25)`).
+Videos of static and paged spectrograms are created in a few seconds. Videos of scrolling spectrograms take longer, as every frame is rendered (a progress bar shows the progress).
 
 Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut (e.g. with `crop`) or downsample long recordings before creating web pages.
 
 ------------------------------------------------------------------------
 
 Enjoy! Please share your spectrograms with us on X [\@mattwilkinsbio](https://x.com/mattwilkinsbio)
+
+### Session information {.unnumbered .unlisted}
+
+<details>
+  <summary>Click to see</summary>
+```{r session info, eval = TRUE, echo = FALSE}
+sessionInfo()
+```
+</details>
