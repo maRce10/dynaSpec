@@ -1,3 +1,19 @@
+# *dynaSpec 2.0.0.9000*
+
+* Major redesign with a new layered syntax (the functions of previous versions, `scrolling_spectro()`, `prep_static_ggspectro()` and `paged_spectro()`, were removed): `dynaspec()` takes the sound (a 'Wave' object or a '.wav' or '.mp3' file) and layers are added with `+`:
+    - `spectrogram()`, `oscillogram()`: panels of the figure
+    - `selections()`: translucent boxes highlighting parts of the sound (e.g. from a selection table)
+    - `annotations()`: labels shown during a time range of the sound (fading in and out in scrolling spectrograms)
+    - `player()`: playback speed buttons and 'keep pitch' toggle of web pages
+    - `static()` (default), `scrolling()` and `paged()`: style of the dynamic spectrogram
+* Printing a `dynaspec` object shows an interactive web page (in the RStudio viewer or the web browser), embedded in R Markdown and Quarto documents when knitting. Figures and sounds are embedded in the HTML code, with click-to-play and buttons to slow the sound down (lowering the pitch, or keeping it)
+* `save_dynaspec()` saves `dynaspec` objects as web pages ('.html'), videos ('.mp4', requires ffmpeg) or still images ('.png')
+* `sound_buttons()` creates a row of buttons that play sounds, with playback speed buttons
+* Videos of static and paged spectrograms are made by moving the play line or highlight box over still images with ffmpeg, so they are created in seconds
+* Paged spectrograms are drawn with base R graphics (no 'ggplot2' or 'gganimate' needed)
+* Play lines are aligned with the time of the spectrogram windows, and all rows of multi-row figures share the same color and amplitude scale
+* Scrolling spectrograms are drawn without grid lines by default (as static spectrograms; use `spectrogram(grid = TRUE)` to add them)
+
 # *dynaSpec 1.1.0*
 
 ## New features

@@ -38,13 +38,6 @@ test_that("processSound defaults xLim to 5 s and Inf to cropped duration", {
 
 ## helpers --------------------------------------------------------------------
 
-test_that("is.url only detects URLs", {
-  expect_equal(
-    dynaSpec:::is.url(c("C:/data/wwwrecord.wav", "https://x.org/a.wav", "http://x.org/a.wav", "www.x.org/a.wav", "my.www.file.wav")),
-    c(FALSE, TRUE, TRUE, TRUE, FALSE)
-  )
-})
-
 test_that("contrast_col_int picks black or white", {
   expect_equal(dynaSpec:::contrast_col_int("white"), "#000000")
   expect_equal(dynaSpec:::contrast_col_int("black"), "#ffffff")

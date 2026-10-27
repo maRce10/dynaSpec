@@ -1,0 +1,127 @@
+---
+title: "Customizing scrolling spectrograms"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE
+)
+```
+
+This article shows how to highlight and label parts of the sound in scrolling spectrograms with the layers `selections()` and `annotations()`. As in the [main vignette](dynaSpec.html), the examples create interactive web pages: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed buttons to slow the sound down. Use `save_dynaspec()` with a file name ending in `.mp4` to create videos instead.
+
+The examples use recordings downloaded from GitHub:
+
+```{r}
+library(dynaSpec)
+library(viridis)
+library(seewave)
+```
+
+## Highlighting selections
+
+`selections()` highlights parts of the sound with translucent boxes. It takes a data frame with the start and end of each selection (in s) and, optionally, their frequency range ('bottom.freq' and 'top.freq', in kHz), as the selection tables made with [warbleR](https://cran.r-project.org/package=warbleR) or [ohun](https://cran.r-project.org/package=ohun). For instance, the following code highlights the male and female parts of a house wren duet with different colors (after downloading the selection table and sound file from GitHub):
+
+```{r}
+# house wren male-female duet recording
+hs_wren <- tempfile(fileext = ".wav")
+download.file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.wav",
+              hs_wren, mode = "wb")
+
+# and selection table
+st <- read.csv("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.csv")
+
+# create color column
+st$colors <- c("green", "yellow")
+
+wren <- dynaspec(hs_wren, flim = c(1, 13)) +
+  spectrogram(wl = 512, pal = reverse.gray.colors.1, collevels = seq(-100, 0, 1)) +
+  scrolling(t.display = 1.2, loop = 3, width = 1000, height = 500, res = 120, fps = 60)
+
+wren + selections(st, col = "colors", alpha = 0.3)
+```
+
+The male part is shown in green and the female part in yellow. The colors are taken from the column 'colors' of the selection table (a single color can also be used, e.g. `col = "green"`).
+
+Selections can be mixed with any of the other layers, as adding an oscillogram:
+
+```{r}
+wren +
+  selections(st, col = "colors", alpha = 0.3) +
+  oscillogram()
+```
+
+A viridis color palette, with box borders and the oscillogram colored with the same palette:
+
+```{r}
+st$colors <- viridis(10)[c(3, 8)]
+
+wren +
+  spectrogram(wl = 200) +
+  selections(st, col = "colors", alpha = 0.4, border = "gray30", lwd = 2) +
+  oscillogram(col = viridis(10)[9])
+```
+
+Or simply a gray scale, with boxes spanning the whole frequency range (`freq = FALSE`):
+
+```{r}
+st$colors <- c("gray", "gray49")
+
+wren +
+  selections(st, col = "colors", alpha = 0.4, freq = FALSE) +
+  oscillogram()
+```
+
+Selections can also be labeled, using a column of the selection table with the labels. Labels are shown at the top of each box and scroll along with the spectrogram:
+
+```{r}
+# create color and label columns
+st$colors <- viridis(10)[c(3, 8)]
+st$labels <- c("male", "female")
+
+# shrink end of second selection (purely aesthetics)
+st$end[2] <- 3.87
+
+dynaspec(hs_wren, flim = c(1, 18.6)) +
+  spectrogram(wl = 200, collevels = seq(-100, 0, 1)) +
+  selections(st, col = "colors", alpha = 0.4, labels = "labels", cex = 1.5) +
+  scrolling(t.display = 1.2, loop = 3, width = 1000, height = 500, res = 120, speed = 0.5, fps = 120)
+```
+
+## Fading labels
+
+`annotations()` adds labels that do not scroll: they stay at a fixed position (`x` and `y`, as proportions of the panel width and height) and are shown while their time range (`start` and `end`, in s) reaches the play line. `fading` adds fade-in and fade-out effects (in s), and `col`, `cex` and `font` set the color, size and font of the labels. The following code downloads a recording containing several frog species recorded in Costa Rica from GitHub, cuts a clip including two species and labels it with a single label:
+
+```{r}
+# frog recording from GitHub
+frogs <- tempfile(fileext = ".wav")
+download.file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/CostaRican_frogs.wav",
+              frogs, mode = "wb")
+
+# use a couple of species
+frog_calls <- dynaspec(frogs, flim = c(0, 5.5), crop = c(35.3, 50.5)) +
+  spectrogram(wl = 512, ovlp = 95, pal = cividis, collevels = seq(-60, 0, 5), colbg = "black") +
+  oscillogram(col = "#31688E", height = 1 / 3) +
+  scrolling(t.display = 1.1, loop = 3, width = 1200, height = 550, res = 200, fps = 60, lcol = "#FFFFFFCC", lty = 3)
+
+frog_calls +
+  annotations("Frog calls", start = 35.5, end = 49.3, x = 0.25, y = 0.87, col = "#FFEA46CC", font = 3, fading = 0.6)
+```
+
+Note that times of selections and annotations refer to the original recording, even when it is cropped (`crop`). Several labels can be added at once, with 'start' and 'end' values for each label:
+
+```{r}
+frog_calls +
+  annotations(
+    c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"),
+    start = c(35.7, 42.3),
+    end = c(40.8, 50.1),
+    x = 0.25,
+    y = 0.87,
+    col = "#FFEA46CC",
+    font = 3,
+    fading = 0.6
+  )
+```

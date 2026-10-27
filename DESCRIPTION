@@ -1,17 +1,15 @@
 Package: dynaSpec
 Type: Package
 Title: Dynamic Spectrogram Visualizations
-Version: 1.1.0
-Description: A set of tools to generate dynamic spectrogram visualizations in video format.
+Version: 2.0.0.9000
+Description: Interactive and dynamic spectrogram visualizations (web pages and videos) built with a layered syntax.
 License: GPL (>= 2)
-Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, scales, gganimate, pbapply, fs, checkmate
+Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, pbapply, fs, checkmate
 Depends: R (>= 4.1.0)
 LazyData: TRUE
 SystemRequirements: ffmpeg
-URL: https://marce10.github.io/dynaSpec/, https://github.com/maRce10/dynaSpec
-BugReports: https://github.com/maRce10/dynaSpec/issues
 NeedsCompilation: no
-Suggests: parallel, imager, av, warbleR, patchwork, testthat (>= 3.0.0), withr, knitr, rmarkdown, covr
+Suggests: parallel, imager, warbleR, NatureSounds, testthat (>= 3.0.0), withr, knitr, rmarkdown, covr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US
@@ -19,4 +17,6 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Authors@R: c(person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "marcelo.araya@ucr.ac.cr", comment = c(ORCID = "0000-0003-3594-619X")),
     person("Matthew R.", "Wilkins", role = "aut", email = "matt@galacticpolymath.com"))
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
+URL: https://marce10.github.io/dynaSpec/, https://github.com/maRce10/dynaSpec
+BugReports: https://github.com/maRce10/dynaSpec/issues

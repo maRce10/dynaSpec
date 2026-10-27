@@ -4,7 +4,7 @@
 \name{dynaSpec-package}
 \alias{dynaSpec}
 \alias{dynaSpec-package}
-\title{dynaSpec: Dynamic spectrogram visualization}
+\title{dynaSpec: Interactive and dynamic spectrogram visualizations}
 \description{
 A set of tools to generate dynamic spectrogram visualizations in video format.
 }

@@ -1,4 +1,4 @@
-#' dynaSpec: Dynamic spectrogram visualization
+#' dynaSpec: Interactive and dynamic spectrogram visualizations
 #'
 #' A set of tools to generate dynamic spectrogram visualizations in video format.
 #'
