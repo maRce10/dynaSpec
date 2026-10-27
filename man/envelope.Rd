@@ -20,9 +20,10 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 \code{envelope()} adds the amplitude envelope of the sound (absolute amplitude smoothed with a 5 ms moving window) to a \code{\link[=dynaspec]{dynaspec()}} object. Envelopes are shown by \code{\link[=static]{static()}} (alone, or above or below the spectrogram, along with oscillograms) and \code{\link[=scrolling]{scrolling()}} (below the spectrogram, instead of the oscillogram) styles.
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   oscillogram(position = "above") + envelope()
 }
 \seealso{

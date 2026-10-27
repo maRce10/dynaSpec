@@ -17,7 +17,7 @@ spectrogram(wl, ovlp, wn, pal, collevels, colbg, amp.trans, ...)
 
 \item{collevels}{Numeric vector with the amplitude levels (in dB) of the colors, as in \code{\link[seewave:spectro]{seewave::spectro()}} (e.g. \code{seq(-40, 0, 1)}).}
 
-\item{colbg}{Background color.}
+\item{colbg}{Background color of the spectrogram, shown where the amplitude is below the lowest level of 'collevels'. Default is the color of the lowest amplitude of the palette (e.g. white for \code{\link[seewave:reverse.gray.colors.1]{seewave::reverse.gray.colors.1()}}, the default palette, or dark blue for \code{\link[viridis:mako]{viridis::mako()}}), so quiet parts and the background look the same.}
 
 \item{amp.trans}{Amplitude transformation to brighten paged spectrograms (values > 1 brighten quiet sounds; only used by \code{\link[=paged]{paged()}}).}
 
@@ -33,10 +33,10 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 Only the arguments supplied are used; other settings take the defaults of each style (see \code{\link[=scrolling]{scrolling()}}, \code{\link[=paged]{paged()}} and \code{\link[=static]{static()}}).
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300, pal = viridis::mako, collevels = seq(-60, 0, 1))
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, pal = viridis::mako, collevels = seq(-60, 0, 1))
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}

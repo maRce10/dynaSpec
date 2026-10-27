@@ -9,10 +9,10 @@
 \arguments{
 \item{e1}{A \code{\link[=dynaspec]{dynaspec()}} object.}
 
-\item{e2}{A layer (e.g. \code{\link[=spectrogram]{spectrogram()}}, \code{\link[=selections]{selections()}} or \code{\link[=scrolling]{scrolling()}}).}
+\item{e2}{A layer (e.g. \code{\link[=spectrogram]{spectrogram()}}, \code{\link[=annotations]{annotations()}} or \code{\link[=scrolling]{scrolling()}}).}
 }
 \value{
-A \code{\link[=dynaspec]{dynaspec()}} object. Spectrogram, oscillogram, envelope, spectrum, overview, player and style layers replace previous ones of the same kind (arguments of spectrogram, theme and style layers are combined); selections and captions are added.
+A \code{\link[=dynaspec]{dynaspec()}} object. Spectrogram, oscillogram, envelope, spectrum, overview, player and style layers replace previous ones of the same kind (arguments of spectrogram, theme and style layers are combined); annotations and captions are added.
 }
 \description{
 Add layers to dynamic spectrograms

@@ -19,9 +19,10 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 Scrolling spectrograms show a single lower panel: an overview, an oscillogram or an envelope (the first one added). Other styles do not show overviews (static spectrograms show the whole sound already).
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   overview() + scrolling(t.display = 1.7)
 }
 \seealso{

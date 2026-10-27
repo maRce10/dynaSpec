@@ -2,7 +2,7 @@
 
 test_that("scrolling_spectro reports all invalid arguments at once", {
   err <- expect_error(
-    scrolling_engine(canyon_wren, ovlp = 120, axis.type = "fancy", lty = 9, play = "yes"),
+    scrolling_engine(scaly_breasted_hummingbird, ovlp = 120, axis.type = "fancy", lty = 9, play = "yes"),
     "4 input argument(s) failed",
     fixed = TRUE
   )
@@ -14,36 +14,36 @@ test_that("scrolling_spectro reports all invalid arguments at once", {
 
 test_that("scrolling_spectro checks wave, file name, palette and colors", {
   expect_error(scrolling_engine("not a wave"), "'wave'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, file.name = "out.avi"), "'file.name'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, pal = "gray"), "'pal'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, lcol = "notacolor"), "'lcol'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, colbg = c("red", "blue")), "'colbg'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, file.name = "out.avi"), "'file.name'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, pal = "gray"), "'pal'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, lcol = "notacolor"), "'lcol'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, colbg = c("red", "blue")), "'colbg'", fixed = TRUE)
 })
 
 test_that("scrolling_spectro checks numeric arguments", {
-  expect_error(scrolling_engine(canyon_wren, loop = 0), "'loop'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, parallel = 1.5), "'parallel'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, speed = 0), "'speed'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, hop.size = -1), "'hop.size'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, buffer = -1), "'buffer'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, flim = c(9, 1)), "'flim'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, height.prop = c(1, 5)), "'height.prop'", fixed = TRUE)
-  expect_error(scrolling_engine(canyon_wren, t.display = 100), "'t.display'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, loop = 0), "'loop'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, parallel = 1.5), "'parallel'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, speed = 0), "'speed'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, hop.size = -1), "'hop.size'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, buffer = -1), "'buffer'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, flim = c(9, 1)), "'flim'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, height.prop = c(1, 5)), "'height.prop'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, t.display = 100), "'t.display'", fixed = TRUE)
 })
 
 test_that("scrolling_spectro checks calls", {
-  expect_error(scrolling_engine(canyon_wren, spectro.call = "spectro"), "'spectro.call'", fixed = TRUE)
+  expect_error(scrolling_engine(scaly_breasted_hummingbird, spectro.call = "spectro"), "'spectro.call'", fixed = TRUE)
 
   # missing start/end
   expect_error(
-    scrolling_engine(canyon_wren, annotation.call = call("text", x = 0.5, y = 0.5, labels = "a")),
+    scrolling_engine(scaly_breasted_hummingbird, annotation.call = call("text", x = 0.5, y = 0.5, labels = "a")),
     "Must include argument(s) 'start', 'end'",
     fixed = TRUE
   )
 
   # one start/end per label
   expect_error(
-    scrolling_engine(canyon_wren, annotation.call = call("text", x = 0.5, y = 0.5, labels = c("a", "b"), start = 1, end = 2)),
+    scrolling_engine(scaly_breasted_hummingbird, annotation.call = call("text", x = 0.5, y = 0.5, labels = c("a", "b"), start = 1, end = 2)),
     "one value per label",
     fixed = TRUE
   )
@@ -54,7 +54,7 @@ test_that("valid scrolling_spectro arguments pass the checks", {
   null_device()
   local_mocked_bindings(have_ffmpeg_exec2 = function() FALSE)
   expect_error(
-    scrolling_engine(canyon_wren, wl = 300, t.display = 1.7, pal = viridis::viridis, flim = c(1, 9), lty = "dotted", file.name = "x.MP4", axis.type = "minimal"),
+    scrolling_engine(scaly_breasted_hummingbird, wl = 300, t.display = 1.7, pal = viridis::viridis, flim = c(1, 9), lty = "dotted", file.name = "x.MP4", axis.type = "minimal"),
     "'ffmpeg' could not be found",
     fixed = TRUE
   )

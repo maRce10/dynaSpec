@@ -1,8 +1,8 @@
 # helpers shared by tests
 
 # short example clip
-short_wren <- function(dur = 2) {
-  seewave::cutw(dynaSpec::canyon_wren, from = 0, to = dur, output = "Wave")
+short_sound <- function(dur = 2) {
+  seewave::cutw(dynaSpec::scaly_breasted_hummingbird, from = 1, to = 1 + dur, output = "Wave")
 }
 
 # example sound files included in the package

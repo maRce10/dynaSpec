@@ -1,11 +1,11 @@
 #' Create dynamic spectrograms
 #'
-#' `dynaspec()` starts a dynamic spectrogram of a sound. Layers are added with `+`, as in 'ggplot2' graphs: [spectrogram()] and [oscillogram()] add the panels, [selections()] and [captions()] highlight and label parts of the sound, and [scrolling()], [paged()] or [static()] set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and [save_dynaspec()] saves it as a web page, a video or still images.
+#' `dynaspec()` starts a dynamic spectrogram of a sound. Layers are added with `+`, as in 'ggplot2' graphs: [spectrogram()] and [oscillogram()] add the panels, [annotations()] and [captions()] highlight and label parts of the sound, and [scrolling()], [paged()] or [static()] set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and [save_dynaspec()] saves it as a web page, a video or still images.
 #' @param wave The sound: an object of class 'Wave' or the path to a '.wav' or '.mp3' file.
 #' @param flim Numeric vector of length 2 with the frequency limits (in kHz). Default is `NULL` (from 0 to the Nyquist frequency, or the style default).
-#' @param crop Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of [selections()] and [captions()] refer to the original (uncropped) sound. Default is `NULL` (whole sound).
+#' @param tlim Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of [annotations()] and [captions()] refer to the whole sound. Default is `NULL` (whole sound).
 #' @return An object of class 'dynaspec'.
-#' @details Panels are added as layers, as in 'ggplot2': only the panels added are shown ([spectrogram()], [oscillogram()], [envelope()] or several of them, and [spectrum()] next to the spectrogram). `dynaspec()` alone shows an empty panel with a time axis and the play line (selections and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.
+#' @details Panels are added as layers, as in 'ggplot2': only the panels added are shown ([spectrogram()], [oscillogram()], [envelope()] or several of them, and [spectrum()] next to the spectrogram). `dynaspec()` alone shows an empty panel with a time axis and the play line (annotations and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.
 #'
 #' The three styles show the sound in different ways:
 #' - [scrolling()]: the spectrogram scrolls along a fixed play line.
@@ -19,18 +19,18 @@
 #' @export
 #' @name dynaspec
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
 #' # empty panel with time axis (only the panels added as layers are shown)
-#' dynaspec(canyon_wren)
+#' dynaspec(scaly_breasted_hummingbird)
 #'
 #' # static spectrogram with oscillogram (printing shows it in the viewer or browser)
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) +
-#'   spectrogram(wl = 300) +
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
 #'   oscillogram()
 #'
 #' # save as a web page
-#' save_dynaspec(x, file.path(tempdir(), "canyon_wren.html"), play = FALSE)
+#' save_dynaspec(x, file.path(tempdir(), "hummingbird.html"), play = FALSE)
 #'
 #' \dontrun{
 #' # show it
@@ -41,33 +41,34 @@
 #' x + paged(t.display = 2)
 #'
 #' # videos (require ffmpeg)
-#' save_dynaspec(x + scrolling(t.display = 1.7), "canyon_wren.mp4")
+#' save_dynaspec(x + scrolling(t.display = 1.7), "hummingbird.mp4")
 #'
 #' # highlight and label parts of the song
-#' st <- data.frame(start = c(0.5, 3.5), end = c(2, 5), labels = c("start", "end"))
-#' x + selections(st, labels = "labels") + captions("canyon wren", start = 0, end = 5.3)
+#' st <- data.frame(start = c(1, 6), end = c(2.9, 7.4), labels = c("start", "end"))
+#' x + annotations(st, labels = "labels") +
+#'   captions("Scaly-breasted hummingbird", start = 0, end = 8.3)
 #'
 #' # only the oscillogram
-#' dynaspec(canyon_wren) + oscillogram()
+#' dynaspec(scaly_breasted_hummingbird) + oscillogram()
 #' }
 #' @author Marcelo Araya-Salas (\email{marcelo.araya@@ucr.ac.cr})
 #' @references
 #' Araya-Salas M & Wilkins M R. (2020). *dynaSpec: dynamic spectrogram visualizations in R*. R package version 1.0.0.
 
-dynaspec <- function(wave, flim = NULL, crop = NULL) {
+dynaspec <- function(wave, flim = NULL, tlim = NULL) {
   check_results <- checkmate::makeAssertCollection()
   if (!isTRUE(res <- check_wave_int(wave)))
     check_results$push(paste0("'wave': ", res))
   if (!is.null(flim))
     checkmate::assert_numeric(flim, len = 2, lower = 0, any.missing = FALSE, sorted = TRUE, unique = TRUE, add = check_results, .var.name = "flim")
-  if (!is.null(crop))
-    checkmate::assert_numeric(crop, min.len = 1, max.len = 2, lower = 0, finite = TRUE, any.missing = FALSE, sorted = TRUE, unique = TRUE, add = check_results, .var.name = "crop")
+  if (!is.null(tlim))
+    checkmate::assert_numeric(tlim, min.len = 1, max.len = 2, lower = 0, finite = TRUE, any.missing = FALSE, sorted = TRUE, unique = TRUE, add = check_results, .var.name = "tlim")
   .report_assertions(check_results)
 
   # name for output files: sound file name or name of the Wave object
   name <- if (is.character(wave)) tools::file_path_sans_ext(basename(wave)) else make.names(paste(deparse(substitute(wave)), collapse = ""))
 
-  new_dynaspec_int(wave = wave, name = name, flim = flim, crop = if (length(crop) == 1) c(0, crop) else crop)
+  new_dynaspec_int(wave = wave, name = name, flim = flim, tlim = if (length(tlim) == 1) c(0, tlim) else tlim)
 }
 
 #' Spectrogram layer of dynamic spectrograms
@@ -78,7 +79,7 @@ dynaspec <- function(wave, flim = NULL, crop = NULL) {
 #' @param wn Window function name, as in [seewave::spectro()] (e.g. "hanning" or "blackman").
 #' @param pal Color palette function (e.g. [viridis::viridis()] or [seewave::reverse.gray.colors.1()]). Paged spectrograms also take the names of 'viridis' palettes (e.g. "magma") and 2 colors for a gradient (e.g. `c("white", "black")`).
 #' @param collevels Numeric vector with the amplitude levels (in dB) of the colors, as in [seewave::spectro()] (e.g. `seq(-40, 0, 1)`).
-#' @param colbg Background color.
+#' @param colbg Background color of the spectrogram, shown where the amplitude is below the lowest level of 'collevels'. Default is the color of the lowest amplitude of the palette (e.g. white for [seewave::reverse.gray.colors.1()], the default palette, or dark blue for [viridis::mako()]), so quiet parts and the background look the same.
 #' @param amp.trans Amplitude transformation to brighten paged spectrograms (values > 1 brighten quiet sounds; only used by [paged()]).
 #' @param ... Additional arguments passed to [seewave::spectro()].
 #' @return A layer to be added to a [dynaspec()] object with `+`.
@@ -86,10 +87,10 @@ dynaspec <- function(wave, flim = NULL, crop = NULL) {
 #' @seealso [dynaspec()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) +
-#'   spectrogram(wl = 300, pal = viridis::mako, collevels = seq(-60, 0, 1))
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, pal = viridis::mako, collevels = seq(-60, 0, 1))
 spectrogram <- function(wl, ovlp, wn, pal, collevels, colbg, amp.trans, ...) {
   layer_int("spectrogram", provided_args_int(match.call(), parent.frame()))
 }
@@ -121,9 +122,10 @@ oscillogram <- function(position = "below", col = NULL, height = NULL) {
 #' @seealso [dynaspec()], [oscillogram()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
 #'   oscillogram(position = "above") + envelope()
 envelope <- function(position = "below", col = NULL, height = NULL) {
   check_results <- .check_arguments("envelope", list(colwave = col))
@@ -138,15 +140,16 @@ envelope <- function(position = "below", col = NULL, height = NULL) {
 #' `spectrum()` adds the mean power spectrum of the sound next to the spectrogram of a [dynaspec()] object, sharing its frequency axis. Power spectra are shown by the [static()] style (with several rows, each row shows the spectrum of its segment, on the same scale).
 #' @param side Character string: "right" or "left" of the spectrogram. Default is "right".
 #' @param col Color of the spectrum. Default is `NULL`: 'col.wave' of [dynatheme()], or "#31688E".
-#' @param width Width of the spectrum panel as a proportion of the figure width. Default is 0.15.
+#' @param width Width of the spectrum panel as a proportion of the figure width. Default is 0.1.
 #' @return A layer to be added to a [dynaspec()] object with `+`.
 #' @seealso [dynaspec()], [spectrogram()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + spectrum(side = "left")
-spectrum <- function(side = "right", col = NULL, width = 0.15) {
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + spectrum(side = "left")
+spectrum <- function(side = "right", col = NULL, width = 0.1) {
   check_results <- .check_arguments("spectrum", list(colwave = col))
   checkmate::assert_choice(side, c("right", "left"), add = check_results, .var.name = "side")
   checkmate::assert_number(width, lower = 0.05, upper = 0.5, add = check_results, .var.name = "width")
@@ -163,9 +166,10 @@ spectrum <- function(side = "right", col = NULL, width = 0.15) {
 #' @seealso [dynaspec()], [scrolling()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
 #'   overview() + scrolling(t.display = 1.7)
 overview <- function(height = NULL) {
   check_results <- checkmate::makeAssertCollection()
@@ -181,9 +185,9 @@ overview <- function(height = NULL) {
 #' @param cex.lab,cex.axis Size of axis titles and axis labels, relative to the style default (e.g. 1.5 is 50% larger). Defaults are 1 (1.2 for axis titles of static spectrograms).
 #' @param font.lab Font of axis titles: 1 (plain), 2 (bold), 3 (italic) or 4 (bold italic). Defaults are 1 (static and scrolling) and 2 (paged).
 #' @param col.lab Color of axes, axis labels and titles. Default is black (paged spectrograms: picked to contrast with the background).
-#' @param axis.type Character string: "standard" (axes with labels and titles), "minimal" (1 s and 1 kHz scale bars; scrolling spectrograms only) or "none" (no axes). Defaults are "standard" (static and scrolling) and "none" (paged).
-#' @param bg Background color of the figure around the panels ("transparent" for a transparent background). Default is white (static spectrograms: the spectrogram background, see 'colbg' in [spectrogram()]).
-#' @param family Font family of all text, including captions and selection labels: "sans", "serif", "mono" or the name of a font installed in the system. Default is "sans".
+#' @param axis.type Character string: "standard" (axes with labels and titles), "inside" (no axis titles; frequency labels inside the spectrogram, e.g. "8k", and time labels below the lowest panel, e.g. "2s"), "compact" (no axis titles; frequency labels below short ticks in a narrow column on the left, with the unit at the bottom, and time labels in minutes and seconds, e.g. "0:02", above the figure), "minimal" (1 s and 1 kHz scale bars; scrolling spectrograms only) or "none" (no axes). Defaults are "standard" (static and scrolling) and "none" (paged).
+#' @param bg Background color of the figure around the panels ("transparent" for a transparent background). Default is white (static spectrograms: 'colbg' of [spectrogram()] when it is supplied).
+#' @param family Font family of all text, including captions and annotation labels: "sans", "serif", "mono" or the name of a font installed in the system. Default is "sans".
 #' @param las Orientation of the frequency axis labels: 0 (parallel to the axis) or 1 (horizontal). Defaults are 1 (static and paged) and 0 (scrolling).
 #' @param tick.length Length of axis ticks, in lines of text (0 hides ticks). Defaults are 0.5 (static and scrolling) and 0.3 (paged).
 #' @param box Logical argument to control whether boxes are drawn around panels. Default is `TRUE`.
@@ -195,8 +199,10 @@ overview <- function(height = NULL) {
 #' @param pal,colbg Color palette and background of spectrograms (see [spectrogram()]). Used when not supplied in [spectrogram()].
 #' @param col.wave Color of oscillograms, envelopes and power spectra. Used when not supplied in [oscillogram()], [envelope()] or [spectrum()].
 #' @param col.line Color of the play line (and cursor of paged spectrograms). Used when 'lcol' is not supplied in the style ([static()], [scrolling()] or [paged()]).
-#' @param col.highlight Color of the highlight box of paged spectrograms. Used when 'highlight.col' is not supplied in [paged()].
+#' @param lty.line,lwd.line Type and width of the play line of scrolling spectrograms. Used when 'lty' and 'lwd' are not supplied in [scrolling()].
+#' @param col.highlight Color of the highlight box of paged spectrograms (used when 'highlight.col' is not supplied in [paged()]) and of the translucent boxes dimming the parts of the [overview()] outside the window shown in scrolling spectrograms. Default is gray in overviews.
 #' @param col.bar,bg.bar Color of the text and background of the player controls of web pages (play button, sliders, ...). Defaults are dark gray and transparent (the page background).
+#' @param bar.style Style of the player controls of web pages: "standard" (rectangular buttons), "rounded" (round play button, rounded controls, a seek bar and a frame with rounded corners around the figure; 'bg.bar' is used as the background of the whole player) or "square" (flat bar with a square play button and sliders in the color of the play line). With "rounded" [player()] shows the seek bar and the time by default (`buttons = c("progress", "time")`), and with "square" the volume control and the time (`buttons = c("volume", "time")`). Default is "standard".
 #' @param ... Settings of `dynatheme()` that replace those of the preset theme.
 #' @return A layer to be added to a [dynaspec()] object with `+`.
 #' @details Only the settings supplied are used; other settings take the defaults of each style. Settings supplied in other layers (e.g. the palette in [spectrogram()]) take precedence over those of the theme.
@@ -209,20 +215,36 @@ overview <- function(height = NULL) {
 #'   \item `dynatheme_minimal()`: no boxes, light gray axes and short ticks.
 #'   \item `dynatheme_transparent()`: transparent background, to blend in slides or web pages of any color.
 #'   \item `dynatheme_void()`: no axes, titles or boxes (only the sound).
+#'   \item `dynatheme_macaulay()`: inspired by the player of the 'Macaulay Library': gray spectrogram, compact axes (time in minutes and seconds above the figure) and a black player bar with a square play button. Best with [scrolling()] and an [overview()] (e.g. `scrolling(t.display = 3, fix.time = FALSE)`).
+#'   \item `dynatheme_xenocanto()`: inspired by the player of the 'Xeno-canto' web site: gray spectrogram, labels inside the figure, solid play line and rounded player controls with a seek bar. Best with [scrolling()] and an [oscillogram()] (e.g. `scrolling(t.display = 3, fix.time = FALSE)`).
 #' }
 #' @seealso [dynaspec()], [spectrogram()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
-#'   dynatheme(xlab = "Tiempo (s)", ylab = "Frecuencia (kHz)", cex.lab = 1.4, font.lab = 2)
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   dynatheme(xlab = "Time (s)", ylab = "Frequency (kHz)", cex.lab = 1.4, font.lab = 2)
 #'
 #' # preset theme with larger axis titles
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + oscillogram() +
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram() +
 #'   dynatheme_dark(cex.lab = 1.4)
+#'
+#' # Macaulay Library look
+#' x <- dynaspec(scaly_breasted_hummingbird) + spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   overview() + dynatheme_macaulay() + scrolling(t.display = 3, fix.time = FALSE)
+#'
+#' # Xeno-canto look (and its color version)
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(0, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram(height = 0.15) +
+#'   dynatheme_xenocanto() + scrolling(t.display = 3, fix.time = FALSE)
+#' x <- x + dynatheme_xenocanto(pal = viridis::inferno, colbg = "black", bg = "black",
+#'   col.panel = "black", col.wave = "white", col.lab = "white", col.line = "white")
 dynatheme <- function(xlab, ylab, cex.lab, cex.axis, font.lab, col.lab, axis.type, bg, family, las, tick.length, box, col.box,
-                      grid, col.grid, col.panel, col.title, cex.title, pal, colbg, col.wave, col.line, col.highlight, col.bar, bg.bar) {
+                      grid, col.grid, col.panel, col.title, cex.title, pal, colbg, col.wave, col.line, lty.line, lwd.line, col.highlight,
+                      col.bar, bg.bar, bar.style) {
   args <- provided_args_int(match.call(), parent.frame())
   layer_int("theme", check_theme_int(args))
 }
@@ -265,31 +287,58 @@ dynatheme_void <- function(...) theme_preset_int(list(
   axis.type = "none", box = FALSE
 ), ...)
 
-#' Selection layer of dynamic spectrograms
+#' @rdname dynatheme
+#' @export
+dynatheme_macaulay <- function(...) theme_preset_int(list(
+  axis.type = "compact", pal = c("#EBEBEB", "#111111"), colbg = "#EBEBEB", bg = "white", col.panel = "#EBEBEB",
+  col.wave = "#333333", col.lab = "#555555", col.box = "#9E9E9E", cex.axis = 0.8, col.line = "#3D7299", lty.line = 1,
+  lwd.line = 2, col.highlight = "#333333", bar.style = "square", col.bar = "white", bg.bar = "black"
+), ...)
+
+#' @rdname dynatheme
+#' @export
+dynatheme_xenocanto <- function(...) theme_preset_int(list(
+  axis.type = "inside", box = FALSE, pal = seewave::reverse.gray.colors.1, colbg = "white", bg = "white", col.panel = "white",
+  col.wave = "black", col.lab = "#333333", cex.axis = 0.85, tick.length = 0.3, col.line = "#333333", lty.line = 1, lwd.line = 2,
+  col.highlight = "#F0F0F0", bar.style = "rounded", col.bar = "#333333", bg.bar = "#F0F0F0"
+), ...)
+
+#' Annotation layer of dynamic spectrograms
 #'
-#' `selections()` highlights parts of the sound in a [dynaspec()] object with translucent boxes (e.g. calls, songs or the parts of a duet).
+#' `annotations()` highlights parts of the sound in a [dynaspec()] object with translucent boxes (e.g. calls, songs or the parts of a duet), optionally with borders and labels.
 #' @param X Data frame with the selections: columns 'start' and 'end' (in s) and, optionally, 'bottom.freq' and 'top.freq' (in kHz) to restrict boxes to a frequency range. Selection tables from 'warbleR' (or tables from 'ohun' or 'Rraven') can be used directly (see details). Extended selection tables are not supported.
 #' @param sound.file Name of the sound file whose selections are shown, when 'X' has a 'sound.files' column with several sound files. Default is `NULL`: when the sound of [dynaspec()] is a file, the selections of that file are shown (matching the file name); otherwise 'X' must contain a single sound file.
 #' @param col Color of the boxes, or the name of a column of 'X' with the color of each box. Default is "#E69F00".
 #' @param alpha Opacity of the boxes (0-1). Default is 0.3.
-#' @param border Color of the box borders. Default is `NULL` (no borders).
+#' @param border Color of the box borders, or the name of a column of 'X' with the border color of each box. Default is `NULL` (no borders).
 #' @param lwd Width of the box borders. Default is 1.
+#' @param type Character string: "box" (translucent boxes) or "spectrogram" (the spectrogram is colored within each selection, with a gradient from the spectrogram background to the color of the selection, as [warbleR::color_spectro()]; only borders and labels are drawn on top). Default is "box".
+#' @param lty Line type of the box borders, as in [graphics::par()]: an integer (0-6) or a name ("solid", "dashed", "dotted", "dotdash", "longdash" or "twodash"). Default is 1 (solid).
 #' @param labels Name of a column of 'X' with labels to show at the top of each box. Default is `NULL` (no labels).
 #' @param cex Size of the labels. Default is 1.
 #' @param freq Logical to control if the frequency range of selections is used (when 'X' has 'bottom.freq' and 'top.freq' columns). If `FALSE` boxes span the whole frequency range. Default is `TRUE`.
-#' @return A layer to be added to a [dynaspec()] object with `+`. Several selection layers can be added.
+#' @return A layer to be added to a [dynaspec()] object with `+`. Several annotation layers can be added.
 #' @details Tables with a 'sound.files' column (e.g. 'warbleR' selection tables) can contain selections of several sound files; only those of the sound shown are used (see 'sound.file').
 #' @seealso [dynaspec()], [captions()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' st <- data.frame(start = c(0.4, 3.6), end = c(1.5, 4.8), labels = c("first notes", "last notes"),
+#' st <- data.frame(start = c(1, 6), end = c(2.9, 7.4), labels = c("first notes", "last notes"),
 #'                  colors = c("#E69F00", "#56B4E9"))
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
-#'   selections(st, col = "colors", labels = "labels")
-selections <- function(X, col = "#E69F00", alpha = 0.3, border = NULL, lwd = 1, labels = NULL, cex = 1, freq = TRUE, sound.file = NULL) {
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   annotations(st, col = "colors", labels = "labels")
+#'
+#' # dashed borders of the same color as the boxes
+#' x <- x + annotations(st, col = "colors", alpha = 0.1, border = "colors", lwd = 2, lty = "dashed")
+#'
+#' # spectrogram colored within the selections
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   annotations(st, col = "colors", type = "spectrogram")
+annotations <- function(X, col = "#E69F00", alpha = 0.3, type = "box", border = NULL, lwd = 1, lty = 1, labels = NULL, cex = 1, freq = TRUE, sound.file = NULL) {
   check_results <- checkmate::makeAssertCollection()
   if (inherits(X, "extended_selection_table"))
     check_results$push("'X': Extended selection tables are not supported; use a selection table (e.g. warbleR::selection_table()) or a data frame")
@@ -299,9 +348,16 @@ selections <- function(X, col = "#E69F00", alpha = 0.3, border = NULL, lwd = 1, 
     if (!is.null(labels)) checkmate::assert_choice(labels, names(X), add = check_results, .var.name = "labels")
   }
   checkmate::assert_number(alpha, lower = 0, upper = 1, add = check_results, .var.name = "alpha")
+  checkmate::assert_choice(type, c("box", "spectrogram"), add = check_results, .var.name = "type")
   checkmate::assert_flag(freq, add = check_results, .var.name = "freq")
-  if (is.data.frame(X) && !(length(col) == 1 && col %in% names(X)) && !all(vapply(col, function(y) !inherits(try(grDevices::col2rgb(y), silent = TRUE), "try-error"), logical(1))))
+  is_col <- function(y) all(vapply(y, function(z) !inherits(try(grDevices::col2rgb(z), silent = TRUE), "try-error"), logical(1)))
+  if (is.data.frame(X) && !(length(col) == 1 && col %in% names(X)) && !is_col(col))
     check_results$push("'col': Must be a valid color or the name of a column of 'X'")
+  if (is.data.frame(X) && !is.null(border) && !(length(border) == 1 && border %in% names(X)) && !is_col(border))
+    check_results$push("'border': Must be a valid color or the name of a column of 'X'")
+  checkmate::assert_number(lwd, lower = 0, add = check_results, .var.name = "lwd")
+  if (!(checkmate::test_choice(lty, 0:6) || checkmate::test_choice(lty, c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash"))))
+    check_results$push("'lty': Must be an integer between 0 and 6 or one of 'blank', 'solid', 'dashed', 'dotted', 'dotdash', 'longdash' or 'twodash'")
   if (!is.null(sound.file)) {
     checkmate::assert_string(sound.file, add = check_results, .var.name = "sound.file")
     if (is.data.frame(X) && !"sound.files" %in% names(X))
@@ -313,12 +369,12 @@ selections <- function(X, col = "#E69F00", alpha = 0.3, border = NULL, lwd = 1, 
   # plain data frame (e.g. from warbleR selection tables; attributes are not needed)
   X <- data.frame(lapply(as.list(X), function(v) { attributes(v) <- NULL; v }), stringsAsFactors = FALSE)
   if (!is.null(sound.file)) X <- X[X$sound.files == sound.file, , drop = FALSE]
-  layer_int("selections", list(X = X, col = col, alpha = alpha, border = border, lwd = lwd, labels = labels, cex = cex, freq = freq, sound.file = sound.file))
+  layer_int("annotations", list(X = X, col = col, alpha = alpha, type = type, border = border, lwd = lwd, lty = lty, labels = labels, cex = cex, freq = freq, sound.file = sound.file))
 }
 
 #' Caption layer of dynamic spectrograms
 #'
-#' `captions()` adds text to a [dynaspec()] object at a fixed position of the figure, shown (fading in and out) during a time range of the sound, like subtitles. They are shown in the same way in all styles, in web pages and videos. To label parts of the spectrogram use the 'labels' argument of [selections()] instead.
+#' `captions()` adds text to a [dynaspec()] object at a fixed position of the figure, shown (fading in and out) during a time range of the sound, like subtitles. They are shown in the same way in all styles, in web pages and videos. To label parts of the spectrogram use the 'labels' argument of [annotations()] instead.
 #' @param labels Character vector with the captions.
 #' @param start,end Numeric vectors with the start and end times (in s) of each caption.
 #' @param x,y Position of the center of the captions as proportions of the figure width and height (0-1, from the left and bottom). Defaults are 0.5 and 0.9.
@@ -326,13 +382,14 @@ selections <- function(X, col = "#E69F00", alpha = 0.3, border = NULL, lwd = 1, 
 #' @param col,cex,font Color, size and font (1 = plain, 2 = bold, 3 = italic, 4 = bold italic) of the captions. Defaults are "black", 1 and 1.
 #' @return A layer to be added to a [dynaspec()] object with `+`. Several caption layers can be added (e.g. at different positions).
 #' @details Each caption layer shows one caption at a time; when the time ranges of its captions overlap the most visible one is shown.
-#' @seealso [dynaspec()], [selections()]
+#' @seealso [dynaspec()], [annotations()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
-#'   captions(c("first notes", "last notes"), start = c(0.4, 3.6), end = c(1.5, 4.8), fading = 0.2)
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   captions(c("first notes", "last notes"), start = c(1, 6), end = c(2.9, 7.4), fading = 0.2)
 captions <- function(labels, start, end, x = 0.5, y = 0.9, fading = 0, col = "black", cex = 1, font = 1) {
   check_results <- checkmate::makeAssertCollection()
   checkmate::assert_character(labels, min.len = 1, any.missing = FALSE, add = check_results, .var.name = "labels")
@@ -361,22 +418,26 @@ captions <- function(labels, start, end, x = 0.5, y = 0.9, fading = 0, col = "bl
 #'   \item \code{"volume"}: mute button and volume slider
 #'   \item \code{"download"}: button to save the sound (as a '.wav' or '.mp3' file, as embedded in the web page)
 #'   \item \code{"fullscreen"}: button to show the player in full screen (e.g. in presentations)
+#'   \item \code{"progress"}: seek bar showing the part of the sound played (drag it to move to another time)
+#'   \item \code{"zoom"}: slider (with - and + buttons) to stretch or shrink scrolling spectrograms, showing from 4 times less to 4 times more time than 't.display' (at most the whole sound). Only in scrolling spectrograms; the scrolling spectrogram is drawn at twice the resolution so zooming in stays sharp, which makes web pages larger
 #' }
-#' Use \code{character()} to show only the play button and speed slider. Default is \code{"time"}. Buttons are only shown in web pages (not in videos).
+#' Use \code{character()} to show only the play button and speed slider. Default is \code{"time"} (\code{c("progress", "time")} with themes with \code{bar.style = "rounded"}, e.g. [dynatheme_xenocanto()]). Buttons are only shown in web pages (not in videos).
 #' @return A layer to be added to a [dynaspec()] object with `+`.
 #' @seealso [dynaspec()]
 #' @export
 #' @examples
 #' \dontrun{
-#' data("canyon_wren")
+#' data("scaly_breasted_hummingbird")
 #'
-#' dynaspec(canyon_wren, flim = c(1, 10)) +
-#'   spectrogram(wl = 300) +
+#' dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
 #'   player(buttons = c("time", "loop", "volume", "download", "fullscreen"))
 #' }
 player <- function(speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, buttons = "time") {
-  .report_assertions(.check_arguments("player", list(speeds = speeds, keep.pitch = keep.pitch, buttons = buttons)))
-  layer_int("player", list(speeds = speeds, keep.pitch = keep.pitch, buttons = buttons))
+  # only supplied arguments are stored (the default buttons depend on the theme)
+  args <- provided_args_int(match.call(), parent.frame())
+  .report_assertions(.check_arguments("player", args))
+  layer_int("player", args)
 }
 
 #' Styles of dynamic spectrograms
@@ -411,9 +472,10 @@ player <- function(speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, buttons 
 #' @seealso [dynaspec()], [save_dynaspec()]
 #' @name styles
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300)
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 #'
 #' \dontrun{
 #' x + scrolling(t.display = 1.7, axis.type = "minimal")
@@ -443,12 +505,12 @@ static <- function(rows, width, height, res, lcol, alt, fps, play.line) {
 #' Add layers to dynamic spectrograms
 #'
 #' @param e1 A [dynaspec()] object.
-#' @param e2 A layer (e.g. [spectrogram()], [selections()] or [scrolling()]).
-#' @return A [dynaspec()] object. Spectrogram, oscillogram, envelope, spectrum, overview, player and style layers replace previous ones of the same kind (arguments of spectrogram, theme and style layers are combined); selections and captions are added.
+#' @param e2 A layer (e.g. [spectrogram()], [annotations()] or [scrolling()]).
+#' @return A [dynaspec()] object. Spectrogram, oscillogram, envelope, spectrum, overview, player and style layers replace previous ones of the same kind (arguments of spectrogram, theme and style layers are combined); annotations and captions are added.
 #' @export
 `+.dynaspec` <- function(e1, e2) {
   if (missing(e2) || !inherits(e2, "dynaspec_layer"))
-    stop2("only dynaspec layers (e.g. spectrogram(), selections() or scrolling()) can be added to dynaspec objects")
+    stop2("only dynaspec layers (e.g. spectrogram(), annotations() or scrolling()) can be added to dynaspec objects")
   if (!inherits(e1, "dynaspec"))
     stop2("layers must be added to a dynaspec object (see dynaspec())")
 
@@ -461,7 +523,7 @@ static <- function(rows, width, height, res, lcol, alt, fps, play.line) {
     # (preset themes replace previous themes)
     theme = e1$theme <- if (isTRUE(e2$complete)) e2$args else utils::modifyList(if (is.null(e1$theme)) list() else e1$theme, e2$args),
     player = e1$player <- e2$args,
-    selections = e1$selections <- c(e1$selections, list(e2$args)),
+    annotations = e1$selections <- c(e1$selections, list(e2$args)),
     captions = e1$captions <- c(e1$captions, list(e2$args)),
     style = e1$style <- if (identical(e1$style$type, e2$style)) list(type = e2$style, args = utils::modifyList(e1$style$args, e2$args)) else list(type = e2$style, args = e2$args)
   )
@@ -485,17 +547,18 @@ static <- function(rows, width, height, res, lcol, alt, fps, play.line) {
 #' @seealso [dynaspec()]
 #' @export
 #' @examples
-#' data(canyon_wren)
+#' data(scaly_breasted_hummingbird)
 #'
-#' x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + oscillogram()
+#' x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+#'   spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram()
 #'
-#' save_dynaspec(x, file.path(tempdir(), "canyon_wren.html"), play = FALSE)
-#' save_dynaspec(x, file.path(tempdir(), "canyon_wren.png"), play = FALSE)
+#' save_dynaspec(x, file.path(tempdir(), "hummingbird.html"), play = FALSE)
+#' save_dynaspec(x, file.path(tempdir(), "hummingbird.png"), play = FALSE)
 #'
 #' \dontrun{
 #' # videos (require ffmpeg)
-#' save_dynaspec(x, file.path(tempdir(), "canyon_wren.mp4"))
-#' save_dynaspec(x + scrolling(t.display = 1.7), file.path(tempdir(), "canyon_wren_scrolling.mp4"))
+#' save_dynaspec(x, file.path(tempdir(), "hummingbird.mp4"))
+#' save_dynaspec(x + scrolling(t.display = 1.7), file.path(tempdir(), "hummingbird_scrolling.mp4"))
 #' }
 save_dynaspec <- function(x, file.name = NULL, play = TRUE, verbose = TRUE) {
   if (!inherits(x, "dynaspec"))
@@ -516,10 +579,10 @@ save_dynaspec <- function(x, file.name = NULL, play = TRUE, verbose = TRUE) {
   # sound (cropped if requested; times of layers are shifted accordingly) and layers
   wave <- x$wave
   layers <- list(selections = lapply(x$selections, sound_file_selections_int, x = x), captions = x$captions)
-  if (!is.null(x$crop)) {
+  if (!is.null(x$tlim)) {
     w <- read_sound_int(wave)$wave
-    wave <- seewave::cutw(w, from = x$crop[1], to = min(x$crop[2], seewave::duration(w)), output = "Wave")
-    layers <- shift_layers_int(layers, -x$crop[1])
+    wave <- seewave::cutw(w, from = x$tlim[1], to = min(x$tlim[2], seewave::duration(w)), output = "Wave")
+    layers <- shift_layers_int(layers, -x$tlim[1])
   }
 
   type <- x$style$type

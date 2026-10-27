@@ -74,14 +74,14 @@ available in the system path (see the installation instructions in the
 Dynamic spectrograms are built in layers, as 'ggplot2' graphs: `dynaspec()` takes the sound, and layers are added with `+`:
 
 ```{r, eval = FALSE}
-dynaspec(wave, flim = c(1, 10)) +          # the sound (and frequency and time ranges)
-  spectrogram(wl = 300) +                   # panels: spectrogram, oscillogram, envelope, spectrum
+dynaspec(wave, flim = c(1, 10)) + # the sound (and frequency and time ranges)
+  spectrogram(wl = 300) + # panels: spectrogram, oscillogram, envelope, spectrum
   oscillogram() +
-  selections(st) +                          # highlight parts of the sound
-  captions("song", start = 0, end = 2) +    # text shown during a time range
-  dynatheme(xlab = "Time (s)") +            # axis titles, text and colors
-  player(speeds = c(1, 0.5)) +              # playback buttons of web pages
-  scrolling(t.display = 1.7)                # style: static() (default), scrolling() or paged()
+  annotations(st) + # highlight parts of the sound
+  captions("song", start = 0, end = 2) + # text shown during a time range
+  dynatheme(xlab = "Time (s)") + # axis titles, text and colors
+  player(speeds = c(1, 0.5)) + # playback buttons of web pages
+  scrolling(t.display = 1.7) # style: static() (default), scrolling() or paged()
 ```
 
 | Layer | What it does |
@@ -90,7 +90,7 @@ dynaspec(wave, flim = c(1, 10)) +          # the sound (and frequency and time r
 | `oscillogram()`, `envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
 | `spectrum()` | Adds a power spectrum next to the spectrogram |
 | `overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
-| `selections()` | Highlights parts of the sound with translucent boxes (e.g. from a selection table) |
+| `annotations()` | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
 | `captions()` | Text at a fixed position shown during a time range, like subtitles |
 | `dynatheme()`, `dynatheme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
 | `player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
@@ -102,31 +102,33 @@ Printing a `dynaspec` object shows an interactive web page: press play to watch 
 library(dynaSpec)
 ```
 
-The examples use the canyon wren song and the barn swallow recordings included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
+The examples use the scaly-breasted hummingbird song and the barn swallow recordings included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
 
 # Panels
 
 Only the panels added as layers are shown. A spectrogram:
 
 ```{r, eval = TRUE}
-data("canyon_wren")
+data("scaly_breasted_hummingbird")
 
-wren <- dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300)
+hb <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 
-wren
+hb
 ```
 
-Layers can be stored in an object (as `wren` above) and added later. A spectrogram with an oscillogram below it:
+The spectrogram background is the color of the lowest amplitude of the palette (white for the default gray palette), so quiet parts of the sound and the background look the same. Use `spectrogram(colbg = )` to set another background.
+
+Layers can be stored in an object (as `hb` above) and added later. A spectrogram with an oscillogram below it:
 
 ```{r}
-wren + oscillogram()
+hb + oscillogram()
 ```
 
 Oscillograms and amplitude envelopes can go above or below the spectrogram, and a power spectrum can be added on its left or right side:
 
 ```{r}
-wren +
+hb +
   oscillogram(position = "above") +
   envelope() +
   spectrum(side = "right")
@@ -135,24 +137,24 @@ wren +
 Without `spectrogram()` only the other panels are shown (e.g. only the oscillogram), and `dynaspec()` alone shows an empty panel with a time axis and the play line:
 
 ```{r}
-dynaspec(canyon_wren) + oscillogram()
+dynaspec(scaly_breasted_hummingbird) + oscillogram()
 ```
 
-`flim` sets the frequency range (in kHz) and `crop` the part of the sound used (in s):
+`flim` sets the frequency range (in kHz) and `tlim` the time range of the sound used (in s):
 
 ```{r}
-dynaspec(canyon_wren, flim = c(1, 10), crop = c(1, 3)) +
-  spectrogram(wl = 300)
+dynaspec(scaly_breasted_hummingbird, flim = c(2, 11), tlim = c(1, 3)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 ```
 
 # Styles
 
 ## Static spectrograms
 
-The default style: a line moves over the whole figure as the sound plays. Long sounds can be split in several rows (`rows`; `height` sets the height of each row), and `play.line = FALSE` hides the moving line:
+The default style: a line moves over the whole figure as the sound plays, so `static()` is not needed to create static spectrograms (all examples above are static). It is used to change the settings of static spectrograms, or to switch back to them from another style (the last style added is used). Long sounds can be split in several rows (`rows`; `height` sets the height of each row), and `play.line = FALSE` hides the moving line:
 
 ```{r}
-wren + static(rows = 2, height = 350)
+hb + static(rows = 2, height = 350)
 ```
 
 ## Scrolling spectrograms
@@ -160,8 +162,8 @@ wren + static(rows = 2, height = 350)
 The spectrogram scrolls along a fixed play line, as in the Macaulay Library. `t.display` sets the time window (in s) shown at once, and `overview()` adds a lower panel with the whole sound, in which the part being shown is highlighted:
 
 ```{r, eval = TRUE}
-dynaspec(canyon_wren, flim = c(1, 9)) +
-  spectrogram(wl = 300) +
+dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   overview() +
   scrolling(t.display = 1.7)
 ```
@@ -174,7 +176,11 @@ The spectrogram is split into pages (`t.display` sets the duration of each page)
 
 ```{r, eval = TRUE}
 # example WAV files included with dynaSpec
-f <- list.files(system.file(package = "dynaSpec"), pattern = "\\.wav$", full.names = TRUE)
+f <- list.files(
+  system.file(package = "dynaSpec"),
+  pattern = "\\.wav$",
+  full.names = TRUE
+)
 
 dynaspec(f[2]) +
   spectrogram() +
@@ -188,54 +194,43 @@ Settings not supplied take the defaults of each style. For instance, paged spect
 The speed slider slows the sound down. Slowing down also lowers the pitch (as when slowing down a tape), which makes fast features such as pulses easier to hear. The *keep pitch* button switches to slowing down while keeping the original pitch. `player()` sets the speeds offered (the first one is the initial speed) and whether the pitch is kept by default:
 
 ```{r}
-wren + player(speeds = c(0.5, 1, 0.25), keep.pitch = TRUE)
+hb + player(speeds = c(0.5, 1, 0.25), keep.pitch = TRUE)
 ```
 
-`buttons` adds more controls: a time readout (shown by default), a loop button, a volume control, a button to download the sound and a full screen button:
+`buttons` adds more controls: a time readout (shown by default), a seek bar, a zoom slider (scrolling spectrograms), a loop button, a volume control, a button to download the sound and a full screen button:
 
 ```{r}
-wren + player(buttons = c("time", "loop", "volume", "download", "fullscreen"))
+hb +
+  player(
+    buttons = c("progress", "time", "loop", "volume", "download", "fullscreen")
+  )
 ```
 
 Several players can be included in the same document or web page; only one sound plays at a time.
 
 # Highlighting and labeling sounds
 
-`selections()` highlights parts of the sound with translucent boxes. It takes a data frame with the start and end of each selection (in s), as the selection tables of [warbleR](https://cran.r-project.org/package=warbleR) and [ohun](https://cran.r-project.org/package=ohun). If it has 'bottom.freq' and 'top.freq' columns (in kHz) the boxes only span that frequency range, and colors and labels can be taken from its columns. With tables of several sound files (column 'sound.files') only the selections of the sound shown are used.
-
-`captions()` adds text at a fixed position of the figure, shown (and optionally fading in and out) during a time range, like subtitles:
-
-```{r, eval = TRUE}
-st <- data.frame(
-  start = c(0.4, 3.6),
-  end = c(1.5, 4.8),
-  bottom.freq = c(2, 1.5),
-  top.freq = c(9, 5),
-  labels = c("first notes", "last notes"),
-  colors = c("#E69F00", "#56B4E9")
-)
-
-wren +
-  selections(st, col = "colors", labels = "labels") +
-  captions("Canyon wren", start = 0, end = 5.3, x = 0.85, y = 0.92, font = 3, fading = 0.3)
-```
-
-Both work in the three styles.
+`annotations()` highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table of [warbleR](https://cran.r-project.org/package=warbleR) or [ohun](https://cran.r-project.org/package=ohun)), and `captions()` adds text at a fixed position of the figure shown during a time range, like subtitles. Both work in the three styles, and are shown in the article [Customizing dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html#annotations).
 
 # Themes
 
 `dynatheme()` sets the look of the figure in the same way for all styles: axis titles, text sizes and fonts, colors of axes and text, boxes, grid lines, backgrounds, the colors of the plot (e.g. the spectrogram palette, used when not supplied in `spectrogram()`) and the colors of the player controls:
 
 ```{r}
-dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
-  dynatheme(xlab = "Tiempo (s)", ylab = "Frecuencia (kHz)", cex.lab = 1.3, font.lab = 2)
+dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
+  dynatheme(
+    xlab = "Time (s)",
+    ylab = "Frequency (kHz)",
+    cex.lab = 1.3,
+    font.lab = 2
+  )
 ```
 
-Preset themes set several settings at once: `dynatheme_dark()`, `dynatheme_presentation()`, `dynatheme_paper()`, `dynatheme_minimal()`, `dynatheme_transparent()` and `dynatheme_void()`. Their settings can be changed in the call:
+Preset themes set several settings at once: `dynatheme_dark()`, `dynatheme_presentation()`, `dynatheme_paper()`, `dynatheme_minimal()`, `dynatheme_transparent()`, `dynatheme_void()`, `dynatheme_xenocanto()` and `dynatheme_macaulay()`. Their settings can be changed in the call:
 
 ```{r}
-wren + oscillogram() + dynatheme_dark(cex.lab = 1.3)
+hb + oscillogram() + dynatheme_dark(cex.lab = 1.3)
 ```
 
 # Saving web pages, videos and images
@@ -247,20 +242,17 @@ wren + oscillogram() + dynatheme_dark(cex.lab = 1.3)
 * `.png`: still image of static spectrograms, or one image per page of paged spectrograms
 
 ```{r, eval = FALSE}
-save_dynaspec(wren, "canyon_wren.html")
-save_dynaspec(wren, "canyon_wren.png")
-save_dynaspec(wren, "canyon_wren_static.mp4")
-save_dynaspec(wren + scrolling(t.display = 1.7), "canyon_wren_scrolling.mp4")
+save_dynaspec(hb, "hummingbird.html")
+save_dynaspec(hb, "hummingbird.png")
+save_dynaspec(hb, "hummingbird_static.mp4")
+save_dynaspec(hb + scrolling(t.display = 1.7), "hummingbird_scrolling.mp4")
 ```
 
 Videos of static and paged spectrograms are created in a few seconds. Videos of scrolling spectrograms take longer, as every frame is rendered (a progress bar shows the progress).
 
-Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut (e.g. with `crop`) or downsample long recordings before creating web pages.
+Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut (e.g. with `tlim`) or downsample long recordings before creating web pages.
 
-------------------------------------------------------------------------
-
-Enjoy! Please share your spectrograms with us on X [\@mattwilkinsbio](https://x.com/mattwilkinsbio)
-
+---
 ### Session information {.unnumbered .unlisted}
 
 <details>

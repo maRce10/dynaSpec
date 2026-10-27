@@ -32,17 +32,17 @@ Dynamic spectrograms are built in layers, as ‘ggplot2’ graphs:
 `dynaspec()` takes the sound, and layers are added with `+` (only the
 panels added are shown):
 
-| Layer                                  | What it does                                                                       |
-| -------------------------------------- | ---------------------------------------------------------------------------------- |
-| `spectrogram()`                        | Adds a spectrogram (window length, palette, amplitude range, …)                    |
-| `oscillogram()`, `envelope()`          | Add an oscillogram or an amplitude envelope (above or below the spectrogram)       |
-| `spectrum()`                           | Adds a power spectrum next to the spectrogram                                      |
-| `overview()`                           | Adds a lower panel with the whole sound to scrolling spectrograms                  |
-| `selections()`                         | Highlights parts of the sound with translucent boxes (e.g. from a selection table) |
-| `captions()`                           | Text at a fixed position shown during a time range, like subtitles                 |
-| `dynatheme()`                          | Axis titles, text sizes and fonts, colors and background                           |
-| `player()`                             | Playback speed buttons of web pages                                                |
-| `static()`, `scrolling()` or `paged()` | Style of the dynamic spectrogram (see below)                                       |
+| Layer                                  | What it does                                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `spectrogram()`                        | Adds a spectrogram (window length, palette, amplitude range, …)                                        |
+| `oscillogram()`, `envelope()`          | Add an oscillogram or an amplitude envelope (above or below the spectrogram)                           |
+| `spectrum()`                           | Adds a power spectrum next to the spectrogram                                                          |
+| `overview()`                           | Adds a lower panel with the whole sound to scrolling spectrograms                                      |
+| `annotations()`                        | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
+| `captions()`                           | Text at a fixed position shown during a time range, like subtitles                                     |
+| `dynatheme()`, `dynatheme_dark()`, …   | Axis titles, fonts, colors of the figure and plot, and preset themes                                   |
+| `player()`                             | Playback controls of web pages (speed slider, loop, volume, download, …)                               |
+| `static()`, `scrolling()` or `paged()` | Style of the dynamic spectrogram (see below)                                                           |
 
 The package offers three styles of dynamic spectrogram:
 
@@ -97,11 +97,11 @@ If ffmpeg is installed somewhere else, point R to the executable with
 library(dynaSpec)
 
 # example recording included in the package
-data("canyon_wren")
+data("scaly_breasted_hummingbird")
 
 # static spectrogram with oscillogram (shown in the RStudio viewer or the web browser)
-x <- dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300) +
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   oscillogram()
 
 x
@@ -111,8 +111,8 @@ x + scrolling(t.display = 1.7)
 x + paged(t.display = 2)
 
 # save as a web page or as a video
-save_dynaspec(x, "canyon_wren.html")
-save_dynaspec(x + scrolling(t.display = 1.7), "canyon_wren.mp4")
+save_dynaspec(x, "hummingbird.html")
+save_dynaspec(x + scrolling(t.display = 1.7), "hummingbird.mp4")
 ```
 
 Sounds can be ‘Wave’ objects or ‘.wav’ and ‘.mp3’ files. Invalid

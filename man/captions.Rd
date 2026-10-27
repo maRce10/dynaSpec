@@ -31,17 +31,18 @@ captions(
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}. Several caption layers can be added (e.g. at different positions).
 }
 \description{
-\code{captions()} adds text to a \code{\link[=dynaspec]{dynaspec()}} object at a fixed position of the figure, shown (fading in and out) during a time range of the sound, like subtitles. They are shown in the same way in all styles, in web pages and videos. To label parts of the spectrogram use the 'labels' argument of \code{\link[=selections]{selections()}} instead.
+\code{captions()} adds text to a \code{\link[=dynaspec]{dynaspec()}} object at a fixed position of the figure, shown (fading in and out) during a time range of the sound, like subtitles. They are shown in the same way in all styles, in web pages and videos. To label parts of the spectrogram use the 'labels' argument of \code{\link[=annotations]{annotations()}} instead.
 }
 \details{
 Each caption layer shows one caption at a time; when the time ranges of its captions overlap the most visible one is shown.
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
-  captions(c("first notes", "last notes"), start = c(0.4, 3.6), end = c(1.5, 4.8), fading = 0.2)
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  captions(c("first notes", "last notes"), start = c(1, 6), end = c(2.9, 7.4), fading = 0.2)
 }
 \seealso{
-\code{\link[=dynaspec]{dynaspec()}}, \code{\link[=selections]{selections()}}
+\code{\link[=dynaspec]{dynaspec()}}, \code{\link[=annotations]{annotations()}}
 }

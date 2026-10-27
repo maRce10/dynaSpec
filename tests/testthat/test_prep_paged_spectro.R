@@ -84,10 +84,10 @@ test_that("prep_paged_spectro takes Wave objects", {
   dest <- file.path(tempdir(), "prep_wave_test")
   on.exit(unlink(dest, recursive = TRUE), add = TRUE)
 
-  wren <- short_wren(1)
-  p <- prep_paged(wren, dest.path = dest, save.png = TRUE, plot = FALSE, verbose = FALSE)
-  expect_equal(p$outFilename, "wren.png")
-  expect_true(file.exists(file.path(dest, "wren_static_specs", "wren_1.png")))
+  hb <- short_sound(1)
+  p <- prep_paged(hb, dest.path = dest, save.png = TRUE, plot = FALSE, verbose = FALSE)
+  expect_equal(p$outFilename, "hb.png")
+  expect_true(file.exists(file.path(dest, "hb_static_specs", "hb_1.png")))
 
 })
 

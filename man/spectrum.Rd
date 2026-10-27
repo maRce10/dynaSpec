@@ -4,14 +4,14 @@
 \alias{spectrum}
 \title{Power spectrum layer of dynamic spectrograms}
 \usage{
-spectrum(side = "right", col = NULL, width = 0.15)
+spectrum(side = "right", col = NULL, width = 0.1)
 }
 \arguments{
 \item{side}{Character string: "right" or "left" of the spectrogram. Default is "right".}
 
 \item{col}{Color of the spectrum. Default is \code{NULL}: 'col.wave' of \code{\link[=dynatheme]{dynatheme()}}, or "#31688E".}
 
-\item{width}{Width of the spectrum panel as a proportion of the figure width. Default is 0.15.}
+\item{width}{Width of the spectrum panel as a proportion of the figure width. Default is 0.1.}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}.
@@ -20,9 +20,10 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 \code{spectrum()} adds the mean power spectrum of the sound next to the spectrogram of a \code{\link[=dynaspec]{dynaspec()}} object, sharing its frequency axis. Power spectra are shown by the \code{\link[=static]{static()}} style (with several rows, each row shows the spectrum of its segment, on the same scale).
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + spectrum(side = "left")
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + spectrum(side = "left")
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}, \code{\link[=spectrogram]{spectrogram()}}

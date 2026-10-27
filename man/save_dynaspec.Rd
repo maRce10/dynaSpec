@@ -32,17 +32,18 @@ Invisibly returns the path to the file, or the HTML code of the web page (a char
 Videos of scrolling spectrograms render every frame, which takes time (it can be sped up with the 'parallel' and 'fps' arguments of \code{\link[=scrolling]{scrolling()}}). Videos of paged and static spectrograms and all web pages are created in seconds.
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + oscillogram()
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram()
 
-save_dynaspec(x, file.path(tempdir(), "canyon_wren.html"), play = FALSE)
-save_dynaspec(x, file.path(tempdir(), "canyon_wren.png"), play = FALSE)
+save_dynaspec(x, file.path(tempdir(), "hummingbird.html"), play = FALSE)
+save_dynaspec(x, file.path(tempdir(), "hummingbird.png"), play = FALSE)
 
 \dontrun{
 # videos (require ffmpeg)
-save_dynaspec(x, file.path(tempdir(), "canyon_wren.mp4"))
-save_dynaspec(x + scrolling(t.display = 1.7), file.path(tempdir(), "canyon_wren_scrolling.mp4"))
+save_dynaspec(x, file.path(tempdir(), "hummingbird.mp4"))
+save_dynaspec(x + scrolling(t.display = 1.7), file.path(tempdir(), "hummingbird_scrolling.mp4"))
 }
 }
 \seealso{

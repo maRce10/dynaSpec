@@ -6,7 +6,7 @@ test_that("scrolling_spectro creates a video", {
   out <- file.path(tempdir(), "scroll test.mp4")
   on.exit(unlink(out), add = TRUE)
 
-  res <- scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, flim = c(1, 9), play = FALSE, verbose = FALSE)
+  res <- scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, flim = c(1, 9), play = FALSE, verbose = FALSE)
 
   expect_equal(res, out)
   expect_true(file.exists(out))
@@ -24,7 +24,7 @@ test_that("scrolling_spectro works with default flim (full frequency range)", {
   out <- file.path(tempdir(), "scroll_flim.mp4")
   on.exit(unlink(out), add = TRUE)
 
-  scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, play = FALSE, verbose = FALSE)
+  scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, play = FALSE, verbose = FALSE)
 
   expect_true(file.exists(out))
 })
@@ -37,10 +37,10 @@ test_that("scrolling_spectro works with loop, oscillogram, annotations and minim
   out <- file.path(tempdir(), "scroll_loop.mp4")
   on.exit(unlink(out), add = TRUE)
 
-  ann <- call("text", x = 0.3, y = 0.85, labels = "wren", start = 0.2, end = 1.5, fading = 0.2)
+  ann <- call("text", x = 0.3, y = 0.85, labels = "hb", start = 0.2, end = 1.5, fading = 0.2)
 
   expect_silent(
-    scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, flim = c(1, 9), loop = 2, osc = TRUE, annotation.call = ann, axis.type = "minimal", speed = 0.5, play = FALSE, verbose = FALSE)
+    scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, flim = c(1, 9), loop = 2, osc = TRUE, annotation.call = ann, axis.type = "minimal", speed = 0.5, play = FALSE, verbose = FALSE)
   )
 
   expect_true(file.exists(out))
@@ -66,7 +66,7 @@ test_that("scrolling_spectro adjusts selection tables in spectro.call", {
   # embed the function itself in the call (calls are evaluated inside scrolling_spectro)
   sp_cl <- as.call(list(spectro_fun, X = X))
 
-  scrolling_engine(short_wren(), file.name = out, t.display = 0.6, fps = 10, width = 300, height = 200, loop = 2, spectro.call = sp_cl, play = FALSE, verbose = FALSE)
+  scrolling_engine(short_sound(), file.name = out, t.display = 0.6, fps = 10, width = 300, height = 200, loop = 2, spectro.call = sp_cl, play = FALSE, verbose = FALSE)
 
   # selections near the end repeated at the start, near the start repeated at
   # the end, and everything shifted by t.display / 2
@@ -83,7 +83,7 @@ test_that("scrolling_spectro warns about mutually exclusive arguments only when 
   on.exit(unlink(out), add = TRUE)
 
   expect_warning(
-    scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, osc = TRUE, lower.spectro = TRUE, play = FALSE, verbose = FALSE),
+    scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, fps = 10, width = 300, height = 200, osc = TRUE, lower.spectro = TRUE, play = FALSE, verbose = FALSE),
     "mutually exclusive"
   )
 })
@@ -108,7 +108,7 @@ test_that("scrolling_spectro creates web pages", {
   on.exit(unlink(out), add = TRUE)
 
   ann <- call("text", x = 0.5, y = 0.8, labels = c("a", "b"), start = c(0.2, 1), end = c(0.8, 1.8), fading = 0.1)
-  res <- scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, flim = c(1, 9), annotation.call = ann, speed = 0.5, play = FALSE)
+  res <- scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, flim = c(1, 9), annotation.call = ann, speed = 0.5, play = FALSE)
 
   expect_s3_class(res, "dynaSpec_html")
   expect_true(file.exists(out))
@@ -127,14 +127,14 @@ test_that("scrolling_spectro creates web pages", {
   expect_match(cfg, '"lower":"spectro"', fixed = TRUE)
 
   # oscillogram strip and moving time axis
-  res <- scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, osc = TRUE, fix.time = FALSE, play = FALSE)
+  res <- scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, osc = TRUE, fix.time = FALSE, play = FALSE)
   expect_equal(lengths(regmatches(res, gregexpr("data:image/png;base64,", res))), 3)
   expect_match(res, '"movingAxis":true', fixed = TRUE)
 
   # looping
-  expect_match(scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, loop = 2, play = FALSE), " loop src=", fixed = TRUE)
+  expect_match(scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, loop = 2, play = FALSE), " loop src=", fixed = TRUE)
 
   # embedded when knitting
   withr::local_options(knitr.in.progress = TRUE)
-  expect_s3_class(scrolling_engine(short_wren(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, play = FALSE), "knit_asis")
+  expect_s3_class(scrolling_engine(short_sound(), file.name = out, wl = 300, t.display = 1, width = 300, height = 200, play = FALSE), "knit_asis")
 })

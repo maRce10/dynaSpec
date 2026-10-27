@@ -96,9 +96,10 @@ Set the style of a \code{\link[=dynaspec]{dynaspec()}} object:
 Only the arguments supplied are used; other settings take the defaults shown.
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300)
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 
 \dontrun{
 x + scrolling(t.display = 1.7, axis.type = "minimal")

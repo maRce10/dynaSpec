@@ -68,12 +68,12 @@ test_that("paged_spectro takes sounds directly", {
   expect_true(file.exists(vid))
 
   # Wave object (video named after the object)
-  wren <- short_wren(1)
-  vid <- paged_engine(wren, dest.path = dest, spec.width = 4, spec.height = 1.5, fps = 5, play = FALSE, verbose = FALSE)
-  expect_equal(basename(vid), "wren.mp4")
+  hb <- short_sound(1)
+  vid <- paged_engine(hb, dest.path = dest, spec.width = 4, spec.height = 1.5, fps = 5, play = FALSE, verbose = FALSE)
+  expect_equal(basename(vid), "hb.mp4")
 
   # arguments for the preparation of pages are ignored with prepared pages
-  p <- prep_paged(wren, dest.path = dest, spec.width = 4, spec.height = 1.5, plot = FALSE, verbose = FALSE)
+  p <- prep_paged(hb, dest.path = dest, spec.width = 4, spec.height = 1.5, plot = FALSE, verbose = FALSE)
   expect_warning(paged_engine(p, file.name = file.path(dest, "dots.mp4"), fps = 5, play = FALSE, verbose = FALSE, crop = 1), "ignored")
 })
 

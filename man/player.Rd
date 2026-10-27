@@ -18,8 +18,10 @@ player(speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, buttons = "time")
 \item \code{"volume"}: mute button and volume slider
 \item \code{"download"}: button to save the sound (as a '.wav' or '.mp3' file, as embedded in the web page)
 \item \code{"fullscreen"}: button to show the player in full screen (e.g. in presentations)
+\item \code{"progress"}: seek bar showing the part of the sound played (drag it to move to another time)
+\item \code{"zoom"}: slider (with - and + buttons) to stretch or shrink scrolling spectrograms, showing from 4 times less to 4 times more time than 't.display' (at most the whole sound). Only in scrolling spectrograms; the scrolling spectrogram is drawn at twice the resolution so zooming in stays sharp, which makes web pages larger
 }
-Use \code{character()} to show only the play button and speed slider. Default is \code{"time"}. Buttons are only shown in web pages (not in videos).}
+Use \code{character()} to show only the play button and speed slider. Default is \code{"time"} (\code{c("progress", "time")} with themes with \code{bar.style = "rounded"}, e.g. \code{\link[=dynatheme_xenocanto]{dynatheme_xenocanto()}}). Buttons are only shown in web pages (not in videos).}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}.
@@ -29,10 +31,10 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 }
 \examples{
 \dontrun{
-data("canyon_wren")
+data("scaly_breasted_hummingbird")
 
-dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300) +
+dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   player(buttons = c("time", "loop", "volume", "download", "fullscreen"))
 }
 }

@@ -8,6 +8,8 @@
 \alias{dynatheme_minimal}
 \alias{dynatheme_transparent}
 \alias{dynatheme_void}
+\alias{dynatheme_macaulay}
+\alias{dynatheme_xenocanto}
 \title{Theme of dynamic spectrograms}
 \usage{
 dynatheme(
@@ -33,9 +35,12 @@ dynatheme(
   colbg,
   col.wave,
   col.line,
+  lty.line,
+  lwd.line,
   col.highlight,
   col.bar,
-  bg.bar
+  bg.bar,
+  bar.style
 )
 
 dynatheme_dark(...)
@@ -49,6 +54,10 @@ dynatheme_minimal(...)
 dynatheme_transparent(...)
 
 dynatheme_void(...)
+
+dynatheme_macaulay(...)
+
+dynatheme_xenocanto(...)
 }
 \arguments{
 \item{xlab, ylab}{Titles of the time and frequency axes. Defaults are "Time (s)" and "Frequency (kHz)".}
@@ -59,11 +68,11 @@ dynatheme_void(...)
 
 \item{col.lab}{Color of axes, axis labels and titles. Default is black (paged spectrograms: picked to contrast with the background).}
 
-\item{axis.type}{Character string: "standard" (axes with labels and titles), "minimal" (1 s and 1 kHz scale bars; scrolling spectrograms only) or "none" (no axes). Defaults are "standard" (static and scrolling) and "none" (paged).}
+\item{axis.type}{Character string: "standard" (axes with labels and titles), "inside" (no axis titles; frequency labels inside the spectrogram, e.g. "8k", and time labels below the lowest panel, e.g. "2s"), "compact" (no axis titles; frequency labels below short ticks in a narrow column on the left, with the unit at the bottom, and time labels in minutes and seconds, e.g. "0:02", above the figure), "minimal" (1 s and 1 kHz scale bars; scrolling spectrograms only) or "none" (no axes). Defaults are "standard" (static and scrolling) and "none" (paged).}
 
-\item{bg}{Background color of the figure around the panels ("transparent" for a transparent background). Default is white (static spectrograms: the spectrogram background, see 'colbg' in \code{\link[=spectrogram]{spectrogram()}}).}
+\item{bg}{Background color of the figure around the panels ("transparent" for a transparent background). Default is white (static spectrograms: 'colbg' of \code{\link[=spectrogram]{spectrogram()}} when it is supplied).}
 
-\item{family}{Font family of all text, including captions and selection labels: "sans", "serif", "mono" or the name of a font installed in the system. Default is "sans".}
+\item{family}{Font family of all text, including captions and annotation labels: "sans", "serif", "mono" or the name of a font installed in the system. Default is "sans".}
 
 \item{las}{Orientation of the frequency axis labels: 0 (parallel to the axis) or 1 (horizontal). Defaults are 1 (static and paged) and 0 (scrolling).}
 
@@ -87,9 +96,13 @@ dynatheme_void(...)
 
 \item{col.line}{Color of the play line (and cursor of paged spectrograms). Used when 'lcol' is not supplied in the style (\code{\link[=static]{static()}}, \code{\link[=scrolling]{scrolling()}} or \code{\link[=paged]{paged()}}).}
 
-\item{col.highlight}{Color of the highlight box of paged spectrograms. Used when 'highlight.col' is not supplied in \code{\link[=paged]{paged()}}.}
+\item{lty.line, lwd.line}{Type and width of the play line of scrolling spectrograms. Used when 'lty' and 'lwd' are not supplied in \code{\link[=scrolling]{scrolling()}}.}
+
+\item{col.highlight}{Color of the highlight box of paged spectrograms (used when 'highlight.col' is not supplied in \code{\link[=paged]{paged()}}) and of the translucent boxes dimming the parts of the \code{\link[=overview]{overview()}} outside the window shown in scrolling spectrograms. Default is gray in overviews.}
 
 \item{col.bar, bg.bar}{Color of the text and background of the player controls of web pages (play button, sliders, ...). Defaults are dark gray and transparent (the page background).}
+
+\item{bar.style}{Style of the player controls of web pages: "standard" (rectangular buttons), "rounded" (round play button, rounded controls, a seek bar and a frame with rounded corners around the figure; 'bg.bar' is used as the background of the whole player) or "square" (flat bar with a square play button and sliders in the color of the play line). With "rounded" \code{\link[=player]{player()}} shows the seek bar and the time by default (\code{buttons = c("progress", "time")}), and with "square" the volume control and the time (\code{buttons = c("volume", "time")}). Default is "standard".}
 
 \item{...}{Settings of \code{dynatheme()} that replace those of the preset theme.}
 }
@@ -110,17 +123,32 @@ Preset themes are complete themes: adding one replaces previous themes (use \cod
 \item \code{dynatheme_minimal()}: no boxes, light gray axes and short ticks.
 \item \code{dynatheme_transparent()}: transparent background, to blend in slides or web pages of any color.
 \item \code{dynatheme_void()}: no axes, titles or boxes (only the sound).
+\item \code{dynatheme_macaulay()}: inspired by the player of the 'Macaulay Library': gray spectrogram, compact axes (time in minutes and seconds above the figure) and a black player bar with a square play button. Best with \code{\link[=scrolling]{scrolling()}} and an \code{\link[=overview]{overview()}} (e.g. \code{scrolling(t.display = 3, fix.time = FALSE)}).
+\item \code{dynatheme_xenocanto()}: inspired by the player of the 'Xeno-canto' web site: gray spectrogram, labels inside the figure, solid play line and rounded player controls with a seek bar. Best with \code{\link[=scrolling]{scrolling()}} and an \code{\link[=oscillogram]{oscillogram()}} (e.g. \code{scrolling(t.display = 3, fix.time = FALSE)}).
 }
 }
 \examples{
-data(canyon_wren)
+data(scaly_breasted_hummingbird)
 
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) +
-  dynatheme(xlab = "Tiempo (s)", ylab = "Frecuencia (kHz)", cex.lab = 1.4, font.lab = 2)
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  dynatheme(xlab = "Time (s)", ylab = "Frequency (kHz)", cex.lab = 1.4, font.lab = 2)
 
 # preset theme with larger axis titles
-x <- dynaspec(canyon_wren, flim = c(1, 10)) + spectrogram(wl = 300) + oscillogram() +
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram() +
   dynatheme_dark(cex.lab = 1.4)
+
+# Macaulay Library look
+x <- dynaspec(scaly_breasted_hummingbird) + spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  overview() + dynatheme_macaulay() + scrolling(t.display = 3, fix.time = FALSE)
+
+# Xeno-canto look (and its color version)
+x <- dynaspec(scaly_breasted_hummingbird, flim = c(0, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram(height = 0.15) +
+  dynatheme_xenocanto() + scrolling(t.display = 3, fix.time = FALSE)
+x <- x + dynatheme_xenocanto(pal = viridis::inferno, colbg = "black", bg = "black",
+  col.panel = "black", col.wave = "white", col.lab = "white", col.line = "white")
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}, \code{\link[=spectrogram]{spectrogram()}}

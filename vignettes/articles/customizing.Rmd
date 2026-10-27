@@ -36,41 +36,45 @@ library(dynaSpec)
 library(viridis)
 library(seewave)
 
-data("canyon_wren")
+data("scaly_breasted_hummingbird")
 ```
 
 Some examples use recordings from the package [NatureSounds](https://cran.r-project.org/package=NatureSounds) or downloaded from the web (sounds must be 'Wave' objects or local '.wav' or '.mp3' files, so recordings are downloaded first).
 
-Layers can be stored in an object and modified by adding more layers. Arguments of `spectrogram()`, `dynatheme()` and style layers are combined with the previous ones (so only the settings that change need to be supplied), while other panel and player layers replace previous ones of the same kind, and selections and captions are added. Settings not supplied take the defaults of each style.
+Layers can be stored in an object and modified by adding more layers. Arguments of `spectrogram()`, `dynatheme()` and style layers are combined with the previous ones (so only the settings that change need to be supplied), while other panel and player layers replace previous ones of the same kind, and annotations and captions are added. Settings not supplied take the defaults of each style.
 
 # Spectrograms
 
 `spectrogram()` sets how the spectrogram is computed (window length `wl`, overlap `ovlp`, window function `wn`) and drawn (color palette `pal`, amplitude levels of the colors `collevels`, background `colbg`). Other arguments are passed to `seewave::spectro()`:
 
 ```{r}
-wren <- dynaspec(canyon_wren, flim = c(1, 10)) +
-  spectrogram(wl = 300)
+hb <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
+  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 
 # palette and amplitude range
-wren + spectrogram(pal = mako, collevels = seq(-100, 0, 1))
+hb + spectrogram(pal = mako, collevels = seq(-100, 0, 1))
 ```
 
 Black and white spectrogram with a wider amplitude range (fainter sounds are shown):
 
 ```{r}
-wren + spectrogram(pal = reverse.gray.colors.1, collevels = seq(-100, 0, 5))
+hb + spectrogram(pal = reverse.gray.colors.1, collevels = seq(-100, 0, 5))
 ```
 
-A black background:
+By default the background is the color of the lowest amplitude of the palette (dark purple for 'viridis'). A black background instead (when `colbg` is supplied, static spectrograms also use it as the background of the figure):
 
 ```{r}
-wren + spectrogram(pal = viridis, colbg = "black")
+hb + spectrogram(pal = viridis, colbg = "black")
 ```
 
 In paged spectrograms the palette can also be the name of a 'viridis' palette (e.g. "magma") or two colors for a gradient, and `amp.trans` brightens the spectrogram (a nonlinear transformation that collapses the difference between loud and quiet sounds; 1 means no transformation):
 
 ```{r}
-f <- list.files(system.file(package = "dynaSpec"), pattern = "\\.wav$", full.names = TRUE)
+f <- list.files(
+  system.file(package = "dynaSpec"),
+  pattern = "\\.wav$",
+  full.names = TRUE
+)
 
 swallow <- dynaspec(f[1]) +
   spectrogram(amp.trans = 3, collevels = seq(-35, 0, 1)) +
@@ -87,7 +91,7 @@ Oscillograms and amplitude envelopes can go above or below the spectrogram (`pos
 ```{r}
 cols <- mako(10)
 
-wren +
+hb +
   spectrogram(pal = mako, collevels = seq(-100, 0, 1)) +
   oscillogram(position = "above", col = cols[3], height = 0.3) +
   envelope(col = cols[5], height = 0.3) +
@@ -97,7 +101,7 @@ wren +
 With several rows each row shows its own power spectrum, on the same scale:
 
 ```{r}
-wren +
+hb +
   spectrum(col = cols[5]) +
   static(rows = 2, height = 350)
 ```
@@ -105,7 +109,7 @@ wren +
 In scrolling spectrograms the lower panel can be an overview of the whole sound (`overview()`, with its relative `height`), an oscillogram or an envelope:
 
 ```{r}
-wren +
+hb +
   envelope(col = cols[5]) +
   scrolling(t.display = 1.7)
 ```
@@ -115,35 +119,56 @@ wren +
 `dynatheme()` sets the look of all styles: axis titles (`xlab`, `ylab`), the size of titles and labels (`cex.lab`, `cex.axis`), the font of titles (`font.lab`), the color of axes and text (`col.lab`), the type of axes (`axis.type`) and the background around the panels (`bg`):
 
 ```{r}
-wren +
+hb +
   oscillogram() +
-  dynatheme(xlab = "Tiempo (s)", ylab = "Frecuencia (kHz)", cex.lab = 1.4, font.lab = 2, col.lab = "gray30")
+  dynatheme(
+    xlab = "Time (s)",
+    ylab = "Frequency (kHz)",
+    cex.lab = 1.4,
+    font.lab = 2,
+    col.lab = "gray30"
+  )
 ```
 
 It also sets the font family of all text (`family`), the orientation of frequency labels (`las`), the length of ticks (`tick.length`), boxes around panels (`box`, `col.box`), grid lines (`grid`, `col.grid`), the background of oscillogram, envelope and spectrum panels (`col.panel`) and the color and size of titles (`col.title`, `cex.title`):
 
 ```{r}
-wren +
+hb +
   oscillogram() +
   spectrum() +
-  dynatheme(family = "serif", las = 1, tick.length = 0.3, box = FALSE, grid = TRUE, col.panel = "gray95")
+  dynatheme(
+    family = "serif",
+    las = 1,
+    tick.length = 0.3,
+    box = FALSE,
+    grid = TRUE,
+    col.panel = "gray95"
+  )
 ```
 
 Themes can also set the colors of the plot: the spectrogram palette and background (`pal`, `colbg`), the color of oscillograms, envelopes and spectra (`col.wave`), the play line (`col.line`) and the highlight box of paged spectrograms (`col.highlight`). These are used when they are not supplied in the other layers (e.g. `spectrogram(pal = )` takes precedence). `col.bar` and `bg.bar` set the colors of the player controls of web pages. A dark theme:
 
 ```{r}
-wren +
+hb +
   oscillogram() +
-  dynatheme(bg = "black", col.lab = "white", pal = viridis, colbg = "black", col.wave = viridis(10)[7], col.line = "white",
-            col.bar = "white", bg.bar = "black")
+  dynatheme(
+    bg = "black",
+    col.lab = "white",
+    pal = viridis,
+    colbg = "black",
+    col.wave = viridis(10)[7],
+    col.line = "white",
+    col.bar = "white",
+    bg.bar = "black"
+  )
 ```
 
 ## Preset themes
 
-Preset themes set several settings at once: `dynatheme_dark()`, `dynatheme_presentation()` (large bold text for slides), `dynatheme_paper()` (black and white with serif fonts, for printed figures), `dynatheme_minimal()` (no boxes and light gray axes), `dynatheme_transparent()` (transparent background, to blend in slides or web pages of any color) and `dynatheme_void()` (no axes or boxes). Their settings can be changed in the call, or by adding `dynatheme()` afterwards (adding a preset replaces previous themes):
+Preset themes set several settings at once: `dynatheme_dark()`, `dynatheme_presentation()` (large bold text for slides), `dynatheme_paper()` (black and white with serif fonts, for printed figures), `dynatheme_minimal()` (no boxes and light gray axes), `dynatheme_transparent()` (transparent background, to blend in slides or web pages of any color), `dynatheme_void()` (no axes or boxes), `dynatheme_xenocanto()` (inspired by the player of [Xeno-canto](https://xeno-canto.org)) and `dynatheme_macaulay()` (inspired by the player of the [Macaulay Library](https://www.macaulaylibrary.org)). Their settings can be changed in the call, or by adding `dynatheme()` afterwards (adding a preset replaces previous themes):
 
 ```{r}
-wren +
+hb +
   oscillogram() +
   envelope() +
   dynatheme_dark(cex.lab = 1.3) +
@@ -151,21 +176,58 @@ wren +
 ```
 
 ```{r}
-wren +
+hb +
   oscillogram() +
   dynatheme_paper()
 ```
 
 ```{r}
-wren +
+hb +
   scrolling(t.display = 1.7) +
   dynatheme_presentation()
 ```
 
-`axis.type` can be "standard", "none" or, in scrolling spectrograms, "minimal" (1 s and 1 kHz scale bars):
+`dynatheme_xenocanto()` uses a gray spectrogram, labels inside the figure, a solid play line and rounded player controls with a seek bar. It looks best with scrolling spectrograms whose time axis moves along (`fix.time = FALSE`) and a short oscillogram:
 
 ```{r}
-wren +
+hb +
+  oscillogram(height = 0.2) +
+  dynatheme_xenocanto() +
+  scrolling(t.display = 3, fix.time = FALSE)
+```
+
+As other presets, its settings can be changed. For instance, the color version of the Xeno-canto player:
+
+```{r}
+hb +
+  oscillogram(height = 0.2) +
+  dynatheme_xenocanto(
+    pal = viridis::inferno,
+    colbg = "black",
+    bg = "black",
+    col.panel = "black",
+    col.wave = "white",
+    col.lab = "white",
+    col.line = "white"
+  ) +
+  scrolling(t.display = 3, fix.time = FALSE)
+```
+
+`dynatheme_macaulay()` uses a gray spectrogram, compact axes (frequency labels in a narrow column on the left and the time in minutes and seconds above the figure) and a black player bar with a square play button. It looks best with scrolling spectrograms with an overview of the whole sound below (the part shown is highlighted):
+
+```{r}
+hb +
+  overview() +
+  dynatheme_macaulay() +
+  scrolling(t.display = 3, fix.time = FALSE)
+```
+
+The look of these themes comes from settings that can be used in any theme. The Xeno-canto theme uses `axis.type = "inside"` (labels with units inside the figure), `lty.line` and `lwd.line` (type and width of the play line of scrolling spectrograms) and `bar.style = "rounded"` (round player controls with a seek bar, on the `bg.bar` background). The Macaulay theme uses `axis.type = "compact"`, `bar.style = "square"` (flat bar with a square play button in the color of the play line) and `col.highlight` (color dimming the overview outside the part shown).
+
+`axis.type` can be "standard", "inside", "compact", "none" or, in scrolling spectrograms, "minimal" (1 s and 1 kHz scale bars):
+
+```{r}
+hb +
   scrolling(t.display = 1.7) +
   dynatheme(axis.type = "minimal")
 ```
@@ -175,14 +237,14 @@ wren +
 `static()` sets the color of the play line and active buttons (`lcol`), the size and resolution of each row (`width`, `height`, in pixels, and `res`), the number of rows (`rows`), whether the play line is shown (`play.line`) and the frames per second of videos (`fps`):
 
 ```{r}
-wren +
+hb +
   static(lcol = "#E69F00", width = 1200, height = 400, res = 120)
 ```
 
 Without the moving line (clicking on the figure still plays the sound from that point):
 
 ```{r}
-wren + static(play.line = FALSE)
+hb + static(play.line = FALSE)
 ```
 
 # Scrolling spectrograms
@@ -190,10 +252,19 @@ wren + static(play.line = FALSE)
 `scrolling()` sets the time window shown (`t.display`), whether the time axis moves along with the spectrogram (`fix.time = FALSE`), the play line (`lcol`, `lty`, `lwd`), the initial speed (`speed`), a delay before the spectrogram starts moving (`buffer`, in s), looping (`loop`), the size and resolution of the frames (`width`, `height`, `res`) and the frames per second of videos (`fps`):
 
 ```{r}
-wren +
+hb +
   spectrogram(pal = viridis, colbg = "black") +
   oscillogram(col = "#31688E99") +
-  scrolling(t.display = 1.7, fix.time = FALSE, speed = 0.5, lcol = "white", lty = 1, width = 1000, height = 500, res = 120)
+  scrolling(
+    t.display = 1.7,
+    fix.time = FALSE,
+    speed = 0.5,
+    lcol = "white",
+    lty = 1,
+    width = 1000,
+    height = 500,
+    res = 120
+  )
 ```
 
 Long-billed hermit song at 1/5 speed, without axes and looping (web pages loop until paused):
@@ -202,8 +273,21 @@ Long-billed hermit song at 1/5 speed, without axes and looping (web pages loop u
 data("Phae.long4", package = "NatureSounds")
 
 dynaspec(Phae.long4, flim = c(1, 10)) +
-  spectrogram(wl = 300, ovlp = 90, pal = magma, collevels = seq(-50, 0, 5), colbg = "black") +
-  scrolling(t.display = 1.7, width = 1000, height = 500, res = 120, speed = 0.2, loop = 3) +
+  spectrogram(
+    wl = 300,
+    ovlp = 90,
+    pal = magma,
+    collevels = seq(-50, 0, 5),
+    colbg = "black"
+  ) +
+  scrolling(
+    t.display = 1.7,
+    width = 1000,
+    height = 500,
+    res = 120,
+    speed = 0.2,
+    loop = 3
+  ) +
   dynatheme(axis.type = "none")
 ```
 
@@ -211,13 +295,33 @@ The first 20 s of a northern nightingale wren recording from [xeno-canto](https:
 
 ```{r}
 nightingale_wren <- tempfile(fileext = ".mp3")
-download.file("https://xeno-canto.org/518334/download", nightingale_wren, mode = "wb")
+download.file(
+  "https://xeno-canto.org/518334/download",
+  nightingale_wren,
+  mode = "wb"
+)
 
-custom_pal <- colorRampPalette(c("#2d2d86", "#2d2d86", reverse.terrain.colors(10)[5:10]))
+custom_pal <- colorRampPalette(c(
+  "#2d2d86",
+  "#2d2d86",
+  reverse.terrain.colors(10)[5:10]
+))
 
-dynaspec(nightingale_wren, flim = c(2, 8), crop = 20) +
-  spectrogram(wl = 600, ovlp = 95, pal = custom_pal, collevels = seq(-40, 0, 5), colbg = "#2d2d86") +
-  scrolling(t.display = 3, width = 700, height = 250, res = 100, lcol = "#FFFFFFE6")
+dynaspec(nightingale_wren, flim = c(0, 8), tlim = 20) +
+  spectrogram(
+    wl = 600,
+    ovlp = 95,
+    pal = custom_pal,
+    collevels = seq(-40, 0, 5),
+    colbg = "#2d2d86"
+  ) +
+  scrolling(
+    t.display = 3,
+    width = 700,
+    height = 250,
+    res = 100,
+    lcol = "#FFFFFFE6"
+  )
 ```
 
 Spix's disc-winged bat inquiry call slowed down 16 times (`speed = 0.0625`, the slowest speed web browsers can play):
@@ -232,16 +336,44 @@ thy_wav <- attributes(thyroptera.est)$wave.objects[[12]]
 thy_wav <- tuneR::normalize(thy_wav, unit = "16")
 
 # add silence at both sides
-thy_wav <- pastew(tuneR::silence(duration = 0.05, samp.rate = thy_wav@samp.rate, xunit = "time"),
-                  thy_wav, output = "Wave")
-thy_wav <- pastew(thy_wav, tuneR::silence(duration = 0.04, samp.rate = thy_wav@samp.rate, xunit = "time"),
-                  output = "Wave")
+thy_wav <- pastew(
+  tuneR::silence(
+    duration = 0.05,
+    samp.rate = thy_wav@samp.rate,
+    xunit = "time"
+  ),
+  thy_wav,
+  output = "Wave"
+)
+thy_wav <- pastew(
+  thy_wav,
+  tuneR::silence(
+    duration = 0.04,
+    samp.rate = thy_wav@samp.rate,
+    xunit = "time"
+  ),
+  output = "Wave"
+)
 
-dynaspec(thy_wav, flim = c(12, 37)) +
-  spectrogram(wl = 400, ovlp = 95, pal = inferno, collevels = seq(-40, 0, 5), colbg = "black") +
+dynaspec(thy_wav, flim = c(12, 45)) +
+  spectrogram(
+    wl = 400,
+    ovlp = 95,
+    pal = inferno,
+    collevels = seq(-40, 0, 5),
+    colbg = "black"
+  ) +
   oscillogram(col = inferno(10, alpha = 0.9)[3]) +
-  scrolling(t.display = 0.08, width = 700, height = 250, res = 100, lcol = "#FFFFFFE6", lty = 1,
-            speed = 0.0625, loop = 4)
+  scrolling(
+    t.display = 0.08,
+    width = 700,
+    height = 250,
+    res = 100,
+    lcol = "#FFFFFFE6",
+    lty = 1,
+    speed = 0.0625,
+    loop = 4
+  )
 ```
 
 Other options of `scrolling()` are a custom spectrogram function (`spectro.call`, a call made with `base::call()`), spectral derivatives (`derivative = TRUE`, requires the package 'imager') and the window length in ms (`hop.size`).
@@ -252,7 +384,12 @@ Other options of `scrolling()` are a custom spectrogram function (`spectro.call`
 
 ```{r}
 swallow +
-  paged(title = "Female barn swallow", highlight.col = "#2d2d86", highlight.alpha = 0.4, lcol = "#FFEA46") +
+  paged(
+    title = "Female barn swallow",
+    highlight.col = "#2d2d86",
+    highlight.alpha = 0.4,
+    lcol = "#FFEA46"
+  ) +
   dynatheme(bg = "black")
 ```
 
@@ -260,9 +397,13 @@ The first 12 s of a humpback whale song, with 3 s pages and the frequency range 
 
 ```{r}
 whale <- tempfile(fileext = ".wav")
-download.file("http://www.oceanmammalinst.org/songs/hmpback3.wav", whale, mode = "wb")
+download.file(
+  "http://www.oceanmammalinst.org/songs/hmpback3.wav",
+  whale,
+  mode = "wb"
+)
 
-dynaspec(whale, flim = c(0, 0.7), crop = 12) +
+dynaspec(whale, flim = c(0, 0.7), tlim = 12) +
   spectrogram(amp.trans = 3) +
   paged(t.display = 3)
 ```
@@ -273,41 +414,95 @@ A common nighthawk call from [xeno-canto](https://www.xeno-canto.org) with a two
 nighthawk <- tempfile(fileext = ".mp3")
 download.file("https://xeno-canto.org/490771/download", nighthawk, mode = "wb")
 
-dynaspec(nighthawk, crop = 20) +
+dynaspec(nighthawk, tlim = 20) +
   spectrogram(pal = c("white", "black")) +
   paged(t.display = 4, highlight.col = "#d1b0ff", lcol = "#7817ff")
 ```
 
-# Selections
+# Annotations
 
-`selections()` takes the colors (`col`, a color or the name of a column of the selection table) and labels (`labels`, the name of a column) of the boxes from the selection table, along with their opacity (`alpha`), borders (`border`, `lwd`), the size of the labels (`cex`) and whether boxes span only the frequency range of the selections (`freq`). The following code highlights the male and female parts of a house wren duet (after downloading the recording and selection table from GitHub):
+`annotations()` highlights parts of the sound with translucent boxes. It takes a data frame with the start and end of each selection (in s), as the selection tables of [warbleR](https://cran.r-project.org/package=warbleR) and [ohun](https://cran.r-project.org/package=ohun). If it has 'bottom.freq' and 'top.freq' columns (in kHz) the boxes only span that frequency range, and colors and labels can be taken from its columns:
+
+```{r}
+st <- data.frame(
+  start = c(1, 6),
+  end = c(2.9, 7.4),
+  bottom.freq = c(5, 4.5),
+  top.freq = c(10, 10),
+  labels = c("first notes", "last notes"),
+  colors = c("#E69F00", "#56B4E9")
+)
+
+hb + annotations(st, col = "colors", labels = "labels")
+```
+
+The box borders are set with `border` (a color or the name of a column with the color of each box), `lwd` (width) and `lty` (line type):
+
+```{r}
+hb +
+  annotations(
+    st,
+    col = "colors",
+    alpha = 0.1,
+    border = "colors",
+    lwd = 2,
+    lty = "dashed",
+    labels = "labels"
+  )
+```
+
+`annotations()` also sets the opacity of the boxes (`alpha`), the size of the labels (`cex`) and whether boxes span only the frequency range of the selections (`freq`). The following code highlights the male and female parts of a house wren duet (after downloading the recording and selection table from GitHub):
 
 ```{r}
 # house wren male-female duet recording
 hs_wren <- tempfile(fileext = ".wav")
-download.file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.wav",
-              hs_wren, mode = "wb")
+download.file(
+  "https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.wav",
+  hs_wren,
+  mode = "wb"
+)
 
 # and selection table
-st <- read.csv("https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.csv")
+st <- read.csv(
+  "https://github.com/maRce10/example_sounds/raw/refs/heads/main/house_wren_male_female_duet.csv"
+)
 
 # colors and labels
 st$colors <- viridis(10)[c(3, 8)]
 st$labels <- c("male", "female")
 
 duet <- dynaspec(hs_wren, flim = c(1, 13)) +
-  spectrogram(wl = 512, pal = reverse.gray.colors.1, collevels = seq(-100, 0, 1)) +
+  spectrogram(
+    wl = 512,
+    pal = reverse.gray.colors.1,
+    collevels = seq(-100, 0, 1)
+  ) +
   scrolling(t.display = 1.2, loop = 3, width = 1000, height = 500, res = 120)
 
-duet + selections(st, col = "colors", alpha = 0.4, labels = "labels", cex = 1.5)
+duet + annotations(st, col = "colors", alpha = 0.4, labels = "labels", cex = 1.5)
 ```
 
 With box borders, spanning the whole frequency range (`freq = FALSE`), and an oscillogram:
 
 ```{r}
 duet +
-  selections(st, col = "colors", alpha = 0.3, border = "gray30", lwd = 2, freq = FALSE) +
+  annotations(
+    st,
+    col = "colors",
+    alpha = 0.3,
+    border = "gray30",
+    lwd = 2,
+    freq = FALSE
+  ) +
   oscillogram()
+```
+
+`type = "spectrogram"` colors the spectrogram itself within each selection, with a gradient from the spectrogram background to the color of the selection (as `warbleR::color_spectro()`), instead of drawing boxes. A narrower amplitude range (`collevels`) keeps the background noise uncolored:
+
+```{r}
+duet +
+  spectrogram(collevels = seq(-60, 0, 1)) +
+  annotations(st, col = "colors", type = "spectrogram", labels = "labels")
 ```
 
 Selection tables made with [warbleR](https://cran.r-project.org/package=warbleR) can be used directly. When they have selections of several sound files, only those of the sound shown are used (matching the file name), or the sound file is chosen with `sound.file` (e.g. for 'Wave' objects):
@@ -318,7 +513,7 @@ data("Phae.long1", package = "NatureSounds")
 
 dynaspec(Phae.long1, flim = c(1, 10)) +
   spectrogram(wl = 300) +
-  selections(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec")
+  annotations(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec")
 ```
 
 # Captions
@@ -328,11 +523,20 @@ dynaspec(Phae.long1, flim = c(1, 10)) +
 ```{r}
 # frog recording from GitHub
 frogs <- tempfile(fileext = ".wav")
-download.file("https://github.com/maRce10/example_sounds/raw/refs/heads/main/CostaRican_frogs.wav",
-              frogs, mode = "wb")
+download.file(
+  "https://github.com/maRce10/example_sounds/raw/refs/heads/main/CostaRican_frogs.wav",
+  frogs,
+  mode = "wb"
+)
 
-dynaspec(frogs, flim = c(0, 5.5), crop = c(35.3, 50.5)) +
-  spectrogram(wl = 512, ovlp = 95, pal = cividis, collevels = seq(-60, 0, 5), colbg = "black") +
+dynaspec(frogs, flim = c(0, 5.5), tlim = c(35.3, 50.5)) +
+  spectrogram(
+    wl = 512,
+    ovlp = 95,
+    pal = cividis,
+    collevels = seq(-60, 0, 5),
+    colbg = "black"
+  ) +
   oscillogram(col = "#31688E", height = 1 / 3) +
   captions(
     c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"),
@@ -344,27 +548,47 @@ dynaspec(frogs, flim = c(0, 5.5), crop = c(35.3, 50.5)) +
     font = 3,
     fading = 0.6
   ) +
-  captions("Costa Rica", start = 35.3, end = 50.5, x = 0.9, y = 0.9, col = "white", cex = 0.8) +
-  scrolling(t.display = 1.1, loop = 3, width = 1200, height = 550, res = 200, lcol = "#FFFFFFCC", lty = 3) +
+  scrolling(
+    t.display = 1.1,
+    loop = 3,
+    width = 1200,
+    height = 550,
+    res = 200,
+    lcol = "#FFFFFFCC",
+    lty = 3
+  ) +
   dynatheme(bg = "black", col.lab = "white")
 ```
 
-Note that times of selections and captions refer to the original recording, even when it is cropped (`crop`).
+Note that times of annotations and captions refer to the original recording, even when only part of it is used (`tlim`).
 
 # Player
 
 `player()` sets the speeds offered by the speed slider of web pages (the first one is the initial speed; a single speed hides the slider), whether the pitch is kept when slowing down by default and the additional controls shown (`buttons`). A player with only the play button, for instance to embed in a presentation:
 
 ```{r}
-wren + player(speeds = 1, buttons = character())
+hb + player(speeds = 1, buttons = character())
 ```
 
 A player with all controls, starting at half speed and looping (the loop button starts pressed when `scrolling(loop)` is larger than 1):
 
 ```{r}
-wren +
-  player(speeds = c(0.5, 1, 0.25), buttons = c("time", "loop", "volume", "download", "fullscreen")) +
+hb +
+  player(
+    speeds = c(0.5, 1, 0.25),
+    buttons = c("time", "loop", "volume", "download", "fullscreen")
+  ) +
   scrolling(t.display = 1.7, loop = 2)
+```
+
+In scrolling spectrograms, `buttons = "zoom"` adds a slider (with - and + buttons) to stretch or shrink the spectrogram, from 4 times less to 4 times more time than `t.display` (at most the whole sound). The spectrogram is drawn at twice the resolution so zooming in stays sharp, which makes web pages larger:
+
+```{r}
+hb +
+  overview() +
+  dynatheme_macaulay() +
+  player(buttons = c("zoom", "volume", "time")) +
+  scrolling(t.display = 3, fix.time = FALSE)
 ```
 
 The download button saves the sound embedded in the web page (named after the sound file or 'Wave' object), and the full screen button enlarges the player to the size of the screen (e.g. for presentations; web browsers may not allow full screen in embedded frames).
