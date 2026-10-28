@@ -2,7 +2,7 @@
 
 # short example clip
 short_sound <- function(dur = 2) {
-  seewave::cutw(dynaSpec::scaly_breasted_hummingbird, from = 1, to = 1 + dur, output = "Wave")
+  seewave::cutw(dynaSpec::scythebill, from = 1, to = 1 + dur, output = "Wave")
 }
 
 # example sound files included in the package

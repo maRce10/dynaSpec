@@ -2,12 +2,12 @@
 % Please edit documentation in R/dynaspec.R
 \name{styles}
 \alias{styles}
-\alias{scrolling}
-\alias{paged}
-\alias{static}
+\alias{ds_scrolling}
+\alias{ds_paged}
+\alias{ds_static}
 \title{Styles of dynamic spectrograms}
 \usage{
-scrolling(
+ds_scrolling(
   t.display,
   fix.time,
   buffer,
@@ -24,7 +24,7 @@ scrolling(
   ...
 )
 
-paged(
+ds_paged(
   t.display,
   title,
   highlight.col,
@@ -38,7 +38,7 @@ paged(
   ...
 )
 
-static(rows, width, height, res, lcol, alt, fps, play.line)
+ds_static(rows, width, height, res, lcol, alt, fps, play.line)
 }
 \arguments{
 \item{t.display}{Time (in s) shown at once: the time window of scrolling spectrograms (default 1.5) or the duration of each page of paged spectrograms (default: the whole sound, up to 5 s).}
@@ -63,8 +63,8 @@ static(rows, width, height, res, lcol, alt, fps, play.line)
 
 \item{...}{Other arguments of the style:
 \itemize{
-\item \code{scrolling()}: 'hop.size' (window length in ms, used when 'wl' is not set in \code{\link[=spectrogram]{spectrogram()}}; default 11.6), 'height.prop' (relative heights of the scrolling spectrogram and the lower panel; default \code{c(5, 1)}), 'ggspectro' (use \code{\link[seewave:ggspectro]{seewave::ggspectro()}}; default \code{FALSE}), 'derivative' (spectral derivatives; requires 'imager'; default \code{FALSE}) and 'spectro.call' (a call to a spectrogram function replacing the default one, made with \code{\link[base:call]{base::call()}}).
-\item \code{paged()}: 'resample.rate' (sampling rate in Hz used for the spectrogram; default 15000), 'amp.thresh' (amplitude threshold, as a percentage; default 0), 'filter' (frequency range in kHz to filter out), 'dest.path' (folder for temporary files) and 'delete.temp' (delete temporary files; default \code{TRUE}).
+\item \code{ds_scrolling()}: 'hop.size' (window length in ms, used when 'wl' is not set in \code{\link[=ds_spectrogram]{ds_spectrogram()}}; default 11.6), 'height.prop' (relative heights of the scrolling spectrogram and the lower panel; default \code{c(5, 1)}), 'ggspectro' (use \code{\link[seewave:ggspectro]{seewave::ggspectro()}}; default \code{FALSE}), 'derivative' (spectral derivatives; requires 'imager'; default \code{FALSE}) and 'spectro.call' (a call to a spectrogram function replacing the default one, made with \code{\link[base:call]{base::call()}}).
+\item \code{ds_paged()}: 'resample.rate' (sampling rate in Hz used for the spectrogram; default 15000), 'amp.thresh' (amplitude threshold, as a percentage; default 0), 'filter' (frequency range in kHz to filter out), 'dest.path' (folder for temporary files) and 'delete.temp' (delete temporary files; default \code{TRUE}).
 }}
 
 \item{title}{Title of paged spectrograms.}
@@ -87,24 +87,27 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 \description{
 Set the style of a \code{\link[=dynaspec]{dynaspec()}} object:
 \itemize{
-\item \code{scrolling()}: the spectrogram scrolls from right to left along a fixed play line.
-\item \code{paged()}: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.
-\item \code{static()}: a play line moves over the whole spectrogram (and oscillogram), which can be split in several rows (default style).
+\item \code{ds_scrolling()}: the spectrogram scrolls from right to left along a fixed play line.
+\item \code{ds_paged()}: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.
+\item \code{ds_static()}: a play line moves over the whole spectrogram (and oscillogram), which can be split in several rows (default style).
 }
 }
 \details{
 Only the arguments supplied are used; other settings take the defaults shown.
 }
 \examples{
-data(scaly_breasted_hummingbird)
+data(scythebill)
 
-x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
+x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 
 \dontrun{
-x + scrolling(t.display = 1.7, axis.type = "minimal")
-x + paged(t.display = 2, axis.type = "standard")
-x + oscillogram() + static(rows = 2, height = 350)
+data(antshrike)
+y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+y + ds_scrolling(t.display = 2, axis.type = "minimal")
+x + ds_paged(t.display = 1, axis.type = "standard")
+x + ds_oscillogram() + ds_static(rows = 2, height = 350)
 }
 }
 \seealso{

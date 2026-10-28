@@ -9,7 +9,7 @@
 \arguments{
 \item{e1}{A \code{\link[=dynaspec]{dynaspec()}} object.}
 
-\item{e2}{A layer (e.g. \code{\link[=spectrogram]{spectrogram()}}, \code{\link[=annotations]{annotations()}} or \code{\link[=scrolling]{scrolling()}}).}
+\item{e2}{A layer (e.g. \code{\link[=ds_spectrogram]{ds_spectrogram()}}, \code{\link[=ds_annotations]{ds_annotations()}} or \code{\link[=ds_scrolling]{ds_scrolling()}}).}
 }
 \value{
 A \code{\link[=dynaspec]{dynaspec()}} object. Spectrogram, oscillogram, envelope, spectrum, overview, player and style layers replace previous ones of the same kind (arguments of spectrogram, theme and style layers are combined); annotations and captions are added.

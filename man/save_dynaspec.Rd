@@ -29,21 +29,24 @@ Invisibly returns the path to the file, or the HTML code of the web page (a char
 \code{save_dynaspec()} saves a \code{\link[=dynaspec]{dynaspec()}} object as an interactive web page, a video or still images.
 }
 \details{
-Videos of scrolling spectrograms render every frame, which takes time (it can be sped up with the 'parallel' and 'fps' arguments of \code{\link[=scrolling]{scrolling()}}). Videos of paged and static spectrograms and all web pages are created in seconds.
+Videos of scrolling spectrograms render every frame, which takes time (it can be sped up with the 'parallel' and 'fps' arguments of \code{\link[=ds_scrolling]{ds_scrolling()}}). Videos of paged and static spectrograms and all web pages are created in seconds.
 }
 \examples{
-data(scaly_breasted_hummingbird)
+data(scythebill)
 
-x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + oscillogram()
+x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + ds_oscillogram()
 
-save_dynaspec(x, file.path(tempdir(), "hummingbird.html"), play = FALSE)
-save_dynaspec(x, file.path(tempdir(), "hummingbird.png"), play = FALSE)
+save_dynaspec(x, file.path(tempdir(), "scythebill.html"), play = FALSE)
+save_dynaspec(x, file.path(tempdir(), "scythebill.png"), play = FALSE)
 
 \dontrun{
 # videos (require ffmpeg)
-save_dynaspec(x, file.path(tempdir(), "hummingbird.mp4"))
-save_dynaspec(x + scrolling(t.display = 1.7), file.path(tempdir(), "hummingbird_scrolling.mp4"))
+save_dynaspec(x, file.path(tempdir(), "scythebill.mp4"))
+data(antshrike)
+y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+save_dynaspec(y + ds_scrolling(t.display = 2), file.path(tempdir(), "antshrike_scrolling.mp4"))
 }
 }
 \seealso{

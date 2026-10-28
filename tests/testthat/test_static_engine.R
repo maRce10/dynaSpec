@@ -90,11 +90,11 @@ test_that("static_spectro splits sounds in rows", {
   expect_equal(nrow(player_rows(static_engine(short_sound(), spectro = FALSE, width = 300, height = 200, rows = 2, play = FALSE))), 2)
 
   expect_error(static_engine(short_sound(), wl = 300, rows = 400, height = 50), "too short")
-  expect_error(static_engine(short_sound(), wl = 300, rows = 100), "too tall")
+  expect_error(static_engine(short_sound(), wl = 100, rows = 100), "too tall")
   expect_error(static_engine(short_sound(), rows = 0), "rows")
   # image is 3 rows high (upper rows have no time axis: 3.5 lines shorter, 0.2 inches per line at 100 dpi)
   skip_if_not_installed("base64enc")
-  img <- png::readPNG(base64enc::base64decode(sub('".*', "", sub('.*<img src="data:image/png;base64,', "", res))))
+  img <- png::readPNG(base64enc::base64decode(sub('[ "].*', "", sub('.*<img srcset="data:image/png;base64,', "", res))))
   expect_equal(dim(img)[1:2], c(600 - 2 * 70, 300))
 })
 

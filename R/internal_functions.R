@@ -377,7 +377,7 @@ oscillo_player_int <- function(wave, xlim, colwave, n, axisX = FALSE, cex.lab = 
     graphics::mtext("Amp.", side = 2, line = 0.5, cex = cex.lab, las = 1, xpd = NA, font = theme_int(theme, "font.lab", 1), col = theme_int(theme, "col.lab", "black"))
 
   if (axisX)
-    do.call(time_axis_int, c(list(to_x = identity, xlim = xlim, cex.lab = cex.lab, inside = identical(theme$axis.type, "inside")), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis"))]))
+    do.call(time_axis_int, c(list(to_x = identity, xlim = xlim, cex.lab = cex.lab, inside = identical(theme$axis.type, "inside")), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis", "col.axis", "las"))]))
 
   # empty panel (time axis only)
   if (empty)
@@ -393,10 +393,20 @@ oscillo_player_int <- function(wave, xlim, colwave, n, axisX = FALSE, cex.lab = 
     graphics::lines(tm, amp, col = colwave)
 }
 
-# theme setting (supplied in dynatheme()) or its default
+# theme setting (supplied in ds_theme()) or its default
 theme_int <- function(theme, name, default) if (is.null(theme[[name]])) default else theme[[name]]
 
-# check the settings of dynatheme() (only those supplied)
+# color of the axis labels (tick labels): 'col.axis' of the theme, or the color of the axes
+axis_col_int <- function(theme, default = "black") theme_int(theme, "col.axis", theme_int(theme, "col.lab", default))
+
+# lines of text below the time axis taken by vertical time labels (las = 2 or 3) beyond those taken by horizontal
+# labels (approximate width of the longest label, in lines), to move the axis title and widen the margin
+x_lab_extra_int <- function(las, labels, cex = 1) {
+  if (!isTRUE(las %in% 2:3) || length(labels) == 0) return(0)
+  max(0, max(nchar(as.character(labels))) * 0.5 * cex - 0.6)
+}
+
+# check the settings of ds_theme() (only those supplied)
 check_theme_int <- function(args) {
   check_results <- .check_arguments("dynatheme", args[intersect(names(args), c("cex.lab", "axis.type", "bg"))])
   for (i in intersect(names(args), c("xlab", "ylab", "family")))
@@ -405,7 +415,7 @@ check_theme_int <- function(args) {
     checkmate::assert_number(args[[i]], lower = 0.01, add = check_results, .var.name = i)
   if (!is.null(args$tick.length)) checkmate::assert_number(args$tick.length, lower = 0, add = check_results, .var.name = "tick.length")
   if (!is.null(args$font.lab)) checkmate::assert_choice(args$font.lab, 1:4, add = check_results, .var.name = "font.lab")
-  if (!is.null(args$las)) checkmate::assert_choice(args$las, 0:1, add = check_results, .var.name = "las")
+  if (!is.null(args$las)) checkmate::assert_choice(args$las, 0:3, add = check_results, .var.name = "las")
   if (!is.null(args$lwd.line)) checkmate::assert_number(args$lwd.line, lower = 0.01, add = check_results, .var.name = "lwd.line")
   if (!is.null(args$lty.line)) {
     lty_names <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
@@ -415,13 +425,26 @@ check_theme_int <- function(args) {
   if (!is.null(args$bar.style)) checkmate::assert_choice(args$bar.style, c("standard", "rounded", "square"), add = check_results, .var.name = "bar.style")
   for (i in intersect(names(args), c("box", "grid")))
     checkmate::assert_flag(args[[i]], add = check_results, .var.name = i)
-  for (i in intersect(names(args), c("col.lab", "bg", "col.box", "col.grid", "col.panel", "col.title", "colbg", "col.wave", "col.line", "col.highlight", "col.bar", "bg.bar")))
+  for (i in intersect(names(args), c("col.lab", "col.axis", "bg", "col.box", "col.grid", "col.panel", "col.title", "colbg", "col.wave", "col.annotation", "col.line", "col.highlight", "col.bar", "bg.bar")))
     if (!checkmate::test_string(args[[i]]) || inherits(try(grDevices::col2rgb(args[[i]]), silent = TRUE), "try-error"))
       check_results$push(paste0("'", i, "': Must be a valid color"))
   if (!is.null(args$pal) && !is.function(args$pal) && !checkmate::test_character(args$pal, min.len = 1, max.len = 2))
     check_results$push("'pal': Must be a color palette function, a palette name or two colors (paged spectrograms)")
   .report_assertions(check_results)
   args
+}
+
+# settings of the package during the R session (theme set with ds_set_theme())
+.dynaspec_env <- new.env(parent = emptyenv())
+
+# theme of a dynaspec object on top of the theme set with ds_set_theme() (unless a preset theme, which is
+# complete, was added to the object)
+global_theme_int <- function(x) {
+  g <- .dynaspec_env$theme
+  if (is.null(g) || isTRUE(x$theme_complete))
+    return(x)
+  x$theme <- utils::modifyList(g$args, if (is.null(x$theme)) list() else x$theme)
+  x
 }
 
 # preset themes: complete themes (replace previous themes when added) whose settings can be changed in '...'
@@ -499,9 +522,9 @@ envelope_player_int <- function(wave, xlim, col, axisX = FALSE, cex.lab = 1, off
   y <- e$env / if (is.null(max.env)) max(e$env, 1e-12) else max.env
   panel_frame_int(xlim, c(0, 1.05), theme)
   if (!isTRUE(theme$hide))
-    graphics::mtext("Env.", side = 2, line = 0.5, cex = cex.lab, las = 1, xpd = NA, font = theme_int(theme, "font.lab", 1), col = theme_int(theme, "col.lab", "black"))
+    graphics::mtext("Amp.", side = 2, line = 0.5, cex = cex.lab, las = 1, xpd = NA, font = theme_int(theme, "font.lab", 1), col = theme_int(theme, "col.lab", "black"))
   if (axisX)
-    do.call(time_axis_int, c(list(to_x = identity, xlim = xlim, cex.lab = cex.lab, inside = identical(theme$axis.type, "inside")), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis"))]))
+    do.call(time_axis_int, c(list(to_x = identity, xlim = xlim, cex.lab = cex.lab, inside = identical(theme$axis.type, "inside")), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis", "col.axis", "las"))]))
   x <- offset + e$time
   graphics::polygon(c(x[1], x, x[length(x)]), c(0, y, 0), col = grDevices::adjustcolor(col, 0.6), border = col)
   theme_box_int(theme)
@@ -523,15 +546,15 @@ spectrum_player_int <- function(sp, ylim, side = "right", col = "black", max.amp
   theme_grid_int(theme, at = pretty(ylim))
   graphics::polygon(c(0, x, 0), c(sp$freq[1], sp$freq, sp$freq[length(sp$freq)]), col = grDevices::adjustcolor(col, 0.6), border = col)
   if (axis && identical(theme$axis.type, "compact"))
-    compact_freq_axis_int(ylim, col = col_lab, cex = theme_int(theme, "cex.axis", 1))
+    compact_freq_axis_int(ylim, col = col_lab, cex = theme_int(theme, "cex.axis", 1), col.text = axis_col_int(theme))
   else if (axis) {
     # as the frequency axis of the spectrogram
-    graphics::axis(2, las = theme_int(theme, "las", 1), col = col_lab, col.axis = col_lab, cex.axis = theme_int(theme, "cex.axis", 1))
+    graphics::axis(2, las = theme_int(theme, "las", 1), col = col_lab, col.axis = axis_col_int(theme), cex.axis = theme_int(theme, "cex.axis", 1))
     graphics::title(ylab = theme_int(theme, "ylab", "Frequency (kHz)"), cex.lab = cex.lab, col.lab = col_lab, font.lab = theme_int(theme, "font.lab", 1))
   }
   theme_box_int(theme)
   if (label)
-    graphics::mtext("Power", side = 3, line = 0.1, cex = 0.8 * cex.lab * theme_int(theme, "cex.title", 1), col = theme_int(theme, "col.title", col_lab))
+    graphics::mtext("Amp.", side = 3, line = 0.1, cex = 0.8 * cex.lab * theme_int(theme, "cex.title", 1), col = theme_int(theme, "col.title", col_lab))
 }
 
 # spectrogram panel of static spectrograms: computed with seewave::spectro() and drawn in the current panel
@@ -548,19 +571,21 @@ spectro_int <- function(wave, f, wl, ovlp, flim, pal, collevels, colbg = "white"
   graphics::.filled.contour(sp$time, sp$freq, t(sp$amp), levels = collevels, col = pal(length(collevels) - 1))
   theme_grid_int(theme)
   theme_box_int(theme, col.lab)
+  col_axis <- axis_col_int(theme, col.lab)
   if (axisY && identical(theme$axis.type, "inside"))
-    inside_freq_axis_int(range(sp$freq), col = col.lab, cex = cex.axis)
+    inside_freq_axis_int(range(sp$freq), col = col.lab, cex = cex.axis, col.text = col_axis)
   else if (axisY && identical(theme$axis.type, "compact"))
-    compact_freq_axis_int(range(sp$freq), col = col.lab, cex = cex.axis)
+    compact_freq_axis_int(range(sp$freq), col = col.lab, cex = cex.axis, col.text = col_axis)
   else if (axisY) {
-    graphics::axis(2, las = theme_int(theme, "las", 1), col = col.lab, col.axis = col.lab, cex.axis = cex.axis)
+    graphics::axis(2, las = theme_int(theme, "las", 1), col = col.lab, col.axis = col_axis, cex.axis = cex.axis)
     graphics::title(ylab = flab, cex.lab = cex.lab, col.lab = col.lab)
   }
   invisible(sp)
 }
 
 # time axis; 'to_x' converts times to x axis coordinates
-time_axis_int <- function(to_x, xlim, cex.lab, xlab = "Time (s)", font.lab = 1, col.lab = "black", cex.axis = 1, inside = FALSE) {
+time_axis_int <- function(to_x, xlim, cex.lab, xlab = "Time (s)", font.lab = 1, col.lab = "black", cex.axis = 1, inside = FALSE,
+                          col.axis = col.lab, las = 0) {
   # ticks slightly outside the plotted range are kept (the spectrogram starts and ends half a window inside the sound)
   tol <- diff(xlim) * 0.01
   at <- pretty(xlim)
@@ -568,23 +593,24 @@ time_axis_int <- function(to_x, xlim, cex.lab, xlab = "Time (s)", font.lab = 1, 
   # axis() drops ticks outside the plotting region, so those are moved to its edge (less than a pixel away)
   usr <- graphics::par("usr")
   if (inside) {
-    inside_time_axis_int(pmin(pmax(to_x(at), usr[1]), usr[2]), at, col = col.lab, cex = cex.axis)
+    inside_time_axis_int(pmin(pmax(to_x(at), usr[1]), usr[2]), at, col = col.lab, cex = cex.axis, col.text = col.axis)
     return(invisible(NULL))
   }
-  graphics::axis(1, at = pmin(pmax(to_x(at), usr[1]), usr[2]), labels = at, col = col.lab, col.axis = col.lab, cex.axis = cex.axis)
-  graphics::mtext(xlab, side = 1, line = max(3, 1.8 + cex.lab), cex = cex.lab, font = font.lab, col = col.lab)
+  graphics::axis(1, at = pmin(pmax(to_x(at), usr[1]), usr[2]), labels = at, col = col.lab, col.axis = col.axis, cex.axis = cex.axis, las = las)
+  # (the title moves down when time labels are vertical)
+  graphics::mtext(xlab, side = 1, line = max(3, 1.8 + cex.lab) + x_lab_extra_int(las, at, cex.axis), cex = cex.lab, font = font.lab, col = col.lab)
 }
 
 # time axis of axis.type = "inside": no axis line or title, labels with units (e.g. "2s") close to short ticks.
 # Labels too close to the figure edges are dropped (ticks are kept)
-inside_time_axis_int <- function(x, at, col = "black", cex = 1) {
+inside_time_axis_int <- function(x, at, col = "black", cex = 1, col.text = col) {
   usr <- graphics::par("usr")
   graphics::axis(1, at = x, labels = FALSE, lwd = 0, lwd.ticks = 1, col = col)
   half <- graphics::strwidth(paste0(at, "s"), cex = cex) / 2
   room <- graphics::grconvertX(c(0, 1), "ndc", "user")
   keep <- x - half >= room[1] & x + half <= room[2]
   if (any(keep))
-    graphics::axis(1, at = x[keep], labels = paste0(at[keep], "s"), lwd = 0, tick = FALSE, col.axis = col, cex.axis = cex,
+    graphics::axis(1, at = x[keep], labels = paste0(at[keep], "s"), lwd = 0, tick = FALSE, col.axis = col.text, cex.axis = cex,
                    mgp = c(0, max(0, -graphics::par("tcl")) - 0.1, 0))
 }
 
@@ -599,15 +625,15 @@ mmss_int <- function(t) {
 
 # axes of axis.type = "compact": frequency labels below short ticks in a narrow column on the left of the panel
 # (with the unit at the bottom) and time labels (minutes and seconds) next to ticks in the top margin
-compact_freq_axis_int <- function(ylim, col = "black", cex = 1, bottom = graphics::par("usr")[3]) {
+compact_freq_axis_int <- function(ylim, col = "black", cex = 1, bottom = graphics::par("usr")[3], col.text = col) {
   lw <- graphics::grconvertX(1, "lines", "user") - graphics::grconvertX(0, "lines", "user")
   x0 <- graphics::grconvertX(0, "nfc", "user") + 0.3 * lw
   sh <- graphics::strheight("8", cex = cex)
   at <- pretty(ylim, n = 6)
   at <- at[at > bottom + 2.6 * sh & at <= ylim[2]]
   graphics::segments(x0, at, x0 + 0.9 * lw, at, col = col, xpd = NA)
-  graphics::text(x0, at - 0.35 * sh, labels = at, adj = c(0, 1), col = col, cex = cex, xpd = NA)
-  graphics::text(x0, bottom + 0.35 * sh, labels = "kHz", adj = c(0, 0), col = col, cex = cex, xpd = NA)
+  graphics::text(x0, at - 0.35 * sh, labels = at, adj = c(0, 1), col = col.text, cex = cex, xpd = NA)
+  graphics::text(x0, bottom + 0.35 * sh, labels = "kHz", adj = c(0, 0), col = col.text, cex = cex, xpd = NA)
 }
 
 # compact time axis above the current panel of a static spectrogram ('to_x' converts times to x axis coordinates)
@@ -617,10 +643,10 @@ compact_row_axis_int <- function(to_x, xlim, theme, cex) {
   tol <- diff(xlim) * 0.01
   at <- pretty(xlim)
   at <- at[at >= xlim[1] - tol & at <= xlim[2] + tol]
-  compact_time_axis_int(pmin(pmax(to_x(at), usr[1]), usr[2]), at, col = theme_int(theme, "col.lab", "black"), cex = cex)
+  compact_time_axis_int(pmin(pmax(to_x(at), usr[1]), usr[2]), at, col = theme_int(theme, "col.lab", "black"), cex = cex, col.text = axis_col_int(theme))
 }
 
-compact_time_axis_int <- function(x, at, col = "black", cex = 1, band = NULL) {
+compact_time_axis_int <- function(x, at, col = "black", cex = 1, band = NULL, col.text = col) {
   if (length(x) == 0) return(invisible(NULL))
   usr <- graphics::par("usr")
   # (ticks span the top margin, or 'band' lines of text above the panel)
@@ -631,12 +657,12 @@ compact_time_axis_int <- function(x, at, col = "black", cex = 1, band = NULL) {
   graphics::segments(x, usr[4], x, top, col = col, xpd = NA)
   keep <- x + pad + graphics::strwidth(labs, cex = cex) <= graphics::grconvertX(1, "nfc", "user")
   if (any(keep))
-    graphics::text(x[keep] + pad, (usr[4] + top) / 2, labels = labs[keep], adj = c(0, 0.5), col = col, cex = cex, xpd = NA)
+    graphics::text(x[keep] + pad, (usr[4] + top) / 2, labels = labs[keep], adj = c(0, 0.5), col = col.text, cex = cex, xpd = NA)
 }
 
 # frequency labels of axis.type = "inside": labels with units (e.g. "8k") followed by a short tick, inside the
 # left side of the spectrogram (labels closer than half a line of text to the top or bottom are dropped)
-inside_freq_axis_int <- function(ylim, col = "black", cex = 1) {
+inside_freq_axis_int <- function(ylim, col = "black", cex = 1, col.text = col) {
   usr <- graphics::par("usr")
   at <- pretty(ylim, n = 6)
   pad <- graphics::strheight("8", cex = cex)
@@ -646,12 +672,14 @@ inside_freq_axis_int <- function(ylim, col = "black", cex = 1) {
   ch <- graphics::strwidth("0", cex = cex)
   x_lab <- usr[1] + 0.8 * ch + max(graphics::strwidth(labs, cex = cex))
   tick <- max(0, -graphics::par("tcl")) * (graphics::grconvertX(1, "lines", "user") - graphics::grconvertX(0, "lines", "user"))
-  graphics::text(x_lab, at, labels = labs, adj = c(1, 0.5), col = col, cex = cex, xpd = NA)
+  graphics::text(x_lab, at, labels = labs, adj = c(1, 0.5), col = col.text, cex = cex, xpd = NA)
   graphics::segments(x_lab + 0.4 * ch, at, x_lab + 0.4 * ch + tick, at, col = col)
 }
 
 # web page of scrolling_spectro(): a frame with the parts that do not move (axes, play line, lower spectrogram),
 # with the full spectrogram (and oscillogram) below it, moved by the web page in sync with the sound
+# (embedded images use 'srcset' instead of 'src': R Markdown pages that are not self-contained, such as pkgdown
+# articles, pass every <img src> through utils::URLdecode(), which takes minutes for data URIs of several MB)
 scrolling_html_int <- function(frame_file, spectro_file, osc_file, lower, plt, height.prop, wave, wave_sil, t.display, buffer,
                                step_time, step_time_low, fps, loop, fix.time, axis, zoom = FALSE, inside = FALSE, compact = FALSE, width, res, captions = NULL,
                                speeds, keep.pitch, buttons = "time", download.name = "sound", lcol, theme = list()) {
@@ -675,6 +703,7 @@ scrolling_html_int <- function(frame_file, spectro_file, osc_file, lower, plt, h
     unit = if (inside) "s" else "", top = compact, tickLines = theme_int(theme, "tick.length", 0.5), labLine = if (inside) max(0, theme_int(theme, "tick.length", 0.5) - 0.1) else 1,
     width = width, res = res,
     bg = col2hex_int(theme_int(theme, "bg", "white")), colLab = col2hex_int(theme_int(theme, "col.lab", "black")),
+    colAxis = col2hex_int(axis_col_int(theme)), xVert = axis && !inside && !compact && isTRUE(theme_int(theme, "las", 0) %in% 2:3),
     cexAxis = theme_int(theme, "cex.axis", 1),
     dim = col2hex_int(grDevices::adjustcolor(theme_int(theme, "col.highlight", "gray"), 0.42), alpha = TRUE)
   )
@@ -683,9 +712,9 @@ scrolling_html_int <- function(frame_file, spectro_file, osc_file, lower, plt, h
     '<div class="dynaspec-scroll"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme),
     ' data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
     '<script type="application/json">', json_int(cfg), '</script>\n',
-    '<img class="ds-frame" src="', base64_uri_int(frame_file, "image/png"), '" alt="Scrolling spectrogram">\n',
-    '<img class="ds-strip" src="', base64_uri_int(spectro_file, "image/png"), '" alt="">\n',
-    if (!is.null(osc_file)) paste0('<img class="ds-strip ds-osc" src="', base64_uri_int(osc_file, "image/png"), '" alt="">\n'),
+    '<img class="ds-frame" srcset="', base64_uri_int(frame_file, "image/png"), ' 1x" alt="Scrolling spectrogram">\n',
+    '<img class="ds-strip" srcset="', base64_uri_int(spectro_file, "image/png"), ' 1x" alt="">\n',
+    if (!is.null(osc_file)) paste0('<img class="ds-strip ds-osc" srcset="', base64_uri_int(osc_file, "image/png"), ' 1x" alt="">\n'),
     '<audio controls preload="auto"', if (loop > 1) " loop", ' src="', snd$uri, '"></audio>\n',
     captions_json_int(captions, res = res, width = width, offset = buffer),
     '</div>\n',
@@ -721,7 +750,7 @@ paged_html_int <- function(pages, wave, highlightCol, highlightAlpha, cursorCol,
     '" data-highlight="', col2hex_int(highlightCol), '" data-alpha="', highlightAlpha, '" data-cursor="', col2hex_int(cursorCol),
     '"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme),
     ' data-color="', col2hex_int(highlightCol), '" data-text-color="', contrast_col_int(highlightCol), '">\n',
-    paste0('<img src="', vapply(pages, `[[`, character(1), "uri"), '" alt="Spectrogram, page ', seq_len(n_pages), ' of ', n_pages, '">', collapse = "\n"),
+    paste0('<img srcset="', vapply(pages, `[[`, character(1), "uri"), ' 1x" alt="Spectrogram, page ', seq_len(n_pages), ' of ', n_pages, '">', collapse = "\n"),
     '\n<audio controls preload="auto" src="', snd$uri, '"></audio>\n',
     captions_json_int(captions, res = res, width = width),
     '</div>\n',
@@ -824,7 +853,7 @@ playhead_video_int <- function(png_file, wave, ext, file.name, lcol, fps, width,
   invisible(file.name)
 }
 
-# captions (captions() layers) of web pages: settings read by the player script. 'res' and 'width' are those of the
+# captions (ds_captions() layers) of web pages: settings read by the player script. 'res' and 'width' are those of the
 # figure (text sizes are scaled to the size of the figure), and 'offset' is added to their times
 captions_json_int <- function(captions, res, width, offset = 0) {
   if (length(captions) == 0)
@@ -893,9 +922,9 @@ col2hex_int <- function(col, alpha = FALSE) {
   if (alpha) grDevices::rgb(rgb[1], rgb[2], rgb[3], rgb[4], maxColorValue = 255) else grDevices::rgb(rgb[1], rgb[2], rgb[3], maxColorValue = 255)
 }
 
-# attributes of web players with the player() settings (speed buttons, keep pitch, additional buttons and name
+# attributes of web players with the ds_player() settings (speed buttons, keep pitch, additional buttons and name
 # of downloaded sounds)
-# (and colors of the controls and font family of the dynatheme())
+# (and colors of the controls and font family of the ds_theme())
 player_attrs_int <- function(speeds, keep.pitch, buttons, download.name, theme = list()) {
   paste0(
     ' data-speeds="', paste(speeds, collapse = ","), '" data-keep-pitch="', tolower(keep.pitch),
@@ -1009,7 +1038,7 @@ player_js_int <- function() {
       ".ds-bar .ds-vol input{width:5em;margin:0}" +
       ".ds-bar .ds-fs{margin-left:auto}" +
       ".ds-bar .ds-progress{flex:1 1 8em;min-width:6em;margin:0 .3em}" +
-      // rounded controls (dynatheme(bar.style = "rounded")): the whole player on the bar background, the figure in a
+      // rounded controls (ds_theme(bar.style = "rounded")): the whole player on the bar background, the figure in a
       // frame with rounded corners, round play button, pill-shaped controls and flat sliders
       ".ds-round{background:var(--ds-bg,#F0F0F0);padding:12px;border-radius:10px;margin-bottom:1.2em}" +
       ".ds-round .ds-wrap{border:1px solid color-mix(in srgb,var(--ds-fg,#333) 16%,transparent);border-radius:8px;overflow:hidden}" +
@@ -1025,7 +1054,7 @@ player_js_int <- function() {
       ".ds-round .ds-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--ds-fg,#333);border:0;cursor:pointer}" +
       ".ds-round .ds-bar input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ds-fg,#333);border:0;cursor:pointer}" +
       ".ds-round .ds-bar input.ds-progress{height:8px;border-radius:4px}" +
-      // square controls (dynatheme(bar.style = "square")): flat bar, square play button and sliders in the accent
+      // square controls (ds_theme(bar.style = "square")): flat bar, square play button and sliders in the accent
       // color (the play line color)
       ".ds-square .ds-wrap{border:1px solid #9E9E9E}" +
       ".ds-square .ds-bar{gap:14px;color:var(--ds-fg,#fff);font-family:var(--ds-font,inherit)}" +
@@ -1043,6 +1072,28 @@ player_js_int <- function() {
       ".dynaspec-player:fullscreen,.dynaspec-paged:fullscreen,.dynaspec-scroll:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-player:fullscreen>*,.dynaspec-paged:fullscreen>*,.dynaspec-scroll:fullscreen>*{width:100%;margin-left:auto;margin-right:auto}";
     document.head.appendChild(css);
+
+    // smooth playback time: audio elements update currentTime in steps (often every 10-50 ms), so moving parts
+    // drawn at each frame from it stop and jump. The time advances with the clock of the page and is eased toward
+    // the time of the audio (snapping to it after seeking, looping or large differences)
+    var smoothClock = function (a) {
+      var playing = false, last = 0, wall = 0, t = 0, prev = 0;
+      return function () {
+        var now = performance.now(), ct = a.currentTime;
+        if (a.paused || a.seeking || !playing) {
+          playing = !a.paused && !a.seeking;
+          last = t = ct; wall = prev = now;
+          return ct;
+        }
+        if (ct !== last) { last = ct; wall = now; }
+        var target = last + Math.min(0.25, (now - wall) / 1000) * a.playbackRate;
+        t += (now - prev) / 1000 * a.playbackRate;
+        prev = now;
+        var err = target - t;
+        if (Math.abs(err) > 0.15) t = target; else t += 0.15 * err;
+        return t;
+      };
+    };
 
     var setup = function (a, keep) {
       a.preservesPitch = a.mozPreservesPitch = a.webkitPreservesPitch = keep;
@@ -1075,7 +1126,7 @@ player_js_int <- function() {
       b.style.boxShadow = on ? "inset 0 0 0 1px rgba(0,0,0,0.35)" : "";
     };
 
-    // speed slider (snapping to the speeds of player(), slowest on the left) and keep pitch toggle; returns a
+    // speed slider (snapping to the speeds of ds_player(), slowest on the left) and keep pitch toggle; returns a
     // function giving the current speed
     var nSliders = 0;
     var speedGroup = function (bar, speeds, color, keep, audios, onChange) {
@@ -1130,7 +1181,7 @@ player_js_int <- function() {
       return function () { return rate; };
     };
 
-    // additional controls set by player(buttons): time readout, loop, volume, download and full screen. time is
+    // additional controls set by ds_player(buttons): time readout, loop, volume, download and full screen. time is
     // the time readout of the player and redraw updates the player (e.g. after entering full screen)
     var extraButtons = function (div, bar, wrap, a, time, color, redraw, dur) {
       var d = div.dataset, opts = d.buttons ? d.buttons.split(",") : [];
@@ -1140,7 +1191,7 @@ player_js_int <- function() {
       if (square) div.classList.add("ds-square");
       div.style.setProperty("--ds-accent", color[0]);
       setPlay(play, !a.paused);
-      // colors of the controls and font family of the dynatheme()
+      // colors of the controls and font family of the ds_theme()
       if (d.barCol) { div.style.setProperty("--ds-fg", d.barCol); div.style.setProperty("--ds-line", d.barLine); }
       if (d.barBg && round) div.style.setProperty("--ds-bg", d.barBg);
       else if (d.barBg) {
@@ -1357,9 +1408,9 @@ player_js_int <- function() {
       wrap.insertAdjacentElement("afterend", bar);
       var captions = captionsInit(div, wrap);
 
-      var raf, fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var raf, clock = smoothClock(a), fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
       var draw = function () {
-        var t = Math.min(a.currentTime, dur), r = rowAt(t);
+        var t = Math.min(clock(), dur), r = rowAt(t);
         captions(t);
         head.style.left = 100 * (r.left + (r.right - r.left) * (t - r.t0) / (r.t1 - r.t0)) + "%";
         head.style.top = 100 * r.top + "%";
@@ -1443,9 +1494,9 @@ player_js_int <- function() {
       wrap.insertAdjacentElement("afterend", bar);
       var captions = captionsInit(div, wrap);
 
-      var raf, shown = 0, fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var raf, shown = 0, clock = smoothClock(a), fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
       var draw = function () {
-        var t = Math.min(a.currentTime, dur), k = pageAt(t), p = pages[k];
+        var t = Math.min(clock(), dur), k = pageAt(t), p = pages[k];
         captions(t);
         if (k !== shown) { imgs[shown].style.display = "none"; imgs[k].style.display = "block"; shown = k; }
         var x = p.left + (p.right - p.left) * Math.min(1, (t - p.t0) / (p.t1 - p.t0));
@@ -1546,7 +1597,9 @@ player_js_int <- function() {
         tick.className = "ds-over";
         tick.style.width = "1px";
         tick.style.background = c.colLab;
-        el.style.color = c.colLab;
+        el.style.color = c.colAxis;
+        // vertical time labels (las = 2 or 3): read from bottom to top, ending at the axis
+        if (c.xVert) { el.style.writingMode = "vertical-rl"; el.style.transform = "translateX(-50%) rotate(180deg)"; }
         wrap.appendChild(el);
         wrap.appendChild(tick);
         return {text: el, tick: tick};
@@ -1560,7 +1613,7 @@ player_js_int <- function() {
       play.textContent = "\\u25B6 play";
       bar.appendChild(play);
       speedGroup(bar, speeds, [d.color, d.textColor], keep, [a], function (r) { a.playbackRate = r; });
-      // zoom slider (player(buttons = "zoom")): from showing up to 4 times longer (at most the whole sound) to 4
+      // zoom slider (ds_player(buttons = "zoom")): from showing up to 4 times longer (at most the whole sound) to 4
       // times shorter; slider values are -log2(zoom), so zooming in is to the right
       if (c.zoom) {
         var zg = document.createElement("span"), zs = document.createElement("input"), zv = document.createElement("span");
@@ -1614,14 +1667,19 @@ player_js_int <- function() {
         return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10) * mag;
       };
 
-      var dur = c.duration, raf, fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var dur = c.duration, raf, clock = smoothClock(a), fmt = function (t) { return dur < 5 ? t.toFixed(3) : t.toFixed(1); };
       var draw = function () {
-        var t = Math.min(a.currentTime, dur), T = c.tDisplay * zoom;
+        var t = Math.min(clock(), dur), T = c.tDisplay * zoom;
         // text size follows the size of the figure (12 points at the resolution of the frame)
         var px = 12 * c.res / 72 * wrap.clientWidth / c.width;
 
         var s = winStart(t);
-        moving.forEach(function (strip) { strip.style.width = pct(c.durSil / T); strip.style.left = pct(-s / T); });
+        moving.forEach(function (strip) {
+          var w = pct(c.durSil / T);
+          if (strip.style.width !== w) { strip.style.width = w; strip.style.left = "0"; strip.style.willChange = "transform"; }
+          // (translateX in % of the strip width)
+          strip.style.transform = "translate3d(" + (-100 * s / c.durSil) + "%,0,0)";
+        });
 
         if (c.lower === "spectro") {
           var w = T / c.durWave, mid = Math.max(0, t * c.kl - c.buffer / c.durWave), x0 = mid - w / 2, x1 = mid + w / 2;
@@ -2015,12 +2073,15 @@ draw_page_int <- function(sp, i) {
   compact <- axes && identical(th$axis.type, "compact")
   cex_axis <- 16 / 12 * theme_int(th, "cex.axis", 1)
   tcl <- -theme_int(th, "tick.length", 0.3)
+  # color of axis labels, and room taken by vertical time labels (las = 2 or 3)
+  axis_col <- theme_int(th, "col.axis", txt_col)
+  x_extra <- x_lab_extra_int(theme_int(th, "las", 1), pretty(range_i), cex_axis)
 
   op <- graphics::par(
     bg = fig_bg,
     mar = if (inside) c(0.45 + cex_axis, 0, if (has_title) 3 else 0, if (sp$plotLegend) 7 else 0) else
       if (compact) c(0.3, 0.6 + 1.6 * cex_axis, 0.4 + 1.1 * cex_axis + if (has_title) 2.4 else 0, if (sp$plotLegend) 7 else 0.3) else
-      c(if (axes) 2.2 + 2 * lab_cex else 0, if (axes) 2.8 + 2.6 * lab_cex else 0, if (has_title) 3 else if (axes) 1.2 else 0, if (sp$plotLegend) 7 else if (axes) 1.2 else 0),
+      c(if (axes) 2.2 + 2 * lab_cex + x_extra else 0, if (axes) 2.8 + 2.6 * lab_cex else 0, if (has_title) 3 else if (axes) 1.2 else 0, if (sp$plotLegend) 7 else if (axes) 1.2 else 0),
     col.axis = txt_col, col.lab = txt_col, col.main = theme_int(th, "col.title", txt_col), fg = txt_col, las = theme_int(th, "las", 1),
     family = theme_int(th, "family", "sans"), tcl = tcl
   )
@@ -2043,23 +2104,23 @@ draw_page_int <- function(sp, i) {
   draw_layers_int(sp$layers, panel = "spectro", ylim = usr[3:4])
 
   if (compact) {
-    compact_freq_axis_int(sp$yLim, col = txt_col, cex = cex_axis)
+    compact_freq_axis_int(sp$yLim, col = txt_col, cex = cex_axis, col.text = axis_col)
     at <- pretty(range_i)
     at <- at[at >= usr[1] & at <= usr[2]]
-    compact_time_axis_int(at, at, col = txt_col, cex = cex_axis, band = 0.4 + 1.1 * cex_axis)
+    compact_time_axis_int(at, at, col = txt_col, cex = cex_axis, band = 0.4 + 1.1 * cex_axis, col.text = axis_col)
     if (!isFALSE(th$box)) graphics::box(col = box_col)
   } else if (inside) {
-    inside_freq_axis_int(sp$yLim, col = txt_col, cex = cex_axis)
+    inside_freq_axis_int(sp$yLim, col = txt_col, cex = cex_axis, col.text = axis_col)
     at <- pretty(range_i)
     at <- at[at >= usr[1] & at <= usr[2]]
-    inside_time_axis_int(at, at, col = txt_col, cex = cex_axis)
+    inside_time_axis_int(at, at, col = txt_col, cex = cex_axis, col.text = axis_col)
     if (!isFALSE(th$box)) graphics::box(col = box_col)
   } else if (axes) {
-    graphics::axis(1, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = txt_col)
-    graphics::axis(2, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = txt_col)
+    graphics::axis(1, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = axis_col)
+    graphics::axis(2, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = axis_col)
     font_lab <- theme_int(th, "font.lab", 2)
     cex_lab <- 20 / 12 * lab_cex
-    graphics::title(xlab = theme_int(th, "xlab", "Time (s)"), cex.lab = cex_lab, font.lab = font_lab, line = 1.2 + 1.5 * lab_cex)
+    graphics::title(xlab = theme_int(th, "xlab", "Time (s)"), cex.lab = cex_lab, font.lab = font_lab, line = 1.2 + 1.5 * lab_cex + x_extra)
     # the frequency axis title is shrunk if it is longer than the figure height
     ylab <- theme_int(th, "ylab", "Frequency (kHz)")
     # (it is centered on the plotting region, so it can extend twice the distance to the closest figure edge)
@@ -2118,7 +2179,7 @@ color_annotations_int <- function(layers, x, y, z, levels, colbg, to_x = identit
   for (sel in sels) {
     X <- sel$X
     has_freq <- sel$freq && all(c("bottom.freq", "top.freq") %in% names(X))
-    cols <- if (length(sel$col) == 1 && sel$col %in% names(X)) X[[sel$col]] else rep_len(sel$col, nrow(X))
+    cols <- annotation_cols_int(sel)
     for (i in seq_len(nrow(X))) {
       x0 <- to_x(X$start[i])
       x1 <- to_x(X$end[i])
@@ -2134,6 +2195,13 @@ color_annotations_int <- function(layers, x, y, z, levels, colbg, to_x = identit
   invisible(NULL)
 }
 
+# colors of the boxes of an annotation layer (a color, a column of the selection table, or the default)
+annotation_cols_int <- function(sel) {
+  X <- sel$X
+  col <- if (is.null(sel$col)) "#E69F00" else sel$col
+  if (length(col) == 1 && col %in% names(X)) X[[col]] else rep_len(col, nrow(X))
+}
+
 draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = graphics::par("usr")[3:4]) {
   if (is.null(layers))
     return(invisible(NULL))
@@ -2144,7 +2212,7 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
     # boxes are clipped to the frequency range shown (so labels at the top of the boxes are visible)
     bottom <- if (has_freq) pmax(X$bottom.freq, ylim[1]) else rep(ylim[1], nrow(X))
     top <- if (has_freq) pmin(X$top.freq, ylim[2]) else rep(ylim[2], nrow(X))
-    cols <- if (length(sel$col) == 1 && sel$col %in% names(X)) X[[sel$col]] else rep_len(sel$col, nrow(X))
+    cols <- annotation_cols_int(sel)
     borders <- if (is.null(sel$border)) NA else if (length(sel$border) == 1 && sel$border %in% names(X)) X[[sel$border]] else sel$border
     # (type = "spectrogram": the spectrogram is colored instead, see color_annotations_int(); only borders are drawn)
     fill <- if (identical(sel$type, "spectrogram")) NA else grDevices::adjustcolor(cols, sel$alpha)
@@ -2162,7 +2230,7 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
 
 ### engines (static, scrolling and paged spectrograms) -------------------------------------------------------
 
-# static spectrogram engine (dynaspec() + static()): figure with a play line moving over it. 'layers' are the
+# static spectrogram engine (dynaspec() + ds_static()): figure with a play line moving over it. 'layers' are the
 # selections of the dynaspec object
 static_spectro_int <- function(wave,
                            file.name = NULL,
@@ -2275,8 +2343,10 @@ static_spectro_int <- function(wave,
   lab_lines <- if (inside) 0 else if (compact) 0.6 + 1.6 * cex_axis else max(4, 2.8 + cex.lab)
   # (with a power spectrum on the left side, the frequency axis is drawn on the left of the spectrum instead)
   spec_left <- !is.null(spectrum) && spectrum$side == "left"
-  # (the time axis title is placed at line 1.8 + cex.lab, and the 'Power' label of spectra above the top panel)
-  bottom_lines <- if (inside) 0.45 + cex_axis else if (compact) 0 else max(4, 1.9 + 1.75 * cex.lab)
+  # (the time axis title is placed at line 1.8 + cex.lab, and the 'Amp.' label of spectra above the top panel)
+  # (vertical time labels, las = 2 or 3, take more room)
+  bottom_lines <- if (inside) 0.45 + cex_axis else if (compact) 0 else
+    max(4, 1.9 + 1.75 * cex.lab) + x_lab_extra_int(theme_int(theme, "las", 1), c(pretty(c(0, dur)), pretty(c(0, dur / rows))), cex_axis)
   top_lines <- if (compact) 0.4 + 1.1 * cex_axis else if (!is.null(spectrum) && spec_slot == 1) max(1, 0.1 + 0.68 * cex.lab * theme_int(theme, "cex.title", 1)) else if (inside) 0 else 1
   flush <- inside || compact
   # (the gap between the spectrogram and the power spectrum, 'spec_gap' lines on each side, is as wide as the gap
@@ -2372,7 +2442,7 @@ static_spectro_int <- function(wave,
 
           # time axis (only if the spectrogram is the bottom panel)
           if (bottom_slot && axis && axes && !compact)
-            do.call(time_axis_int, c(list(to_x = to_x, xlim = to_time(usr[1:2]), cex.lab = cex.lab, inside = inside), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis"))]))
+            do.call(time_axis_int, c(list(to_x = to_x, xlim = to_time(usr[1:2]), cex.lab = cex.lab, inside = inside), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis", "col.axis", "las"))]))
 
           left <- graphics::grconvertX(to_x(t0), "user", "ndc")
           right <- graphics::grconvertX(to_x(t1), "user", "ndc")
@@ -2431,7 +2501,7 @@ static_spectro_int <- function(wave,
     '<div class="dynaspec-player" data-duration="', dur,
     '" data-rows="', paste(apply(round(ext, 5), 1, paste, collapse = ","), collapse = ";"),
     '"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme), ' data-line="', tolower(play.line), '" data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
-    '<img src="', base64_uri_int(png_file, "image/png"), '" alt="', html_escape_int(if (is.null(alt)) paste0(if (empty) "Time axis" else panel_names_int(spectro, panels, spectrum), " of a ", round(dur, 2), " s sound") else alt), '">\n',
+    '<img srcset="', base64_uri_int(png_file, "image/png"), ' 1x" alt="', html_escape_int(if (is.null(alt)) paste0(if (empty) "Time axis" else panel_names_int(spectro, panels, spectrum), " of a ", round(dur, 2), " s sound") else alt), '">\n',
     '<audio controls preload="auto" src="', snd$uri, '"></audio>\n',
     captions_json_int(layers$captions, res = res, width = width),
     '</div>\n',
@@ -2441,7 +2511,7 @@ static_spectro_int <- function(wave,
   output_html_int(html, file.name = file.name, play = play)
 }
 
-# scrolling spectrogram engine (dynaspec() + scrolling()): videos and web pages of spectrograms scrolling along a
+# scrolling spectrogram engine (dynaspec() + ds_scrolling()): videos and web pages of spectrograms scrolling along a
 # play line. 'layers' are the selections and 'captions' the captions of the dynaspec object
 scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.size = 11.6, wl = NULL, ovlp = 70, flim = NULL, pal = seewave::reverse.gray.colors.1, speed = 1, fps = 50, t.display = 1.5, fix.time = TRUE, res = 70, width = 700, height = 400, parallel = 1, verbose = TRUE, play = TRUE, loop = 1, lcol = "#07889B99", lty = 2, lwd = 2, axis.type = "standard", buffer = 0, ggspectro = FALSE, lower.spectro = TRUE, height.prop = c(5, 1), derivative = FALSE, osc = FALSE, colwave = "black", colbg = NULL, spectro.call = NULL, annotation.call = NULL, speeds = c(1, 0.5, 0.25, 0.125), keep.pitch = FALSE, buttons = "time", download.name = "sound", layers = NULL, osc.type = "osc", theme = list(), captions = NULL, ...)
 {
@@ -2462,7 +2532,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   if (is.null(colbg)) colbg <- low_col_int(pal, if (is.null(spectro_args$collevels)) 30 else length(spectro_args$collevels) - 1)
 
   # no grid lines (as in static spectrograms) unless requested
-  # grid lines (spectrogram(grid = TRUE) or dynatheme(grid = TRUE))
+  # grid lines (ds_spectrogram(grid = TRUE) or ds_theme(grid = TRUE))
   if (is.null(spectro_args$grid)) spectro_args$grid <- isTRUE(theme$grid)
   if (isTRUE(spectro_args$grid) && is.null(spectro_args$colgrid)) spectro_args$colgrid <- theme_int(theme, "col.grid", "#7F7F7F66")
 
@@ -2564,8 +2634,18 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   # make vector with name of images
   img_names <- paste0(sprintf(paste0("%0",nchar(frames) + 2, "d"), 1:(frames * loop)), ".temp.img.png")
 
-  # flim for spectro() (NULL = full range; c(0, Nyquist) makes seewave index past the last frequency bin)
+  # frequency limits within the Nyquist frequency (as in static spectrograms)
+  nyquist <- wave@samp.rate / 2000
+  if (!is.null(flim) && flim[1] >= nyquist)
+    stop2("'flim' lower limit must be lower than the Nyquist frequency (", nyquist, " kHz)")
+  if (!is.null(flim))
+    flim[2] <- min(flim[2], nyquist)
+
+  # flim for spectro() (NULL = full range; an upper limit at the Nyquist frequency makes seewave index past the last
+  # frequency bin, so it is kept one bin below)
   spectro_flim <- flim
+  if (!is.null(spectro_flim))
+    spectro_flim[2] <- min(spectro_flim[2], nyquist - wave@samp.rate / wl / 1000)
 
   if (is.null(flim)) # flim on original wave
     flim <- c(0, wave@samp.rate / 2000)
@@ -2751,11 +2831,15 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
     # start png device (tiff files from R are not readable by recent ffmpeg versions)
     grDevices::png(file, res = res, width = width, height = height, bg = if (html_frame) "transparent" else theme_int(theme, "bg", "white"))
 
-    # axis colors, fonts and sizes (dynatheme())
+    # axis colors, fonts and sizes (ds_theme())
     col_lab <- theme_int(theme, "col.lab", "black")
     # (parts of the overview outside the window shown are dimmed)
     dim_col <- grDevices::adjustcolor(theme_int(theme, "col.highlight", "gray"), 0.42)
-    graphics::par(col.axis = col_lab, col.lab = col_lab, fg = col_lab, font.lab = theme_int(theme, "font.lab", 1),
+    col_axis <- axis_col_int(theme)
+    x_las <- theme_int(theme, "las", 0)
+    # (room taken by vertical time labels, las = 2 or 3)
+    x_extra <- x_lab_extra_int(x_las, pretty(c(0, max(t.display, seewave::duration(wave)))), theme_int(theme, "cex.axis", 1))
+    graphics::par(col.axis = col_axis, col.lab = col_lab, fg = col_lab, font.lab = theme_int(theme, "font.lab", 1),
                   cex.lab = theme_int(theme, "cex.lab", 1), cex.axis = theme_int(theme, "cex.axis", 1))
     theme_par_int(theme)
 
@@ -2766,7 +2850,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
       graphics::par(mar = c(0.45 + theme_int(theme, "cex.axis", 1), 0, 0, 0)) else
     if (axis.type != "standard")
       graphics::par(mar =  rep(0, 4)) else
-    graphics::par(mar =  c(4.2, 4.2, 1, 1) + 0.1)
+    graphics::par(mar =  c(4.2 + x_extra, 4.2, 1, 1) + 0.1)
 
     # keep original values
     org.flim <- flim
@@ -2783,7 +2867,10 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
 
     # plot anything at specific time and freq
     # (time axis labels move along when time is not fixed, so they are added by the web page in html frames)
-    graphics::plot(0,0, type = "n", xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = if (axis.type == "standard") theme_int(theme, "xlab", "Time (s)") else "", ylab = if (axis.type == "standard") theme_int(theme, "ylab", "Frequency (kHz)") else "", xaxs = "i", yaxs = "i", bty = "n", xaxt = if (axis.type == "standard" && fix.time && frame_time) "s" else "n", yaxt = "n")
+    graphics::plot(0,0, type = "n", xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = "", ylab = if (axis.type == "standard") theme_int(theme, "ylab", "Frequency (kHz)") else "", xaxs = "i", yaxs = "i", bty = "n", xaxt = if (axis.type == "standard" && fix.time && frame_time) "s" else "n", yaxt = "n", las = x_las)
+    # time axis title (below vertical time labels)
+    if (axis.type == "standard")
+      graphics::title(xlab = theme_int(theme, "xlab", "Time (s)"), line = 3 + x_extra)
 
     # get plotting area coordinates
     plt <- graphics::par("plt")
@@ -2843,22 +2930,22 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
       t_at <- pretty(usr[1:2] - half)
       t_at <- t_at[t_at + half >= usr[1] & t_at + half <= usr[2] & (fix.time | (t_at >= 0 & t_at <= seewave::duration(wave) + 1e-9))]
       if (axis.type == "standard" && !fix.time)
-        graphics::axis(1, at = t_at + half, labels = t_at)
+        graphics::axis(1, at = t_at + half, labels = t_at, las = x_las)
     }
 
     # compact axes (time labels move along in html frames when time is not fixed)
     if (axis.type == "compact") {
-      compact_freq_axis_int(org.flim, col = col_lab, cex = theme_int(theme, "cex.axis", 1), bottom = org.flim[1])
+      compact_freq_axis_int(org.flim, col = col_lab, cex = theme_int(theme, "cex.axis", 1), bottom = org.flim[1], col.text = col_axis)
       if (frame_time) {
-        compact_time_axis_int(t_at + half, t_at, col = col_lab, cex = theme_int(theme, "cex.axis", 1))
+        compact_time_axis_int(t_at + half, t_at, col = col_lab, cex = theme_int(theme, "cex.axis", 1), col.text = col_axis)
       }
     }
 
     # labels inside the figure (time labels move along in html frames when time is not fixed)
     if (axis.type == "inside") {
-      inside_freq_axis_int(org.flim, col = col_lab, cex = theme_int(theme, "cex.axis", 1))
+      inside_freq_axis_int(org.flim, col = col_lab, cex = theme_int(theme, "cex.axis", 1), col.text = col_axis)
       if (frame_time) {
-        inside_time_axis_int(t_at + half, t_at, col = col_lab, cex = theme_int(theme, "cex.axis", 1))
+        inside_time_axis_int(t_at + half, t_at, col = col_lab, cex = theme_int(theme, "cex.axis", 1), col.text = col_axis)
       }
     }
 
@@ -3212,7 +3299,7 @@ prep_paged_int <-
     return(specParams)
   }
 
-# paged spectrogram engine (dynaspec() + paged())
+# paged spectrogram engine (dynaspec() + ds_paged())
 paged_spectro_int <- function(wave,
                           ...,
                           file.name = NULL,
@@ -3389,7 +3476,7 @@ sound_file_selections_int <- function(sel, x) {
   if (!"sound.files" %in% names(X) || !is.null(sel$sound.file) || length(unique(X$sound.files)) == 1)
     return(sel)
   if (!is.character(x$wave))
-    stop2("the selection table has selections of several sound files; choose one with 'sound.file' in annotations()")
+    stop2("the selection table has selections of several sound files; choose one with 'sound.file' in ds_annotations()")
   keep <- X$sound.files == basename(x$wave)
   if (!any(keep))
     warning2("no selections of sound file '", basename(x$wave), "' in the selection table")
@@ -3421,6 +3508,7 @@ theme_layers_int <- function(x) {
     for (i in intersect(c("pal", "colbg"), names(th)))
       if (is.null(x$spectrogram[[i]])) x$spectrogram[[i]] <- th[[i]]
   x$panels <- lapply(x$panels, function(p) { if (is.null(p$col)) p$col <- th$col.wave; p })
+  x$selections <- lapply(x$selections, function(sel) { if (is.null(sel$col)) sel$col <- th$col.annotation; sel })
   if (!is.null(x$spectrum) && is.null(x$spectrum$col)) x$spectrum$col <- th$col.wave
   if (!is.null(th$col.line) && is.null(x$style$args$lcol)) x$style$args$lcol <- th$col.line
   if (identical(x$style$type, "scrolling"))
@@ -3458,7 +3546,7 @@ save_static_int <- function(x, wave, layers, out, ext, play) {
     sp, x$style$args, x$player, list(download.name = x$name)
   )
   if (!is.null(x$overview))
-    warning2("overview() is only shown in scrolling spectrograms")
+    warning2("ds_overview() is only shown in scrolling spectrograms")
   if ("zoom" %in% x$player$buttons)
     warning2("the zoom slider is only available in scrolling spectrograms")
   do.call(static_spectro_int, args, quote = TRUE)
@@ -3486,7 +3574,7 @@ panel_col_int <- function(p, type = p$type) {
 # scrolling spectrograms
 save_scrolling_int <- function(x, wave, layers, out, play, verbose) {
   if (is.null(x$spectrogram))
-    stop2("scrolling spectrograms need a spectrogram: add spectrogram() (e.g. dynaspec(wave) + spectrogram() + scrolling())")
+    stop2("scrolling spectrograms need a spectrogram: add ds_spectrogram() (e.g. dynaspec(wave) + ds_spectrogram() + ds_scrolling())")
   sp <- spectro_args_int(x$spectrogram)
   if (!is.null(sp$pal)) sp$pal <- pal_fun_int(sp$pal)
   st <- x$style$args
@@ -3496,7 +3584,7 @@ save_scrolling_int <- function(x, wave, layers, out, play, verbose) {
   if (length(lower) > 1)
     warning2("scrolling spectrograms show a single lower panel; only the first one added is shown (", lower[1], ")")
   if (!is.null(x$spectrum))
-    warning2("spectrum() is only shown in static spectrograms")
+    warning2("ds_spectrum() is only shown in static spectrograms")
   st$lower.spectro <- length(lower) > 0 && lower[1] == "overview"
   osc <- if (length(lower) > 0 && lower[1] != "overview") x$panels[[1]]
   if (!is.null(x$overview) && st$lower.spectro && !is.null(x$overview$height))
@@ -3515,8 +3603,8 @@ save_scrolling_int <- function(x, wave, layers, out, play, verbose) {
 # paged spectrograms (style arguments are split between the preparation of the pages and the engine)
 save_paged_int <- function(x, wave, layers, out, ext, play, verbose) {
   if (is.null(x$spectrogram))
-    stop2("paged spectrograms need a spectrogram: add spectrogram() (e.g. dynaspec(wave) + spectrogram() + paged())")
-  unused <- c(if (length(x$panels) > 0) "oscillogram() and envelope()", if (!is.null(x$spectrum)) "spectrum()", if (!is.null(x$overview)) "overview()")
+    stop2("paged spectrograms need a spectrogram: add ds_spectrogram() (e.g. dynaspec(wave) + ds_spectrogram() + ds_paged())")
+  unused <- c(if (length(x$panels) > 0) "ds_oscillogram() and ds_envelope()", if (!is.null(x$spectrum)) "ds_spectrum()", if (!is.null(x$overview)) "ds_overview()")
   if (length(unused) > 0)
     warning2(paste(unused, collapse = ", "), " are not shown in paged spectrograms")
   if ("zoom" %in% x$player$buttons)

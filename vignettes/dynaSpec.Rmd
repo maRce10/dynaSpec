@@ -64,7 +64,7 @@ remotes::install_github("maRce10/dynaSpec")
 library(dynaSpec)
 ```
 
-Web pages do not need any external software. To create videos dynaSpec uses
+Web pages do not need any external software. To create video files dynaSpec uses
 [ffmpeg](https://ffmpeg.org/download.html), which must be installed and
 available in the system path (see the installation instructions in the
 [README](https://github.com/maRce10/dynaSpec#ffmpeg)).
@@ -75,97 +75,108 @@ Dynamic spectrograms are built in layers, as 'ggplot2' graphs: `dynaspec()` take
 
 ```{r, eval = FALSE}
 dynaspec(wave, flim = c(1, 10)) + # the sound (and frequency and time ranges)
-  spectrogram(wl = 300) + # panels: spectrogram, oscillogram, envelope, spectrum
-  oscillogram() +
-  annotations(st) + # highlight parts of the sound
-  captions("song", start = 0, end = 2) + # text shown during a time range
-  dynatheme(xlab = "Time (s)") + # axis titles, text and colors
-  player(speeds = c(1, 0.5)) + # playback buttons of web pages
-  scrolling(t.display = 1.7) # style: static() (default), scrolling() or paged()
+  ds_spectrogram(wl = 300) + # panels: spectrogram, oscillogram, envelope, spectrum
+  ds_oscillogram() +
+  ds_annotations(st) + # highlight parts of the sound
+  ds_captions("song", start = 0, end = 2) + # text shown during a time range
+  ds_theme(xlab = "Time (s)") + # customize axis titles, text and colors
+  ds_player(speeds = c(1, 0.5)) + # customize playback buttons of web pages
+  ds_scrolling(t.display = 1.7) # spectro style: ds_static() (default), ds_scrolling() or ds_paged()
 ```
 
 | Layer | What it does |
 |---|---|
-| `spectrogram()` | Adds a spectrogram (window length, palette, amplitude range, ...) |
-| `oscillogram()`, `envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
-| `spectrum()` | Adds a power spectrum next to the spectrogram |
-| `overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
-| `annotations()` | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
-| `captions()` | Text at a fixed position shown during a time range, like subtitles |
-| `dynatheme()`, `dynatheme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
-| `player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
-| `static()`, `scrolling()`, `paged()` | Style of the dynamic spectrogram |
+| `ds_spectrogram()` | Adds a spectrogram (window length, palette, amplitude range, ...) |
+| `ds_oscillogram()`, `ds_envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
+| `ds_spectrum()` | Adds a power spectrum next to the spectrogram |
+| `ds_overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
+| `ds_annotations()` | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
+| `ds_captions()` | Text at a fixed position shown during a time range, like subtitles |
+| `ds_theme()`, `ds_theme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
+| `ds_player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
+| `ds_static()`, `ds_scrolling()`, `ds_paged()` | Style of the dynamic spectrogram |
 
 Printing a `dynaspec` object shows an interactive web page: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed slider to slow the sound down. In the R console web pages are shown in the RStudio viewer (or the web browser), and in R Markdown and Quarto documents (like this vignette) they are embedded in the document. `save_dynaspec()` saves them as web pages, videos or images (see [Saving](#saving-web-pages-videos-and-images)).
 
 ```{r, eval = TRUE}
 library(dynaSpec)
+library(seewave)
 ```
 
-The examples use the scaly-breasted hummingbird song and the barn swallow recordings included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
+
+The examples use the songs of a brown-billed scythebill and a great antshrike (scrolling spectrograms) and the barn swallow recordings included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
 
 # Panels
 
 Only the panels added as layers are shown. A spectrogram:
 
 ```{r, eval = TRUE}
-data("scaly_breasted_hummingbird")
+data("scythebill")
 
-hb <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
+ds_scythebill <- dynaspec(scythebill, flim = c(0.2, 4)) +
+  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1), ovlp = 95)
 
-hb
+ds_scythebill
 ```
 
-The spectrogram background is the color of the lowest amplitude of the palette (white for the default gray palette), so quiet parts of the sound and the background look the same. Use `spectrogram(colbg = )` to set another background.
+The spectrogram background is the color of the lowest amplitude of the palette (white for the default gray palette), so quiet parts of the sound and the background look the same. Use `ds_spectrogram(colbg = )` to set another background.
 
-Layers can be stored in an object (as `hb` above) and added later. A spectrogram with an oscillogram below it:
+Layers can be stored in an object (as `ds_scythebill` above) and added later. A spectrogram with an oscillogram below it:
 
 ```{r}
-hb + oscillogram()
+ds_scythebill + ds_oscillogram()
 ```
 
-Oscillograms and amplitude envelopes can go above or below the spectrogram, and a power spectrum can be added on its left or right side:
+Oscillograms and amplitude envelopes can go above or below the spectrogram, and a power spectrum can be added on its left or right side. An envelope above the spectrogram and a power spectrum on its right side:
 
 ```{r}
-hb +
-  oscillogram(position = "above") +
-  envelope() +
-  spectrum(side = "right")
+ds_scythebill +
+  ds_envelope(position = "above") +
+  ds_spectrum(side = "right")
 ```
 
-Without `spectrogram()` only the other panels are shown (e.g. only the oscillogram), and `dynaspec()` alone shows an empty panel with a time axis and the play line:
+Without `ds_spectrogram()` only the other panels are shown (e.g. only the oscillogram), and `dynaspec()` alone shows an empty panel with a time axis and the play line:
 
 ```{r}
-dynaspec(scaly_breasted_hummingbird) + oscillogram()
+dynaspec(scythebill) + ds_oscillogram()
 ```
 
 `flim` sets the frequency range (in kHz) and `tlim` the time range of the sound used (in s):
 
 ```{r}
-dynaspec(scaly_breasted_hummingbird, flim = c(2, 11), tlim = c(1, 3)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1))
+dynaspec(scythebill, flim = c(1.5, 5.5), tlim = c(1.1, 2.3)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 ```
 
 # Styles
 
 ## Static spectrograms
 
-The default style: a line moves over the whole figure as the sound plays, so `static()` is not needed to create static spectrograms (all examples above are static). It is used to change the settings of static spectrograms, or to switch back to them from another style (the last style added is used). Long sounds can be split in several rows (`rows`; `height` sets the height of each row), and `play.line = FALSE` hides the moving line:
+The default style: a line moves over the whole figure as the sound plays, so `ds_static()` is not needed to create static spectrograms (all examples above are static). It is used to change the settings of static spectrograms, or to switch back to them from another style (the last style added is used). Long sounds can be split in several rows (`rows`; `height` sets the height of each row), and `play.line = FALSE` hides the moving line:
 
 ```{r}
-hb + static(rows = 2, height = 350)
+data("antshrike")
+
+ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 4)) +
+   ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+
+ds_antshrike  + 
+  ds_static(rows = 2, height = 350)
+
 ```
 
 ## Scrolling spectrograms
 
-The spectrogram scrolls along a fixed play line, as in the Macaulay Library. `t.display` sets the time window (in s) shown at once, and `overview()` adds a lower panel with the whole sound, in which the part being shown is highlighted:
+The spectrogram scrolls along a fixed play line, as in the Macaulay Library. `t.display` sets the time window (in s) shown at once, and `ds_overview()` adds a lower panel with the whole sound, in which the part being shown is highlighted:
 
 ```{r, eval = TRUE}
-dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
-  overview() +
-  scrolling(t.display = 1.7)
+
+ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+
+ds_antshrike +
+  ds_overview() +
+  ds_scrolling(t.display = 2)
 ```
 
 Scrolling spectrograms show a single lower panel: an overview, an oscillogram or an envelope.
@@ -183,25 +194,25 @@ f <- list.files(
 )
 
 dynaspec(f[2]) +
-  spectrogram() +
-  paged(t.display = 2)
+  ds_spectrogram() +
+  ds_paged(t.display = 2)
 ```
 
 Settings not supplied take the defaults of each style. For instance, paged spectrograms use the 'inferno' palette and no axes by default.
 
 # Playback
 
-The speed slider slows the sound down. Slowing down also lowers the pitch (as when slowing down a tape), which makes fast features such as pulses easier to hear. The *keep pitch* button switches to slowing down while keeping the original pitch. `player()` sets the speeds offered (the first one is the initial speed) and whether the pitch is kept by default:
+The speed slider slows the sound down. Slowing down also lowers the pitch (as when slowing down a tape), which makes fast features such as pulses easier to hear. The *keep pitch* button switches to slowing down while keeping the original pitch. `ds_player()` sets the speeds offered (the first one is the initial speed) and whether the pitch is kept by default:
 
 ```{r}
-hb + player(speeds = c(0.5, 1, 0.25), keep.pitch = TRUE)
+ds_scythebill + ds_player(speeds = c(0.5, 1, 0.25), keep.pitch = TRUE)
 ```
 
 `buttons` adds more controls: a time readout (shown by default), a seek bar, a zoom slider (scrolling spectrograms), a loop button, a volume control, a button to download the sound and a full screen button:
 
 ```{r}
-hb +
-  player(
+ds_scythebill +
+  ds_player(
     buttons = c("progress", "time", "loop", "volume", "download", "fullscreen")
   )
 ```
@@ -210,16 +221,16 @@ Several players can be included in the same document or web page; only one sound
 
 # Highlighting and labeling sounds
 
-`annotations()` highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table of [warbleR](https://cran.r-project.org/package=warbleR) or [ohun](https://cran.r-project.org/package=ohun)), and `captions()` adds text at a fixed position of the figure shown during a time range, like subtitles. Both work in the three styles, and are shown in the article [Customizing dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html#annotations).
+`ds_annotations()` highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table of [warbleR](https://cran.r-project.org/package=warbleR) or [ohun](https://cran.r-project.org/package=ohun)), and `ds_captions()` adds text at a fixed position of the figure shown during a time range, like subtitles. Both work in the three styles, and are shown in the article [Customizing dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html#annotations).
 
 # Themes
 
-`dynatheme()` sets the look of the figure in the same way for all styles: axis titles, text sizes and fonts, colors of axes and text, boxes, grid lines, backgrounds, the colors of the plot (e.g. the spectrogram palette, used when not supplied in `spectrogram()`) and the colors of the player controls:
+`ds_theme()` sets the look of the figure in the same way for all styles: axis titles, text sizes and fonts, colors of axes and text, boxes, grid lines, backgrounds, the colors of the plot (e.g. the spectrogram palette, used when not supplied in `ds_spectrogram()`) and the colors of the player controls:
 
 ```{r}
-dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
-  dynatheme(
+dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
+  ds_theme(
     xlab = "Time (s)",
     ylab = "Frequency (kHz)",
     cex.lab = 1.3,
@@ -227,10 +238,16 @@ dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
   )
 ```
 
-Preset themes set several settings at once: `dynatheme_dark()`, `dynatheme_presentation()`, `dynatheme_paper()`, `dynatheme_minimal()`, `dynatheme_transparent()`, `dynatheme_void()`, `dynatheme_xenocanto()` and `dynatheme_macaulay()`. Their settings can be changed in the call:
+Preset themes set several settings at once: `ds_theme_dark()`, `ds_theme_mako()`, `ds_theme_presentation()`, `ds_theme_paper()`, `ds_theme_minimal()`, `ds_theme_transparent()`, `ds_theme_void()`, `ds_theme_xenocanto()` and `ds_theme_macaulay()`. Their settings can be changed in the call:
 
 ```{r}
-hb + oscillogram() + dynatheme_dark(cex.lab = 1.3)
+ds_scythebill + ds_oscillogram() + ds_theme_dark(cex.lab = 1.3)
+```
+
+`ds_set_theme()` sets a theme for all the spectrograms shown afterwards (e.g. in all the code chunks of a document), as `ggplot2::theme_set()`. Themes added to a spectrogram change it (`ds_theme()`) or replace it (preset themes):
+
+```{r, eval = FALSE}
+ds_set_theme(ds_theme_dark())
 ```
 
 # Saving web pages, videos and images
@@ -242,15 +259,36 @@ hb + oscillogram() + dynatheme_dark(cex.lab = 1.3)
 * `.png`: still image of static spectrograms, or one image per page of paged spectrograms
 
 ```{r, eval = FALSE}
-save_dynaspec(hb, "hummingbird.html")
-save_dynaspec(hb, "hummingbird.png")
-save_dynaspec(hb, "hummingbird_static.mp4")
-save_dynaspec(hb + scrolling(t.display = 1.7), "hummingbird_scrolling.mp4")
+save_dynaspec(ds_scythebill, "scythebill.html")
+save_dynaspec(ds_scythebill, "scythebill.png")
+save_dynaspec(ds_scythebill, "scythebill_static.mp4")
+save_dynaspec(ds_antshrike + ds_scrolling(t.display = 2), "antshrike_scrolling.mp4")
 ```
 
 Videos of static and paged spectrograms are created in a few seconds. Videos of scrolling spectrograms take longer, as every frame is rendered (a progress bar shows the progress).
 
 Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut (e.g. with `tlim`) or downsample long recordings before creating web pages.
+
+## Embedding players in other web pages
+
+Web pages created by `save_dynaspec()` are self-contained: the images, the sound and the code of the player are embedded in the file, so they work without R or a server (even offline, by opening the file). They can be added to other web pages (e.g. a lab website, a course page or GitHub Pages) in three ways:
+
+* **As a page of its own**, uploaded and linked, or shown within another page with an `iframe`. This is the safest option, as the styles of the page and the player do not affect each other, and it also works in site builders that remove scripts from pasted code:
+
+```html
+<iframe src="scythebill.html" width="100%" height="560" style="border:0"></iframe>
+```
+
+* **Pasting the code of the player** into the HTML of a page. Without a file name, `save_dynaspec()` returns only the code of the player (no page header), which can be saved and pasted. Several players can be included in the same page; only one sound plays at a time:
+
+```{r, eval = FALSE}
+player_code <- save_dynaspec(ds_scythebill, play = FALSE)
+writeLines(player_code, "scythebill_player.html")
+```
+
+* **As a video** (`.mp4`), with the HTML `video` element (`<video controls src="scythebill.mp4"></video>`), in social media or in presentation slides. Videos have no speed controls or click-to-play, but work wherever videos do.
+
+Pages that block scripts written within the page (with a strict 'Content-Security-Policy') show the spectrogram but not the player; use an `iframe` in that case.
 
 ---
 ### Session information {.unnumbered .unlisted}

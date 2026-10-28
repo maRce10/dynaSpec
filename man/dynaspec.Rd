@@ -11,67 +11,73 @@ dynaspec(wave, flim = NULL, tlim = NULL)
 
 \item{flim}{Numeric vector of length 2 with the frequency limits (in kHz). Default is \code{NULL} (from 0 to the Nyquist frequency, or the style default).}
 
-\item{tlim}{Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of \code{\link[=annotations]{annotations()}} and \code{\link[=captions]{captions()}} refer to the whole sound. Default is \code{NULL} (whole sound).}
+\item{tlim}{Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of \code{\link[=ds_annotations]{ds_annotations()}} and \code{\link[=ds_captions]{ds_captions()}} refer to the whole sound. Default is \code{NULL} (whole sound).}
 }
 \value{
 An object of class 'dynaspec'.
 }
 \description{
-\code{dynaspec()} starts a dynamic spectrogram of a sound. Layers are added with \code{+}, as in 'ggplot2' graphs: \code{\link[=spectrogram]{spectrogram()}} and \code{\link[=oscillogram]{oscillogram()}} add the panels, \code{\link[=annotations]{annotations()}} and \code{\link[=captions]{captions()}} highlight and label parts of the sound, and \code{\link[=scrolling]{scrolling()}}, \code{\link[=paged]{paged()}} or \code{\link[=static]{static()}} set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and \code{\link[=save_dynaspec]{save_dynaspec()}} saves it as a web page, a video or still images.
+\code{dynaspec()} starts a dynamic spectrogram of a sound. Layers are added with \code{+}, as in 'ggplot2' graphs: \code{\link[=ds_spectrogram]{ds_spectrogram()}} and \code{\link[=ds_oscillogram]{ds_oscillogram()}} add the panels, \code{\link[=ds_annotations]{ds_annotations()}} and \code{\link[=ds_captions]{ds_captions()}} highlight and label parts of the sound, and \code{\link[=ds_scrolling]{ds_scrolling()}}, \code{\link[=ds_paged]{ds_paged()}} or \code{\link[=ds_static]{ds_static()}} set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and \code{\link[=save_dynaspec]{save_dynaspec()}} saves it as a web page, a video or still images.
 }
 \details{
-Panels are added as layers, as in 'ggplot2': only the panels added are shown (\code{\link[=spectrogram]{spectrogram()}}, \code{\link[=oscillogram]{oscillogram()}}, \code{\link[=envelope]{envelope()}} or several of them, and \code{\link[=spectrum]{spectrum()}} next to the spectrogram). \code{dynaspec()} alone shows an empty panel with a time axis and the play line (annotations and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.
+Panels are added as layers, as in 'ggplot2': only the panels added are shown (\code{\link[=ds_spectrogram]{ds_spectrogram()}}, \code{\link[=ds_oscillogram]{ds_oscillogram()}}, \code{\link[=ds_envelope]{ds_envelope()}} or several of them, and \code{\link[=ds_spectrum]{ds_spectrum()}} next to the spectrogram). \code{dynaspec()} alone shows an empty panel with a time axis and the play line (annotations and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.
 
 The three styles show the sound in different ways:
 \itemize{
-\item \code{\link[=scrolling]{scrolling()}}: the spectrogram scrolls along a fixed play line.
-\item \code{\link[=paged]{paged()}}: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.
-\item \code{\link[=static]{static()}} (default): a play line moves over the whole figure (spectrogram, oscillogram or both), which can be split in several rows.
+\item \code{\link[=ds_scrolling]{ds_scrolling()}}: the spectrogram scrolls along a fixed play line.
+\item \code{\link[=ds_paged]{ds_paged()}}: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.
+\item \code{\link[=ds_static]{ds_static()}} (default): a play line moves over the whole figure (spectrogram, oscillogram or both), which can be split in several rows.
 }
 
-Web pages include buttons to slow down playback (see \code{\link[=player]{player()}}), and clicking on the spectrogram plays the sound from that point. Figures and sounds are embedded in the HTML code, so web pages can be shared as single files or pasted into any web page. Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut or downsample long recordings before creating web pages.
+Web pages include buttons to slow down playback (see \code{\link[=ds_player]{ds_player()}}), and clicking on the spectrogram plays the sound from that point. Figures and sounds are embedded in the HTML code, so web pages can be shared as single files or pasted into any web page. Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut or downsample long recordings before creating web pages.
 
-Settings not supplied in layers take the defaults of each style (e.g. paged spectrograms use the 'inferno' color palette unless \code{\link[=spectrogram]{spectrogram()}} sets another one).
+Settings not supplied in layers take the defaults of each style (e.g. paged spectrograms use the 'inferno' color palette unless \code{\link[=ds_spectrogram]{ds_spectrogram()}} sets another one).
 }
 \examples{
-data(scaly_breasted_hummingbird)
+data(scythebill)
 
 # empty panel with time axis (only the panels added as layers are shown)
-dynaspec(scaly_breasted_hummingbird)
+dynaspec(scythebill)
 
 # static spectrogram with oscillogram (printing shows it in the viewer or browser)
-x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
-  oscillogram()
+x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_oscillogram()
 
 # save as a web page
-save_dynaspec(x, file.path(tempdir(), "hummingbird.html"), play = FALSE)
+save_dynaspec(x, file.path(tempdir(), "scythebill.html"), play = FALSE)
 
 \dontrun{
 # show it
 x
 
-# scrolling and paged styles
-x + scrolling(t.display = 1.7)
-x + paged(t.display = 2)
+# paged style
+x + ds_paged(t.display = 1)
 
-# videos (require ffmpeg)
-save_dynaspec(x + scrolling(t.display = 1.7), "hummingbird.mp4")
+# scrolling style (a longer recording)
+data(antshrike)
+y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+y + ds_scrolling(t.display = 2)
+
+# video (requires ffmpeg)
+save_dynaspec(y + ds_scrolling(t.display = 2), "antshrike.mp4")
 
 # highlight and label parts of the song
-st <- data.frame(start = c(1, 6), end = c(2.9, 7.4), labels = c("start", "end"))
-x + annotations(st, labels = "labels") +
-  captions("Scaly-breasted hummingbird", start = 0, end = 8.3)
+st <- data.frame(start = c(0.34, 1.13, 1.44, 1.75), end = c(1.03, 1.36, 1.68, 2.28),
+                 labels = c("A", "B", "B", "C"))
+x + ds_annotations(st, labels = "labels") +
+  ds_captions("Brown-billed scythebill", start = 0, end = 3)
 
 # only the oscillogram
-dynaspec(scaly_breasted_hummingbird) + oscillogram()
+dynaspec(scythebill) + ds_oscillogram()
 }
 }
 \references{
 Araya-Salas M & Wilkins M R. (2020). \emph{dynaSpec: dynamic spectrogram visualizations in R}. R package version 1.0.0.
 }
 \seealso{
-\code{\link[=save_dynaspec]{save_dynaspec()}}, \code{\link[=spectrogram]{spectrogram()}}, \code{\link[=scrolling]{scrolling()}}
+\code{\link[=save_dynaspec]{save_dynaspec()}}, \code{\link[=ds_spectrogram]{ds_spectrogram()}}, \code{\link[=ds_scrolling]{ds_scrolling()}}
 }
 \author{
 Marcelo Araya-Salas (\email{marcelo.araya@ucr.ac.cr})

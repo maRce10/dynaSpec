@@ -33,23 +33,23 @@ Dynamic spectrograms are built in layers, as 'ggplot2' graphs: `dynaspec()` take
 
 | Layer | What it does |
 |---|---|
-| `spectrogram()` | Adds a spectrogram (window length, palette, amplitude range, ...) |
-| `oscillogram()`, `envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
-| `spectrum()` | Adds a power spectrum next to the spectrogram |
-| `overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
-| `annotations()` | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
-| `captions()` | Text at a fixed position shown during a time range, like subtitles |
-| `dynatheme()`, `dynatheme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
-| `player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
-| `static()`, `scrolling()` or `paged()` | Style of the dynamic spectrogram (see below) |
+| `ds_spectrogram()` | Adds a spectrogram (window length, palette, amplitude range, ...) |
+| `ds_oscillogram()`, `ds_envelope()` | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
+| `ds_spectrum()` | Adds a power spectrum next to the spectrogram |
+| `ds_overview()` | Adds a lower panel with the whole sound to scrolling spectrograms |
+| `ds_annotations()` | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
+| `ds_captions()` | Text at a fixed position shown during a time range, like subtitles |
+| `ds_theme()`, `ds_theme_dark()`, ... | Axis titles, fonts, colors of the figure and plot, and preset themes |
+| `ds_player()` | Playback controls of web pages (speed slider, loop, volume, download, ...) |
+| `ds_static()`, `ds_scrolling()` or `ds_paged()` | Style of the dynamic spectrogram (see below) |
 
 The package offers three styles of dynamic spectrogram:
 
 | Style | What it looks like |
 |---|---|
-| Static (`static()`, default) | A play line moves over the whole spectrogram (and oscillogram), which can be split in several rows |
-| Scrolling (`scrolling()`) | The spectrogram scrolls from right to left past a fixed "play" line, as in the Macaulay Library |
-| Paged (`paged()`) | A spectrogram (or several "pages") revealed by a sliding highlight box, as in Adobe Audition's spectral view |
+| Static (`ds_static()`, default) | A play line moves over the whole spectrogram (and oscillogram), which can be split in several rows |
+| Scrolling (`ds_scrolling()`) | The spectrogram scrolls from right to left past a fixed "play" line, as in the Macaulay Library |
+| Paged (`ds_paged()`) | A spectrogram (or several "pages") revealed by a sliding highlight box, as in Adobe Audition's spectral view |
 
 **Contents:** [Installation](#installation) · [Quick start](#quick-start) · [Background](#background) · [Citation](#citation)
 
@@ -87,22 +87,28 @@ If ffmpeg is installed somewhere else, point R to the executable with `Sys.seten
 library(dynaSpec)
 
 # example recording included in the package
-data("scaly_breasted_hummingbird")
+data("scythebill")
 
-# static spectrogram with oscillogram (shown in the RStudio viewer or the web browser)
-x <- dynaspec(scaly_breasted_hummingbird, flim = c(2, 11)) +
-  spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
-  oscillogram()
+# static spectrogram with oscillogram
+# (shown in the RStudio viewer or the web browser)
+x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_oscillogram()
 
 x
 
-# scrolling and paged styles
-x + scrolling(t.display = 1.7)
-x + paged(t.display = 2)
+# paged style
+x + ds_paged(t.display = 1)
+
+# scrolling style (a longer recording)
+data("antshrike")
+y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+y + ds_scrolling(t.display = 2)
 
 # save as a web page or as a video
-save_dynaspec(x, "hummingbird.html")
-save_dynaspec(x + scrolling(t.display = 1.7), "hummingbird.mp4")
+save_dynaspec(x, "scythebill.html")
+save_dynaspec(y + ds_scrolling(t.display = 2), "antshrike.mp4")
 ```
 
 Sounds can be 'Wave' objects or '.wav' and '.mp3' files. Invalid arguments are reported all together before any processing starts, so mistakes are caught early. See the [vignette](https://marce10.github.io/dynaSpec/articles/dynaSpec.html) for many more options and examples.

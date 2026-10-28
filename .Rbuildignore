@@ -17,3 +17,4 @@
 # pkgdown articles (not included in the package)
 ^vignettes/articles$
 ^HANDOFF\.md$
+^Rplots\.pdf$
