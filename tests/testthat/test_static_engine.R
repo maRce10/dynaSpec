@@ -120,7 +120,12 @@ test_that("static_spectro creates a video with the play line", {
   red <- img[, , 1] > 0.6 & img[, , 2] < 0.35 & img[, , 3] < 0.35
   line_x <- mean(which(colSums(red) > 0))
   reddish <- img[, , 1] > 0.5 & img[, , 2] < 0.45 & img[, , 3] < 0.45
-  line_y <- range(which(rowSums(reddish[, round(line_x) + (-3:3)]) > 0))
+  # (the line is the longest vertical run of reddish rows: reddish pixels elsewhere in the column, e.g. color fringes of
+  # antialiased text in the time axis title on some systems, are not part of it)
+  on_line <- rowSums(reddish[, round(line_x) + (-3:3)]) > 0
+  runs <- rle(on_line)
+  longest <- which.max(ifelse(runs$values, runs$lengths, 0))
+  line_y <- c(sum(runs$lengths[seq_len(longest - 1)]) + 1, sum(runs$lengths[seq_len(longest)]))
   e <- ext[2, ]
   expect_equal(line_x, (e$left + (e$right - e$left) * (t - e$t0) / (e$t1 - e$t0)) * 400, tolerance = 2 / 400)
   # figure height (upper row has no time axis, so it is shorter than 'height'); the video may be padded by 1 pixel to an even size
