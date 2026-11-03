@@ -15,7 +15,8 @@ ds_annotations(
   labels = NULL,
   cex = 1,
   freq = TRUE,
-  sound.file = NULL
+  sound.file = NULL,
+  line.freq = NULL
 )
 }
 \arguments{
@@ -23,29 +24,31 @@ ds_annotations(
 
 \item{col}{Color of the boxes, or the name of a column of 'X' with the color of each box. Default is \code{NULL}: 'col.annotation' of \code{\link[=ds_theme]{ds_theme()}}, or "#E69F00".}
 
-\item{alpha}{Opacity of the boxes (0-1). Default is 0.3.}
+\item{alpha}{Opacity of the boxes or lines (0-1). Default is 0.3 (1 for lines).}
 
-\item{type}{Character string: "box" (translucent boxes) or "spectrogram" (the spectrogram is colored within each selection, with a gradient from the spectrogram background to the color of the selection, as \code{\link[warbleR:color_spectro]{warbleR::color_spectro()}}; only borders and labels are drawn on top). Default is "box".}
+\item{type}{Character string: "box" (translucent boxes), "spectrogram" (the spectrogram is colored within each selection, with a gradient from the spectrogram background to the color of the selection, as \code{\link[warbleR:color_spectro]{warbleR::color_spectro()}}; only borders and labels are drawn on top) or "line" (a horizontal line from the start to the end of each selection at the frequency set by 'line.freq', drawn on spectrograms only; labels are shown above the lines). Default is "box".}
 
 \item{border}{Color of the box borders, or the name of a column of 'X' with the border color of each box. Default is \code{NULL} (no borders).}
 
-\item{lwd}{Width of the box borders. Default is 1.}
+\item{lwd}{Width of the box borders, or of the lines when \code{type = "line"}. Default is 1 (8 for lines).}
 
-\item{lty}{Line type of the box borders, as in \code{\link[graphics:par]{graphics::par()}}: an integer (0-6) or a name ("solid", "dashed", "dotted", "dotdash", "longdash" or "twodash"). Default is 1 (solid).}
+\item{lty}{Line type of the box borders (or of the lines), as in \code{\link[graphics:par]{graphics::par()}}: an integer (0-6) or a name ("solid", "dashed", "dotted", "dotdash", "longdash" or "twodash"). Default is 1 (solid).}
 
-\item{labels}{Name of a column of 'X' with labels to show at the top of each box. Default is \code{NULL} (no labels).}
+\item{labels}{Name of a column of 'X' with labels to show at the top of each box (or above each line). Default is \code{NULL} (no labels).}
 
 \item{cex}{Size of the labels. Default is 1.}
 
 \item{freq}{Logical to control if the frequency range of selections is used (when 'X' has 'bottom.freq' and 'top.freq' columns). If \code{FALSE} boxes span the whole frequency range. Default is \code{TRUE}.}
 
 \item{sound.file}{Name of the sound file whose selections are shown, when 'X' has a 'sound.files' column with several sound files. Default is \code{NULL}: when the sound of \code{\link[=dynaspec]{dynaspec()}} is a file, the selections of that file are shown (matching the file name); otherwise 'X' must contain a single sound file.}
+
+\item{line.freq}{Frequency (in kHz) at which lines are drawn when \code{type = "line"}, or the name of a column of 'X' with the frequency of each line (e.g. a different height for each individual of a duet). Default is \code{NULL}: near the top of the spectrogram (90\% of the frequency range shown).}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}. Several annotation layers can be added.
 }
 \description{
-\code{ds_annotations()} highlights parts of the sound in a \code{\link[=dynaspec]{dynaspec()}} object with translucent boxes (e.g. calls, songs or the parts of a duet), optionally with borders and labels.
+\code{ds_annotations()} highlights parts of the sound in a \code{\link[=dynaspec]{dynaspec()}} object with translucent boxes (e.g. calls, songs or the parts of a duet), optionally with borders and labels, or with horizontal lines above the sounds (e.g. to show which individual sings each part of a duet).
 }
 \details{
 Tables with a 'sound.files' column (e.g. 'warbleR' selection tables) can contain selections of several sound files; only those of the sound shown are used (see 'sound.file').
@@ -69,6 +72,12 @@ x <- x + ds_annotations(st, col = "colors", alpha = 0.1, border = "colors", lwd 
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   ds_annotations(st, col = "colors", type = "spectrogram")
+
+# lines above the notes (one height per note type)
+st$line.freq <- c(4.6, 4.9, 4.9, 5.2)
+x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_annotations(st, col = "colors", type = "line", line.freq = "line.freq", labels = "labels")
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}, \code{\link[=ds_captions]{ds_captions()}}

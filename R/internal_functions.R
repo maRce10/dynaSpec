@@ -2208,6 +2208,20 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
 
   for (sel in layers$selections) {
     X <- sel$X
+
+    # lines above the sounds (spectrograms only), with labels above them
+    if (identical(sel$type, "line")) {
+      if (panel != "spectro") next
+      cols <- annotation_cols_int(sel)
+      y <- if (is.null(sel$line.freq)) rep(ylim[1] + 0.9 * diff(ylim), nrow(X)) else if (is.character(sel$line.freq)) X[[sel$line.freq]] else rep(sel$line.freq, nrow(X))
+      graphics::segments(to_x(X$start), y, to_x(X$end), y, col = grDevices::adjustcolor(cols, sel$alpha), lwd = sel$lwd,
+                         lty = if (is.null(sel$lty)) 1 else sel$lty, lend = 1)
+      if (!is.null(sel$labels) && sel$labels %in% names(X))
+        graphics::text(to_x((X$start + X$end) / 2), y + graphics::strheight("M", cex = sel$cex) * 0.4 + sel$lwd / 96 / graphics::par("pin")[2] * diff(graphics::par("usr")[3:4]) / 2,
+                       labels = X[[sel$labels]], adj = c(0.5, 0), col = cols, cex = sel$cex, font = 2, xpd = NA)
+      next
+    }
+
     has_freq <- panel == "spectro" && sel$freq && all(c("bottom.freq", "top.freq") %in% names(X))
     # boxes are clipped to the frequency range shown (so labels at the top of the boxes are visible)
     bottom <- if (has_freq) pmax(X$bottom.freq, ylim[1]) else rep(ylim[1], nrow(X))
@@ -2274,9 +2288,9 @@ static_spectro_int <- function(wave,
   # report errors
   .report_assertions(check_results)
 
-  # spectrogram background: color of the lowest amplitude of the palette, unless supplied. The figure background
-  # is 'colbg' only when it is supplied (white otherwise)
-  fig_bg_default <- if (is.null(colbg)) "white" else colbg
+  # spectrogram background: color of the lowest amplitude of the palette, unless supplied (independent of the figure
+  # background, ds_theme(bg), which is white by default)
+  fig_bg_default <- "white"
   if (is.null(colbg)) colbg <- low_col_int(pal, length(collevels) - 1)
 
   dots <- list(...)
@@ -2352,7 +2366,9 @@ static_spectro_int <- function(wave,
   # (the gap between the spectrogram and the power spectrum, 'spec_gap' lines on each side, is as wide as the gap
   # between stacked panels)
   spec_gap <- 0.1
-  slot_mar <- function(i, axis) c(if (i < n_stack) 0.2 else if (axis && axes) bottom_lines else if (flush) 0 else 0.5, if (spec_left) spec_gap else if (axes) lab_lines else if (inside) 0 else 1, if (i == 1) top_lines else 0, if (is.null(spectrum) || spec_left) (if (flush) 0 else 1) else spec_gap)
+  # (rows other than the last one get time labels without axis title)
+  row_lines <- if (inside) 0.45 + cex_axis else 1.2 + cex_axis + x_lab_extra_int(theme_int(theme, "las", 1), pretty(c(0, dur)), cex_axis)
+  slot_mar <- function(i, axis) c(if (i < n_stack) 0.2 else if (axes && !compact) (if (axis) bottom_lines else row_lines) else if (axis && axes) bottom_lines else if (flush) 0 else 0.5, if (spec_left) spec_gap else if (axes) lab_lines else if (inside) 0 else 1, if (i == 1) top_lines else 0, if (is.null(spectrum) || spec_left) (if (flush) 0 else 1) else spec_gap)
 
   # slot heights (in inches) that keep relative heights between plotting regions, with the same plotting
   # regions in all rows ('height' is the height of a row with time axis)
@@ -2410,6 +2426,8 @@ static_spectro_int <- function(wave,
       t0 <- row_lims[k] / f
       t1 <- row_lims[k + 1] / f
       axis <- k == rows
+      # (theme of the row: no time axis title except in the last row)
+      th_row <- if (axis) theme else utils::modifyList(theme, list(xlab = ""))
       tops <- bottoms <- numeric(n_stack)
 
       for (i in plot_order) {
@@ -2440,9 +2458,9 @@ static_spectro_int <- function(wave,
           }
           draw_layers_int(layers, to_x = to_x, panel = "spectro", ylim = usr[3:4])
 
-          # time axis (only if the spectrogram is the bottom panel)
-          if (bottom_slot && axis && axes && !compact)
-            do.call(time_axis_int, c(list(to_x = to_x, xlim = to_time(usr[1:2]), cex.lab = cex.lab, inside = inside), theme[intersect(names(theme), c("xlab", "font.lab", "col.lab", "cex.axis", "col.axis", "las"))]))
+          # time axis (if the spectrogram is the bottom panel; axis title only in the last row)
+          if (bottom_slot && axes && !compact)
+            do.call(time_axis_int, c(list(to_x = to_x, xlim = to_time(usr[1:2]), cex.lab = cex.lab, inside = inside), th_row[intersect(names(th_row), c("xlab", "font.lab", "col.lab", "cex.axis", "col.axis", "las"))]))
 
           left <- graphics::grconvertX(to_x(t0), "user", "ndc")
           right <- graphics::grconvertX(to_x(t1), "user", "ndc")
@@ -2460,9 +2478,9 @@ static_spectro_int <- function(wave,
         } else {
           if (!spectro) xlim <- c(t0, t1)
           if (p$type == "env")
-            envelope_player_int(seg, xlim = xlim, col = p$col, axisX = bottom_slot && axis && axes && !compact, cex.lab = cex.lab, offset = t0, max.env = max_env, theme = if (axes && !flush) theme else c(theme, list(hide = TRUE)))
+            envelope_player_int(seg, xlim = xlim, col = p$col, axisX = bottom_slot && axes && !compact, cex.lab = cex.lab, offset = t0, max.env = max_env, theme = if (axes && !flush) th_row else c(th_row, list(hide = TRUE)))
           else
-            oscillo_player_int(seg, xlim = xlim, colwave = p$col, n = width, axisX = bottom_slot && axis && axes && !compact, cex.lab = cex.lab, offset = t0, max.amp = max_wave, empty = p$type == "empty", theme = if (axes && !flush) theme else c(theme, list(hide = TRUE)))
+            oscillo_player_int(seg, xlim = xlim, colwave = p$col, n = width, axisX = bottom_slot && axes && !compact, cex.lab = cex.lab, offset = t0, max.amp = max_wave, empty = p$type == "empty", theme = if (axes && !flush) th_row else c(th_row, list(hide = TRUE)))
           draw_layers_int(layers, to_x = identity, panel = if (p$type == "empty") "empty" else "osc", ylim = graphics::par("usr")[3:4])
           if (compact && axes && i == 1)
             compact_row_axis_int(identity, xlim, theme, cex_axis)
@@ -3568,7 +3586,7 @@ side_panels_int <- function(x) {
 
 # color of oscillogram, envelope and spectrum panels (supplied, from the theme or the default)
 panel_col_int <- function(p, type = p$type) {
-  if (!is.null(p$col)) p$col else if (identical(type, "osc")) "black" else "#31688E"
+  if (!is.null(p$col)) p$col else "black"
 }
 
 # scrolling spectrograms

@@ -291,6 +291,22 @@ test_that("ds_player(buttons = 'zoom') stretches scrolling spectrograms", {
   expect_warning(save_dynaspec(dynaspec(short_sound()) + ds_spectrogram(wl = 300) + ds_player(buttons = "zoom") + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "only available in scrolling")
 })
 
+test_that("spectrogram, panel and figure backgrounds are independent", {
+  png_file <- file.path(tempdir(), "bg_indep.png")
+  on.exit(unlink(png_file), add = TRUE)
+  x <- dynaspec(short_sound(), flim = c(1.5, 5.5)) + ds_spectrogram(wl = 200, colbg = "black") + ds_oscillogram() +
+    ds_static(width = 400, height = 250)
+  save_dynaspec(x, png_file, play = FALSE, verbose = FALSE)
+  img <- png::readPNG(png_file)
+  # (figure corners stay white when only the spectrogram background is set)
+  expect_equal(c(img[1, 1, 1:3], img[nrow(img), ncol(img), 1:3]), rep(1, 6))
+  save_dynaspec(x + ds_theme(bg = "gray50", col.panel = "red"), png_file, play = FALSE, verbose = FALSE)
+  img <- png::readPNG(png_file)
+  expect_equal(img[1, 1, 1:3], rep(127 / 255, 3), tolerance = 0.01)
+  # (some pixels of the oscillogram panel are red)
+  expect_true(any(img[, , 1] > 0.99 & img[, , 2] < 0.01 & img[, , 3] < 0.01))
+})
+
 test_that("the theme background is kept around spectrograms, also with a power spectrum on the left", {
   png_file <- file.path(tempdir(), "bg_test.png")
   on.exit(unlink(png_file), add = TRUE)
@@ -458,4 +474,28 @@ test_that("functions of dynaSpec 1.x are defunct and show the new syntax", {
   expect_error(pagedSpec(), "removed in dynaSpec 2.0.0")
   expect_error(prep_static_ggspectro(scythebill), "pages.png")
   expect_error(prepStaticSpec(), "pages.png")
+})
+
+test_that("ds_annotations(type = 'line') draws lines above the sounds in all styles", {
+  st <- data.frame(start = c(0.1, 0.8), end = c(0.6, 1.5), who = c("a", "b"), y = c(4, 5))
+  x <- dynaspec(short_sound(), flim = c(1.5, 5.5)) + ds_spectrogram(wl = 200)
+  ann <- ds_annotations(st, col = "red", type = "line", line.freq = "y", labels = "who")
+  expect_equal(ann$args[c("lwd", "alpha")], list(lwd = 8, alpha = 1))
+  expect_equal(ds_annotations(st, type = "line", lwd = 2, alpha = 0.5)$args[c("lwd", "alpha")], list(lwd = 2, alpha = 0.5))
+  png_file <- file.path(tempdir(), "lines.png")
+  on.exit(unlink(png_file), add = TRUE)
+  save_dynaspec(x + ann + ds_oscillogram() + ds_static(width = 400, height = 250), png_file, play = FALSE, verbose = FALSE)
+  img <- png::readPNG(png_file)
+  expect_true(any(img[, , 1] > 0.99 & img[, , 2] < 0.01 & img[, , 3] < 0.01))
+  expect_s3_class(save_dynaspec(x + ann + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ann + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_error(ds_annotations(st, type = "line", line.freq = "who"), "line.freq")
+  expect_error(ds_annotations(st, type = "lines"), "type")
+})
+
+test_that("multi-row static spectrograms label the time of every row", {
+  x <- dynaspec(short_sound(), flim = c(1.5, 5.5)) + ds_spectrogram(wl = 200)
+  one <- player_rows(save_dynaspec(x + ds_static(width = 400, height = 200, rows = 2), play = FALSE, verbose = FALSE))
+  # (rows are separated by the margin of the time labels, not only by a small gap)
+  expect_gt(one$top[2] - one$bottom[1], 0.05)
 })

@@ -9,7 +9,7 @@ ds_envelope(position = "below", col = NULL, height = NULL)
 \arguments{
 \item{position}{Character string: "below" or "above" the spectrogram (only for \code{\link[=ds_static]{ds_static()}}). Default is "below".}
 
-\item{col}{Color of the envelope. Default is \code{NULL}: 'col.wave' of \code{\link[=ds_theme]{ds_theme()}}, or "#31688E".}
+\item{col}{Color of the envelope. Default is \code{NULL}: 'col.wave' of \code{\link[=ds_theme]{ds_theme()}}, or black (as oscillograms).}
 
 \item{height}{Numeric vector of length 1 with the height of the envelope panel relative to that of the spectrogram. Default is \code{NULL} (half the height of the spectrogram).}
 }

@@ -122,7 +122,7 @@ ds_oscillogram <- function(position = "below", col = NULL, height = NULL) {
 #'
 #' `ds_envelope()` adds the amplitude envelope of the sound (absolute amplitude smoothed with a 5 ms moving window) to a [dynaspec()] object. Envelopes are shown by [ds_static()] (alone, or above or below the spectrogram, along with oscillograms) and [ds_scrolling()] (below the spectrogram, instead of the oscillogram) styles.
 #' @param position Character string: "below" or "above" the spectrogram (only for [ds_static()]). Default is "below".
-#' @param col Color of the envelope. Default is `NULL`: 'col.wave' of [ds_theme()], or "#31688E".
+#' @param col Color of the envelope. Default is `NULL`: 'col.wave' of [ds_theme()], or black (as oscillograms).
 #' @param height Numeric vector of length 1 with the height of the envelope panel relative to that of the spectrogram. Default is `NULL` (half the height of the spectrogram).
 #' @return A layer to be added to a [dynaspec()] object with `+`.
 #' @seealso [dynaspec()], [ds_oscillogram()]
@@ -145,7 +145,7 @@ ds_envelope <- function(position = "below", col = NULL, height = NULL) {
 #'
 #' `ds_spectrum()` adds the mean power spectrum of the sound next to the spectrogram of a [dynaspec()] object, sharing its frequency axis. Power spectra are shown by the [ds_static()] style (with several rows, each row shows the spectrum of its segment, on the same scale).
 #' @param side Character string: "right" or "left" of the spectrogram. Default is "right".
-#' @param col Color of the spectrum. Default is `NULL`: 'col.wave' of [ds_theme()], or "#31688E".
+#' @param col Color of the spectrum. Default is `NULL`: 'col.wave' of [ds_theme()], or black (as oscillograms).
 #' @param width Width of the spectrum panel as a proportion of the figure width. Default is 0.1.
 #' @return A layer to be added to a [dynaspec()] object with `+`.
 #' @seealso [dynaspec()], [ds_spectrogram()]
@@ -193,7 +193,7 @@ ds_overview <- function(height = NULL) {
 #' @param col.lab Color of axes, axis labels and titles. Default is black (paged spectrograms: picked to contrast with the background).
 #' @param col.axis Color of the axis labels (tick labels), when they should differ from the axis titles and lines. Default is 'col.lab'.
 #' @param axis.type Character string: "standard" (axes with labels and titles), "inside" (no axis titles; frequency labels inside the spectrogram, e.g. "8k", and time labels below the lowest panel, e.g. "2s"), "compact" (no axis titles; frequency labels below short ticks in a narrow column on the left, with the unit at the bottom, and time labels in minutes and seconds, e.g. "0:02", above the figure), "minimal" (1 s and 1 kHz scale bars; scrolling spectrograms only) or "none" (no axes). Defaults are "standard" (static and scrolling) and "none" (paged).
-#' @param bg Background color of the figure around the panels ("transparent" for a transparent background). Default is white (static spectrograms: 'colbg' of [ds_spectrogram()] when it is supplied).
+#' @param bg Background color of the figure around the panels ("transparent" for a transparent background). Default is white. The backgrounds of the panels are set separately: 'colbg' (spectrograms, see [ds_spectrogram()]) and 'col.panel' (other panels).
 #' @param family Font family of all text, including captions and annotation labels: "sans", "serif", "mono" or the name of a font installed in the system. Default is "sans".
 #' @param las Orientation of the axis labels (tick labels), as in [graphics::par()]: 0 (parallel to the axis), 1 (horizontal), 2 (perpendicular to the axis) or 3 (vertical). Applies to both axes (e.g. 2 makes time labels vertical and frequency labels horizontal) with standard axes ('axis.type'). Defaults are 1 (static and paged: horizontal labels) and 0 (scrolling: vertical frequency labels).
 #' @param tick.length Length of axis ticks, in lines of text (0 hides ticks). Defaults are 0.5 (static and scrolling) and 0.3 (paged).
@@ -201,7 +201,7 @@ ds_overview <- function(height = NULL) {
 #' @param col.box Color of the boxes around panels. Default is 'col.lab'.
 #' @param grid Logical argument to control whether horizontal grid lines are drawn at the frequency axis ticks of spectrograms. Default is `FALSE`.
 #' @param col.grid Color of grid lines. Default is a translucent gray.
-#' @param col.panel Background color of oscillogram, envelope and power spectrum panels. Default is 'bg' (white in static spectrograms).
+#' @param col.panel Background color of oscillogram, envelope and power spectrum panels. Default is 'bg' (the figure background shows through).
 #' @param col.title,cex.title Color and size of titles (the title of paged spectrograms and the 'Amp.' label of power spectra). Defaults are 'col.lab' and 1.
 #' @param pal,colbg Color palette and background of spectrograms (see [ds_spectrogram()]). Used when not supplied in [ds_spectrogram()].
 #' @param col.wave Color of oscillograms, envelopes and power spectra. Used when not supplied in [ds_oscillogram()], [ds_envelope()] or [ds_spectrum()].
@@ -358,16 +358,17 @@ ds_get_theme <- function() .dynaspec_env$theme
 
 #' Annotation layer of dynamic spectrograms
 #'
-#' `ds_annotations()` highlights parts of the sound in a [dynaspec()] object with translucent boxes (e.g. calls, songs or the parts of a duet), optionally with borders and labels.
+#' `ds_annotations()` highlights parts of the sound in a [dynaspec()] object with translucent boxes (e.g. calls, songs or the parts of a duet), optionally with borders and labels, or with horizontal lines above the sounds (e.g. to show which individual sings each part of a duet).
 #' @param X Data frame with the selections: columns 'start' and 'end' (in s) and, optionally, 'bottom.freq' and 'top.freq' (in kHz) to restrict boxes to a frequency range. Selection tables from 'warbleR' (or tables from 'ohun' or 'Rraven') can be used directly (see details). Extended selection tables are not supported.
 #' @param sound.file Name of the sound file whose selections are shown, when 'X' has a 'sound.files' column with several sound files. Default is `NULL`: when the sound of [dynaspec()] is a file, the selections of that file are shown (matching the file name); otherwise 'X' must contain a single sound file.
 #' @param col Color of the boxes, or the name of a column of 'X' with the color of each box. Default is `NULL`: 'col.annotation' of [ds_theme()], or "#E69F00".
-#' @param alpha Opacity of the boxes (0-1). Default is 0.3.
+#' @param alpha Opacity of the boxes or lines (0-1). Default is 0.3 (1 for lines).
 #' @param border Color of the box borders, or the name of a column of 'X' with the border color of each box. Default is `NULL` (no borders).
-#' @param lwd Width of the box borders. Default is 1.
-#' @param type Character string: "box" (translucent boxes) or "spectrogram" (the spectrogram is colored within each selection, with a gradient from the spectrogram background to the color of the selection, as [warbleR::color_spectro()]; only borders and labels are drawn on top). Default is "box".
-#' @param lty Line type of the box borders, as in [graphics::par()]: an integer (0-6) or a name ("solid", "dashed", "dotted", "dotdash", "longdash" or "twodash"). Default is 1 (solid).
-#' @param labels Name of a column of 'X' with labels to show at the top of each box. Default is `NULL` (no labels).
+#' @param lwd Width of the box borders, or of the lines when `type = "line"`. Default is 1 (8 for lines).
+#' @param type Character string: "box" (translucent boxes), "spectrogram" (the spectrogram is colored within each selection, with a gradient from the spectrogram background to the color of the selection, as [warbleR::color_spectro()]; only borders and labels are drawn on top) or "line" (a horizontal line from the start to the end of each selection at the frequency set by 'line.freq', drawn on spectrograms only; labels are shown above the lines). Default is "box".
+#' @param line.freq Frequency (in kHz) at which lines are drawn when `type = "line"`, or the name of a column of 'X' with the frequency of each line (e.g. a different height for each individual of a duet). Default is `NULL`: near the top of the spectrogram (90% of the frequency range shown).
+#' @param lty Line type of the box borders (or of the lines), as in [graphics::par()]: an integer (0-6) or a name ("solid", "dashed", "dotted", "dotdash", "longdash" or "twodash"). Default is 1 (solid).
+#' @param labels Name of a column of 'X' with labels to show at the top of each box (or above each line). Default is `NULL` (no labels).
 #' @param cex Size of the labels. Default is 1.
 #' @param freq Logical to control if the frequency range of selections is used (when 'X' has 'bottom.freq' and 'top.freq' columns). If `FALSE` boxes span the whole frequency range. Default is `TRUE`.
 #' @return A layer to be added to a [dynaspec()] object with `+`. Several annotation layers can be added.
@@ -393,7 +394,13 @@ ds_get_theme <- function() .dynaspec_env$theme
 #' x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
 #'   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
 #'   ds_annotations(st, col = "colors", type = "spectrogram")
-ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NULL, lwd = 1, lty = 1, labels = NULL, cex = 1, freq = TRUE, sound.file = NULL) {
+#'
+#' # lines above the notes (one height per note type)
+#' st$line.freq <- c(4.6, 4.9, 4.9, 5.2)
+#' x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+#'   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   ds_annotations(st, col = "colors", type = "line", line.freq = "line.freq", labels = "labels")
+ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NULL, lwd = 1, lty = 1, labels = NULL, cex = 1, freq = TRUE, sound.file = NULL, line.freq = NULL) {
   check_results <- checkmate::makeAssertCollection()
   if (inherits(X, "extended_selection_table"))
     check_results$push("'X': Extended selection tables are not supported; use a selection table (e.g. warbleR::selection_table()) or a data frame")
@@ -403,7 +410,10 @@ ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NU
     if (!is.null(labels)) checkmate::assert_choice(labels, names(X), add = check_results, .var.name = "labels")
   }
   checkmate::assert_number(alpha, lower = 0, upper = 1, add = check_results, .var.name = "alpha")
-  checkmate::assert_choice(type, c("box", "spectrogram"), add = check_results, .var.name = "type")
+  checkmate::assert_choice(type, c("box", "spectrogram", "line"), add = check_results, .var.name = "type")
+  if (!is.null(line.freq) && !(is.data.frame(X) && checkmate::test_string(line.freq) && line.freq %in% names(X) && is.numeric(X[[line.freq]])) &&
+      !checkmate::test_number(line.freq, lower = 0, finite = TRUE))
+    check_results$push("'line.freq': Must be a frequency in kHz or the name of a numeric column of 'X'")
   checkmate::assert_flag(freq, add = check_results, .var.name = "freq")
   is_col <- function(y) all(vapply(y, function(z) !inherits(try(grDevices::col2rgb(z), silent = TRUE), "try-error"), logical(1)))
   if (is.data.frame(X) && !is.null(col) && !(length(col) == 1 && col %in% names(X)) && !is_col(col))
@@ -424,7 +434,10 @@ ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NU
   # plain data frame (e.g. from warbleR selection tables; attributes are not needed)
   X <- data.frame(lapply(as.list(X), function(v) { attributes(v) <- NULL; v }), stringsAsFactors = FALSE)
   if (!is.null(sound.file)) X <- X[X$sound.files == sound.file, , drop = FALSE]
-  layer_int("annotations", list(X = X, col = col, alpha = alpha, type = type, border = border, lwd = lwd, lty = lty, labels = labels, cex = cex, freq = freq, sound.file = sound.file))
+  # (lines are thick and opaque unless 'lwd' and 'alpha' are supplied)
+  if (type == "line" && missing(lwd)) lwd <- 8
+  if (type == "line" && missing(alpha)) alpha <- 1
+  layer_int("annotations", list(X = X, col = col, alpha = alpha, type = type, border = border, lwd = lwd, lty = lty, labels = labels, cex = cex, freq = freq, sound.file = sound.file, line.freq = line.freq))
 }
 
 #' Caption layer of dynamic spectrograms

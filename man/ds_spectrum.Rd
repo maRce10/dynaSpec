@@ -9,7 +9,7 @@ ds_spectrum(side = "right", col = NULL, width = 0.1)
 \arguments{
 \item{side}{Character string: "right" or "left" of the spectrogram. Default is "right".}
 
-\item{col}{Color of the spectrum. Default is \code{NULL}: 'col.wave' of \code{\link[=ds_theme]{ds_theme()}}, or "#31688E".}
+\item{col}{Color of the spectrum. Default is \code{NULL}: 'col.wave' of \code{\link[=ds_theme]{ds_theme()}}, or black (as oscillograms).}
 
 \item{width}{Width of the spectrum panel as a proportion of the figure width. Default is 0.1.}
 }

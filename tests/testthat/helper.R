@@ -5,9 +5,14 @@ short_sound <- function(dur = 2) {
   seewave::cutw(dynaSpec::scythebill, from = 1, to = 1 + dur, output = "Wave")
 }
 
-# example sound files included in the package
+# example sound files (barn swallow data written as .wav files, to test reading sound files)
 example_wavs <- function() {
-  list.files(system.file(package = "dynaSpec"), pattern = "wav$", full.names = TRUE)
+  files <- file.path(tempdir(), c("femaleBarnSwallow.wav", "maleBarnSwallow.wav"))
+  if (!all(file.exists(files))) {
+    tuneR::writeWave(dynaSpec::female_barn_swallow, files[1], extensible = FALSE)
+    tuneR::writeWave(dynaSpec::male_barn_swallow, files[2], extensible = FALSE)
+  }
+  files
 }
 
 # plot to a null device (closed when the calling test ends) so no Rplots.pdf is left behind

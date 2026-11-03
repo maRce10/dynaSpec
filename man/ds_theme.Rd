@@ -77,7 +77,7 @@ ds_theme_mako(...)
 
 \item{axis.type}{Character string: "standard" (axes with labels and titles), "inside" (no axis titles; frequency labels inside the spectrogram, e.g. "8k", and time labels below the lowest panel, e.g. "2s"), "compact" (no axis titles; frequency labels below short ticks in a narrow column on the left, with the unit at the bottom, and time labels in minutes and seconds, e.g. "0:02", above the figure), "minimal" (1 s and 1 kHz scale bars; scrolling spectrograms only) or "none" (no axes). Defaults are "standard" (static and scrolling) and "none" (paged).}
 
-\item{bg}{Background color of the figure around the panels ("transparent" for a transparent background). Default is white (static spectrograms: 'colbg' of \code{\link[=ds_spectrogram]{ds_spectrogram()}} when it is supplied).}
+\item{bg}{Background color of the figure around the panels ("transparent" for a transparent background). Default is white. The backgrounds of the panels are set separately: 'colbg' (spectrograms, see \code{\link[=ds_spectrogram]{ds_spectrogram()}}) and 'col.panel' (other panels).}
 
 \item{family}{Font family of all text, including captions and annotation labels: "sans", "serif", "mono" or the name of a font installed in the system. Default is "sans".}
 
@@ -93,7 +93,7 @@ ds_theme_mako(...)
 
 \item{col.grid}{Color of grid lines. Default is a translucent gray.}
 
-\item{col.panel}{Background color of oscillogram, envelope and power spectrum panels. Default is 'bg' (white in static spectrograms).}
+\item{col.panel}{Background color of oscillogram, envelope and power spectrum panels. Default is 'bg' (the figure background shows through).}
 
 \item{col.title, cex.title}{Color and size of titles (the title of paged spectrograms and the 'Amp.' label of power spectra). Defaults are 'col.lab' and 1.}
 

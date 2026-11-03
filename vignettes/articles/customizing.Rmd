@@ -66,27 +66,30 @@ Black and white spectrogram with a wider amplitude range (fainter sounds are sho
 ds_scythebill + ds_spectrogram(pal = reverse.gray.colors.1, collevels = seq(-100, 0, 5))
 ```
 
-By default the background is the color of the lowest amplitude of the palette (dark purple for 'viridis'). A black background instead (when `colbg` is supplied, static spectrograms also use it as the background of the figure):
+By default the spectrogram background is the color of the lowest amplitude of the palette (dark purple for 'viridis'), so quiet parts of the sound and the background look the same. `colbg` sets another spectrogram background:
 
 ```{r}
-ds_scythebill + ds_spectrogram(pal = viridis, colbg = "black")
+ds_scythebill + ds_spectrogram(pal = viridis, colbg = "black") +
+  ds_theme(col.axis = "white", col.lab = "white")
+
+```
+
+The backgrounds of the figure are set independently: `colbg` in `ds_spectrogram()` (or `ds_theme()`) for the spectrogram, `col.panel` in `ds_theme()` for oscillograms, envelopes and power spectra, and `bg` in `ds_theme()` for the whole figure around the panels:
+
+```{r}
+ds_scythebill +
+  ds_spectrogram(pal = viridis) +
+  ds_oscillogram(col = "white") +
+  ds_theme(col.panel = "gray20", bg = "gray90")
 ```
 
 In paged spectrograms the palette can also be the name of a 'viridis' palette (e.g. "magma") or two colors for a gradient, and `amp.trans` brightens the spectrogram (a nonlinear transformation that collapses the difference between loud and quiet sounds; 1 means no transformation):
 
 ```{r}
-f <- list.files(
-  system.file(package = "dynaSpec"),
-  pattern = "\\.wav$",
-  full.names = TRUE
-)
-
-swallow <- dynaspec(f[1]) +
+ds_scythebill +
   ds_spectrogram(amp.trans = 3, collevels = seq(-35, 0, 1)) +
-  ds_paged() +
+  ds_paged(t.display = 1) +
   ds_theme(axis.type = "standard")
-
-swallow
 ```
 
 # Panels
@@ -113,8 +116,13 @@ ds_scythebill +
 With several rows each row shows its own power spectrum, on the same scale:
 
 ```{r}
-ds_scythebill +
-  ds_spectrum(col = cols[5]) +
+
+data("antshrike")
+
+ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 4)) +
+   ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+
+ds_antshrike + ds_spectrum(col = cols[5]) +
   ds_static(rows = 2, height = 350)
 ```
 
@@ -243,7 +251,7 @@ ds_antshrike +
   ds_theme(axis.type = "minimal")
 ```
 
-## Theme of all spectrograms
+## Spectrogram themes
 
 `ds_set_theme()` sets a theme for all the spectrograms shown afterwards in the R session (e.g. in all the code chunks of a document), as `ggplot2::theme_set()`. `ds_theme()` added to a spectrogram changes some of its settings, and preset themes replace it. `ds_set_theme()` returns the previous theme, so it can be restored (`ds_set_theme(NULL)` removes it):
 
@@ -411,9 +419,11 @@ Other options of `ds_scrolling()` are a custom spectrogram function (`spectro.ca
 `ds_paged()` sets the duration of each page (`t.display`), the highlight box (`highlight.col`, `highlight.alpha`), the cursor (`lcol`), a title (`title`), an amplitude color scale (`plot.legend = TRUE`), the size of the pages (`spec.width`, `spec.height`, in inches) and the frames per second of videos (`fps`). Other arguments set the preparation of the pages (e.g. `resample.rate`, `amp.thresh` or `filter`):
 
 ```{r}
-swallow +
+ds_scythebill +
+  ds_spectrogram(amp.trans = 3, collevels = seq(-35, 0, 1)) +
   ds_paged(
-    title = "Female barn swallow",
+    t.display = 1,
+    title = "Brown-billed scythebill",
     highlight.col = "#2d2d86",
     highlight.alpha = 0.4,
     lcol = "#FFEA46"
@@ -532,6 +542,22 @@ duet +
 duet +
   ds_spectrogram(collevels = seq(-60, 0, 1)) +
   ds_annotations(st, col = "colors", type = "spectrogram", labels = "labels")
+```
+
+`type = "line"` draws a horizontal line from the start to the end of each selection, at the frequency set with `line.freq` (in kHz, or the name of a column with the frequency of each line), as is common in figures of duets. Lines are thick and opaque by default (`lwd = 8`, `alpha = 1`), and labels are shown above them:
+
+```{r}
+# one line height for each individual
+st$line.freq <- c(12, 11.2)
+
+duet +
+  ds_annotations(
+    st,
+    col = "colors",
+    type = "line",
+    line.freq = "line.freq",
+    labels = "labels"
+  )
 ```
 
 Selection tables made with [warbleR](https://cran.r-project.org/package=warbleR) can be used directly. When they have selections of several sound files, only those of the sound shown are used (matching the file name), or the sound file is chosen with `sound.file` (e.g. for 'Wave' objects):

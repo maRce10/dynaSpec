@@ -104,7 +104,7 @@ library(seewave)
 ```
 
 
-The examples use the songs of a brown-billed scythebill and a great antshrike (scrolling spectrograms) and the barn swallow recordings included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
+The examples use the songs of a brown-billed scythebill and a great antshrike (scrolling spectrograms) included in the package. Sounds can be 'Wave' objects or '.wav' and '.mp3' files.
 
 # Panels
 
@@ -144,7 +144,7 @@ dynaspec(scythebill) + ds_oscillogram()
 `flim` sets the frequency range (in kHz) and `tlim` the time range of the sound used (in s):
 
 ```{r}
-dynaspec(scythebill, flim = c(1.5, 5.5), tlim = c(1.1, 2.3)) +
+dynaspec(scythebill, flim = c(1.5, 5.5), tlim = c(1.1, 1.76)) +
   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1))
 ```
 
@@ -186,16 +186,7 @@ Scrolling spectrograms show a single lower panel: an overview, an oscillogram or
 The spectrogram is split into pages (`t.display` sets the duration of each page), and a translucent box reveals the part of each page being played, as in Adobe Audition's spectral view. Pages turn as the sound plays:
 
 ```{r, eval = TRUE}
-# example WAV files included with dynaSpec
-f <- list.files(
-  system.file(package = "dynaSpec"),
-  pattern = "\\.wav$",
-  full.names = TRUE
-)
-
-dynaspec(f[2]) +
-  ds_spectrogram() +
-  ds_paged(t.display = 2)
+ds_scythebill + ds_paged(t.display = 1)
 ```
 
 Settings not supplied take the defaults of each style. For instance, paged spectrograms use the 'inferno' palette and no axes by default.
