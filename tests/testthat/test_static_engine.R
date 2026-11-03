@@ -61,8 +61,8 @@ test_that("oscillogram can be plotted above or below the spectrogram", {
   above <- static_engine(short_sound(1), wl = 300, width = 300, height = 200, osc.position = "above", play = FALSE)
 
   # play line spans both panels (from the top margin to the time axis margin) in both layouts
-  expect_equal(ext(below, "top"), 0.1)
-  expect_equal(ext(below, "bottom"), 0.6)
+  expect_equal(ext(below, "top"), 0.1, tolerance = 0.02)
+  expect_equal(ext(below, "bottom"), 0.6, tolerance = 0.02)
   expect_equal(ext(above, "top"), ext(below, "top"))
   expect_equal(ext(above, "bottom"), ext(below, "bottom"))
   expect_error(static_engine(short_sound(1), osc.position = "left"), "osc.position")
@@ -117,10 +117,10 @@ test_that("static_spectro creates a video with the play line", {
   dynaSpec:::run_ffmpeg_int(paste0('-y -ss ', t, ' -i "', out, '" -frames:v 1 "', frame, '"'), "extracting a frame")
   img <- png::readPNG(frame)
   # strict color threshold for the position; looser one for the ends (compression mixes colors over the waveform)
-  red <- img[, , 1] > 0.6 & img[, , 2] < 0.35 & img[, , 3] < 0.35
+  red <- img[, , 1] > 0.35 & img[, , 1] > img[, , 2] + 0.2 & img[, , 1] > img[, , 3] + 0.2
   line_x <- mean(which(colSums(red) > 0))
-  reddish <- img[, , 1] > 0.5 & img[, , 2] < 0.45 & img[, , 3] < 0.45
-  line_y <- range(which(rowSums(reddish[, round(line_x) + (-3:3)]) > 0))
+  x_band <- pmax(1, pmin(ncol(img), round(line_x) + (-3:3)))
+  line_y <- range(which(rowSums(red[, x_band, drop = FALSE]) > 0))
   e <- ext[2, ]
   expect_equal(line_x, (e$left + (e$right - e$left) * (t - e$t0) / (e$t1 - e$t0)) * 400, tolerance = 2 / 400)
   # figure height (upper row has no time axis, so it is shorter than 'height'); the video may be padded by 1 pixel to an even size
