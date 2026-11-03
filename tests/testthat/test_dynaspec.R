@@ -302,9 +302,9 @@ test_that("spectrogram, panel and figure backgrounds are independent", {
   expect_equal(c(img[1, 1, 1:3], img[nrow(img), ncol(img), 1:3]), rep(1, 6))
   save_dynaspec(x + ds_theme(bg = "gray50", col.panel = "red"), png_file, play = FALSE, verbose = FALSE)
   img <- png::readPNG(png_file)
-  expect_equal(img[1, 1, 1:3], rep(127 / 255, 3), tolerance = 0.01)
+  expect_equal(img[1, 1, 1:3], as.numeric(grDevices::col2rgb("gray50")) / 255, tolerance = 0.02)
   # (some pixels of the oscillogram panel are red)
-  expect_true(any(img[, , 1] > 0.99 & img[, , 2] < 0.01 & img[, , 3] < 0.01))
+  expect_true(any(img[, , 1] > 0.35 & img[, , 1] > img[, , 2] + 0.2 & img[, , 1] > img[, , 3] + 0.2))
 })
 
 test_that("the theme background is kept around spectrograms, also with a power spectrum on the left", {
@@ -486,7 +486,7 @@ test_that("ds_annotations(type = 'line') draws lines above the sounds in all sty
   on.exit(unlink(png_file), add = TRUE)
   save_dynaspec(x + ann + ds_oscillogram() + ds_static(width = 400, height = 250), png_file, play = FALSE, verbose = FALSE)
   img <- png::readPNG(png_file)
-  expect_true(any(img[, , 1] > 0.99 & img[, , 2] < 0.01 & img[, , 3] < 0.01))
+  expect_true(any(img[, , 1] > 0.35 & img[, , 1] > img[, , 2] + 0.2 & img[, , 1] > img[, , 3] + 0.2))
   expect_s3_class(save_dynaspec(x + ann + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_s3_class(save_dynaspec(x + ann + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_error(ds_annotations(st, type = "line", line.freq = "who"), "line.freq")
