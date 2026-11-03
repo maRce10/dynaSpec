@@ -60,9 +60,11 @@ test_that("oscillogram can be plotted above or below the spectrogram", {
   below <- static_engine(short_sound(1), wl = 300, width = 300, height = 200, play = FALSE)
   above <- static_engine(short_sound(1), wl = 300, width = 300, height = 200, osc.position = "above", play = FALSE)
 
-  # play line spans both panels (from the top margin to the time axis margin) in both layouts
-  expect_equal(ext(below, "top"), 0.1)
-  expect_equal(ext(below, "bottom"), 0.6)
+  # play line spans both panels (from the top margin, 1 line, to the time axis margin, 4 lines) in both layouts; the
+  # height of a line depends on the device (0.2 inches on Linux, 0.192 on Windows), in a 2 inch high figure
+  line_in <- dynaSpec:::png_line_in_int(100)
+  expect_equal(ext(below, "top"), line_in / 2, tolerance = 1e-3)
+  expect_equal(ext(below, "bottom"), 1 - 4 * line_in / 2, tolerance = 1e-3)
   expect_equal(ext(above, "top"), ext(below, "top"))
   expect_equal(ext(above, "bottom"), ext(below, "bottom"))
   expect_error(static_engine(short_sound(1), osc.position = "left"), "osc.position")
@@ -92,10 +94,11 @@ test_that("static_spectro splits sounds in rows", {
   expect_error(static_engine(short_sound(), wl = 300, rows = 400, height = 50), "too short")
   expect_error(static_engine(short_sound(), wl = 100, rows = 100), "too tall")
   expect_error(static_engine(short_sound(), rows = 0), "rows")
-  # image is 3 rows high (upper rows have time labels but no axis title: 1.8 lines shorter, 0.2 inches per line at 100 dpi)
+  # image is 3 rows high (upper rows have time labels but no axis title: 1.8 lines shorter; a line is 0.2 inches on
+  # Linux, 0.192 on Windows; 100 dpi)
   skip_if_not_installed("base64enc")
   img <- png::readPNG(base64enc::base64decode(sub('[ "].*', "", sub('.*<img srcset="data:image/png;base64,', "", res))))
-  expect_equal(dim(img)[1:2], c(600 - 2 * 36, 300))
+  expect_equal(dim(img)[1:2], c(round(600 - 2 * 1.8 * dynaSpec:::png_line_in_int(100) * 100), 300))
 })
 
 test_that("static_spectro creates a video with the play line", {

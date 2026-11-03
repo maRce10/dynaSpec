@@ -406,6 +406,20 @@ x_lab_extra_int <- function(las, labels, cex = 1) {
   max(0, max(nchar(as.character(labels))) * 0.5 * cex - 0.6)
 }
 
+# height (in inches) of a line of text (margin line) in a png device at resolution 'res' with the font family of the theme
+png_line_in_int <- function(res, theme = list()) {
+  old <- grDevices::dev.cur()
+  tmp <- tempfile(fileext = ".png")
+  grDevices::png(tmp, width = 100, height = 100, res = res)
+  on.exit({
+    grDevices::dev.off()
+    unlink(tmp)
+    if (old > 1) grDevices::dev.set(old)
+  })
+  theme_par_int(theme)
+  graphics::par("csi")
+}
+
 # check the settings of ds_theme() (only those supplied)
 check_theme_int <- function(args) {
   check_results <- .check_arguments("dynatheme", args[intersect(names(args), c("cex.lab", "axis.type", "bg"))])
@@ -2372,7 +2386,9 @@ static_spectro_int <- function(wave,
 
   # slot heights (in inches) that keep relative heights between plotting regions, with the same plotting
   # regions in all rows ('height' is the height of a row with time axis)
-  lines_in <- 0.2 # height of a line of text in the png device (12 points * 1.2)
+  # (height of a line of text in the png device: 0.2 inches on Linux and macOS, but it depends on the device and fonts,
+  # e.g. 0.192 inches on Windows, so it is measured)
+  lines_in <- png_line_in_int(res, theme)
   slot_marg <- function(axis) vapply(seq_len(n_stack), function(i) sum(slot_mar(i, axis)[c(1, 3)]), numeric(1)) * lines_in
   plot_in <- height / res - sum(slot_marg(TRUE))
   if (plot_in <= 0)

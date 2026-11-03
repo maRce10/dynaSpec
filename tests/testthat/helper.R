@@ -47,3 +47,14 @@ static_engine <- call_with_int(quote(dynaSpec:::static_spectro_int))
 prep_paged <- call_with_int(quote(dynaSpec:::prep_paged_int))
 paged_engine <- call_with_int(quote(dynaSpec:::paged_spectro_int))
 scrolling_engine <- call_with_int(quote(dynaSpec:::scrolling_spectro_int))
+
+# a color as drawn by the png device used by the package (devices may apply color management, e.g. on macOS)
+png_color <- function(col) {
+  f <- tempfile(fileext = ".png")
+  on.exit(unlink(f))
+  grDevices::png(f, width = 100, height = 100)
+  graphics::par(bg = col, mar = rep(0, 4))
+  graphics::plot.new()
+  grDevices::dev.off()
+  png::readPNG(f)[50, 50, 1:3]
+}

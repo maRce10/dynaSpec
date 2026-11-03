@@ -302,7 +302,9 @@ test_that("spectrogram, panel and figure backgrounds are independent", {
   expect_equal(c(img[1, 1, 1:3], img[nrow(img), ncol(img), 1:3]), rep(1, 6))
   save_dynaspec(x + ds_theme(bg = "gray50", col.panel = "red"), png_file, play = FALSE, verbose = FALSE)
   img <- png::readPNG(png_file)
-  expect_equal(img[1, 1, 1:3], as.numeric(grDevices::col2rgb("gray50")) / 255, tolerance = 0.02)
+  # (compared with the color as drawn by the same png device: on macOS the device applies color management, e.g. gray50
+  # is stored as 0.424 instead of 0.498)
+  expect_equal(img[1, 1, 1:3], png_color("gray50"), tolerance = 0.02)
   # (some pixels of the oscillogram panel are red)
   expect_true(any(img[, , 1] > 0.35 & img[, , 1] > img[, , 2] + 0.2 & img[, , 1] > img[, , 3] + 0.2))
 })
