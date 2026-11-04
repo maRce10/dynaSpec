@@ -1,19 +1,265 @@
 # Changelog
 
-## *dynaSpec 1.0.6*
+## *dynaSpec 2.0.0.9000*
 
-- Fixed downloading of ‘Xeno-Canto’ recordings from recording page URLs
-  in
-  [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/prep_static_ggspectro.md),
+- Major redesign with a new layered syntax (the functions of previous
+  versions,
+  [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md),
+  [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  and
+  [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md),
+  and their aliases
+  [`prepStaticSpec()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  and
+  [`pagedSpec()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md),
+  are defunct: they give an error showing the new syntax):
+  [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+  takes the sound (a ‘Wave’ object or a ‘.wav’ or ‘.mp3’ file, with its
+  frequency and time ranges in `flim` and `tlim`) and layers are added
+  with `+`:
+  - [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md),
+    [`ds_oscillogram()`](https://marce10.github.io/dynaSpec/reference/ds_oscillogram.md),
+    [`ds_envelope()`](https://marce10.github.io/dynaSpec/reference/ds_envelope.md)
+    (amplitude envelope),
+    [`ds_spectrum()`](https://marce10.github.io/dynaSpec/reference/ds_spectrum.md)
+    (power spectrum on the left or right side; on the left side it
+    carries the frequency axis) and
+    [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md)
+    (lower panel with the whole sound in scrolling spectrograms): panels
+    of the figure (only the panels added are shown;
+    [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+    alone shows an empty panel with a time axis)
+  - [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md):
+    translucent boxes highlighting parts of the sound, with optional
+    borders (color, width and line type) and labels, or the spectrogram
+    colored within each selection (`type = "spectrogram"`, as
+    [`warbleR::color_spectro()`](https://marce10.github.io/warbleR/reference/color_spectro.html)).
+    Takes data frames and ‘warbleR’ selection tables (extended selection
+    tables are not supported)
+  - [`ds_captions()`](https://marce10.github.io/dynaSpec/reference/ds_captions.md):
+    text at a fixed position of the figure shown (and optionally fading
+    in and out) during a time range, like subtitles, in all styles
+  - [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md):
+    axis titles, text sizes, fonts and font family, colors of axes and
+    text (and of axis labels alone, `col.axis`), orientation of axis
+    labels of both axes (`las`), axis type, ticks, boxes, grid lines,
+    backgrounds, plot colors (spectrogram palette and background, panel
+    and play line colors) and colors of the player controls, for all
+    styles. Preset themes:
+    [`ds_theme_dark()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_mako()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_presentation()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_paper()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_minimal()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_transparent()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_void()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+    [`ds_theme_xenocanto()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+    and
+    [`ds_theme_macaulay()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+    (inspired by the Xeno-canto and Macaulay Library players).
+    `axis.type = "inside"` draws labels with units inside the figure
+    (e.g. “8k”, “2s”) and `axis.type = "compact"` frequency labels in a
+    narrow column and time labels in minutes and seconds above the
+    figure; `lty.line`/`lwd.line` set the play line of scrolling
+    spectrograms; `bar.style = "rounded"` gives the player round
+    controls and a seek bar and `bar.style = "square"` a flat bar with a
+    square play button; `col.highlight` also dims the overview of
+    scrolling spectrograms.
+    [`ds_set_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
+    sets a theme for all spectrograms of the session (e.g. of a
+    document), as
+    [`ggplot2::theme_set()`](https://ggplot2.tidyverse.org/reference/get_theme.html)
+  - [`ds_player()`](https://marce10.github.io/dynaSpec/reference/ds_player.md):
+    playback speed slider (snapping to fixed speeds) and ‘keep pitch’
+    toggle of web pages, plus optional time readout, seek bar, zoom
+    slider (scrolling spectrograms: stretch or shrink the spectrogram),
+    loop, volume, download and full screen buttons (`buttons`)
+  - [`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+    (default),
+    [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+    and
+    [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md):
+    style of the dynamic spectrogram (`ds_static(play.line = FALSE)`
+    hides the moving line, whose default color is now
+    `viridis::mako(10)[9]`)
+- Layers and themes have a `ds_` prefix
+  ([`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md),
+  [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md),
+  [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
+  …), so they do not mask functions of other packages with general names
+  (e.g. `spectrogram()`)
+- Printing a `dynaspec` object shows an interactive web page (in the
+  RStudio viewer or the web browser), embedded in R Markdown and Quarto
+  documents when knitting. Figures and sounds are embedded in the HTML
+  code, with click-to-play and buttons to slow the sound down (lowering
+  the pitch, or keeping it)
+- [`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)
+  saves `dynaspec` objects as web pages (‘.html’), videos (‘.mp4’,
+  requires ffmpeg) or still images (‘.png’), showing a progress bar (via
+  ‘cli’) while rendering frames
+- Scrolling spectrograms start moving right away (`buffer` is now 0 by
+  default)
+- Scrolling spectrograms whose time axis moves along
+  (`fix.time = FALSE`) labeled the time of the sound with half a window
+  of silence added at the start (labels were `t.display / 2` ahead of
+  the play line); they now show the time of the sound
+- Web pages embed their images with `srcset` instead of `src`: R
+  Markdown documents that are not self-contained (e.g. pkgdown articles)
+  pass every `<img src>` through
+  [`utils::URLdecode()`](https://rdrr.io/r/utils/URLencode.html), which
+  took minutes for embedded spectrograms (building the package website
+  hung)
+- Axis labels: amplitude envelopes and power spectra are labeled ‘Amp.’
+  (as oscillograms; previously ‘Env.’ and ‘Power’)
+- `ds_annotations(type = "line")`: horizontal lines from the start to
+  the end of each selection at the frequency set with `line.freq` (a
+  value or a column, e.g. one height per individual of a duet), with
+  labels above them
+- On Windows, figures are drawn with the cairo-based png device (when
+  available) instead of the default Windows device, so they look as on
+  other systems
+- Static spectrograms measure the height of a line of text of the png
+  device (it differs between systems, e.g. on Windows) to size panels
+  and margins, so plotting regions keep their relative heights on all
+  systems
+- Multi-row static spectrograms show time labels in every row (the axis
+  title only below the last row)
+- Backgrounds are independent: `ds_spectrogram(colbg)` sets only the
+  spectrogram background, `ds_theme(col.panel)` the other panels and
+  `ds_theme(bg)` the figure (white by default; supplying `colbg` no
+  longer changes the figure background of static spectrograms)
+- Amplitude envelopes and power spectra are black by default, as
+  oscillograms (previously blue)
+- Scrolling spectrograms failed when `flim` reached or exceeded the
+  Nyquist frequency of the sound (it is now limited to it, as in static
+  spectrograms)
+- Paged spectrograms no longer resample sounds when the new sampling
+  rate is close to the original one
+  ([`tuneR::downsample()`](https://rdrr.io/pkg/tuneR/man/downsample.html)
+  does not filter, which added artifacts)
+- New example recordings by Julio E. Sánchez: `scythebill` (song of a
+  brown-billed scythebill, *Campylorhamphus pusillus*, Cartago, Costa
+  Rica, 1998; 11.025 kHz), used in most examples, and `antshrike` (two
+  songs of a great antshrike, *Taraba major*, Finca La Selva, Heredia,
+  Costa Rica, 1999; 11.025 kHz), used in examples of scrolling
+  spectrograms. The barn swallow example files of previous versions are
+  now the Wave objects `female_barn_swallow` and `male_barn_swallow`
+  (recorded by Matthew R. Wilkins) (the ‘.wav’ files were removed from
+  the package). It replaces `canyon_wren`, which was removed
+- Videos of static and paged spectrograms are made by moving the play
+  line or highlight box over still images with ffmpeg, so they are
+  created in seconds
+- Spectrograms of static spectrograms are drawn by dynaSpec (computed
+  with
+  [`seewave::spectro()`](https://rdrr.io/pkg/seewave/man/spectro.html)),
+  so they keep the background set with `ds_theme(bg)` in multi-panel
+  figures
+- Paged spectrograms are drawn with base R graphics (no ‘ggplot2’ or
+  ‘gganimate’ needed)
+- Play lines are aligned with the time of the spectrogram windows, and
+  all rows of multi-row figures share the same color and amplitude scale
+- Scrolling spectrograms are drawn without grid lines by default (as
+  static spectrograms; use `ds_spectrogram(grid = TRUE)` to add them)
+
+## *dynaSpec 1.1.0*
+
+### New features
+
+- New vignette “Creating dynamic spectrograms” with all examples (moved
+  from the README)
+- All exported functions now validate their arguments up front (using
+  ‘checkmate’), reporting every invalid argument in a single error
+  message
+- [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  new arguments ‘parallel’ (render pages in parallel), ‘verbose’ and
+  ‘play’. ‘framerate’ now sets the frame rate of the video (lower values
+  render faster)
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  new arguments ‘plot’ (whether to plot the spectrogram) and ‘verbose’
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  `axis.type = "minimal"` is now implemented (1 s and 1 kHz scale bars)
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  ‘parallel’ now actually uses parallel computing (via ‘pbapply’; no
+  longer relies on non-exported ‘warbleR’ functions)
+- [`prepStaticSpec()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  and
+  [`pagedSpec()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  aliases are now exported
+
+### Bug fixes
+
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  no video was produced with recent ffmpeg versions (video frames are
+  now saved as PNG instead of TIFF)
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  fixed error when ‘flim’ is not supplied (default full frequency range)
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  fixed extra frame copies when `loop > 1`
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  selection tables in ‘spectro.call’ are now correctly aligned when
+  `loop = 1`, and selections at the end of the clip are repeated at the
+  start when looping
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  ‘annotation.call’ ‘start’ and ‘end’ times now match the time at which
+  sounds reach the play line
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  informative errors when ‘ffmpeg’ is missing or fails; file paths with
+  spaces are now supported
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  no warnings about ‘lower.spectro’ or ‘buffer’ unless those arguments
+  are supplied explicitly
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  fixed downloading of ‘Xeno-Canto’ recordings from recording page URLs,
   which relied on the now deprecated
   [`warbleR::query_xc()`](https://marce10.github.io/warbleR/reference/query_xc.html).
   Files are now downloaded directly from the recording’s download link
-- Sound files from URLs are now downloaded in binary mode (fixes
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  sound files from URLs are now downloaded in binary mode (fixes
   corrupted downloads on Windows)
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  fixed ‘destFolder’ handling (“wd” and relative paths now resolve to
+  the working directory)
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  ‘resampleRate’ is increased when needed so the spectrogram covers the
+  whole ‘yLim’ range, and recordings are no longer upsampled
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  ‘savePNG’ now saves the right plot for each segment; ‘crop’ start is
+  no longer ignored when the crop end equals (or exceeds) the file
+  duration
+- [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  fixed encoding error when the spectrogram aspect ratio produced an odd
+  video width
+- [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  videos now open on Windows and Linux; temporary files are stored in a
+  uniquely named folder
+- [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  missing destination folders are now created instead of asking
+  interactively (which failed in non-interactive sessions)
 
-## *dynaSpec 1.0.5*
+### Other changes
 
-CRAN release: 2025-10-28
+- R \>= 4.1.0 and ggplot2 \>= 3.4.0 are now required
+
+- [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md):
+  ‘optim’ is deprecated (it never had any effect)
+
+- [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  now stops with an error (instead of printing a message) when ffmpeg is
+  not found
+
+- Progress messages now use
+  [`message()`](https://rdrr.io/r/base/message.html) (and can be
+  silenced with `verbose = FALSE` or
+  [`suppressMessages()`](https://rdrr.io/r/base/message.html))
+
+- Added ‘testthat’ tests, test coverage reporting, CITATION,
+  CITATION.cff and codemeta.json files
+
+- Fixed deprecated ‘ggplot2’ syntax, package help page, dependency
+  declarations and multiple documentation issues
+
+- Smaller package size (compressed and removed unused figures) \#
+  *dynaSpec 1.0.5*
 
 - Minor changes to improve stability
 

@@ -1,12 +1,30 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://marce10.github.io/dynaSpec/404.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/articles/customizing.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/articles/dynaSpec.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/articles/index.html</loc></url>
 <url><loc>https://marce10.github.io/dynaSpec/authors.html</loc></url>
 <url><loc>https://marce10.github.io/dynaSpec/index.html</loc></url>
 <url><loc>https://marce10.github.io/dynaSpec/news/index.html</loc></url>
-<url><loc>https://marce10.github.io/dynaSpec/reference/canyon_wren.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/antshrike.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/barn_swallow.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_annotations.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_captions.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_envelope.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_oscillogram.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_overview.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_player.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_set_theme.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_spectrogram.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_spectrum.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/ds_theme.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/dynaSpec-package.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/dynaspec.html</loc></url>
 <url><loc>https://marce10.github.io/dynaSpec/reference/index.html</loc></url>
-<url><loc>https://marce10.github.io/dynaSpec/reference/paged_spectro.html</loc></url>
-<url><loc>https://marce10.github.io/dynaSpec/reference/prep_static_ggspectro.html</loc></url>
-<url><loc>https://marce10.github.io/dynaSpec/reference/scrolling_spectro.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/plus-.dynaspec.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/save_dynaspec.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/scythebill.html</loc></url>
+<url><loc>https://marce10.github.io/dynaSpec/reference/styles.html</loc></url>
 </urlset>
 
