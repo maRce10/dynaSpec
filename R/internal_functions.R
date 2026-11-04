@@ -406,11 +406,11 @@ x_lab_extra_int <- function(las, labels, cex = 1) {
   max(0, max(nchar(as.character(labels))) * 0.5 * cex - 0.6)
 }
 
-# png device used for all figures: cairo-based when available (Linux, Windows and macOS builds of R), so figures are drawn
-# in the same way on all systems (the default devices of Windows and macOS differ in fonts, line heights and color
-# management)
+# png device used for all figures: on Windows the cairo-based device (when available) instead of the default Windows GDI
+# device, which differs in line heights and fills (e.g. figure corners); elsewhere the default device (cairo on Linux;
+# quartz on macOS, where the cairo device may not write files, e.g. without XQuartz)
 png_device_int <- function(...) {
-  if (isTRUE(capabilities("cairo"))) grDevices::png(..., type = "cairo") else grDevices::png(...)
+  if (.Platform$OS.type == "windows" && isTRUE(capabilities("cairo"))) grDevices::png(..., type = "cairo") else grDevices::png(...)
 }
 
 # height (in inches) of a line of text (margin line) in a png device at resolution 'res' with the font family of the theme
