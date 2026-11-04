@@ -22,7 +22,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -34,6 +34,9 @@ jobs:
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
+
+      - name: Create home page from README
+        run: Rscript pkgdown/make_index.R
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)

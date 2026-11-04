@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "dynaSpec: Dynamic Spectrogram Visualizations"
+abstract: "A set of tools to generate dynamic spectrogram visualizations in video format."
+authors:
+  - family-names: Araya-Salas
+    given-names: Marcelo
+    email: marcelo.araya@ucr.ac.cr
+    orcid: "https://orcid.org/0000-0003-3594-619X"
+  - family-names: Wilkins
+    given-names: Matthew R.
+    email: matt@galacticpolymath.com
+version: 1.1.0
+license: GPL-2.0-or-later
+repository-code: "https://github.com/maRce10/dynaSpec"
+url: "https://marce10.github.io/dynaSpec/"
+keywords:
+  - bioacoustics
+  - spectrogram
+  - animal sounds
+  - video
+  - animation
+  - R
+preferred-citation:
+  type: software
+  title: "dynaSpec: dynamic spectrogram visualizations in R"
+  authors:
+    - family-names: Araya-Salas
+      given-names: Marcelo
+      orcid: "https://orcid.org/0000-0003-3594-619X"
+    - family-names: Wilkins
+      given-names: Matthew R.
+  year: 2020
+  url: "https://marce10.github.io/dynaSpec/"
+  notes: "R package version 1.1.0"
