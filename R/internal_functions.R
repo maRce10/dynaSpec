@@ -406,11 +406,18 @@ x_lab_extra_int <- function(las, labels, cex = 1) {
   max(0, max(nchar(as.character(labels))) * 0.5 * cex - 0.6)
 }
 
+# png device used for all figures: cairo-based when available (Linux, Windows and macOS builds of R), so figures are drawn
+# in the same way on all systems (the default devices of Windows and macOS differ in fonts, line heights and color
+# management)
+png_device_int <- function(...) {
+  if (isTRUE(capabilities("cairo"))) grDevices::png(..., type = "cairo") else grDevices::png(...)
+}
+
 # height (in inches) of a line of text (margin line) in a png device at resolution 'res' with the font family of the theme
 png_line_in_int <- function(res, theme = list()) {
   old <- grDevices::dev.cur()
   tmp <- tempfile(fileext = ".png")
-  grDevices::png(tmp, width = 100, height = 100, res = res)
+  png_device_int(tmp, width = 100, height = 100, res = res)
   on.exit({
     grDevices::dev.off()
     unlink(tmp)
@@ -893,7 +900,7 @@ caption_overlays_int <- function(captions, width, height, res, fps, first, in_la
       t1 <- cp$end[i] - offset
       if (t1 <= 0 || t0 >= dur) next
       png_file <- tempfile(fileext = ".png")
-      grDevices::png(png_file, width = width, height = height, res = res, bg = "transparent")
+      png_device_int(png_file, width = width, height = height, res = res, bg = "transparent")
       graphics::par(mar = rep(0, 4))
       graphics::plot.new()
       graphics::plot.window(xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i")
@@ -2168,7 +2175,7 @@ draw_page_int <- function(sp, i) {
 
 # draw page i of a paged spectrogram in a png file, 'spec.width' x 'spec.height' inches at resolution 'res'
 page_png_int <- function(sp, i, file, res) {
-  grDevices::png(file, width = sp$specWidth, height = sp$specHeight, units = "in", res = res, bg = "white")
+  png_device_int(file, width = sp$specWidth, height = sp$specHeight, units = "in", res = res, bg = "white")
   dev <- grDevices::dev.cur()
   on.exit(grDevices::dev.off(dev))
   draw_page_int(sp, i)
@@ -2414,7 +2421,7 @@ static_spectro_int <- function(wave,
   widths <- if (is.null(spectrum)) 1 else if (spec_left) c(spec_width, 1 - spec_width) else c(1 - spec_width, spec_width)
 
   fig_bg <- theme_int(theme, "bg", fig_bg_default)
-  grDevices::png(filename = png_file, width = width, height = fig_height, res = res, bg = fig_bg)
+  png_device_int(filename = png_file, width = width, height = fig_height, res = res, bg = fig_bg)
   dev <- grDevices::dev.cur()
   theme_par_int(theme)
   ext <- tryCatch({
@@ -2704,7 +2711,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
 
   if (!ggspectro){
   # save full spectrogram of wave
-  grDevices::png(filename = file.path(temp_dir, "temp.full.spectro.png"), height = height, width = wdt, res = res)
+  png_device_int(filename = file.path(temp_dir, "temp.full.spectro.png"), height = height, width = wdt, res = res)
 
   # set plot margins for spectrogram
   graphics::par(mar = rep(0, 4))
@@ -2772,7 +2779,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   spc_img <- imager::load.image(file.path(temp_dir, "temp.full.spectro.png"))
 
   # resave with derivatives
-  grDevices::png(filename = file.path(temp_dir, "temp.full.spectro.png"), height = height, width = wdt, res = res)
+  png_device_int(filename = file.path(temp_dir, "temp.full.spectro.png"), height = height, width = wdt, res = res)
 
   # remove margins and make background gray
   graphics::par(mar = rep(0, 4), bg = "gray")
@@ -2803,7 +2810,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
 
   # plot oscillogram
   if (osc){
-    grDevices::png(filename = file.path(temp_dir, "temp.full.oscillo.png"), height = height, width = wdt, res = res)
+    png_device_int(filename = file.path(temp_dir, "temp.full.oscillo.png"), height = height, width = wdt, res = res)
 
     # set plot margins for spectrogram
     graphics::par(mar = rep(0, 4))
@@ -2863,7 +2870,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
     tlim_low <- tlim_low + c(white_window * -1, white_window) / 2
 
     # start png device (tiff files from R are not readable by recent ffmpeg versions)
-    grDevices::png(file, res = res, width = width, height = height, bg = if (html_frame) "transparent" else theme_int(theme, "bg", "white"))
+    png_device_int(file, res = res, width = width, height = height, bg = if (html_frame) "transparent" else theme_int(theme, "bg", "white"))
 
     # axis colors, fonts and sizes (ds_theme())
     col_lab <- theme_int(theme, "col.lab", "black")

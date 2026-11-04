@@ -15,6 +15,7 @@
 * Web pages embed their images with `srcset` instead of `src`: R Markdown documents that are not self-contained (e.g. pkgdown articles) pass every `<img src>` through `utils::URLdecode()`, which took minutes for embedded spectrograms (building the package website hung)
 * Axis labels: amplitude envelopes and power spectra are labeled 'Amp.' (as oscillograms; previously 'Env.' and 'Power')
 * `ds_annotations(type = "line")`: horizontal lines from the start to the end of each selection at the frequency set with `line.freq` (a value or a column, e.g. one height per individual of a duet), with labels above them
+* Figures are drawn with the cairo-based png device when available (Linux, Windows and macOS builds of R), so they look the same on all systems (the default devices of Windows and macOS differ in fonts, line heights and color management)
 * Static spectrograms measure the height of a line of text of the png device (it differs between systems, e.g. on Windows) to size panels and margins, so plotting regions keep their relative heights on all systems
 * Multi-row static spectrograms show time labels in every row (the axis title only below the last row)
 * Backgrounds are independent: `ds_spectrogram(colbg)` sets only the spectrogram background, `ds_theme(col.panel)` the other panels and `ds_theme(bg)` the figure (white by default; supplying `colbg` no longer changes the figure background of static spectrograms)
