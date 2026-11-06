@@ -1108,9 +1108,11 @@ player_js_int <- function() {
     // smooth playback time: audio elements update currentTime in steps (often every 10-50 ms), so moving parts
     // drawn at each frame from it stop and jump. The time advances with the clock of the page and is eased toward
     // the time of the audio (snapping to it after seeking or large differences). When the audio loops, the time
-    // continues from the end of the sound to its start, so moving parts do not jump, however short the sound is
+    // continues from the end of the sound to its start, so moving parts do not jump, however short the sound is.
+    // The time waits for the audio to start (which can take a few hundred ms after pressing play) and, when ahead of
+    // the audio, slows down or waits instead of going back
     var smoothClock = function (a) {
-      var playing = false, last = 0, wall = 0, t = 0, prev = 0;
+      var playing = false, waiting = false, last = 0, wall = 0, t = 0, prev = 0;
       // (when looping, the time passes the end of the sound without waiting for the audio to go back to its start)
       var wrap = function (x) { return a.loop && a.duration ? (x % a.duration + a.duration) % a.duration : Math.max(0, x); };
       var atEnd = function () { return a.loop && a.duration - last < 0.1 * a.playbackRate + 0.002; };
@@ -1123,17 +1125,24 @@ player_js_int <- function() {
           return wrap(t);
         }
         if (a.paused || a.seeking || !playing) {
-          playing = !a.paused && !a.seeking;
+          playing = waiting = !a.paused && !a.seeking;
           last = t = ct; wall = prev = now;
           return ct;
+        }
+        if (waiting) {
+          wall = prev = now;
+          if (ct === last) return wrap(t);
+          waiting = false; last = t = ct;
+          return wrap(t);
         }
         if (ct < last && atEnd()) t -= a.duration;
         if (ct !== last) { last = ct; wall = now; }
         var target = last + Math.min(0.25, (now - wall) / 1000) * a.playbackRate;
-        t += (now - prev) / 1000 * a.playbackRate;
+        var next = t + (now - prev) / 1000 * a.playbackRate;
         prev = now;
-        var err = target - t;
-        if (Math.abs(err) > 0.15) t = target; else t += 0.15 * err;
+        var err = target - next;
+        // (a large difference backward only comes from the audio moving back, not from the clock being ahead)
+        if (err > 0.15 || err < -Math.max(0.5, 0.5 * a.playbackRate)) t = target; else t = Math.max(t, next + 0.15 * err);
         return wrap(t);
       };
     };

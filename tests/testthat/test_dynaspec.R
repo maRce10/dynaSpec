@@ -579,3 +579,10 @@ test_that("looping scrolling spectrograms match at the loop point", {
   k <- as.numeric(sub('.*&quot;k&quot;:\\s*([0-9.e-]+).*|.*"k":\\s*([0-9.e-]+).*', "\\1\\2", cfg))
   expect_equal(k, 1, tolerance = 1e-3)
 })
+
+test_that("the player time waits for the audio and does not go back", {
+  js <- dynaSpec:::player_js_int()
+  expect_match(js, "if (ct === last) return wrap(t);", fixed = TRUE)
+  expect_match(js, "t = Math.max(t, next + 0.15 * err)", fixed = TRUE)
+  expect_false(grepl("Math.abs(err) > 0.15", js, fixed = TRUE))
+})
