@@ -241,6 +241,8 @@ ds_scythebill + ds_oscillogram() + ds_theme_dark(cex.lab = 1.3)
 ds_set_theme(ds_theme_dark())
 ```
 
+All the theme settings and preset themes are shown in the article [Themes for dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/themes.html).
+
 # Saving web pages, videos and images
 
 `save_dynaspec()` saves `dynaspec` objects. The extension of the file sets the output:

@@ -18,3 +18,5 @@
 ^vignettes/articles$
 ^HANDOFF\.md$
 ^Rplots\.pdf$
+# animated previews only used by the README (shown from GitHub)
+^man/figures/readme_.*\.gif$

@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ::: {.alert .alert-info}
 
-This article shows how to customize dynamic spectrograms, layer by layer. The [main vignette](dynaSpec.html) shows the basic usage of each layer. As there, the examples create interactive web pages: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed slider to slow the sound down. Use `save_dynaspec()` with a file name ending in `.mp4` to create videos instead.
+This article shows how to customize dynamic spectrograms, layer by layer, and how to highlight and label parts of the sound with annotations and captions. The [main vignette](dynaSpec.html) shows the basic usage of each layer, and the article [Themes for dynamic spectrograms](themes.html) shows the themes. As there, the examples create interactive web pages: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed slider to slow the sound down. Use `save_dynaspec()` with a file name ending in `.mp4` to create videos instead.
 
 :::
 
@@ -42,7 +42,7 @@ data("antshrike")
 
 Some examples use recordings from the package [NatureSounds](https://cran.r-project.org/package=NatureSounds) or downloaded from the web (sounds must be 'Wave' objects or local '.wav' or '.mp3' files, so recordings are downloaded first).
 
-Layers can be stored in an object and modified by adding more layers. Arguments of `ds_spectrogram()`, `ds_theme()` and style layers are combined with the previous ones (so only the settings that change need to be supplied), while other panel and player layers replace previous ones of the same kind, and annotations and captions are added. Settings not supplied take the defaults of each style. `dynaspec()` sets the frequency range shown (`flim`, in kHz) and the part of the sound used (`tlim`, in s: a single value takes the first seconds, two values a time interval).
+Layers can be stored in an object and modified by adding more layers. Arguments of `ds_spectrogram()` and style layers are combined with the previous ones (so only the settings that change need to be supplied), while other panel and player layers replace previous ones of the same kind, and annotations and captions are added. Settings not supplied take the defaults of each style. `dynaspec()` sets the frequency range shown (`flim`, in kHz) and the part of the sound used (`tlim`, in s: a single value takes the first seconds, two values a time interval).
 
 # Spectrograms
 
@@ -69,18 +69,7 @@ ds_scythebill + ds_spectrogram(pal = reverse.gray.colors.1, collevels = seq(-100
 By default the spectrogram background is the color of the lowest amplitude of the palette (dark purple for 'viridis'), so quiet parts of the sound and the background look the same. `colbg` sets another spectrogram background:
 
 ```{r}
-ds_scythebill + ds_spectrogram(pal = viridis, colbg = "black") +
-  ds_theme(col.axis = "white", col.lab = "white")
-
-```
-
-The backgrounds of the figure are set independently: `colbg` in `ds_spectrogram()` (or `ds_theme()`) for the spectrogram, `col.panel` in `ds_theme()` for oscillograms, envelopes and power spectra, and `bg` in `ds_theme()` for the whole figure around the panels:
-
-```{r}
-ds_scythebill +
-  ds_spectrogram(pal = viridis) +
-  ds_oscillogram(col = "white") +
-  ds_theme(col.panel = "gray20", bg = "gray90")
+ds_scythebill + ds_spectrogram(pal = viridis, colbg = "black")
 ```
 
 In paged spectrograms the palette can also be the name of a 'viridis' palette (e.g. "magma") or two colors for a gradient, and `amp.trans` brightens the spectrogram (a nonlinear transformation that collapses the difference between loud and quiet sounds; 1 means no transformation):
@@ -88,8 +77,7 @@ In paged spectrograms the palette can also be the name of a 'viridis' palette (e
 ```{r}
 ds_scythebill +
   ds_spectrogram(amp.trans = 3, collevels = seq(-35, 0, 1)) +
-  ds_paged(t.display = 1) +
-  ds_theme(axis.type = "standard")
+  ds_paged(t.display = 1)
 ```
 
 # Panels
@@ -132,140 +120,6 @@ In scrolling spectrograms the lower panel can be an overview of the whole sound 
 ds_antshrike +
   ds_envelope(col = cols[5]) +
   ds_scrolling(t.display = 2)
-```
-
-# Themes
-
-`ds_theme()` sets the look of all styles: axis titles (`xlab`, `ylab`), the size of titles and labels (`cex.lab`, `cex.axis`), the font of titles (`font.lab`), the color of axes and text (`col.lab`) and of the axis labels alone (`col.axis`), the type of axes (`axis.type`) and the background around the panels (`bg`):
-
-```{r}
-ds_scythebill +
-  ds_oscillogram() +
-  ds_theme(
-    xlab = "Time (s)",
-    ylab = "Frequency (kHz)",
-    cex.lab = 1.4,
-    font.lab = 2,
-    col.lab = "gray30"
-  )
-```
-
-It also sets the font family of all text (`family`), the orientation of the axis labels of both axes (`las`, as in base R: 0 parallel to the axis, 1 horizontal, 2 perpendicular, 3 vertical), the length of ticks (`tick.length`), boxes around panels (`box`, `col.box`), grid lines (`grid`, `col.grid`), the background of oscillogram, envelope and spectrum panels (`col.panel`) and the color and size of titles (`col.title`, `cex.title`):
-
-```{r}
-ds_scythebill +
-  ds_oscillogram() +
-  ds_spectrum() +
-  ds_theme(
-    family = "serif",
-    las = 1,
-    tick.length = 0.3,
-    box = FALSE,
-    grid = TRUE,
-    col.panel = "gray95"
-  )
-```
-
-Themes can also set the colors of the plot: the spectrogram palette and background (`pal`, `colbg`), the color of oscillograms, envelopes and spectra (`col.wave`), the color of annotations (`col.annotation`), the play line (`col.line`) and the highlight box of paged spectrograms (`col.highlight`). These are used when they are not supplied in the other layers (e.g. `ds_spectrogram(pal = )` takes precedence). `col.bar` and `bg.bar` set the colors of the player controls of web pages. A dark theme:
-
-```{r}
-ds_scythebill +
-  ds_oscillogram() +
-  ds_theme(
-    bg = "black",
-    col.lab = "white",
-    pal = viridis,
-    colbg = "black",
-    col.wave = viridis(10)[7],
-    col.line = "white",
-    col.bar = "white",
-    bg.bar = "black"
-  )
-```
-
-## Preset themes
-
-Preset themes set several settings at once: `ds_theme_dark()`, `ds_theme_mako()` (light theme with the 'mako' palette for the spectrogram, panels, annotations and player controls), `ds_theme_presentation()` (large bold text for slides), `ds_theme_paper()` (black and white with serif fonts, for printed figures), `ds_theme_minimal()` (no boxes and light gray axes), `ds_theme_transparent()` (transparent background, to blend in slides or web pages of any color), `ds_theme_void()` (no axes or boxes), `ds_theme_xenocanto()` (inspired by the player of [Xeno-canto](https://xeno-canto.org)) and `ds_theme_macaulay()` (inspired by the player of the [Macaulay Library](https://www.macaulaylibrary.org)). Their settings can be changed in the call, or by adding `ds_theme()` afterwards (adding a preset replaces previous themes):
-
-```{r}
-ds_scythebill +
-  ds_envelope() +
-  ds_theme_dark(cex.lab = 1.3) +
-  ds_player(buttons = c("time", "loop", "volume"))
-```
-
-```{r}
-ds_scythebill +
-  ds_oscillogram() +
-  ds_theme_paper()
-```
-
-```{r}
-ds_antshrike +
-  ds_scrolling(t.display = 2) +
-  ds_theme_presentation()
-```
-
-`ds_theme_xenocanto()` uses a gray spectrogram, labels inside the figure, a solid play line and rounded player controls with a seek bar. It looks best with scrolling spectrograms whose time axis moves along (`fix.time = FALSE`) and a short oscillogram:
-
-```{r}
-ds_antshrike +
-  ds_oscillogram(height = 0.2) +
-  ds_theme_xenocanto() +
-  ds_scrolling(t.display = 3, fix.time = FALSE)
-```
-
-As other presets, its settings can be changed. For instance, the color version of the Xeno-canto player:
-
-```{r}
-ds_antshrike +
-  ds_oscillogram(height = 0.2) +
-  ds_theme_xenocanto(
-    pal = viridis::inferno,
-    colbg = "black",
-    bg = "black",
-    col.panel = "black",
-    col.wave = "white",
-    col.lab = "white",
-    col.line = "white"
-  ) +
-  ds_scrolling(t.display = 3, fix.time = FALSE)
-```
-
-`ds_theme_macaulay()` uses a gray spectrogram, compact axes (frequency labels in a narrow column on the left and the time in minutes and seconds above the figure) and a black player bar with a square play button. It looks best with scrolling spectrograms with an overview of the whole sound below (the part shown is highlighted):
-
-```{r}
-ds_antshrike +
-  ds_overview() +
-  ds_theme_macaulay() +
-  ds_scrolling(t.display = 3, fix.time = FALSE)
-```
-
-The look of these themes comes from settings that can be used in any theme. The Xeno-canto theme uses `axis.type = "inside"` (labels with units inside the figure), `lty.line` and `lwd.line` (type and width of the play line of scrolling spectrograms) and `bar.style = "rounded"` (round player controls with a seek bar, on the `bg.bar` background). The Macaulay theme uses `axis.type = "compact"`, `bar.style = "square"` (flat bar with a square play button in the color of the play line) and `col.highlight` (color dimming the overview outside the part shown).
-
-`axis.type` can be "standard", "inside", "compact", "none" or, in scrolling spectrograms, "minimal" (1 s and 1 kHz scale bars):
-
-```{r}
-ds_antshrike +
-  ds_scrolling(t.display = 2) +
-  ds_theme(axis.type = "minimal")
-```
-
-## Spectrogram themes
-
-`ds_set_theme()` sets a theme for all the spectrograms shown afterwards in the R session (e.g. in all the code chunks of a document), as `ggplot2::theme_set()`. `ds_theme()` added to a spectrogram changes some of its settings, and preset themes replace it. `ds_set_theme()` returns the previous theme, so it can be restored (`ds_set_theme(NULL)` removes it):
-
-```{r}
-old <- ds_set_theme(ds_theme_paper(cex.lab = 1.3))
-
-# paper theme
-ds_scythebill + ds_oscillogram()
-
-# paper theme with another axis title
-ds_scythebill + ds_envelope() + ds_theme(ylab = "Freq. (kHz)")
-
-# restore the previous theme
-ds_set_theme(old)
 ```
 
 # Static spectrograms
@@ -323,8 +177,7 @@ dynaspec(Phae.long4, flim = c(1, 10)) +
     res = 120,
     speed = 0.2,
     loop = 3
-  ) +
-  ds_theme(axis.type = "none")
+  )
 ```
 
 The first 20 s of a northern nightingale wren recording from [xeno-canto](https://www.xeno-canto.org) using a custom color palette:
@@ -427,8 +280,7 @@ ds_scythebill +
     highlight.col = "#2d2d86",
     highlight.alpha = 0.4,
     lcol = "#FFEA46"
-  ) +
-  ds_theme(bg = "black")
+  )
 ```
 
 The first 12 s of a humpback whale song, with 3 s pages and the frequency range used by these whales (0-700 Hz):
@@ -611,8 +463,7 @@ dynaspec(frogs, flim = c(0, 5.5), tlim = c(35.3, 50.5)) +
     res = 200,
     lcol = "#FFFFFFCC",
     lty = 3
-  ) +
-  ds_theme(bg = "black", col.lab = "white")
+  )
 ```
 
 Note that times of annotations and captions refer to the original recording, even when only part of it is used (`tlim`).
@@ -641,7 +492,6 @@ In scrolling spectrograms, `buttons = "zoom"` adds a slider (with - and + button
 ```{r}
 ds_antshrike +
   ds_overview() +
-  ds_theme_macaulay() +
   ds_player(buttons = c("zoom", "volume", "time")) +
   ds_scrolling(t.display = 3, fix.time = FALSE)
 ```

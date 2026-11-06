@@ -2,7 +2,7 @@
 #'
 #' `dynaspec()` starts a dynamic spectrogram of a sound. Layers are added with `+`, as in 'ggplot2' graphs: [ds_spectrogram()] and [ds_oscillogram()] add the panels, [ds_annotations()] and [ds_captions()] highlight and label parts of the sound, and [ds_scrolling()], [ds_paged()] or [ds_static()] set the style. Printing the object shows an interactive web page (embedded in R Markdown and Quarto documents when knitting), and [save_dynaspec()] saves it as a web page, a video or still images.
 #' @param wave The sound: an object of class 'Wave' or the path to a '.wav' or '.mp3' file.
-#' @param flim Numeric vector of length 2 with the frequency limits (in kHz). Default is `NULL` (from 0 to the Nyquist frequency, or the style default).
+#' @param flim Numeric vector of length 2 with the frequency limits (in kHz). Default is `NULL` (from 0 to the Nyquist frequency, or the style default). An upper limit higher than the Nyquist frequency of the sound (half its sampling rate) gives a warning, and spectrograms are shown up to the Nyquist frequency.
 #' @param tlim Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of [ds_annotations()] and [ds_captions()] refer to the whole sound. Default is `NULL` (whole sound).
 #' @return An object of class 'dynaspec'.
 #' @details Panels are added as layers, as in 'ggplot2': only the panels added are shown ([ds_spectrogram()], [ds_oscillogram()], [ds_envelope()] or several of them, and [ds_spectrum()] next to the spectrogram). `dynaspec()` alone shows an empty panel with a time axis and the play line (annotations and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.
@@ -70,6 +70,14 @@ dynaspec <- function(wave, flim = NULL, tlim = NULL) {
   if (!is.null(tlim))
     checkmate::assert_numeric(tlim, min.len = 1, max.len = 2, lower = 0, finite = TRUE, any.missing = FALSE, sorted = TRUE, unique = TRUE, add = check_results, .var.name = "tlim")
   .report_assertions(check_results)
+
+  # frequencies above the Nyquist frequency (half the sampling rate) are not in the sound
+  if (!is.null(flim)) {
+    nyquist <- samp_rate_int(wave) / 2000
+    if (isTRUE(flim[2] > nyquist))
+      warning2("the upper limit of 'flim' (", flim[2], " kHz) is higher than the Nyquist frequency of the sound (", round(nyquist, 2),
+               " kHz, half its sampling rate); spectrograms are shown up to ", round(nyquist, 2), " kHz")
+  }
 
   # name for output files: sound file name or name of the Wave object
   name <- if (is.character(wave)) tools::file_path_sans_ext(basename(wave)) else make.names(paste(deparse(substitute(wave)), collapse = ""))

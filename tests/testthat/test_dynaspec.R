@@ -1,6 +1,6 @@
 test_that("dynaspec objects collect layers", {
   st <- data.frame(start = c(0.2, 1), end = c(0.6, 1.5), labels = c("a", "b"))
-  x <- dynaspec(short_sound(), flim = c(1, 10)) +
+  x <- dynaspec(short_sound(), flim = c(1, 5)) +
     ds_spectrogram(wl = 300) + ds_spectrogram(ovlp = 50) +
     ds_oscillogram(position = "above") +
     ds_annotations(st, labels = "labels") + ds_annotations(st[1, ]) +
@@ -41,7 +41,7 @@ test_that("dynaspec checks its arguments", {
 
 test_that("static spectrograms are saved as web pages and images", {
   st <- data.frame(start = 0.2, end = 0.6, colors = "#56B4E9")
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_oscillogram() + ds_annotations(st, col = "colors") + ds_static(width = 400, height = 250)
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_oscillogram() + ds_annotations(st, col = "colors") + ds_static(width = 400, height = 250)
 
   res <- save_dynaspec(x, play = FALSE, verbose = FALSE)
   expect_s3_class(res, "dynaSpec_html")
@@ -65,7 +65,7 @@ test_that("cropping shifts selections and annotations", {
 })
 
 test_that("scrolling and paged spectrograms are saved as web pages", {
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) +
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) +
     ds_captions("hb", start = 0.2, end = 1.5, fading = 0.1)
 
   res <- save_dynaspec(x + ds_scrolling(t.display = 1, width = 300, height = 200), play = FALSE, verbose = FALSE)
@@ -255,7 +255,7 @@ test_that("selections take warbleR selection tables", {
 })
 
 test_that("ds_player() adds buttons to web pages", {
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300)
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300)
   b <- c("loop", "volume", "download", "fullscreen", "progress")
 
   # default: time readout only
@@ -273,7 +273,7 @@ test_that("ds_player() adds buttons to web pages", {
 })
 
 test_that("ds_player(buttons = 'zoom') stretches scrolling spectrograms", {
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_overview()
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_overview()
   sc <- function(y) save_dynaspec(y + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE)
   plain <- sc(x)
   zoomed <- sc(x + ds_player(buttons = c("zoom", "time")))
@@ -312,7 +312,7 @@ test_that("spectrogram, panel and figure backgrounds are independent", {
 test_that("the theme background is kept around spectrograms, also with a power spectrum on the left", {
   png_file <- file.path(tempdir(), "bg_test.png")
   on.exit(unlink(png_file), add = TRUE)
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_oscillogram() + ds_theme(bg = "black", col.lab = "white") + ds_static(width = 400, height = 250, rows = 2)
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_oscillogram() + ds_theme(bg = "black", col.lab = "white") + ds_static(width = 400, height = 250, rows = 2)
   for (y in list(x, x + ds_spectrum(side = "left"))) {
     save_dynaspec(y, png_file, play = FALSE, verbose = FALSE)
     img <- png::readPNG(png_file)
@@ -322,7 +322,7 @@ test_that("the theme background is kept around spectrograms, also with a power s
 })
 
 test_that("ds_theme() settings and preset themes", {
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300)
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300)
 
   # presets replace previous themes; ds_theme() afterwards changes some settings
   y <- x + ds_theme(xlab = "Time (s)") + ds_theme_dark(cex.lab = 1.4) + ds_theme(family = "serif")
@@ -392,7 +392,7 @@ test_that("ds_theme() settings and preset themes", {
 
 test_that("ds_annotations() borders can be set by color, column, width and line type", {
   st <- data.frame(start = c(0.2, 0.6), end = c(0.4, 0.9), colors = c("#E69F00", "#56B4E9"))
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_static(width = 300, height = 200)
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_static(width = 300, height = 200)
   a <- ds_annotations(st, col = "colors", border = "colors", lwd = 2, lty = "dashed")
   expect_equal(a$args[c("border", "lwd", "lty")], list(border = "colors", lwd = 2, lty = "dashed"))
   expect_s3_class(save_dynaspec(x + a, play = FALSE, verbose = FALSE), "dynaSpec_html")
@@ -403,7 +403,7 @@ test_that("ds_annotations() borders can be set by color, column, width and line 
 
 test_that("ds_annotations() can color the spectrogram within selections", {
   st <- data.frame(start = c(0.2, 0.6), end = c(0.4, 0.9), bottom.freq = 2, top.freq = 8, colors = c("#E69F00", "#56B4E9"))
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_annotations(st, col = "colors", type = "spectrogram")
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_annotations(st, col = "colors", type = "spectrogram")
   png_file <- file.path(tempdir(), "colored_test.png")
   on.exit(unlink(png_file), add = TRUE)
   save_dynaspec(x + ds_static(width = 400, height = 250), png_file, play = FALSE, verbose = FALSE)
@@ -420,7 +420,7 @@ test_that("ds_set_theme() sets the theme of all dynaspec objects", {
   withr::defer(ds_set_theme(old))
   expect_equal(ds_get_theme()$args[c("col.bar", "cex.lab")], list(col.bar = "white", cex.lab = 1.3))
 
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_static(width = 300, height = 200)
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_static(width = 300, height = 200)
   html <- function(y) save_dynaspec(y, play = FALSE, verbose = FALSE)
   expect_match(html(x), 'data-bar-col="#FFFFFF"', fixed = TRUE)
   # ds_theme() modifies the global theme, presets replace it
@@ -438,7 +438,7 @@ test_that("ds_set_theme() sets the theme of all dynaspec objects", {
 
 test_that("ds_theme_mako() and theme colors of annotations", {
   st <- data.frame(start = 0.2, end = 0.6)
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_annotations(st) + ds_oscillogram()
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_annotations(st) + ds_oscillogram()
   z <- dynaSpec:::theme_layers_int(x + ds_theme_mako())
   expect_equal(z$selections[[1]]$col, "#366A9F")
   expect_equal(z$panels[[1]]$col, "#40498E")
@@ -452,7 +452,7 @@ test_that("ds_theme_mako() and theme colors of annotations", {
 })
 
 test_that("ds_theme() sets the color and orientation of axis labels", {
-  x <- dynaspec(short_sound(), flim = c(1, 10)) + ds_spectrogram(wl = 300) + ds_oscillogram() + ds_theme(las = 2, col.axis = "red")
+  x <- dynaspec(short_sound(), flim = c(1, 5)) + ds_spectrogram(wl = 300) + ds_oscillogram() + ds_theme(las = 2, col.axis = "red")
   png_file <- file.path(tempdir(), "las_test.png")
   on.exit(unlink(png_file), add = TRUE)
   save_dynaspec(x + ds_static(width = 400, height = 250), png_file, play = FALSE, verbose = FALSE)
@@ -500,4 +500,14 @@ test_that("multi-row static spectrograms label the time of every row", {
   one <- player_rows(save_dynaspec(x + ds_static(width = 400, height = 200, rows = 2), play = FALSE, verbose = FALSE))
   # (rows are separated by the margin of the time labels, not only by a small gap)
   expect_gt(one$top[2] - one$bottom[1], 0.05)
+})
+
+test_that("dynaspec() warns when flim is higher than the Nyquist frequency", {
+  expect_warning(x <- dynaspec(short_sound(), flim = c(1.5, 6.5)), "higher than the Nyquist frequency")
+  expect_silent(dynaspec(short_sound(), flim = c(1.5, 5)))
+  # spectrograms are shown up to the Nyquist frequency in all styles
+  x <- x + ds_spectrogram(wl = 200)
+  expect_s3_class(save_dynaspec(x + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
 })

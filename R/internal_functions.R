@@ -427,6 +427,15 @@ png_line_in_int <- function(res, theme = list()) {
   graphics::par("csi")
 }
 
+# sampling rate of a sound ('Wave' object or .wav/.mp3 file; only the header of .wav files is read); NA if unknown
+samp_rate_int <- function(wave) {
+  tryCatch({
+    if (inherits(wave, "Wave")) wave@samp.rate
+    else if (grepl("\\.wav$", wave, ignore.case = TRUE)) tuneR::readWave(wave, header = TRUE)$sample.rate
+    else tuneR::readMP3(wave)@samp.rate
+  }, error = function(e) NA)
+}
+
 # check the settings of ds_theme() (only those supplied)
 check_theme_int <- function(args) {
   check_results <- .check_arguments("dynatheme", args[intersect(names(args), c("cex.lab", "axis.type", "bg"))])

@@ -9,7 +9,7 @@ dynaspec(wave, flim = NULL, tlim = NULL)
 \arguments{
 \item{wave}{The sound: an object of class 'Wave' or the path to a '.wav' or '.mp3' file.}
 
-\item{flim}{Numeric vector of length 2 with the frequency limits (in kHz). Default is \code{NULL} (from 0 to the Nyquist frequency, or the style default).}
+\item{flim}{Numeric vector of length 2 with the frequency limits (in kHz). Default is \code{NULL} (from 0 to the Nyquist frequency, or the style default). An upper limit higher than the Nyquist frequency of the sound (half its sampling rate) gives a warning, and spectrograms are shown up to the Nyquist frequency.}
 
 \item{tlim}{Numeric vector of length 1 or 2 with the time range (in s) of the sound to use: a single value takes the first seconds of the sound, and two values a time interval. Times of \code{\link[=ds_annotations]{ds_annotations()}} and \code{\link[=ds_captions]{ds_captions()}} refer to the whole sound. Default is \code{NULL} (whole sound).}
 }
