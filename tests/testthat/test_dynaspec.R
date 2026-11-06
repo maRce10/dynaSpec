@@ -511,3 +511,71 @@ test_that("dynaspec() warns when flim is higher than the Nyquist frequency", {
   expect_s3_class(save_dynaspec(x + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_s3_class(save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
 })
+
+test_that("Inf as upper limit of flim and tlim means the Nyquist frequency and the end of the sound", {
+  sound <- short_sound()
+  expect_silent(x <- dynaspec(sound, flim = c(0, Inf), tlim = Inf) + ds_spectrogram(wl = 200))
+  expect_silent(y <- dynaspec(sound, flim = c(1, Inf), tlim = c(0.5, Inf)) + ds_spectrogram(wl = 200))
+  for (obj in list(x, y)) {
+    expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html"))
+    expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html"))
+    expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_paged(t.display = 1, spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html"))
+  }
+  # the lower limit must still be within the sound
+  expect_error(dynaspec(sound, flim = c(Inf, Inf)), "flim")
+  expect_error(save_dynaspec(dynaspec(sound, flim = c(8, Inf)) + ds_spectrogram(wl = 200) + ds_paged(), play = FALSE, verbose = FALSE), "Nyquist")
+})
+
+test_that("paged spectrograms fill the figure", {
+  p <- prep_paged(short_sound(), crop = FALSE, t.display = 1, flim = c(0, Inf), wl = 200, plot = FALSE, verbose = FALSE, dest.path = tempdir())
+  expect_equal(p$yLim, c(0, short_sound()@samp.rate / 2000))
+
+  # without axes the page spans the whole figure
+  file <- tempfile(fileext = ".png")
+  ext <- dynaSpec:::page_png_int(p, 1, file, res = 50)
+  expect_equal(unname(ext[c("left", "right", "top", "bottom")]), c(0, 1, 0, 1))
+
+  # data reach the limits of the page and the frequency limits
+  d <- p$spec[[1]]
+  expect_lte(min(d$time), 0)
+  expect_gte(max(d$time), 1)
+  expect_gte(max(d$freq), p$yLim[2])
+  expect_equal(dim(d$amp), c(length(d$freq), length(d$time)))
+
+  # a tiny excess of sound does not make another page
+  expect_equal(prep_paged(dynaSpec::scythebill, crop = FALSE, t.display = 1.5, wl = 200, plot = FALSE, verbose = FALSE, dest.path = tempdir())$n_pages, 3)
+})
+
+test_that("looping scrolling spectrograms match at the loop point", {
+  # clicks at known times, also where the sound starts again
+  f <- 22050
+  y <- rep(0, 1.5 * f)
+  for (t0 in c(0.06, 0.75, 1.44)) y[round(t0 * f) + 0:30] <- 20000 * sin(2 * pi * 4000 * (0:30) / f)
+  w <- tuneR::Wave(left = round(y), samp.rate = f, bit = 16)
+  t_d <- 0.5
+  html <- save_dynaspec(dynaspec(w, flim = c(1, 8)) +
+    ds_spectrogram(wl = 1024, ovlp = 90, collevels = seq(-40, 0, 2), pal = viridis::viridis, colbg = "black") +
+    ds_scrolling(t.display = t_d, width = 700, height = 200, res = 50, loop = 3), play = FALSE, verbose = FALSE)
+  uris <- regmatches(html, gregexpr("data:image/png;base64,[A-Za-z0-9+/=]+", html))[[1]]
+  strip <- png::readPNG(base64enc::base64decode(sub("^.*base64,", "", uris[2])))
+  g <- strip[, , 1] + strip[, , 2] + strip[, , 3]
+  px <- ncol(g) / (1.5 + t_d)
+  n <- round(t_d * px)
+  # best match between the image at the start of the sound and when it starts again
+  lags <- -40:40
+  cols <- 45:(n - 45)
+  mse <- vapply(lags, function(l) mean((g[, cols] - g[, cols + round(1.5 * px) + l])^2), numeric(1))
+  expect_lte(abs(lags[which.min(mse)]), 1)
+
+  # clicks are at their true time in the image
+  col_sum <- colSums(g)
+  at <- function(t0) { r <- round((t0 + t_d / 2 - 0.05) * px):round((t0 + t_d / 2 + 0.05) * px); sum(r * col_sum[r]^4) / sum(col_sum[r]^4) / px - t_d / 2 }
+  expect_equal(at(0.06), 0.06 + 15 / f, tolerance = 0.002 / 0.06)
+  expect_equal(at(1.44), 1.44 + 15 / f, tolerance = 0.002 / 1.44)
+
+  # strips of web pages move at the speed of the sound, even when it is a fraction of a video frame longer
+  cfg <- save_dynaspec(dynaspec(seewave::cutw(w, from = 0, to = 0.1453, output = "Wave")) + ds_spectrogram(wl = 64) +
+    ds_scrolling(t.display = 0.05, width = 300, height = 150, loop = 2), play = FALSE, verbose = FALSE)
+  k <- as.numeric(sub('.*&quot;k&quot;:\\s*([0-9.e-]+).*|.*"k":\\s*([0-9.e-]+).*', "\\1\\2", cfg))
+  expect_equal(k, 1, tolerance = 1e-3)
+})

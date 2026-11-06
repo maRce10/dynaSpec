@@ -231,7 +231,7 @@ ds_antshrike +
   ds_theme(axis.type = "minimal")
 ```
 
-# Theme of all spectrograms
+# Setting themes globally 
 
 `ds_set_theme()` sets a theme for all the spectrograms shown afterwards in the R session (e.g. in all the code chunks of a document), as `ggplot2::theme_set()`. `ds_theme()` added to a spectrogram changes some of its settings, and preset themes replace it. `ds_set_theme()` returns the previous theme, so it can be restored (`ds_set_theme(NULL)` removes it):
 

@@ -107,7 +107,14 @@ dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
 
 ## Installation
 
-Install the development version from GitHub (requires [remotes](https://cran.r-project.org/package=remotes)):
+Install it from CRAN:
+
+```{r, eval = FALSE}
+install.packages("dynaSpec")
+```
+
+
+Or install the development version from GitHub (requires [remotes](https://cran.r-project.org/package=remotes)):
 
 ```{r, eval = FALSE}
 remotes::install_github("maRce10/dynaSpec")

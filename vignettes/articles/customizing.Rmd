@@ -160,9 +160,9 @@ ds_antshrike +
 Long-billed hermit song at 1/5 speed, without axes and looping (web pages loop until paused):
 
 ```{r}
-data("Phae.long4", package = "NatureSounds")
+data("Phae.long1", package = "NatureSounds")
 
-dynaspec(Phae.long4, flim = c(1, 10)) +
+dynaspec(Phae.long1, flim = c(2, 9)) +
   ds_spectrogram(
     wl = 300,
     ovlp = 90,
@@ -171,11 +171,11 @@ dynaspec(Phae.long4, flim = c(1, 10)) +
     colbg = "black"
   ) +
   ds_scrolling(
-    t.display = 1.7,
+    t.display = 1.2,
     width = 1000,
-    height = 500,
+    height = 400,
     res = 120,
-    speed = 0.2,
+    speed = 0.8,
     loop = 3
   )
 ```
@@ -207,7 +207,7 @@ dynaspec(nightingale_wren, flim = c(0, 8), tlim = 20) +
   ds_scrolling(
     t.display = 3,
     width = 700,
-    height = 250,
+    height = 350,
     res = 100,
     lcol = "#FFFFFFE6"
   )
@@ -293,20 +293,22 @@ download.file(
   mode = "wb"
 )
 
-dynaspec(whale, flim = c(0, 0.7), tlim = 12) +
-  ds_spectrogram(amp.trans = 3) +
+dynaspec(whale, flim = c(0.1, 2), tlim = 9) +
+  ds_spectrogram(amp.trans = 3, wl = 2000, ovlp = 90, collevels = seq(-50, 0, 5)) +
   ds_paged(t.display = 3)
+
 ```
 
-A common nighthawk call from [xeno-canto](https://www.xeno-canto.org) with a two-color palette:
+A yellow-throaded toucan song from [xeno-canto](https://www.xeno-canto.org) with a two-color palette:
 
 ```{r}
-nighthawk <- tempfile(fileext = ".mp3")
-download.file("https://xeno-canto.org/490771/download", nighthawk, mode = "wb")
+toucan <- tempfile(fileext = ".mp3")
+download.file("https://xeno-canto.org/154168/download", toucan, mode = "wb")
 
-dynaspec(nighthawk, tlim = 20) +
-  ds_spectrogram(pal = c("white", "black")) +
-  ds_paged(t.display = 4, highlight.col = "#d1b0ff", lcol = "#7817ff")
+dynaspec(toucan, tlim = c(3.2, 15.2), flim = c(0, 8)) +
+  ds_spectrogram(pal = c("white", "black"), collevels = seq(-100, 0, 5)) +
+  ds_paged(t.display = 3, highlight.col = "#d1b0ff", lcol = "#7817ff")
+
 ```
 
 # Annotations
@@ -315,16 +317,26 @@ dynaspec(nighthawk, tlim = 20) +
 
 ```{r}
 # note types
-st <- data.frame(
-  start = c(0.34, 1.13, 1.44, 1.75),
-  end = c(1.03, 1.36, 1.68, 2.28),
-  bottom.freq = c(2.5, 2.4, 2.3, 2.1),
-  top.freq = c(3.9, 4, 3.8, 5.4),
-  labels = c("A", "B", "B", "C"),
-  colors = c("#E69F00", "#56B4E9", "#56B4E9", "#009E73")
+nts <- data.frame(
+  start = c(0.34, 1.13, 1.44, 1.75, 2.32),
+  end = c(1.03, 1.36, 1.68, 2.28, 2.56),
+  bottom.freq = c(2.5, 2.4, 2.3, 2.1, 2.1),
+  top.freq = c(3.9, 4, 3.8, 4, 3.7) + 0.5,
+  labels = c("A", "B", "B", "C", "D"),
+  colors = viridis::mako(n = 7)[1:5]
 )
 
-ds_scythebill + ds_annotations(st, col = "colors", labels = "labels")
+ds_scythebill +
+  ds_annotations(nts, col = "colors", labels = "labels")
+```
+
+Annotations are also shown in overview spectrograms:
+```{r}
+
+ds_scythebill +
+  ds_scrolling() +
+  ds_annotations(nts, col = "colors", labels = "labels") +
+  ds_overview()
 ```
 
 The box borders are set with `border` (a color or the name of a column with the color of each box), `lwd` (width) and `lty` (line type):
@@ -332,17 +344,17 @@ The box borders are set with `border` (a color or the name of a column with the 
 ```{r}
 ds_scythebill +
   ds_annotations(
-    st,
+    nts,
     col = "colors",
     alpha = 0.1,
     border = "colors",
     lwd = 2,
-    lty = "dashed",
+    lty = "dotted",
     labels = "labels"
   )
 ```
 
-`ds_annotations()` also sets the opacity of the boxes (`alpha`), the size of the labels (`cex`) and whether boxes span only the frequency range of the selections (`freq`). The following code highlights the male and female parts of a house wren duet (after downloading the recording and selection table from GitHub):
+`type = "spectrogram"` colors the spectrogram itself within each selection, with a gradient from the spectrogram background to the color of the selection (as `warbleR::color_spectro()`), instead of drawing boxes. A narrower amplitude range (`collevels`) keeps the background noise uncolored:
 
 ```{r}
 # house wren male-female duet recording
@@ -362,38 +374,19 @@ st <- read.csv(
 st$colors <- viridis(10)[c(3, 8)]
 st$labels <- c("male", "female")
 
-duet <- dynaspec(hs_wren, flim = c(1, 13)) +
+duet <- dynaspec(hs_wren, flim = c(1, 14)) +
   ds_spectrogram(
     wl = 512,
     pal = reverse.gray.colors.1,
-    collevels = seq(-100, 0, 1)
+    collevels = seq(-120, 0, 1)
   ) +
   ds_scrolling(t.display = 1.2, loop = 3, width = 1000, height = 500, res = 120)
 
-duet + ds_annotations(st, col = "colors", alpha = 0.4, labels = "labels", cex = 1.5)
-```
 
-With box borders, spanning the whole frequency range (`freq = FALSE`), and an oscillogram:
-
-```{r}
-duet +
-  ds_annotations(
-    st,
-    col = "colors",
-    alpha = 0.3,
-    border = "gray30",
-    lwd = 2,
-    freq = FALSE
-  ) +
-  ds_oscillogram()
-```
-
-`type = "spectrogram"` colors the spectrogram itself within each selection, with a gradient from the spectrogram background to the color of the selection (as `warbleR::color_spectro()`), instead of drawing boxes. A narrower amplitude range (`collevels`) keeps the background noise uncolored:
-
-```{r}
 duet +
   ds_spectrogram(collevels = seq(-60, 0, 1)) +
-  ds_annotations(st, col = "colors", type = "spectrogram", labels = "labels")
+  ds_annotations(st, col = "colors", type = "spectrogram", labels = "labels", cex = 4)
+
 ```
 
 `type = "line"` draws a horizontal line from the start to the end of each selection, at the frequency set with `line.freq` (in kHz, or the name of a column with the frequency of each line), as is common in figures of duets. Lines are thick and opaque by default (`lwd = 8`, `alpha = 1`), and labels are shown above them:
@@ -408,7 +401,8 @@ duet +
     col = "colors",
     type = "line",
     line.freq = "line.freq",
-    labels = "labels"
+    labels = "labels", 
+    cex = 4
   )
 ```
 
@@ -420,7 +414,7 @@ data("Phae.long1", package = "NatureSounds")
 
 dynaspec(Phae.long1, flim = c(1, 10)) +
   ds_spectrogram(wl = 300) +
-  ds_annotations(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec")
+  ds_annotations(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec", col = "tomato")
 ```
 
 # Captions
@@ -449,8 +443,8 @@ dynaspec(frogs, flim = c(0, 5.5), tlim = c(35.3, 50.5)) +
     c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"),
     start = c(35.7, 42.3),
     end = c(40.8, 50.1),
-    x = 0.3,
-    y = 0.9,
+    x = 0.33,
+    y = 0.86,
     col = "#FFEA46CC",
     font = 3,
     fading = 0.6

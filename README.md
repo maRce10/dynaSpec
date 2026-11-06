@@ -111,7 +111,13 @@ start](#quick-start) · [Background](#background) · [Citation](#citation)
 
 ## Installation
 
-Install the development version from GitHub (requires
+Install latest version from CRAN:
+
+``` r
+install.packages("dynaSpec")
+```
+
+Or install the development version from GitHub (requires
 [remotes](https://cran.r-project.org/package=remotes)):
 
 ``` r
@@ -120,9 +126,9 @@ remotes::install_github("maRce10/dynaSpec")
 
 ### ffmpeg
 
-Web pages do not need any external software. To create videos dynaSpec
-uses [ffmpeg](https://ffmpeg.org/download.html), which must be installed
-and available in the system path:
+Web pages do not need any external software. However, to create videos
+dynaSpec uses [ffmpeg](https://ffmpeg.org/download.html), which must be
+installed and available in the system path:
 
 | Operating system | Command (in a terminal) |
 |----|----|
@@ -138,42 +144,6 @@ Sys.which("ffmpeg")
 
 If ffmpeg is installed somewhere else, point R to the executable with
 `Sys.setenv(ffmpeg = "path/to/ffmpeg")`.
-
-## Quick start
-
-``` r
-library(dynaSpec)
-
-# example recording included in the package
-data("scythebill")
-
-# static spectrogram with oscillogram
-# (shown in the RStudio viewer or the web browser)
-x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
-  ds_oscillogram()
-
-x
-
-# paged style
-x + ds_paged(t.display = 1)
-
-# scrolling style (a longer recording)
-data("antshrike")
-y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
-y + ds_scrolling(t.display = 2)
-
-# save as a web page or as a video
-save_dynaspec(x, "scythebill.html")
-save_dynaspec(y + ds_scrolling(t.display = 2), "antshrike.mp4")
-```
-
-Sounds can be ‘Wave’ objects or ‘.wav’ and ‘.mp3’ files. Invalid
-arguments are reported all together before any processing starts, so
-mistakes are caught early. See the
-[vignette](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)
-for many more options and examples.
 
 ------------------------------------------------------------------------
 

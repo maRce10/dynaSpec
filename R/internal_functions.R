@@ -593,6 +593,9 @@ spectrum_player_int <- function(sp, ylim, side = "right", col = "black", max.amp
 # arguments are passed to seewave::spectro()
 spectro_int <- function(wave, f, wl, ovlp, flim, pal, collevels, colbg = "white", dBref = NULL, axisY = TRUE,
                         flab = "Frequency (kHz)", cex.lab = 1, cex.axis = 1, col.lab = "black", theme = list(), ...) {
+  # (an upper limit at the Nyquist frequency makes seewave index past the last frequency bin, so it is kept one bin below)
+  if (!is.null(flim))
+    flim[2] <- min(flim[2], (f / 2 - f / wl) / 1000)
   sp <- seewave::spectro(wave, f = f, wl = wl, ovlp = ovlp, flim = flim, norm = FALSE, dBref = dBref, plot = FALSE, ...)
   graphics::plot.new()
   graphics::plot.window(xlim = range(sp$time), ylim = range(sp$freq), xaxs = "i", yaxs = "i")
@@ -806,13 +809,12 @@ paged_video_int <- function(png_file, wave, ext, file.name, highlightCol, highli
   lw <- max(2, round(W / 400))
   speed <- (x1 - x0) / dur
 
-  # the box moves right as the sound plays; the part of the frame right of the page end is put back on top
+  # the box moves right as the sound plays; the part of the frame right of the page end (if any) is put back on top
   filter <- paste0(
-    "[0]split=2[a][b];",
+    if (x1 < W) "[0]split=2[a][b];" else "[0]null[a];",
     "[1]format=rgba,colorchannelmixer=aa=", highlightAlpha, "[box];",
-    "[a][box]overlay=x='", x0, "+", speed, "*t':y=", y0, "[v1];",
-    "[b]crop=", W - x1, ":", H, ":", x1, ":0[r];",
-    "[v1][r]overlay=x=", x1, ":y=0[v2];",
+    "[a][box]overlay=x='", x0, "+", speed, "*t':y=", y0, if (x1 < W) "[v1];" else "[v2];",
+    if (x1 < W) paste0("[b]crop=", W - x1, ":", H, ":", x1, ":0[r];[v1][r]overlay=x=", x1, ":y=0[v2];"),
     "[v2][2]overlay=x='", x0 - lw / 2, "+", speed, "*t':y=", y0, "[v3]"
   )
 
@@ -1105,23 +1107,34 @@ player_js_int <- function() {
 
     // smooth playback time: audio elements update currentTime in steps (often every 10-50 ms), so moving parts
     // drawn at each frame from it stop and jump. The time advances with the clock of the page and is eased toward
-    // the time of the audio (snapping to it after seeking, looping or large differences)
+    // the time of the audio (snapping to it after seeking or large differences). When the audio loops, the time
+    // continues from the end of the sound to its start, so moving parts do not jump, however short the sound is
     var smoothClock = function (a) {
       var playing = false, last = 0, wall = 0, t = 0, prev = 0;
+      // (when looping, the time passes the end of the sound without waiting for the audio to go back to its start)
+      var wrap = function (x) { return a.loop && a.duration ? (x % a.duration + a.duration) % a.duration : Math.max(0, x); };
+      var atEnd = function () { return a.loop && a.duration - last < 0.1 * a.playbackRate + 0.002; };
       return function () {
         var now = performance.now(), ct = a.currentTime;
+        // browsers loop with a short seek from the end of the sound: the time keeps going
+        if (a.seeking && playing && !a.paused && atEnd()) {
+          t += (now - prev) / 1000 * a.playbackRate;
+          prev = now;
+          return wrap(t);
+        }
         if (a.paused || a.seeking || !playing) {
           playing = !a.paused && !a.seeking;
           last = t = ct; wall = prev = now;
           return ct;
         }
+        if (ct < last && atEnd()) t -= a.duration;
         if (ct !== last) { last = ct; wall = now; }
         var target = last + Math.min(0.25, (now - wall) / 1000) * a.playbackRate;
         t += (now - prev) / 1000 * a.playbackRate;
         prev = now;
         var err = target - t;
         if (Math.abs(err) > 0.15) t = target; else t += 0.15 * err;
-        return t;
+        return wrap(t);
       };
     };
 
@@ -2001,14 +2014,15 @@ processSound <- function(wav0, filter, ampThresh, crop, xLim, verbose = TRUE, ..
   #Segment wav or make list of 1 if no segmentation
   #The ceiling code here is to deal with e.g. duration of 29.999 and xLim=10 that would only produce 2 segments
   
-  segLens <- seq(0, ceiling(wavDur / xLim[2]) * xLim[2], xLim[2])
+  # (a tiny excess, as a fraction of a sample from the silence added above, does not make another page)
+  segLens <- seq(0, ceiling(wavDur / xLim[2] - 1e-3) * xLim[2], xLim[2])
   indx <- 1:(length(segLens) - 1)
   segWavs <-
     lapply(indx, function(i)
       seewave::cutw(
         wav,
         from = segLens[i],
-        to = segLens[i + 1],
+        to = min(segLens[i + 1], wavDur),
         output = "Wave",
         bit = wav0@bit
       ))
@@ -2054,13 +2068,27 @@ paged_spec_data_int <- function(wav, resampleRate, yLim, segLens, wl, ovlp, wn, 
   }
 
   sp <- seewave::spectro(wav, plot = FALSE, ovlp = ovlp, wl = wl, wn = wn, ...)
-  in_flim <- sp$freq >= yLim[1] & sp$freq <= yLim[2]
+
+  # one more frequency bin and time frame beyond each limit, so the spectrogram reaches the edges of the figure
+  # (they are clipped when drawing)
+  around <- function(x, from, to) {
+    keep <- which(x >= from & x <= to)
+    if (length(keep) == 0) keep <- which.min(abs(x - (from + to) / 2))
+    seq(max(1, min(keep) - 1), min(length(x), max(keep) + 1))
+  }
+  in_flim <- around(sp$freq, yLim[1], yLim[2])
+  freq <- sp$freq[in_flim]
+  amp <- sp$amp[in_flim, , drop = FALSE]
+  # (the last frequency bin of spectrograms is one bin below the Nyquist frequency)
+  if (max(freq) < yLim[2]) {
+    freq <- c(freq, yLim[2])
+    amp <- rbind(amp, amp[nrow(amp), ])
+  }
 
   n_pages <- length(segLens) - 1
   lapply(seq_len(n_pages), function(i) {
-    # last page is inclusive on both bounds, all other pages on the left one
-    in_page <- sp$time >= segLens[i] & (if (i == n_pages) sp$time <= segLens[i + 1] else sp$time < segLens[i + 1])
-    list(time = sp$time[in_page], freq = sp$freq[in_flim], amp = sp$amp[in_flim, in_page, drop = FALSE])
+    in_page <- around(sp$time, segLens[i], segLens[i + 1])
+    list(time = sp$time[in_page], freq = freq, amp = amp[, in_page, drop = FALSE])
   })
 }
 
@@ -2118,9 +2146,9 @@ draw_page_int <- function(sp, i) {
   on.exit(graphics::par(op), add = TRUE)
   box_col <- theme_int(th, "col.box", "gray20")
 
-  # axis ranges expanded 5% on each side (as in previous versions)
+  # the spectrogram fills the plotting region
   graphics::plot.new()
-  graphics::plot.window(xlim = range_i + c(-1, 1) * 0.05 * diff(range_i), ylim = sp$yLim + c(-1, 1) * 0.05 * diff(sp$yLim), xaxs = "i", yaxs = "i")
+  graphics::plot.window(xlim = range_i, ylim = sp$yLim, xaxs = "i", yaxs = "i")
   usr <- graphics::par("usr")
   graphics::rect(usr[1], usr[3], usr[2], usr[4], col = sp$bg, border = NA)
 
@@ -2725,9 +2753,18 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   # set plot margins for spectrogram
   graphics::par(mar = rep(0, 4))
 
-  # plot spectro
-  if (is.null(spectro.call))
-  suppressMessages(do.call(seewave::spectro, c(list(wave = wave_sil, f = wave_sil@samp.rate, wl = wl, ovlp = ovlp, axisX = FALSE, axisY = FALSE, scale = FALSE, flim = spectro_flim, palette = pal, osc = FALSE, colbg = colbg), spectro_args))) else {
+  # sound for the spectrogram: half a window more at each end, see padded_wave_int()
+  wave_pad <- padded_wave_int(wave, wave_sil, length(add_sgm_strt@left), length(add_sgm_end@left), wl, loop > 1)
+  dur_sil <- seewave::duration(wave_sil)
+  # (overlap adjusted so a whole number of steps between windows spans the sound exactly; less than a step of difference)
+  n_steps <- max(1, round(length(wave_sil@left) / (wl * (1 - ovlp / 100))))
+  ovlp_pad <- 100 * (1 - length(wave_sil@left) / n_steps / wl)
+
+  # plot spectro (times are then those of 'wave_sil', the time axis of the image)
+  if (is.null(spectro.call)) {
+  suppressMessages(do.call(seewave::spectro, c(list(wave = wave_pad, f = wave_pad@samp.rate, wl = wl, ovlp = ovlp_pad, axisX = FALSE, axisY = FALSE, scale = FALSE, flim = spectro_flim, palette = pal, osc = FALSE, colbg = colbg), spectro_args)))
+  graphics::par(usr = c(0, dur_sil, graphics::par("usr")[3:4]))
+  } else {
 
     # modify wave in call
     spectro.call$wave <- wave_sil
@@ -2771,7 +2808,8 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   # (spectrogram colored within annotations with type = "spectrogram"; computed as in seewave::spectro() above)
   if (is.null(spectro.call) && any(vapply(layers$selections, function(sel) identical(sel$type, "spectrogram"), logical(1)))) {
     spc_args <- spectro_args[intersect(names(spectro_args), c("wn", "zp", "dB", "dBref", "norm", "fftw", "correction"))]
-    spg <- do.call(seewave::spectro, c(list(wave = wave_sil, f = wave_sil@samp.rate, wl = wl, ovlp = ovlp, flim = spectro_flim, plot = FALSE), spc_args))
+    spg <- do.call(seewave::spectro, c(list(wave = wave_pad, f = wave_pad@samp.rate, wl = wl, ovlp = ovlp_pad, flim = spectro_flim, plot = FALSE), spc_args))
+    spg$time <- spg$time * dur_sil / seewave::duration(wave_pad)
     lev <- if (is.null(spectro_args$collevels)) seq(round(max(spg$amp)) - 30, round(max(spg$amp)), by = 1) else spectro_args$collevels
     color_annotations_int(loop_layers_int(layers, seewave::duration(wave), loop > 1), spg$time, spg$freq, t(spg$amp), levels = lev,
                           colbg = colbg, to_x = function(t) t + t.display / 2, ylim = graphics::par("usr")[3:4])
@@ -3046,7 +3084,10 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
       frame_file = frame_file, spectro_file = file.path(temp_dir, "temp.full.spectro.png"),
       osc_file = if (osc) file.path(temp_dir, "temp.full.oscillo.png"), lower = if (osc) "osc" else if (lower.spectro) "spectro" else "none",
       plt = plt, height.prop = height.prop, wave = wave, wave_sil = wave_sil, t.display = t.display, buffer = buffer,
-      step_time = step_time, step_time_low = step_time_low, fps = fps, loop = loop, fix.time = fix.time,
+      # (exact steps: 'frames', rounded to whole frames for videos, would move the strips at a slightly different
+      # speed than the sound, noticeably in short sounds)
+      step_time = (seewave::duration(wave_sil) - t.display) / (seewave::duration(wave) * fps),
+      step_time_low = t.display / (seewave::duration(wave) * fps), fps = fps, loop = loop, fix.time = fix.time,
       axis = axis.type %in% c("standard", "inside", "compact"), zoom = zoom, inside = axis.type == "inside", compact = axis.type == "compact", width = width, res = res, captions = captions,
       speeds = unique(c(speed, speeds)), keep.pitch = keep.pitch, buttons = buttons, download.name = download.name,
       lcol = lcol, theme = theme
@@ -3113,6 +3154,24 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
     open_file_int(file.name)
 
   invisible(file.name)
+}
+
+# sound used for the spectrogram of scrolling spectrograms. seewave::spectro() draws its first window (centered half
+# a window after the start of the sound) at time 0 and its last one at the end of the sound, which stretches the time
+# axis by the length of a window. With half a window more at each end, the image spans exactly 'wave_sil': frames fall
+# at their true times, so the spectrogram matches the audio and the oscillogram, and when looping its end matches its
+# start. The sound continues as it does when looping (the added segments have 'n_start' and 'n_end' samples); otherwise
+# the silence at its ends is extended
+padded_wave_int <- function(wave, wave_sil, n_start, n_end, wl, loop) {
+  half <- wl %/% 2
+  n <- length(wave@left)
+  sil <- wave_sil@left
+  before <- if (loop) wave@left[(seq(n - n_start - half, length.out = half)) %% n + 1] else rep(sil[1], half)
+  after <- if (loop) wave@left[(seq(n_end, length.out = half)) %% n + 1] else rep(sil[length(sil)], half)
+  wave_sil@left <- c(before, sil, after)
+  wave_sil@right <- numeric(0)
+  wave_sil@stereo <- FALSE
+  wave_sil
 }
 
 # selections repeated at both ends of looping scrolling spectrograms (the end of the sound is added at the start
@@ -3254,7 +3313,13 @@ prep_paged_int <-
     }
     
     wav0 <- snd$wave
-    
+
+    # frequency limits within the Nyquist frequency (as in other styles)
+    nyquist <- wav0@samp.rate / 2000
+    if (yLim[1] >= nyquist)
+      stop2("'flim' lower limit must be lower than the Nyquist frequency (", nyquist, " kHz)")
+    yLim[2] <- min(yLim[2], nyquist)
+
     #Make sure it's mono (arbitrarily using left channel)
     if (wav0@stereo) {
       wav0 <- tuneR::mono(wav0, which = "left")
