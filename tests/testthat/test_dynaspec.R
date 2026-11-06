@@ -586,3 +586,179 @@ test_that("the player time waits for the audio and does not go back", {
   expect_match(js, "t = Math.max(t, next + 0.15 * err)", fixed = TRUE)
   expect_false(grepl("Math.abs(err) > 0.15", js, fixed = TRUE))
 })
+
+test_that("ds_compare() stacks any number of sounds and applies layers to all", {
+  a <- short_sound(0.8); b <- short_sound(1.2); d <- short_sound(1)
+  x <- ds_compare(a, b, d, gap = 0.2) + ds_spectrogram(wl = 128) + ds_oscillogram()
+  expect_s3_class(x, "dynaspec")
+  expect_length(x$sounds, 3)
+  expect_equal(x$name, "a_vs_b_vs_d")
+  expect_true(all(vapply(x$sounds, function(s) s$spectrogram$wl == 128 && length(s$panels) == 1, logical(1))))
+
+  # layers of dynaspec objects are kept, and a list of sounds with names can be used
+  own <- ds_compare(dynaspec(a) + ds_captions("only here", 0, 0.5), b)
+  expect_length(own$sounds[[1]]$captions, 1)
+  expect_length(own$sounds[[2]]$captions, 0)
+  expect_equal(ds_compare(list(one = a, two = b))$name, "one_vs_two")
+
+  expect_error(ds_compare(a), "at least two sounds")
+  expect_error(ds_compare(x, a), "cannot be used as sounds")
+  expect_error(ds_compare(a, b, gap = -1), "gap")
+  expect_error(save_dynaspec(ds_compare(dynaspec(a) + ds_paged(), dynaspec(b)) + ds_spectrogram(wl = 128), play = FALSE, verbose = FALSE), "same style")
+})
+
+test_that("ds_compare() uses the same frequency limits", {
+  a <- short_sound(0.8)
+  high <- tuneR::Wave(left = round(32000 * sin(2 * pi * 2000 * (1:22050) / 22050)), samp.rate = 22050, bit = 16)
+  # (lowest Nyquist frequency when sampling rates differ, without warnings)
+  expect_silent(x <- ds_compare(a, high))
+  expect_equal(x$sounds[[2]]$flim, c(0, a@samp.rate / 2000))
+  expect_equal(ds_compare(a, high, flim = c(1, Inf))$sounds[[1]]$flim, c(1, a@samp.rate / 2000))
+  expect_warning(ds_compare(a, high, flim = c(1, 8)), "Nyquist")
+  expect_error(ds_compare(a, high, flim = c(8, 9)), "Nyquist")
+  # limits of a single sound are used for all; different ones are kept
+  expect_equal(ds_compare(dynaspec(a, flim = c(1, 4)), high)$sounds[[2]]$flim, c(1, 4))
+  y <- ds_compare(dynaspec(a, flim = c(1, 4)), dynaspec(high, flim = c(2, 5)))
+  expect_equal(lapply(y$sounds, `[[`, "flim"), list(c(1, 4), c(2, 5)))
+})
+
+test_that("web pages of ds_compare() have all players, one script and the sounds themselves", {
+  a <- short_sound(0.8); b <- short_sound(1.2); d <- short_sound(1)
+  base <- ds_compare(a, b, d, gap = 0.2, flim = c(1, 5)) + ds_spectrogram(wl = 128)
+  count <- function(pattern, x) lengths(regmatches(x, gregexpr(pattern, x, fixed = TRUE)))
+  for (st in list(ds_static(width = 400, height = 200), ds_scrolling(t.display = 0.5, width = 300, height = 150), ds_paged(t.display = 0.5))) {
+    html <- save_dynaspec(base + st, play = FALSE, verbose = FALSE)
+    expect_s3_class(html, "dynaSpec_html")
+    expect_match(html, 'class="dynaspec-compare" data-gap="0.2" data-durations="', fixed = TRUE)
+    expect_equal(count("<audio", html), 3)
+    expect_equal(count("<script>", html), 1)
+    # (the script goes after the players)
+    expect_gt(regexpr("<script>", html, fixed = TRUE), max(gregexpr("<audio", html, fixed = TRUE)[[1]]))
+    # (the sounds are embedded as they are, also when the figures show silence after them)
+    for (w in list(a, b, d)) expect_true(grepl(sound_data_int(w)$uri, html, fixed = TRUE))
+  }
+  # (the sequence is set in the script of the players)
+  expect_match(player_js_int(), "initCompare", fixed = TRUE)
+  file <- tempfile(fileext = ".html")
+  save_dynaspec(base, file, play = FALSE, verbose = FALSE)
+  expect_true(file.exists(file))
+})
+
+test_that("ds_compare() keeps the same time scale and stacks images", {
+  a <- short_sound(0.8); b <- short_sound(1.6)
+  base <- ds_compare(a, b, a) + ds_spectrogram(wl = 128) + ds_static(width = 400, height = 200)
+  png_file <- tempfile(fileext = ".png")
+  save_dynaspec(base, png_file, play = FALSE, verbose = FALSE)
+  img <- png::readPNG(png_file)
+  expect_equal(dim(img)[2], 400)
+  expect_equal(dim(img)[1], 3 * 200 + 2 * 8)
+  expect_equal(seewave::duration(pad_wave_int(a, 1.6)), 1.6, tolerance = 1e-3)
+  expect_identical(pad_wave_int(b, 1), b)
+
+  # the part after the shorter sound is empty, unless each sound fits the figure
+  ink <- function(m, rows) mean(m[rows, 300:370, 1:3] < 0.9)
+  expect_lt(ink(img, 30:110), 0.001)
+  save_dynaspec(ds_compare(a, b, same.scale = FALSE) + ds_spectrogram(wl = 128) + ds_static(width = 400, height = 200), png_file, play = FALSE, verbose = FALSE)
+  expect_gt(ink(png::readPNG(png_file), 30:110), 0.001)
+
+  # paged spectrograms: images per page, and pages as long as the longest sound by default
+  files <- save_dynaspec(ds_compare(a, b) + ds_spectrogram(wl = 128) + ds_paged(t.display = 0.8), file.path(tempdir(), "cmp.png"), play = FALSE, verbose = FALSE)
+  expect_length(files, 2)
+  expect_true(all(file.exists(files)))
+  expect_length(save_dynaspec(ds_compare(a, b) + ds_spectrogram(wl = 128) + ds_paged(), file.path(tempdir(), "cmp1.png"), play = FALSE, verbose = FALSE), 1)
+  expect_error(save_dynaspec(ds_compare(a, b) + ds_spectrogram(wl = 128) + ds_scrolling(t.display = 0.5), png_file, play = FALSE, verbose = FALSE), "still images")
+})
+
+test_that("videos of ds_compare() play the sounds in sequence", {
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  a <- short_sound(0.6); b <- short_sound(0.9); d <- short_sound(0.7)
+  file <- tempfile(fileext = ".mp4")
+  save_dynaspec(ds_compare(a, b, d, gap = 0.2, flim = c(1, 5)) + ds_spectrogram(wl = 128) + ds_static(width = 300, height = 150, fps = 10), file, play = FALSE, verbose = FALSE)
+  info <- video_info_int(file)
+  expect_equal(info$duration, 0.6 + 0.9 + 0.7 + 2 * 0.2, tolerance = 0.05)
+  expect_equal(info$width, 300)
+  expect_equal(info$height, 3 * 150 + 2 * 8)
+})
+
+test_that("frequency contours are measured and drawn at their time and frequency", {
+  # sweep from 1 to 4 kHz in 2 s, after 1 s of silence
+  f <- 22050
+  tm <- seq_len(2 * f) / f
+  sweep <- round(20000 * sin(2 * pi * (1000 * tm + 750 * tm^2)))
+  w <- tuneR::Wave(left = c(rep(0L, f), sweep, rep(0L, f)), samp.rate = f, bit = 16)
+  expected <- function(t) 1 + 1.5 * (t - 1)
+  st <- data.frame(start = 1, end = 3)
+
+  # measured: frequency at the time of each point, relative to the start of the selection
+  m <- measure_contour_int(w, 1, 3, c(0, 11), "dominant", list(wl = 512))
+  expect_equal(m$freq, expected(1 + m$time), tolerance = 0.03)
+  expect_equal(min(m$time), 256 / f, tolerance = 1e-3)
+  expect_equal(max(m$time), 2 - 256 / f, tolerance = 0.01)
+  fund <- measure_contour_int(w, 1, 3, c(0, 5), "fundamental", list(wl = 512))
+  expect_true(all(c("time", "freq") %in% names(fund)))
+  # limits of the selection
+  expect_true(all(measure_contour_int(w, 1, 3, c(2, 3), "dominant", list(wl = 512))$freq >= 2, na.rm = TRUE))
+  expect_null(measure_contour_int(w, 1, 1.0002, c(0, 11), "dominant", list()))
+  # gaps are kept when smoothing
+  expect_equal(which(is.na(smooth_contour_int(c(1, 2, NA, 4, 5, 9, 7, 8), 3))), 3)
+  # isolated jumps are removed, also at the ends, and steps are smoothed
+  expect_equal(smooth_contour_int(c(9, 3, 3, 3, 3, 3, 3, 9), 3), rep(3, 8))
+  expect_equal(smooth_contour_int(c(3, 3, 3, 3, 4, 4, 4, 4), 3), c(3, 3, 3, 10 / 3, 11 / 3, 4, 4, 4))
+  expect_identical(smooth_contour_int(c(1, 5, 2), 1), c(1, 5, 2))
+
+  # drawn at the right place of static spectrograms, also after cutting the sound
+  red_y <- function(x, col_x) {
+    file <- tempfile(fileext = ".png")
+    save_dynaspec(x, file, play = FALSE, verbose = FALSE)
+    img <- png::readPNG(file)
+    red <- img[, col_x, 1] > 0.8 & img[, col_x, 2] < 0.3 & img[, col_x, 3] < 0.3
+    list(y = mean(which(red)), rows = nrow(img), any = apply(img[, , 1] > 0.8 & img[, , 2] < 0.3 & img[, , 3] < 0.3, 2, any))
+  }
+  x <- dynaspec(w, flim = c(0, 5)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
+    ds_annotations(st, alpha = 0, contour = "dominant", contour.col = "red")
+  a <- red_y(x, 200)
+  # (x = 200 is the middle of the sound, 2 s, or 2.5 kHz; the plotting region spans almost the whole figure)
+  expect_equal(1 - a$y / a$rows, 0.5, tolerance = 0.05)
+  # (no contour before and after the selection)
+  expect_true(!any(a$any[1:80]) && !any(a$any[320:400]))
+  cut <- red_y(dynaspec(w, flim = c(0, 5), tlim = c(1, 3)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
+    ds_annotations(st, alpha = 0, contour = "dominant", contour.col = "red"), 200)
+  expect_equal(cut$y, a$y, tolerance = 0.05)
+
+  # supplied contours: same place as the measured ones
+  list_points <- dynaspec(w, flim = c(0, 5)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
+    ds_annotations(st, alpha = 0, contour = list(data.frame(time = c(1, 3), freq = c(1, 4))), contour.col = "red")
+  expect_equal(red_y(list_points, 200)$y, a$y, tolerance = 0.05)
+  even <- dynaspec(w, flim = c(0, 5)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
+    ds_annotations(st, alpha = 0, contour = data.frame(sound.files = "a", selec = 1, f1 = 1, f2 = 2.5, f3 = 4), contour.col = "red")
+  expect_equal(red_y(even, 200)$y, a$y, tolerance = 0.05)
+  # (numeric vector and missing contours)
+  two <- data.frame(start = c(1, 2), end = c(1.5, 3))
+  z <- ds_annotations(two, contour = list(NULL, c(1, 2)))
+  expect_null(z$args$contour[[1]])
+  expect_equal(z$args$contour[[2]]$time, c(0, 1))
+})
+
+test_that("contours work with all styles and selections of several sound files", {
+  a <- short_sound(1.5)
+  st <- data.frame(sound.files = c("a", "b", "b"), start = c(0.1, 0.2, 0.9), end = c(0.5, 0.7, 1.3))
+  base <- dynaspec(a, flim = c(1, 5)) + ds_spectrogram(wl = 128) +
+    ds_annotations(st, sound.file = "b", contour = list(c(9, 9), c(2, 3), c(3, 4)), contour.col = "red")
+  sel <- measure_contours_int(sound_file_selections_int(base$selections[[1]], base), base)
+  # (contours follow their selections when these are filtered)
+  expect_equal(sel$X$.contour, 2:3)
+  for (s in list(ds_static(width = 400, height = 200), ds_scrolling(t.display = 0.5, width = 300, height = 150), ds_scrolling(t.display = 0.5, width = 300, height = 150, loop = 2), ds_paged(t.display = 0.5)))
+    expect_s3_class(save_dynaspec(base + s, play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(ds_compare(a, a, flim = c(1, 5)) + ds_spectrogram(wl = 128) + ds_annotations(data.frame(start = 0.2, end = 0.8), contour = "dominant"), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  # (contours on lines and colored spectrograms; only on spectrograms)
+  for (ty in c("line", "spectrogram"))
+    expect_s3_class(save_dynaspec(dynaspec(a) + ds_spectrogram(wl = 128) + ds_oscillogram() + ds_annotations(st[2:3, ], type = ty, contour = "dominant", sound.file = "b"), play = FALSE, verbose = FALSE), "dynaSpec_html")
+
+  expect_error(ds_annotations(st, contour = "other"), "contour")
+  expect_error(ds_annotations(st, contour = list(1)), "one element per selection")
+  expect_error(ds_annotations(st, contour = data.frame(a = 1)), "one row per selection")
+  expect_error(ds_annotations(st, contour = list(1, "a", 2)), "Each element")
+  expect_error(ds_annotations(st, contour.args = list(foo = 1)), "contour.args")
+  expect_error(ds_annotations(st, contour.col = "notacolor"), "contour.col")
+})
+

@@ -379,8 +379,19 @@ ds_get_theme <- function() .dynaspec_env$theme
 #' @param labels Name of a column of 'X' with labels to show at the top of each box (or above each line). Default is `NULL` (no labels).
 #' @param cex Size of the labels. Default is 1.
 #' @param freq Logical to control if the frequency range of selections is used (when 'X' has 'bottom.freq' and 'top.freq' columns). If `FALSE` boxes span the whole frequency range. Default is `TRUE`.
+#' @param contour Frequency contours to draw over the spectrogram within each selection. Default is `NULL` (no contours). It can be:
+#' - "dominant" or "fundamental": contours measured on the sound with [seewave::dfreq()] or [seewave::fund()], within the frequency range of the selection ('bottom.freq' and 'top.freq' columns, if 'freq' is `TRUE`) or the frequency limits of [dynaspec()].
+#' - A list with one element per selection (`NULL` for no contour): a numeric vector of frequencies (in kHz) evenly spaced from the start to the end of the selection, or a data frame or matrix with the time (in s, as in 'start' and 'end') and frequency (in kHz) of each point, in that order or in columns named 'time' and 'freq'.
+#' - A data frame or matrix with one row per selection and the frequencies (in kHz) evenly spaced from its start to its end in numeric columns, as the output of [warbleR::freq_ts()] (columns 'sound.files' and 'selec' are ignored).
+#'
+#' `NA` frequencies leave gaps in the contour.
+#' @param contour.col Color of the contours, or the name of a column of 'X' with the color of each contour. Default is `NULL` (the color of the selection, opaque).
+#' @param contour.lwd Width of the contours. Default is 2.
+#' @param contour.args List with the settings used to measure contours: 'wl' (window length, in samples; default is that of [ds_spectrogram()], or 512), 'ovlp' (percent overlap; default 90), 'threshold' (amplitude threshold, as a percentage, below which no frequency is measured; default 5) and 'smooth' (number of consecutive values of the running median and mean used to smooth contours; default 5, and 1 for no smoothing).
 #' @return A layer to be added to a [dynaspec()] object with `+`. Several annotation layers can be added.
 #' @details Tables with a 'sound.files' column (e.g. 'warbleR' selection tables) can contain selections of several sound files; only those of the sound shown are used (see 'sound.file').
+#'
+#' Contours are only drawn on spectrograms. To show contours without boxes use `alpha = 0`. Dominant frequency contours jump between frequencies when another frequency becomes the loudest one (e.g. fast trills), and fundamental frequency contours are coarse for high-pitched sounds at low sampling rates (they are measured in steps of the sampling period).
 #' @seealso [dynaspec()], [ds_captions()]
 #' @export
 #' @examples
@@ -408,7 +419,14 @@ ds_get_theme <- function() .dynaspec_env$theme
 #' x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
 #'   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
 #'   ds_annotations(st, col = "colors", type = "line", line.freq = "line.freq", labels = "labels")
-ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NULL, lwd = 1, lty = 1, labels = NULL, cex = 1, freq = TRUE, sound.file = NULL, line.freq = NULL) {
+#'
+#' # frequency contours
+#' x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+#'   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+#'   ds_annotations(st, col = "colors", labels = "labels", contour = "dominant",
+#'                  contour.col = "#E69F00")
+ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NULL, lwd = 1, lty = 1, labels = NULL, cex = 1, freq = TRUE, sound.file = NULL, line.freq = NULL,
+                           contour = NULL, contour.col = NULL, contour.lwd = 2, contour.args = list()) {
   check_results <- checkmate::makeAssertCollection()
   if (inherits(X, "extended_selection_table"))
     check_results$push("'X': Extended selection tables are not supported; use a selection table (e.g. warbleR::selection_table()) or a data frame")
@@ -428,6 +446,12 @@ ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NU
     check_results$push("'col': Must be a valid color or the name of a column of 'X'")
   if (is.data.frame(X) && !is.null(border) && !(length(border) == 1 && border %in% names(X)) && !is_col(border))
     check_results$push("'border': Must be a valid color or the name of a column of 'X'")
+  if (is.data.frame(X) && !is.null(contour.col) && !(length(contour.col) == 1 && contour.col %in% names(X)) && !is_col(contour.col))
+    check_results$push("'contour.col': Must be a valid color or the name of a column of 'X'")
+  checkmate::assert_number(contour.lwd, lower = 0, add = check_results, .var.name = "contour.lwd")
+  checkmate::assert_list(contour.args, names = "unique", add = check_results, .var.name = "contour.args")
+  if (length(contour.args) > 0 && !all(names(contour.args) %in% c("wl", "ovlp", "threshold", "smooth")))
+    check_results$push("'contour.args': Names must be 'wl', 'ovlp', 'threshold' or 'smooth'")
   checkmate::assert_number(lwd, lower = 0, add = check_results, .var.name = "lwd")
   if (!(checkmate::test_choice(lty, 0:6) || checkmate::test_choice(lty, c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash"))))
     check_results$push("'lty': Must be an integer between 0 and 6 or one of 'blank', 'solid', 'dashed', 'dotted', 'dotdash', 'longdash' or 'twodash'")
@@ -441,11 +465,15 @@ ds_annotations <- function(X, col = NULL, alpha = 0.3, type = "box", border = NU
   .report_assertions(check_results)
   # plain data frame (e.g. from warbleR selection tables; attributes are not needed)
   X <- data.frame(lapply(as.list(X), function(v) { attributes(v) <- NULL; v }), stringsAsFactors = FALSE)
+  # (each selection keeps the number of its contour when selections are filtered or repeated)
+  contour <- contour_input_int(contour, X)
+  X$.contour <- seq_len(nrow(X))
   if (!is.null(sound.file)) X <- X[X$sound.files == sound.file, , drop = FALSE]
   # (lines are thick and opaque unless 'lwd' and 'alpha' are supplied)
   if (type == "line" && missing(lwd)) lwd <- 8
   if (type == "line" && missing(alpha)) alpha <- 1
-  layer_int("annotations", list(X = X, col = col, alpha = alpha, type = type, border = border, lwd = lwd, lty = lty, labels = labels, cex = cex, freq = freq, sound.file = sound.file, line.freq = line.freq))
+  layer_int("annotations", list(X = X, col = col, alpha = alpha, type = type, border = border, lwd = lwd, lty = lty, labels = labels, cex = cex, freq = freq, sound.file = sound.file, line.freq = line.freq,
+                                  contour = contour, contour.col = contour.col, contour.lwd = contour.lwd, contour.args = contour.args))
 }
 
 #' Caption layer of dynamic spectrograms
@@ -582,6 +610,87 @@ ds_static <- function(rows, width, height, res, lcol, alt, fps, play.line) {
   style_int("static", provided_args_int(match.call(), parent.frame()))
 }
 
+#' Compare sounds with dynamic spectrograms
+#'
+#' `ds_compare()` shows two or more sounds one on top of the other and plays them in sequence, from top to bottom. Layers are added with `+`, as in [dynaspec()], and are applied to all sounds.
+#' @param ... The sounds (at least two), in the order they are shown and played: objects of class 'Wave', paths to '.wav' or '.mp3' files, or [dynaspec()] objects, or a single list of them. Use [dynaspec()] objects for settings or layers of a single sound (e.g. its own [ds_annotations()], [ds_captions()] or time range).
+#' @param flim Numeric vector of length 2 with the frequency limits (in kHz) of all sounds, as in [dynaspec()]. Default is `NULL`: the limits set in [dynaspec()] objects; limits set for only some sounds are used for all of them, if they are the same. Sounds with different sampling rates are shown up to the lowest Nyquist frequency, so all use the same frequency axis (unless they have different limits set in [dynaspec()] objects).
+#' @param tlim Numeric vector of length 1 or 2 with the time range (in s) of all sounds, as in [dynaspec()]. Default is `NULL` (the whole sounds, or the time range set in [dynaspec()] objects).
+#' @param gap Numeric vector of length 1 with the silence (in s) between consecutive sounds. Default is 0.5.
+#' @param same.scale Logical: use the same time scale for all sounds, so a second takes the same width in all of them? Static spectrograms leave empty room to the right of shorter sounds, and paged spectrograms without 't.display' use the duration of the longest sound as the duration of their pages (scrolling spectrograms and paged spectrograms with 't.display' always have the same scale). `FALSE` fits each sound to the width of the figure. Default is `TRUE`.
+#' @return An object of class 'dynaspec_compare' (also of class 'dynaspec'), which is shown and saved as any [dynaspec()] object, with layers added with `+`.
+#' @details All styles, panels, themes and output formats of [dynaspec()] objects can be used, and all sounds must use the same style:
+#' - Web pages have a single set of controls below the sounds. Speed, pitch, volume and zoom apply to all sounds, the time readout shows the number of the sound being played and its time, the seek bar spans all sounds, the loop button repeats the sequence and the download button saves all sounds (browsers may ask for permission to download several files). Clicking on a spectrogram plays that sound from that point, and then the following ones (the sequence ends after the last sound).
+#' - Videos ('.mp4', requires 'ffmpeg') stack the videos of the sounds: each sound keeps its first frame until it is played, and its last frame afterwards.
+#' - Still images ('.png') stack the images of the sounds (paged spectrograms: one image per page, stacking the pages with the same number).
+#'
+#' Annotations and captions added to a comparison are applied to all sounds, with times referring to each sound. To add them to a single sound, add them to its [dynaspec()] object. Layers added to a comparison replace (or are combined with) those of the [dynaspec()] objects, as in any [dynaspec()] object.
+#'
+#' Amplitudes are scaled within each sound (as in [dynaspec()]), so the colors of the spectrograms and the height of the oscillograms do not compare the amplitude of the sounds.
+#' @seealso [dynaspec()], [save_dynaspec()]
+#' @export
+#' @examples
+#' data(female_barn_swallow, male_barn_swallow)
+#'
+#' x <- ds_compare(female_barn_swallow, male_barn_swallow, flim = c(0, 10)) +
+#'   ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1))
+#'
+#' save_dynaspec(x, file.path(tempdir(), "swallows.html"), play = FALSE)
+#'
+#' \dontrun{
+#' # show it
+#' x
+#'
+#' # other panels, styles and themes, as in dynaspec()
+#' x + ds_oscillogram() + ds_theme_mako()
+#' x + ds_scrolling(t.display = 1)
+#' x + ds_paged(t.display = 1) + ds_player(buttons = c("progress", "time", "loop"))
+#'
+#' # more than two sounds
+#' data(scythebill)
+#' ds_compare(female_barn_swallow, male_barn_swallow, scythebill) +
+#'   ds_spectrogram(wl = 512)
+#'
+#' # video (requires ffmpeg)
+#' save_dynaspec(x, file.path(tempdir(), "swallows.mp4"))
+#'
+#' # layers of a single sound
+#' st <- data.frame(start = 0.5, end = 1, labels = "A")
+#' a <- dynaspec(female_barn_swallow) + ds_annotations(st, labels = "labels")
+#' ds_compare(a, male_barn_swallow, flim = c(0, 10), gap = 1) + ds_spectrogram(wl = 512)
+#' }
+ds_compare <- function(..., flim = NULL, tlim = NULL, gap = 0.5, same.scale = TRUE) {
+  check_results <- checkmate::makeAssertCollection()
+  if (!is.null(flim))
+    checkmate::assert_numeric(flim, len = 2, lower = 0, any.missing = FALSE, sorted = TRUE, unique = TRUE, add = check_results, .var.name = "flim")
+  if (!is.null(tlim))
+    checkmate::assert_numeric(tlim, min.len = 1, max.len = 2, lower = 0, any.missing = FALSE, sorted = TRUE, unique = TRUE, add = check_results, .var.name = "tlim")
+  checkmate::assert_number(gap, lower = 0, finite = TRUE, add = check_results, .var.name = "gap")
+  checkmate::assert_flag(same.scale, add = check_results, .var.name = "same.scale")
+  .report_assertions(check_results)
+
+  # names of the sounds: names of the arguments or of the objects
+  input <- list(...)
+  labels <- vapply(as.list(substitute(list(...)))[-1], function(e) make.names(paste(deparse(e), collapse = "")), character(1))
+  if (length(input) == 1 && is.list(input[[1]]) && !inherits(input[[1]], "dynaspec")) {
+    input <- input[[1]]
+    labels <- paste0("sound", seq_along(input))
+  }
+  if (!is.null(names(input))) labels <- ifelse(nzchar(names(input)), names(input), labels)
+  if (length(input) < 2)
+    stop2("ds_compare() needs at least two sounds")
+
+  sounds <- unname(Map(compare_sound_int, input, labels))
+  if (!is.null(tlim))
+    sounds <- lapply(sounds, function(s) { s$tlim <- if (length(tlim) == 1) c(0, tlim) else tlim; s })
+  sounds <- compare_flim_int(sounds, flim)
+
+  structure(
+    list(sounds = sounds, name = paste(vapply(sounds, `[[`, character(1), "name"), collapse = "_vs_"), gap = gap, same.scale = same.scale, style = sounds[[1]]$style),
+    class = c("dynaspec_compare", "dynaspec")
+  )
+}
+
 #' Add layers to dynamic spectrograms
 #'
 #' @param e1 A [dynaspec()] object.
@@ -593,6 +702,13 @@ ds_static <- function(rows, width, height, res, lcol, alt, fps, play.line) {
     stop2("only dynaspec layers (e.g. ds_spectrogram(), ds_annotations() or ds_scrolling()) can be added to dynaspec objects")
   if (!inherits(e1, "dynaspec"))
     stop2("layers must be added to a dynaspec object (see dynaspec())")
+
+  # comparisons: layers are added to all sounds
+  if (inherits(e1, "dynaspec_compare")) {
+    e1$sounds <- lapply(e1$sounds, function(s) s + e2)
+    e1$style <- e1$sounds[[1]]$style
+    return(e1)
+  }
 
   switch(e2$type,
     spectrogram = e1$spectrogram <- utils::modifyList(if (is.null(e1$spectrogram)) list() else e1$spectrogram, e2$args),
@@ -617,7 +733,7 @@ ds_static <- function(rows, width, height, res, lcol, alt, fps, play.line) {
 #' Save dynamic spectrograms
 #'
 #' `save_dynaspec()` saves a [dynaspec()] object as an interactive web page, a video or still images.
-#' @param x A [dynaspec()] object.
+#' @param x A [dynaspec()] or [ds_compare()] object.
 #' @param file.name Character string with the name of the file. The extension sets the output:
 #' - '.html': interactive web page.
 #' - '.mp4': video (requires 'ffmpeg').
@@ -660,33 +776,11 @@ save_dynaspec <- function(x, file.name = NULL, play = TRUE, verbose = TRUE) {
   if (ext == "mp4" && !have_ffmpeg_exec2())
     stop2("'ffmpeg' could not be found. It must be installed (and available in the system path) to create videos (see https://github.com/maRce10/dynaSpec#ffmpeg)")
 
-  # settings of the theme not supplied in other layers (colors and font family)
-  x <- theme_layers_int(global_theme_int(x))
-
-  # sound (cropped if requested; times of layers are shifted accordingly) and layers
-  wave <- x$wave
-  layers <- list(selections = lapply(x$selections, sound_file_selections_int, x = x), captions = x$captions)
-  if (!is.null(x$tlim)) {
-    w <- read_sound_int(wave)$wave
-    wave <- seewave::cutw(w, from = x$tlim[1], to = min(x$tlim[2], seewave::duration(w)), output = "Wave")
-    layers <- shift_layers_int(layers, -x$tlim[1])
-  }
-
-  type <- x$style$type
-  if (ext == "png" && type == "scrolling")
-    stop2("still images ('.png') are only available for static and paged spectrograms")
-  if (type %in% c("scrolling", "paged") && is.null(x$spectrogram))
-    stop2(type, " spectrograms need a spectrogram: add ds_spectrogram() (e.g. dynaspec(wave) + ds_spectrogram() + ", type, "())")
-
   # web pages without file are written to a temporary file
   out <- if (is.null(file.name)) tempfile(fileext = ".html") else file.name
   play_out <- play && !is.null(file.name)
 
-  res <- switch(type,
-    static = save_static_int(x, wave, layers, out, ext, play_out),
-    scrolling = save_scrolling_int(x, wave, layers, out, play_out, verbose),
-    paged = save_paged_int(x, wave, layers, out, ext, play_out, verbose)
-  )
+  res <- if (inherits(x, "dynaspec_compare")) save_compare_int(x, out, ext, play_out, verbose) else save_sound_int(x, out, ext, play_out, verbose)
 
   # show web pages without file in the viewer
   if (is.null(file.name) && play && interactive() && !isTRUE(getOption("knitr.in.progress")) && inherits(res, "dynaSpec_html"))

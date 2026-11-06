@@ -4,7 +4,7 @@ Title: Dynamic Spectrogram Visualizations
 Version: 2.0.0.9000
 Description: Interactive and dynamic spectrogram visualizations (web pages and videos) built with a layered syntax.
 License: GPL (>= 2)
-Imports: utils, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, cli, fs, checkmate
+Imports: utils, stats, grDevices, graphics, tools, seewave, tuneR, grid, png, ggplot2 (>= 3.4.0), viridis, cli, fs, checkmate
 Depends: R (>= 4.1.0)
 LazyData: TRUE
 SystemRequirements: ffmpeg

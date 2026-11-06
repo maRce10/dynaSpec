@@ -772,9 +772,10 @@ json_int <- function(x) {
 # web page of paged_spectro(): one image per page ('pages': list of page images (data uris) and the extents of
 # their highlight boxes)
 paged_html_int <- function(pages, wave, highlightCol, highlightAlpha, cursorCol, speeds, keep.pitch, buttons = "time", download.name = "sound",
-                           captions = NULL, res = 100, width = 1000, theme = list()) {
+                           captions = NULL, res = 100, width = 1000, theme = list(), audio = NULL) {
   ext <- do.call(rbind, lapply(pages, `[[`, "ext"))
-  snd <- sound_data_int(wave)
+  # ('audio': sound embedded when it is not the one in the figure, see save_sound_int())
+  snd <- sound_data_int(if (is.null(audio)) wave else audio, read = FALSE)
   n_pages <- length(pages)
 
   paste0(
@@ -1041,6 +1042,11 @@ player_js_int <- function() {
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -1809,6 +1815,181 @@ player_js_int <- function() {
     };
 
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\\u25C0", "previous page", "prev"), pageLabel, mk("\\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\\u2715 exit full screen" : "\\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -1821,6 +2002,10 @@ player_js_int <- function() {
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -2269,6 +2454,23 @@ annotation_cols_int <- function(sel) {
   if (length(col) == 1 && col %in% names(X)) X[[col]] else rep_len(col, nrow(X))
 }
 
+# frequency contours of a layer of annotations (in the coordinates of the spectrogram; times are relative to the start of
+# each selection, so they follow the selections when these are shifted or repeated)
+draw_contours_int <- function(sel, to_x) {
+  if (!is.list(sel$contour)) return(invisible(NULL))
+  X <- sel$X
+  cols <- annotation_cols_int(sel)
+  cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), maxColorValue = 255)
+  if (!is.null(sel$contour.col))
+    cols <- if (length(sel$contour.col) == 1 && sel$contour.col %in% names(X)) X[[sel$contour.col]] else rep_len(sel$contour.col, nrow(X))
+  for (i in seq_len(nrow(X))) {
+    ct <- sel$contour[[X$.contour[i]]]
+    if (!is.null(ct))
+      graphics::lines(to_x(X$start[i] + ct$time), ct$freq, col = cols[i], lwd = sel$contour.lwd)
+  }
+  invisible(NULL)
+}
+
 draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = graphics::par("usr")[3:4]) {
   if (is.null(layers))
     return(invisible(NULL))
@@ -2286,6 +2488,7 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
       if (!is.null(sel$labels) && sel$labels %in% names(X))
         graphics::text(to_x((X$start + X$end) / 2), y + graphics::strheight("M", cex = sel$cex) * 0.4 + sel$lwd / 96 / graphics::par("pin")[2] * diff(graphics::par("usr")[3:4]) / 2,
                        labels = X[[sel$labels]], adj = c(0.5, 0), col = cols, cex = sel$cex, font = 2, xpd = NA)
+      draw_contours_int(sel, to_x)
       next
     }
 
@@ -2299,6 +2502,9 @@ draw_layers_int <- function(layers, to_x = identity, panel = "spectro", ylim = g
     fill <- if (identical(sel$type, "spectrogram")) NA else grDevices::adjustcolor(cols, sel$alpha)
     graphics::rect(to_x(X$start), bottom, to_x(X$end), top, col = fill,
                    border = borders, lwd = sel$lwd, lty = if (is.null(sel$lty)) 1 else sel$lty)
+
+    # frequency contours (spectrograms only)
+    if (panel == "spectro") draw_contours_int(sel, to_x)
 
     # selection labels at the top of each box
     if (panel %in% c("spectro", "empty") && !is.null(sel$labels) && sel$labels %in% names(X))
@@ -2344,6 +2550,7 @@ static_spectro_int <- function(wave,
                            panels = NULL,
                            spectrum = NULL,
                            theme = list(),
+                           audio = NULL,
                            ...)
 {
   # check arguments
@@ -2375,6 +2582,8 @@ static_spectro_int <- function(wave,
 
   # read sound and audio data to embed
   snd <- sound_data_int(wave)
+  # ('audio': sound embedded in web pages when it is not the one in the figure, see save_sound_int())
+  if (!is.null(audio)) snd$uri <- sound_data_int(audio, read = FALSE)$uri
   wav <- tuneR::mono(snd$wave, which = "left")
   dur <- seewave::duration(wav)
 
@@ -3438,7 +3647,8 @@ paged_spectro_int <- function(wave,
                           download.name = "sound",
                           play = TRUE,
                           parallel = 1,
-                          verbose = TRUE)
+                          verbose = TRUE,
+                          audio = NULL)
 {
   xmin <- ymin <- xmax <- ymax <- NULL
   #This ^^ suppresses note about "no visible binding for global variable ‘xmax’"
@@ -3536,7 +3746,7 @@ paged_spectro_int <- function(wave,
                                 cursorCol = cursorCol, speeds = speeds, keep.pitch = keep.pitch, buttons = buttons,
                                 download.name = download.name, captions = specParams$layers$captions,
                                 res = 1000 / specParams$specHeight, width = 1000 / specParams$specHeight * specParams$specWidth,
-                                theme = if (is.null(specParams$theme)) list() else specParams$theme)
+                                theme = if (is.null(specParams$theme)) list() else specParams$theme, audio = audio)
 
     if (verbose) message("Web page saved at: ", vidName)
 
@@ -3592,6 +3802,104 @@ style_int <- function(style, args) structure(list(type = "style", style = style,
 provided_args_int <- function(call, env) {
   args <- as.list(call)[-1]
   lapply(args, eval, envir = env)
+}
+
+# contours supplied to ds_annotations() as a list with one element per selection: time (relative to the start of the
+# selection) and frequency of each point ("dominant" and "fundamental" are measured when saving, see measure_contours_int())
+contour_input_int <- function(contour, X) {
+  if (is.null(contour)) return(NULL)
+  if (is.character(contour)) {
+    if (length(contour) != 1 || !contour %in% c("dominant", "fundamental"))
+      stop2("'contour': Must be \"dominant\", \"fundamental\", a list with one element per selection, or a data frame or matrix with one row per selection")
+    return(contour)
+  }
+  n <- nrow(X)
+  even <- function(y, i) {
+    y <- as.numeric(y)
+    data.frame(time = if (length(y) > 1) seq(0, X$end[i] - X$start[i], length.out = length(y)) else (X$end[i] - X$start[i]) / 2, freq = y)
+  }
+  # a row per selection (e.g. warbleR::freq_ts())
+  if (is.data.frame(contour) || is.matrix(contour)) {
+    m <- as.data.frame(contour)
+    m <- m[setdiff(names(m), c("sound.files", "selec"))]
+    if (nrow(m) != n || ncol(m) == 0 || !all(vapply(m, is.numeric, logical(1))))
+      stop2("'contour': A data frame or matrix must have one row per selection and numeric columns with the frequencies")
+    return(lapply(seq_len(n), function(i) even(unlist(m[i, ]), i)))
+  }
+  if (!is.list(contour) || length(contour) != n)
+    stop2("'contour': Must be \"dominant\", \"fundamental\", a list with one element per selection, or a data frame or matrix with one row per selection")
+  lapply(seq_len(n), function(i) {
+    y <- contour[[i]]
+    if (is.null(y)) return(NULL)
+    if (is.numeric(y) && is.null(dim(y))) return(even(y, i))
+    if (!(is.data.frame(y) || is.matrix(y)) || ncol(y) < 2)
+      stop2("'contour': Each element must be NULL, a numeric vector of frequencies, or a data frame or matrix with times and frequencies")
+    y <- as.data.frame(y)
+    pts <- if (all(c("time", "freq") %in% names(y))) y[c("time", "freq")] else stats::setNames(y[1:2], c("time", "freq"))
+    if (!all(vapply(pts, is.numeric, logical(1))))
+      stop2("'contour': Times and frequencies must be numeric")
+    pts$time <- pts$time - X$start[i]
+    pts
+  })
+}
+
+# measure the contours of a layer of annotations on the sound ("dominant" and "fundamental")
+measure_contours_int <- function(sel, x) {
+  if (!is.character(sel$contour)) return(sel)
+  w <- tuneR::mono(read_sound_int(x$wave)$wave, which = "left")
+  f <- w@samp.rate
+  X <- sel$X
+  has_freq <- isTRUE(sel$freq) && all(c("bottom.freq", "top.freq") %in% names(X))
+  res <- vector("list", max(X$.contour, 0))
+  for (i in seq_len(nrow(X))) {
+    band <- if (has_freq) c(X$bottom.freq[i], X$top.freq[i]) else if (!is.null(x$flim)) x$flim else c(0, f / 2000)
+    res[[X$.contour[i]]] <- measure_contour_int(w, X$start[i], X$end[i], band, sel$contour, utils::modifyList(list(wl = x$spectrogram$wl), sel$contour.args))
+  }
+  sel$contour <- res
+  sel
+}
+
+# contour of a selection: time from the start of the selection (at the center of each window) and frequency
+measure_contour_int <- function(w, start, end, band, type, args) {
+  f <- w@samp.rate
+  from <- max(start, 0)
+  to <- min(end, seewave::duration(w))
+  if (to <= from) return(NULL)
+  seg <- w[(round(from * f) + 1):max(round(from * f) + 1, round(to * f))]
+  n <- length(seg@left)
+  wl <- if (is.null(args$wl)) 512 else args$wl
+  # (windows must fit in the selection, as in seewave)
+  wl <- min(wl, 2 * floor((n - 1) / 2))
+  if (wl < 8) return(NULL)
+  ovlp <- if (is.null(args$ovlp)) 90 else args$ovlp
+  threshold <- if (is.null(args$threshold)) 5 else args$threshold
+  smooth <- if (is.null(args$smooth)) 5 else args$smooth
+  band <- c(band[1], min(band[2], (f / 2 - f / wl) / 1000))
+  m <- if (type == "dominant")
+    seewave::dfreq(seg, f = f, wl = wl, ovlp = ovlp, threshold = threshold, bandpass = band * 1000, plot = FALSE)
+  else
+    seewave::fund(seg, f = f, wl = wl, ovlp = ovlp, threshold = threshold, fmax = band[2] * 1000, plot = FALSE)
+  y <- as.numeric(m[, 2])
+  y[y < band[1] | y > band[2] | y == 0] <- NA
+  # (seewave spreads the windows evenly from 0 to the duration of the sound, but the center of the first window is at
+  # wl / 2 and windows are 'wl * (1 - ovlp / 100)' samples apart)
+  data.frame(time = from - start + (wl / 2 + (seq_along(y) - 1) * wl * (1 - ovlp / 100)) / f, freq = smooth_contour_int(y, smooth))
+}
+
+# smooth the consecutive frequencies of a contour (gaps are kept): a running median removes isolated jumps, also at the
+# ends, and a running mean removes the steps of the frequency bins
+smooth_contour_int <- function(y, k) {
+  k <- 2 * floor(k / 2) + 1
+  if (k < 3) return(y)
+  runs <- rle(is.na(y))
+  ends <- cumsum(runs$lengths)
+  h <- (k - 1) / 2
+  for (i in which(!runs$values & runs$lengths >= k)) {
+    at <- (ends[i] - runs$lengths[i] + 1):ends[i]
+    v <- as.numeric(stats::runmed(y[at], k, endrule = "constant"))
+    y[at] <- as.numeric(stats::filter(c(rep(v[1], h), v, rep(v[length(v)], h)), rep(1 / k, k), sides = 2))[h + seq_along(at)]
+  }
+  y
 }
 
 # keep the selections of the sound shown (tables with a 'sound.files' column, e.g. warbleR selection tables)
@@ -3657,7 +3965,7 @@ pal_fun_int <- function(pal) {
 }
 
 # static spectrograms
-save_static_int <- function(x, wave, layers, out, ext, play) {
+save_static_int <- function(x, wave, layers, out, ext, play, audio = NULL) {
   sp <- spectro_args_int(x$spectrogram)
   if (!is.null(sp$pal)) sp$pal <- pal_fun_int(sp$pal)
   panels <- side_panels_int(x)
@@ -3665,7 +3973,7 @@ save_static_int <- function(x, wave, layers, out, ext, play) {
     list(wave = wave, file.name = out, flim = x$flim, play = play, layers = layers,
          spectro = !is.null(x$spectrogram), osc = length(panels) > 0, panels = panels,
          spectrum = if (!is.null(x$spectrum)) utils::modifyList(x$spectrum, list(col = panel_col_int(x$spectrum, "spectrum"))),
-         theme = minimal_axis_int(x$theme, "static")),
+         theme = minimal_axis_int(x$theme, "static"), audio = audio),
     if (!is.null(x$theme$cex.lab)) list(cex.lab = 1.2 * x$theme$cex.lab),
     sp, x$style$args, x$player, list(download.name = x$name)
   )
@@ -3693,6 +4001,239 @@ side_panels_int <- function(x) {
 # color of oscillogram, envelope and spectrum panels (supplied, from the theme or the default)
 panel_col_int <- function(p, type = p$type) {
   if (!is.null(p$col)) p$col else "black"
+}
+
+# save a dynaspec object of a single sound
+save_sound_int <- function(x, out, ext, play, verbose) {
+  # settings of the theme not supplied in other layers (colors and font family)
+  x <- theme_layers_int(global_theme_int(x))
+
+  # sound (cropped if requested; times of layers are shifted accordingly) and layers
+  wave <- x$wave
+  layers <- list(selections = lapply(lapply(x$selections, sound_file_selections_int, x = x), measure_contours_int, x = x), captions = x$captions)
+  if (!is.null(x$tlim)) {
+    w <- read_sound_int(wave)$wave
+    wave <- seewave::cutw(w, from = x$tlim[1], to = min(x$tlim[2], seewave::duration(w)), output = "Wave")
+    layers <- shift_layers_int(layers, -x$tlim[1])
+  }
+
+  type <- x$style$type
+  if (ext == "png" && type == "scrolling")
+    stop2("still images ('.png') are only available for static and paged spectrograms")
+  if (type %in% c("scrolling", "paged") && is.null(x$spectrogram))
+    stop2(type, " spectrograms need a spectrogram: add ds_spectrogram() (e.g. dynaspec(wave) + ds_spectrogram() + ", type, "())")
+
+  # comparisons: figures can show silence after the sound (static ones up to the duration of the longest sound with the
+  # same time scale, paged ones up to the end of the last page), but web pages embed the sound itself, so the next sound
+  # starts when it ends
+  audio <- NULL
+  if (isTRUE(x$compare) && type != "scrolling") audio <- wave
+  if (!is.null(x$pad.to) && type == "static")
+    wave <- pad_wave_int(read_sound_int(wave)$wave, x$pad.to)
+
+  switch(type,
+    static = save_static_int(x, wave, layers, out, ext, play, audio = audio),
+    scrolling = save_scrolling_int(x, wave, layers, out, play, verbose),
+    paged = save_paged_int(x, wave, layers, out, ext, play, verbose, audio = audio)
+  )
+}
+
+### comparison of sounds (ds_compare()) ---
+
+# sound of a comparison as a dynaspec object
+compare_sound_int <- function(s, name) {
+  if (inherits(s, "dynaspec_compare"))
+    stop2("comparisons cannot be used as sounds of ds_compare()")
+  if (inherits(s, "dynaspec")) return(s)
+  d <- dynaspec(s)
+  if (!is.character(s)) d$name <- name
+  d
+}
+
+# frequency limits of a comparison: all sounds use the same frequency axis, unless they have different limits of their own
+compare_flim_int <- function(sounds, flim) {
+  nyquist <- vapply(sounds, function(s) samp_rate_int(s$wave) / 2000, numeric(1))
+  if (!is.null(flim) && flim[1] >= min(nyquist))
+    stop2("'flim' lower limit must be lower than the lowest Nyquist frequency of the sounds (", round(min(nyquist), 2), " kHz)")
+  if (!is.null(flim) && is.finite(flim[2]) && flim[2] > min(nyquist))
+    warning2("the upper limit of 'flim' (", flim[2], " kHz) is higher than the Nyquist frequency of the sound (", round(min(nyquist), 2),
+             " kHz, half its sampling rate); spectrograms are shown up to ", round(min(nyquist), 2), " kHz")
+  own <- unique(Filter(Negate(is.null), lapply(sounds, `[[`, "flim")))
+  if (is.null(flim)) {
+    # (different limits of their own, or the style default when the sounds have the same sampling rate)
+    if (length(own) > 1 || (length(own) == 0 && length(unique(nyquist)) == 1)) return(sounds)
+    flim <- if (length(own) == 1) own[[1]] else c(0, min(nyquist))
+  }
+  # (limits of a single sound can be above the Nyquist frequency of another one)
+  if (flim[1] >= min(nyquist))
+    stop2("'flim' lower limit must be lower than the lowest Nyquist frequency of the sounds (", round(min(nyquist), 2), " kHz)")
+  flim[2] <- min(flim[2], min(nyquist))
+  lapply(sounds, function(s) { s$flim <- flim; s })
+}
+
+# duration of the part of the sound shown (after 'tlim')
+compare_dur_int <- function(s) {
+  d <- seewave::duration(read_sound_int(s$wave)$wave)
+  if (is.null(s$tlim)) d else min(s$tlim[2], d) - s$tlim[1]
+}
+
+# add silence at the end of a sound up to a given duration
+pad_wave_int <- function(w, to) {
+  n <- round(to * w@samp.rate) - length(w@left)
+  if (n <= 0) return(w)
+  w@left <- c(w@left, vector(typeof(w@left), n))
+  if (w@stereo) w@right <- c(w@right, vector(typeof(w@right), n))
+  w
+}
+
+# background of the separation between stacked images and videos (color of the figure, or white if transparent)
+compare_bg_int <- function(s) {
+  bg <- theme_int(global_theme_int(s)$theme, "bg", "white")
+  rgb <- grDevices::col2rgb(bg, alpha = TRUE)
+  if (rgb[4] == 0) "#FFFFFF" else grDevices::rgb(rgb[1], rgb[2], rgb[3], maxColorValue = 255)
+}
+
+# comparison of sounds: each sound is rendered as any dynaspec object, and the outputs are stacked
+save_compare_int <- function(x, out, ext, play, verbose) {
+  sounds <- x$sounds
+  if (length(unique(vapply(sounds, function(s) s$style$type, character(1)))) > 1)
+    stop2("all sounds of a comparison must use the same style (add the style to the comparison, e.g. ds_compare(x, y) + ds_scrolling())")
+  durs <- vapply(sounds, compare_dur_int, numeric(1))
+  sounds <- lapply(sounds, function(s) { s$compare <- TRUE; s })
+
+  # same time scale
+  if (isTRUE(x$same.scale)) {
+    type <- sounds[[1]]$style$type
+    sounds <- lapply(sounds, function(s) {
+      if (type == "static") s$pad.to <- max(durs)
+      if (type == "paged" && (is.null(s$style$args$t.display) || !is.finite(s$style$args$t.display))) s$style$args$t.display <- max(durs)
+      s
+    })
+  }
+
+  render <- function(s, file) {
+    # the code of the web pages is combined below, not embedded when knitting
+    op <- options(knitr.in.progress = FALSE)
+    on.exit(options(op), add = TRUE)
+    save_dynaspec(s, file, play = FALSE, verbose = verbose)
+  }
+
+  res <- switch(ext,
+    html = compare_html_int(lapply(sounds, render, file = NULL), durs, x$gap, out, play),
+    mp4 = compare_video_int(sounds, render, durs, x, out),
+    png = compare_png_int(sounds, render, out, verbose)
+  )
+  if (ext != "html" && play) for (f in res) open_file_int(normalizePath(f))
+  if (ext == "html") res else invisible(res)
+}
+
+# web page of a comparison: the players of all sounds (their javascript goes after them, as it sets the sequence)
+compare_html_int <- function(players, durs, gap, out, play) {
+  js <- player_js_int()
+  html <- paste0(
+    '<div class="dynaspec-compare" data-gap="', gap, '" data-durations="', paste(durs, collapse = ","), '">\n',
+    paste(vapply(players, function(p) sub(js, "", p, fixed = TRUE), character(1)), collapse = ""),
+    '</div>\n',
+    js
+  )
+  output_html_int(html, file.name = out, play = play)
+}
+
+# duration and size of a video
+video_info_int <- function(file) {
+  out <- paste(suppressWarnings(system2(ffmpeg_exec2(), c("-hide_banner", "-i", shQuote(file)), stdout = TRUE, stderr = TRUE)), collapse = "\n")
+  dur <- regmatches(out, regexec("Duration: ([0-9]+):([0-9]+):([0-9.]+)", out))[[1]]
+  size <- regmatches(out, regexec("Video:[^\n]*[ ,]([0-9]{2,5})x([0-9]{2,5})", out))[[1]]
+  if (length(dur) < 4 || length(size) < 3)
+    stop2("ffmpeg could not read the video of a sound of the comparison")
+  list(duration = sum(as.numeric(dur[2:4]) * c(3600, 60, 1)), width = as.numeric(size[2]), height = as.numeric(size[3]))
+}
+
+# video of a comparison: each sound keeps its first frame until it is played, and its last frame afterwards
+compare_video_int <- function(sounds, render, durs, x, out) {
+  n <- length(sounds)
+  files <- replicate(n, tempfile(fileext = ".mp4"))
+  on.exit(unlink(files), add = TRUE)
+  for (i in seq_len(n)) render(sounds[[i]], files[i])
+  info <- lapply(files, video_info_int)
+
+  # (static and paged videos can include silence at the end, which is not played)
+  d <- if (sounds[[1]]$style$type == "scrolling") vapply(info, `[[`, numeric(1), "duration") else durs
+  g <- x$gap
+  w <- info[[1]]$width
+  w <- w + w %% 2
+  bg <- paste0("0x", substring(compare_bg_int(sounds[[1]]), 2))
+  num <- function(v) format(v, digits = 10, scientific = FALSE)
+  chains <- vapply(seq_len(n), function(i) {
+    before <- sum(d[seq_len(i - 1)]) + (i - 1) * g
+    after <- sum(d[-seq_len(i)]) + (n - i) * g
+    tpad <- c(if (before > 0) paste0("start_mode=clone:start_duration=", num(before)), if (after > 0) paste0("stop_mode=clone:stop_duration=", num(after)))
+    # (a band of the figure background separates the videos)
+    sprintf("[%d:v]trim=end=%s,setpts=PTS-STARTPTS,tpad=%s,scale=%d:-2,setsar=1%s[v%d]", i - 1, num(d[i]), paste(tpad, collapse = ":"), w,
+            if (i < n) sprintf(",pad=iw:ih+8:0:0:color=%s", bg) else "", i)
+  }, character(1))
+  audio <- vapply(seq_len(n), function(i) {
+    sprintf("[%d:a]atrim=end=%s,asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo%s[a%d]", i - 1, num(d[i]),
+            if (i < n && g > 0) paste0(",apad=pad_dur=", num(g)) else "", i)
+  }, character(1))
+  filter <- paste(c(
+    chains, paste0(paste0("[v", seq_len(n), "]", collapse = ""), "vstack=inputs=", n, "[v]"),
+    audio, paste0(paste0("[a", seq_len(n), "]", collapse = ""), "concat=n=", n, ":v=0:a=1[a]")
+  ), collapse = ";")
+  run_ffmpeg_int(paste("-y", paste("-i", shQuote(files), collapse = " "), "-filter_complex", shQuote(filter),
+                       "-map [v] -map [a] -c:v libx264 -pix_fmt yuv420p -c:a aac", shQuote(out)), "stacking the videos of the sounds")
+  out
+}
+
+# images of a comparison: images of the sounds stacked (paged spectrograms: pages with the same number)
+compare_png_int <- function(sounds, render, out, verbose) {
+  dir <- tempfile("compare_")
+  dir.create(dir)
+  on.exit(unlink(dir, recursive = TRUE), add = TRUE)
+  files <- lapply(seq_along(sounds), function(i) render(sounds[[i]], file.path(dir, paste0("sound", i, ".png"))))
+  n <- max(lengths(files))
+  res <- if (n == 1) out else paste0(tools::file_path_sans_ext(out), "_", seq_len(n), ".png")
+  bg <- grDevices::col2rgb(compare_bg_int(sounds[[1]])) / 255
+  for (i in seq_len(n)) {
+    img <- lapply(files, function(f) if (i <= length(f)) png::readPNG(f[i]))
+    png::writePNG(stack_images_int(img, bg), res[i])
+  }
+  if (verbose) message("Image(s) saved at: ", paste(res, collapse = ", "))
+  res
+}
+
+# stack images (arrays of png::readPNG()) with a band of the background color between them; missing images (NULL) are
+# filled with the background color
+stack_images_int <- function(img, bg, band = 8) {
+  present <- Filter(Negate(is.null), img)
+  w <- max(vapply(present, function(m) dim(m)[2], numeric(1)))
+  h <- max(vapply(present, function(m) dim(m)[1], numeric(1)))
+  blank <- function(h, w) {
+    m <- array(1, c(h, w, 4))
+    for (k in 1:3) m[, , k] <- bg[k]
+    m
+  }
+  rgba <- function(m) {
+    if (is.null(m)) return(blank(h, w))
+    if (length(dim(m)) == 2) m <- array(m, c(dim(m), 1))
+    if (dim(m)[3] < 3) m <- array(c(m[, , 1], m[, , 1], m[, , 1], if (dim(m)[3] == 2) m[, , 2] else rep(1, length(m[, , 1]))), c(dim(m)[1:2], 4))
+    if (dim(m)[3] == 3) m <- array(c(m, rep(1, prod(dim(m)[1:2]))), c(dim(m)[1:2], 4))
+    if (dim(m)[2] < w) {
+      out <- blank(dim(m)[1], w)
+      out[, seq_len(dim(m)[2]), ] <- m
+      m <- out
+    }
+    m
+  }
+  parts <- lapply(img, rgba)
+  heights <- vapply(parts, function(m) dim(m)[1], numeric(1))
+  res <- blank(sum(heights) + band * (length(parts) - 1), w)
+  top <- 0
+  for (i in seq_along(parts)) {
+    res[top + seq_len(heights[i]), , ] <- parts[[i]]
+    top <- top + heights[i] + band
+  }
+  res
 }
 
 # scrolling spectrograms
@@ -3725,7 +4266,7 @@ save_scrolling_int <- function(x, wave, layers, out, play, verbose) {
 }
 
 # paged spectrograms (style arguments are split between the preparation of the pages and the engine)
-save_paged_int <- function(x, wave, layers, out, ext, play, verbose) {
+save_paged_int <- function(x, wave, layers, out, ext, play, verbose, audio = NULL) {
   if (is.null(x$spectrogram))
     stop2("paged spectrograms need a spectrogram: add ds_spectrogram() (e.g. dynaspec(wave) + ds_spectrogram() + ds_paged())")
   unused <- c(if (length(x$panels) > 0) "ds_oscillogram() and ds_envelope()", if (!is.null(x$spectrum)) "ds_spectrum()", if (!is.null(x$overview)) "ds_overview()")
@@ -3735,7 +4276,7 @@ save_paged_int <- function(x, wave, layers, out, ext, play, verbose) {
     warning2("the zoom slider is only available in scrolling spectrograms")
   st <- x$style$args
   engine_names <- c("fps", "highlight.col", "highlight.alpha", "lcol", "delete.temp", "parallel")
-  engine_args <- c(st[intersect(names(st), engine_names)], x$player, list(download.name = x$name))
+  engine_args <- c(st[intersect(names(st), engine_names)], x$player, list(download.name = x$name, audio = audio))
   prep_args <- st[setdiff(names(st), engine_names)]
 
   # spectrogram settings ('collevels' sets the amplitude range and number of color bands)

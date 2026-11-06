@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ::: {.alert .alert-info}
 
-This article shows how to customize dynamic spectrograms, layer by layer, and how to highlight and label parts of the sound with annotations and captions. The [main vignette](dynaSpec.html) shows the basic usage of each layer, and the article [Themes for dynamic spectrograms](themes.html) shows the themes. As there, the examples create interactive web pages: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed slider to slow the sound down. Use `save_dynaspec()` with a file name ending in `.mp4` to create videos instead.
+This article shows how to customize dynamic spectrograms, layer by layer, how to highlight and label parts of the sound with annotations (including frequency contours) and captions, and how to compare sounds. The [main vignette](dynaSpec.html) shows the basic usage of each layer, and the article [Themes for dynamic spectrograms](themes.html) shows the themes. As there, the examples create interactive web pages: press play to watch the spectrogram along with the sound, click on it to play from that point, and use the speed slider to slow the sound down. Use `save_dynaspec()` with a file name ending in `.mp4` to create videos instead.
 
 :::
 
@@ -417,6 +417,102 @@ dynaspec(Phae.long1, flim = c(1, 10)) +
   ds_annotations(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec", col = "tomato")
 ```
 
+## Frequency contours
+
+Annotations can also show frequency contours, drawn over the spectrogram within each selection. With `contour = "dominant"` or `contour = "fundamental"` they are measured on the sound, within the frequency range of the selection (`bottom.freq` and `top.freq`, if available) or the frequency limits of `dynaspec()`. `contour.col` and `contour.lwd` set the color and width of the lines:
+
+```{r}
+st <- data.frame(
+  start = c(0.34, 1.13, 1.44, 2.31),
+  end = c(1.03, 1.36, 1.68, 2.55),
+  labels = c("long note", "arched", "arched", "arched"),
+  colors = c("#4C78A8", "#B279A2", "#B279A2", "#B279A2")
+)
+
+ds_scythebill +
+  ds_annotations(
+    st,
+    col = "colors",
+    labels = "labels",
+    contour = "dominant",
+    contour.col = "#E69F00",
+    contour.lwd = 3
+  )
+```
+
+Contours can be shown without boxes with `alpha = 0`, and work in all styles. `contour.args` sets how they are measured: the window length (`wl`, by default that of the spectrogram), overlap (`ovlp`), amplitude threshold below which no frequency is measured (`threshold`) and smoothing (`smooth`):
+
+```{r}
+ds_scythebill +
+  ds_annotations(
+    st,
+    alpha = 0,
+    contour = "dominant",
+    contour.col = "#E69F00",
+    contour.args = list(threshold = 10, smooth = 9)
+  ) +
+  ds_scrolling(t.display = 1, width = 700, height = 300, res = 90)
+```
+
+Dominant frequency contours jump when another frequency becomes the loudest one (e.g. in fast trills), and fundamental frequency contours are coarse for high-pitched sounds at low sampling rates, as in this recording.
+
+Contours measured elsewhere can be supplied as a list with one element per selection: a data frame with the time (in s, as `start` and `end`) and frequency (in kHz) of each point, a vector of frequencies evenly spaced along the selection, or `NULL` for no contour. Supplied contours are drawn as they are, and `NA` frequencies leave gaps in the line:
+
+```{r}
+my_contours <- list(
+  data.frame(
+    time = c(0.34, 0.45, 0.5, 0.8, 1.03),
+    freq = c(3.7, 3.2, 2.8, 2.9, 2.65)
+  ),
+  c(2.6, 3.2, 3.7, 3.3, 3, 2.8),
+  NULL,
+  c(2.2, 2.7, 3.1, 3.2, 3.1, 2.7)
+)
+
+ds_scythebill +
+  ds_annotations(
+    st,
+    col = "colors",
+    labels = "labels",
+    contour = my_contours,
+    contour.col = "#E69F00",
+    contour.lwd = 3
+  )
+```
+
+They can also be a table with one row per selection and the frequencies in numeric columns, such as the output of `warbleR::freq_ts()`:
+
+```{r}
+# freq_ts() reads the sound from a file
+data("Phae.long1", package = "NatureSounds")
+data("lbh_selec_table", package = "warbleR")
+
+sound_dir <- tempfile()
+dir.create(sound_dir)
+tuneR::writeWave(Phae.long1, file.path(sound_dir, "Phae.long1.wav"))
+
+hermit_st <- lbh_selec_table[lbh_selec_table$sound.files == "Phae.long1.wav", ]
+
+hermit_contours <- warbleR::freq_ts(
+  hermit_st,
+  type = "dominant",
+  wl = 300,
+  length.out = 30,
+  img = FALSE,
+  pb = FALSE,
+  path = sound_dir
+)
+
+dynaspec(Phae.long1, flim = c(1, 10)) +
+  ds_spectrogram(wl = 300) +
+  ds_annotations(
+    hermit_st,
+    alpha = 0.1,
+    contour = hermit_contours,
+    contour.col = "tomato"
+  )
+```
+
 # Captions
 
 `ds_captions()` adds text at a fixed position of the figure (`x` and `y`, as proportions of the figure width and height), shown during a time range of the sound (`start` and `end`, in s). `fading` adds fade-in and fade-out effects (in s), and `col`, `cex` and `font` set the color, size and font. Several captions can be shown one after the other, and several caption layers can be added at different positions. The following code labels the frog species calling in a recording from Costa Rica:
@@ -491,6 +587,58 @@ ds_antshrike +
 ```
 
 The download button saves the sound embedded in the web page (named after the sound file or 'Wave' object), and the full screen button enlarges the player to the size of the screen (e.g. for presentations; web browsers may not allow full screen in embedded frames).
+
+# Comparing sounds
+
+`ds_compare()` shows two or more sounds one on top of the other and plays them in sequence, from top to bottom. Layers are added as with `dynaspec()`, and apply to all sounds. `gap` sets the silence between sounds (in s). Web pages have one set of controls for all sounds: speed, pitch, volume and zoom apply to all of them, the time readout shows the number of the sound being played and its time, the seek bar spans all sounds and the loop button repeats the whole sequence. Clicking on a spectrogram plays that sound from that point, and then the following ones:
+
+```{r}
+data("female_barn_swallow")
+data("male_barn_swallow")
+
+ds_compare(female_barn_swallow, male_barn_swallow, flim = c(0, 10), gap = 0.3) +
+  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1)) +
+  ds_oscillogram() +
+  ds_player(buttons = c("progress", "time", "loop"))
+```
+
+Any number of sounds can be compared. All of them use the same frequency axis (the lowest Nyquist frequency if their sampling rates differ, as in this example) and the same time scale, so a second takes the same width in all of them. `same.scale = FALSE` fits each sound to the width of the figure instead:
+
+```{r}
+three_songs <- ds_compare(
+  female_barn_swallow,
+  male_barn_swallow,
+  scythebill
+) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_static(height = 300)
+
+three_songs
+```
+
+All styles and panels can be used, as long as all sounds use the same style:
+
+```{r}
+three_songs + ds_scrolling(t.display = 1, width = 700, height = 250, res = 90)
+
+three_songs + ds_paged(t.display = 1)
+```
+
+Sounds can also be `dynaspec()` objects, for settings or layers of a single sound (e.g. its own time range, annotations or captions). Layers added to the comparison apply to all sounds:
+
+```{r}
+swallow_st <- data.frame(start = 0.2, end = 0.75, labels = "first notes")
+
+female <- dynaspec(female_barn_swallow) +
+  ds_annotations(swallow_st, labels = "labels")
+
+male <- dynaspec(male_barn_swallow, tlim = c(0, 2.5))
+
+ds_compare(female, male, flim = c(0, 10)) +
+  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1))
+```
+
+Amplitudes are scaled within each sound, so the colors of the spectrograms and the height of the oscillograms do not compare the amplitude of the sounds. Videos (`.mp4`) and still images (`.png`) stack those of each sound: in videos, each sound keeps its first frame until it is played, and its last frame afterwards.
 
 # Videos
 

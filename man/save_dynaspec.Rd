@@ -7,7 +7,7 @@
 save_dynaspec(x, file.name = NULL, play = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{x}{A \code{\link[=dynaspec]{dynaspec()}} object.}
+\item{x}{A \code{\link[=dynaspec]{dynaspec()}} or \code{\link[=ds_compare]{ds_compare()}} object.}
 
 \item{file.name}{Character string with the name of the file. The extension sets the output:
 \itemize{

@@ -16,7 +16,11 @@ ds_annotations(
   cex = 1,
   freq = TRUE,
   sound.file = NULL,
-  line.freq = NULL
+  line.freq = NULL,
+  contour = NULL,
+  contour.col = NULL,
+  contour.lwd = 2,
+  contour.args = list()
 )
 }
 \arguments{
@@ -43,6 +47,21 @@ ds_annotations(
 \item{sound.file}{Name of the sound file whose selections are shown, when 'X' has a 'sound.files' column with several sound files. Default is \code{NULL}: when the sound of \code{\link[=dynaspec]{dynaspec()}} is a file, the selections of that file are shown (matching the file name); otherwise 'X' must contain a single sound file.}
 
 \item{line.freq}{Frequency (in kHz) at which lines are drawn when \code{type = "line"}, or the name of a column of 'X' with the frequency of each line (e.g. a different height for each individual of a duet). Default is \code{NULL}: near the top of the spectrogram (90\% of the frequency range shown).}
+
+\item{contour}{Frequency contours to draw over the spectrogram within each selection. Default is \code{NULL} (no contours). It can be:
+\itemize{
+\item "dominant" or "fundamental": contours measured on the sound with \code{\link[seewave:dfreq]{seewave::dfreq()}} or \code{\link[seewave:fund]{seewave::fund()}}, within the frequency range of the selection ('bottom.freq' and 'top.freq' columns, if 'freq' is \code{TRUE}) or the frequency limits of \code{\link[=dynaspec]{dynaspec()}}.
+\item A list with one element per selection (\code{NULL} for no contour): a numeric vector of frequencies (in kHz) evenly spaced from the start to the end of the selection, or a data frame or matrix with the time (in s, as in 'start' and 'end') and frequency (in kHz) of each point, in that order or in columns named 'time' and 'freq'.
+\item A data frame or matrix with one row per selection and the frequencies (in kHz) evenly spaced from its start to its end in numeric columns, as the output of \code{\link[warbleR:freq_ts]{warbleR::freq_ts()}} (columns 'sound.files' and 'selec' are ignored).
+}
+
+\code{NA} frequencies leave gaps in the contour.}
+
+\item{contour.col}{Color of the contours, or the name of a column of 'X' with the color of each contour. Default is \code{NULL} (the color of the selection, opaque).}
+
+\item{contour.lwd}{Width of the contours. Default is 2.}
+
+\item{contour.args}{List with the settings used to measure contours: 'wl' (window length, in samples; default is that of \code{\link[=ds_spectrogram]{ds_spectrogram()}}, or 512), 'ovlp' (percent overlap; default 90), 'threshold' (amplitude threshold, as a percentage, below which no frequency is measured; default 5) and 'smooth' (number of consecutive values of the running median and mean used to smooth contours; default 5, and 1 for no smoothing).}
 }
 \value{
 A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+}. Several annotation layers can be added.
@@ -52,6 +71,8 @@ A layer to be added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+
 }
 \details{
 Tables with a 'sound.files' column (e.g. 'warbleR' selection tables) can contain selections of several sound files; only those of the sound shown are used (see 'sound.file').
+
+Contours are only drawn on spectrograms. To show contours without boxes use \code{alpha = 0}. Dominant frequency contours jump between frequencies when another frequency becomes the loudest one (e.g. fast trills), and fundamental frequency contours are coarse for high-pitched sounds at low sampling rates (they are measured in steps of the sampling period).
 }
 \examples{
 data(scythebill)
@@ -78,6 +99,12 @@ st$line.freq <- c(4.6, 4.9, 4.9, 5.2)
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
   ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
   ds_annotations(st, col = "colors", type = "line", line.freq = "line.freq", labels = "labels")
+
+# frequency contours
+x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_annotations(st, col = "colors", labels = "labels", contour = "dominant",
+                 contour.col = "#E69F00")
 }
 \seealso{
 \code{\link[=dynaspec]{dynaspec()}}, \code{\link[=ds_captions]{ds_captions()}}
