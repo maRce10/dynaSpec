@@ -114,6 +114,10 @@
   made them up to a few percent faster in short sounds), and the image
   of the spectrogram spans its time range exactly, so its end matches
   its start
+- Scrolling spectrograms and other moving parts of web pages no longer
+  go back shortly after pressing play: the time of the player waits for
+  the audio to start, and when ahead of the audio it slows down or waits
+  instead of going back
 - The spectrogram of scrolling spectrograms is at the true time of the
   sound:
   [`seewave::spectro()`](https://rdrr.io/pkg/seewave/man/spectro.html)
