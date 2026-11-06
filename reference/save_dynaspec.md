@@ -16,6 +16,8 @@ save_dynaspec(x, file.name = NULL, play = TRUE, verbose = TRUE)
 
   A
   [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+  or
+  [`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md)
   object.
 
 - file.name:

@@ -19,6 +19,9 @@
 - [`ds_captions()`](https://marce10.github.io/dynaSpec/reference/ds_captions.md)
   : Caption layer of dynamic spectrograms
 
+- [`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md)
+  : Compare sounds with dynamic spectrograms
+
 - [`ds_envelope()`](https://marce10.github.io/dynaSpec/reference/ds_envelope.md)
   : Amplitude envelope layer of dynamic spectrograms
 

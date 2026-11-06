@@ -57,7 +57,11 @@
 <span>  cex <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  freq <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sound.file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  line.freq <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  line.freq <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  contour <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  contour.col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  contour.lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  contour.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -112,6 +116,25 @@
 <dt id="arg-line-freq">line.freq<a class="anchor" aria-label="anchor" href="#arg-line-freq"></a></dt>
 <dd><p>Frequency (in kHz) at which lines are drawn when <code>type = "line"</code>, or the name of a column of 'X' with the frequency of each line (e.g. a different height for each individual of a duet). Default is <code>NULL</code>: near the top of the spectrogram (90% of the frequency range shown).</p></dd>
 
+
+<dt id="arg-contour">contour<a class="anchor" aria-label="anchor" href="#arg-contour"></a></dt>
+<dd><p>Frequency contours to draw over the spectrogram within each selection. Default is <code>NULL</code> (no contours). It can be:</p><ul><li><p>"dominant" or "fundamental": contours measured on the sound with <code><a href="https://rdrr.io/pkg/seewave/man/dfreq.html" class="external-link">seewave::dfreq()</a></code> or <code><a href="https://rdrr.io/pkg/seewave/man/fund.html" class="external-link">seewave::fund()</a></code>, within the frequency range of the selection ('bottom.freq' and 'top.freq' columns, if 'freq' is <code>TRUE</code>) or the frequency limits of <code><a href="dynaspec.html">dynaspec()</a></code>.</p></li>
+<li><p>A list with one element per selection (<code>NULL</code> for no contour): a numeric vector of frequencies (in kHz) evenly spaced from the start to the end of the selection, or a data frame or matrix with the time (in s, as in 'start' and 'end') and frequency (in kHz) of each point, in that order or in columns named 'time' and 'freq'.</p></li>
+<li><p>A data frame or matrix with one row per selection and the frequencies (in kHz) evenly spaced from its start to its end in numeric columns, as the output of <code><a href="https://marce10.github.io/warbleR/reference/freq_ts.html" class="external-link">warbleR::freq_ts()</a></code> (columns 'sound.files' and 'selec' are ignored).</p></li>
+</ul><p><code>NA</code> frequencies leave gaps in the contour.</p></dd>
+
+
+<dt id="arg-contour-col">contour.col<a class="anchor" aria-label="anchor" href="#arg-contour-col"></a></dt>
+<dd><p>Color of the contours, or the name of a column of 'X' with the color of each contour. Default is <code>NULL</code> (the color of the selection, opaque).</p></dd>
+
+
+<dt id="arg-contour-lwd">contour.lwd<a class="anchor" aria-label="anchor" href="#arg-contour-lwd"></a></dt>
+<dd><p>Width of the contours. Default is 2.</p></dd>
+
+
+<dt id="arg-contour-args">contour.args<a class="anchor" aria-label="anchor" href="#arg-contour-args"></a></dt>
+<dd><p>List with the settings used to measure contours: 'wl' (window length, in samples; default is that of <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>, or 512), 'ovlp' (percent overlap; default 90), 'threshold' (amplitude threshold, as a percentage, below which no frequency is measured; default 5) and 'smooth' (number of consecutive values of the running median and mean used to smooth contours; default 5, and 1 for no smoothing).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -120,6 +143,7 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Tables with a 'sound.files' column (e.g. 'warbleR' selection tables) can contain selections of several sound files; only those of the sound shown are used (see 'sound.file').</p>
+<p>Contours are only drawn on spectrograms. To show contours without boxes use <code>alpha = 0</code>. Dominant frequency contours jump between frequencies when another frequency becomes the loudest one (e.g. fast trills), and fundamental frequency contours are coarse for high-pitched sounds at low sampling rates (they are measured in steps of the sampling period).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -152,6 +176,12 @@
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ds_annotations</span><span class="op">(</span><span class="va">st</span>, col <span class="op">=</span> <span class="st">"colors"</span>, type <span class="op">=</span> <span class="st">"line"</span>, line.freq <span class="op">=</span> <span class="st">"line.freq"</span>, labels <span class="op">=</span> <span class="st">"labels"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># frequency contours</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ds_annotations</span><span class="op">(</span><span class="va">st</span>, col <span class="op">=</span> <span class="st">"colors"</span>, labels <span class="op">=</span> <span class="st">"labels"</span>, contour <span class="op">=</span> <span class="st">"dominant"</span>,</span></span>
+<span class="r-in"><span>                 contour.col <span class="op">=</span> <span class="st">"#E69F00"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

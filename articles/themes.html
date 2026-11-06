@@ -135,6 +135,11 @@ the background around the panels (<code>bg</code>):</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -902,6 +907,181 @@ the background around the panels (<code>bg</code>):</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -914,6 +1094,10 @@ the background around the panels (<code>bg</code>):</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -957,6 +1141,11 @@ the color and size of titles (<code>col.title</code>,
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -1724,6 +1913,181 @@ the color and size of titles (<code>col.title</code>,
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -1736,6 +2100,10 @@ the color and size of titles (<code>col.title</code>,
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -1780,6 +2148,11 @@ of the player controls of web pages. A dark theme:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -2547,6 +2920,181 @@ of the player controls of web pages. A dark theme:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -2559,6 +3107,10 @@ of the player controls of web pages. A dark theme:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -2594,6 +3146,11 @@ oscillograms, envelopes and power spectra, and <code>bg</code> in
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -3361,6 +3918,181 @@ oscillograms, envelopes and power spectra, and <code>bg</code> in
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -3373,6 +4105,10 @@ oscillograms, envelopes and power spectra, and <code>bg</code> in
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -3413,6 +4149,11 @@ previous themes.</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -4180,6 +4921,181 @@ previous themes.</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -4192,6 +5108,10 @@ previous themes.</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -4225,6 +5145,11 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -4992,6 +5917,181 @@ colors for panels, annotations, play line and player controls:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -5004,6 +6104,10 @@ colors for panels, annotations, play line and player controls:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -5036,6 +6140,11 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -5803,6 +6912,181 @@ colors for panels, annotations, play line and player controls:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -5815,6 +7099,10 @@ colors for panels, annotations, play line and player controls:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -5847,6 +7135,11 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -6614,6 +7907,181 @@ colors for panels, annotations, play line and player controls:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -6626,6 +8094,10 @@ colors for panels, annotations, play line and player controls:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -6659,6 +8131,11 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -7426,6 +8903,181 @@ colors for panels, annotations, play line and player controls:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -7438,6 +9090,10 @@ colors for panels, annotations, play line and player controls:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -7471,6 +9127,11 @@ color:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -8238,6 +9899,181 @@ color:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -8250,6 +10086,10 @@ color:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -8281,6 +10121,11 @@ color:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -9048,6 +10893,181 @@ color:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -9060,6 +11080,10 @@ color:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -9096,6 +11120,11 @@ moves along (<code>fix.time = FALSE</code>) and a short oscillogram:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -9863,6 +11892,181 @@ moves along (<code>fix.time = FALSE</code>) and a short oscillogram:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -9875,6 +12079,10 @@ moves along (<code>fix.time = FALSE</code>) and a short oscillogram:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -9912,6 +12120,11 @@ color version of the Xeno-canto player:</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -10679,6 +12892,181 @@ color version of the Xeno-canto player:</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -10691,6 +13079,10 @@ color version of the Xeno-canto player:</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -10728,6 +13120,11 @@ overview of the whole sound below (the part shown is highlighted):</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -11495,6 +13892,181 @@ overview of the whole sound below (the part shown is highlighted):</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -11507,6 +14079,10 @@ overview of the whole sound below (the part shown is highlighted):</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -11551,6 +14127,11 @@ or, in scrolling spectrograms, “minimal” (1 s and 1 kHz scale bars):</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -12318,6 +14899,181 @@ or, in scrolling spectrograms, “minimal” (1 s and 1 kHz scale bars):</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -12330,6 +15086,10 @@ or, in scrolling spectrograms, “minimal” (1 s and 1 kHz scale bars):</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -12368,6 +15128,11 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -13135,6 +15900,181 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -13147,6 +16087,10 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }
@@ -13173,6 +16117,11 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       ".dynaspec-player img,.dynaspec-paged img{display:block;width:100%;height:auto;margin:0}" +
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
+      // comparison of sounds: stacked players with the controls of the last one
+      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
+      ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
+      ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
       // reset image styles of the hosting page (e.g. backgrounds, borders or padding added by R Markdown themes)
       ".dynaspec-player img,.dynaspec-paged img,.dynaspec-scroll img{background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}" +
       ".dynaspec-scroll audio{display:none}" +
@@ -13940,6 +16889,181 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       });
     };
 
+    // comparison of sounds: the players of all sounds are stacked, with the controls of the last one for all of them.
+    // Sounds are played in sequence, with a silence between them
+    var initCompare = function (box) {
+      var p = [].slice.call(box.children).filter(function (e) { return e.matches(".dynaspec-player,.dynaspec-paged,.dynaspec-scroll"); });
+      if (p.length < 2) return;
+      var n = p.length, a = p.map(function (e) { return e.querySelector("audio"); }), durs = box.dataset.durations.split(",").map(Number);
+      var bars = p.map(function (e) { return e.querySelector(".ds-bar"); }), bar = bars[n - 1], hidden = bars.slice(0, n - 1);
+      var gap = +box.dataset.gap, d = p[n - 1].dataset, color = [d.color, d.textColor], play = bar.querySelector(".ds-play");
+      var opts = d.buttons ? d.buttons.split(",") : [], round = d.barStyle === "rounded", square = d.barStyle === "square";
+      hidden.forEach(function (b) { b.style.display = "none"; });
+      var active = 0, timer = null, raf;
+      // (the players do not loop by themselves: the whole sequence is repeated)
+      var loop = a.some(function (x) { return x.loop; });
+      a.forEach(function (x) { x.loop = false; });
+      var dur = function (i) { return a[i].duration || durs[i]; };
+      // time at which a sound starts in the seek bar
+      var offset = function (i) { var o = 0; for (var k = 0; k < i; k++) o += dur(k); return o; };
+      var running = function () { return timer !== null || a.some(function (x) { return !x.paused; }); };
+      var clear = function () { if (timer !== null) { clearTimeout(timer); timer = null; } };
+      var start = function (i) {
+        var q = a[i].play();
+        // (browsers can refuse to start a sound without a click: the sequence waits for the play button)
+        if (q && q.catch) q.catch(function () { show(); });
+      };
+      var next = function (i) {
+        active = i;
+        a[i].currentTime = 0;
+        timer = setTimeout(function () { timer = null; start(i); }, gap * 1000);
+      };
+
+      // time readout of the sound being played and seek bar of all sounds
+      var time = bar.querySelector(".ds-time"), readout = document.createElement("span");
+      readout.className = "ds-time";
+      time.insertAdjacentElement("afterend", readout);
+      time.style.display = "none";
+      if (opts.indexOf("time") < 0) readout.style.display = "none";
+      var old = bar.querySelector(".ds-progress"), prog = null, dragging = false;
+      if (old) {
+        prog = document.createElement("input");
+        prog.type = "range";
+        prog.className = "ds-progress";
+        prog.min = 0; prog.step = "any"; prog.value = 0;
+        prog.style.accentColor = color[0];
+        prog.setAttribute("aria-label", "position");
+        old.insertAdjacentElement("afterend", prog);
+        old.style.display = "none";
+        prog.addEventListener("input", function () {
+          dragging = true;
+          var v = +prog.value, i = 0, on = running();
+          while (i < n - 1 && v >= offset(i + 1)) i++;
+          clear();
+          if (i !== active) { a[active].pause(); a[active].currentTime = 0; active = i; }
+          a[i].currentTime = Math.min(dur(i) - 0.001, v - offset(i));
+          if (on) start(i);
+          show();
+        });
+        prog.addEventListener("change", function () { dragging = false; });
+      }
+      // buttons to move between pages of the sound being played (paged spectrograms; sounds can have different numbers
+      // of pages)
+      var nav = bars.map(function (b) {
+        var l = b.querySelector(".ds-page");
+        return l && {label: l, prev: l.previousElementSibling, next: l.nextElementSibling};
+      });
+      var pageLabel = null;
+      if (nav.some(function (x) { return x; })) {
+        var mk = function (txt, title, which) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          b.title = title;
+          b.addEventListener("click", function () { if (nav[active]) nav[active][which].click(); show(); });
+          return b;
+        };
+        pageLabel = document.createElement("span");
+        pageLabel.className = "ds-page";
+        var at = nav[n - 1] ? nav[n - 1].next : play;
+        [mk("\u25C0", "previous page", "prev"), pageLabel, mk("\u25B6", "next page", "next")].reverse().forEach(function (e) { at.insertAdjacentElement("afterend", e); });
+        if (nav[n - 1]) [nav[n - 1].prev, nav[n - 1].label, nav[n - 1].next].forEach(function (e) { e.style.display = "none"; });
+      }
+      var fmt = function (t, D) { return D < 5 ? t.toFixed(3) : t.toFixed(1); };
+      var show = function () {
+        setPlay(play, running());
+        var t = a[active].currentTime, D = dur(active);
+        readout.textContent = (active + 1) + ": " + fmt(Math.min(t, D), D) + " / " + fmt(D, D) + " s";
+        if (pageLabel) pageLabel.textContent = nav[active] ? nav[active].label.textContent : "1 / 1";
+        if (prog) {
+          prog.max = offset(n);
+          if (!dragging) prog.value = Math.min(t, D) + offset(active);
+          if (round || square) {
+            var q = 100 * prog.value / prog.max;
+            prog.style.background = "linear-gradient(to right, " + (round ? "var(--ds-fg,#333) " : "var(--ds-accent) ") + q + "%, color-mix(in srgb,var(--ds-fg,#333) " + (round ? 18 : 35) + "%,transparent) " + q + "%)";
+          }
+        }
+      };
+      var tick = function () { show(); if (running()) raf = requestAnimationFrame(tick); };
+
+      a.forEach(function (x, i) {
+        x.addEventListener("play", function () {
+          clear();
+          active = i;
+          // (only the sound being played is away from its start)
+          a.forEach(function (o) { if (o !== x && o.currentTime > 0) o.currentTime = 0; });
+          cancelAnimationFrame(raf);
+          tick();
+        });
+        x.addEventListener("pause", show);
+        x.addEventListener("seeked", show);
+        x.addEventListener("loadedmetadata", show);
+        x.addEventListener("ended", function () {
+          if (i < n - 1) next(i + 1);
+          else if (loop) next(0);
+          else active = 0;
+          cancelAnimationFrame(raf);
+          tick();
+        });
+      });
+      // (sounds of other players stop the sequence)
+      document.addEventListener("play", function (e) {
+        if (a.indexOf(e.target) < 0 && e.target.tagName === "AUDIO" && timer !== null) { clear(); show(); }
+      }, true);
+
+      // controls of all sounds: the settings of the hidden controls follow those of the controls shown
+      [".ds-speed input", ".ds-zoom input", ".ds-vol input"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("input", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) { to.value = from.value; to.dispatchEvent(new Event("input")); } });
+        });
+      });
+      [".ds-pitch", ".ds-vol button", ".ds-dl"].forEach(function (sel) {
+        var from = bar.querySelector(sel);
+        if (from) from.addEventListener("click", function () {
+          hidden.forEach(function (b) { var to = b.querySelector(sel); if (to) to.click(); });
+        });
+      });
+
+      var lp = bar.querySelector(".ds-loop"), setLoop = function () {
+        if (!lp) return;
+        lp.setAttribute("aria-pressed", loop);
+        lp.title = loop ? "playing repeatedly (click to stop looping)" : "click to play repeatedly";
+        paintBtn(lp, loop, color);
+      };
+      setLoop();
+      var fs = bar.querySelector(".ds-fs");
+      // (before the listeners of the player, which control a single sound)
+      bar.addEventListener("click", function (e) {
+        if (e.target.closest(".ds-play")) {
+          e.stopPropagation();
+          if (running()) { clear(); a[active].pause(); } else start(active);
+          show();
+        } else if (lp && e.target.closest(".ds-loop")) {
+          e.stopPropagation();
+          loop = !loop;
+          setLoop();
+        } else if (fs && e.target.closest(".ds-fs")) {
+          e.stopPropagation();
+          if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen().catch(function () {});
+        }
+      }, true);
+      if (fs) document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === box;
+        fs.textContent = on ? "\u2715 exit full screen" : "\u26F6 full screen";
+        fs.title = on ? "exit full screen" : "show in full screen";
+        if (on) box.style.setProperty("--ds-bg", p[n - 1].style.getPropertyValue("--ds-bg") || "#fff");
+        // widest size at which all figures and the buttons fit in the screen
+        var ratio = 0;
+        p.forEach(function (e) { var img = e.querySelector(".ds-wrap img"); if (img && img.naturalWidth) ratio += img.naturalHeight / img.naturalWidth; });
+        var w = on && ratio ? Math.max(200, (window.innerHeight - bar.offsetHeight - 80) / ratio) + "px" : "";
+        p.forEach(function (e) { e.querySelector(".ds-wrap").style.maxWidth = w; });
+        bar.style.maxWidth = w;
+        window.dispatchEvent(new Event("resize"));
+      });
+      show();
+    };
+
     window.dynaSpecPlayers = function () {
       document.querySelectorAll(".dynaspec-player:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
@@ -13952,6 +17076,10 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       document.querySelectorAll(".dynaspec-scroll:not([data-ready])").forEach(function (div) {
         div.setAttribute("data-ready", "");
         initScrolling(div);
+      });
+      document.querySelectorAll(".dynaspec-compare:not([data-ready])").forEach(function (div) {
+        div.setAttribute("data-ready", "");
+        initCompare(div);
       });
     };
   }

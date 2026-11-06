@@ -55,6 +55,9 @@
 <li>
 <code><a href="../reference/styles.html">ds_static()</a></code> (default), <code><a href="../reference/styles.html">ds_scrolling()</a></code> and <code><a href="../reference/styles.html">ds_paged()</a></code>: style of the dynamic spectrogram (<code>ds_static(play.line = FALSE)</code> hides the moving line, whose default color is now <code>viridis::mako(10)[9]</code>)</li>
 </ul></li>
+<li>
+<code><a href="../reference/ds_annotations.html">ds_annotations()</a></code> can draw frequency contours within selections (<code>contour</code>): measured on the sound (“dominant” or “fundamental”, settings in <code>contour.args</code>) or supplied (e.g. the output of <code><a href="https://marce10.github.io/warbleR/reference/freq_ts.html" class="external-link">warbleR::freq_ts()</a></code>), in all styles and outputs</li>
+<li>New function <code><a href="../reference/ds_compare.html">ds_compare()</a></code>: shows two or more sounds one on top of the other and plays them in sequence, with the same frequency and time scales. It works with all styles, layers, themes and outputs: web pages have one set of controls for all sounds, and videos and images stack those of each sound</li>
 <li>Layers and themes have a <code>ds_</code> prefix (<code><a href="../reference/ds_spectrogram.html">ds_spectrogram()</a></code>, <code><a href="../reference/styles.html">ds_scrolling()</a></code>, <code><a href="../reference/ds_theme.html">ds_theme()</a></code>, …), so they do not mask functions of other packages with general names (e.g. <code>spectrogram()</code>)</li>
 <li>Printing a <code>dynaspec</code> object shows an interactive web page (in the RStudio viewer or the web browser), embedded in R Markdown and Quarto documents when knitting. Figures and sounds are embedded in the HTML code, with click-to-play and buttons to slow the sound down (lowering the pitch, or keeping it)</li>
 <li>

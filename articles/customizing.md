@@ -3,8 +3,9 @@
  
 
 This article shows how to customize dynamic spectrograms, layer by
-layer, and how to highlight and label parts of the sound with
-annotations and captions. The [main
+layer, how to highlight and label parts of the sound with annotations
+(including frequency contours) and captions, and how to compare sounds.
+The [main
 vignette](https://marce10.github.io/dynaSpec/articles/dynaSpec.md) shows
 the basic usage of each layer, and the article [Themes for dynamic
 spectrograms](https://marce10.github.io/dynaSpec/articles/themes.md)
@@ -559,6 +560,133 @@ dynaspec(Phae.long1, flim = c(1, 10)) +
 
 ![Spectrogram of a 2.5 s sound](NA)
 
+### Frequency contours
+
+Annotations can also show frequency contours, drawn over the spectrogram
+within each selection. With `contour = "dominant"` or
+`contour = "fundamental"` they are measured on the sound, within the
+frequency range of the selection (`bottom.freq` and `top.freq`, if
+available) or the frequency limits of
+[`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md).
+`contour.col` and `contour.lwd` set the color and width of the lines:
+
+``` r
+
+st <- data.frame(
+  start = c(0.34, 1.13, 1.44, 2.31),
+  end = c(1.03, 1.36, 1.68, 2.55),
+  labels = c("long note", "arched", "arched", "arched"),
+  colors = c("#4C78A8", "#B279A2", "#B279A2", "#B279A2")
+)
+
+ds_scythebill +
+  ds_annotations(
+    st,
+    col = "colors",
+    labels = "labels",
+    contour = "dominant",
+    contour.col = "#E69F00",
+    contour.lwd = 3
+  )
+```
+
+![Spectrogram of a 3.05 s sound](NA)
+
+Contours can be shown without boxes with `alpha = 0`, and work in all
+styles. `contour.args` sets how they are measured: the window length
+(`wl`, by default that of the spectrogram), overlap (`ovlp`), amplitude
+threshold below which no frequency is measured (`threshold`) and
+smoothing (`smooth`):
+
+``` r
+
+ds_scythebill +
+  ds_annotations(
+    st,
+    alpha = 0,
+    contour = "dominant",
+    contour.col = "#E69F00",
+    contour.args = list(threshold = 10, smooth = 9)
+  ) +
+  ds_scrolling(t.display = 1, width = 700, height = 300, res = 90)
+```
+
+![Scrolling spectrogram](NA)![](NA)
+
+Dominant frequency contours jump when another frequency becomes the
+loudest one (e.g. in fast trills), and fundamental frequency contours
+are coarse for high-pitched sounds at low sampling rates, as in this
+recording.
+
+Contours measured elsewhere can be supplied as a list with one element
+per selection: a data frame with the time (in s, as `start` and `end`)
+and frequency (in kHz) of each point, a vector of frequencies evenly
+spaced along the selection, or `NULL` for no contour. Supplied contours
+are drawn as they are, and `NA` frequencies leave gaps in the line:
+
+``` r
+
+my_contours <- list(
+  data.frame(
+    time = c(0.34, 0.45, 0.5, 0.8, 1.03),
+    freq = c(3.7, 3.2, 2.8, 2.9, 2.65)
+  ),
+  c(2.6, 3.2, 3.7, 3.3, 3, 2.8),
+  NULL,
+  c(2.2, 2.7, 3.1, 3.2, 3.1, 2.7)
+)
+
+ds_scythebill +
+  ds_annotations(
+    st,
+    col = "colors",
+    labels = "labels",
+    contour = my_contours,
+    contour.col = "#E69F00",
+    contour.lwd = 3
+  )
+```
+
+![Spectrogram of a 3.05 s sound](NA)
+
+They can also be a table with one row per selection and the frequencies
+in numeric columns, such as the output of
+[`warbleR::freq_ts()`](https://marce10.github.io/warbleR/reference/freq_ts.html):
+
+``` r
+
+# freq_ts() reads the sound from a file
+data("Phae.long1", package = "NatureSounds")
+data("lbh_selec_table", package = "warbleR")
+
+sound_dir <- tempfile()
+dir.create(sound_dir)
+tuneR::writeWave(Phae.long1, file.path(sound_dir, "Phae.long1.wav"))
+
+hermit_st <- lbh_selec_table[lbh_selec_table$sound.files == "Phae.long1.wav", ]
+
+hermit_contours <- warbleR::freq_ts(
+  hermit_st,
+  type = "dominant",
+  wl = 300,
+  length.out = 30,
+  img = FALSE,
+  pb = FALSE,
+  path = sound_dir
+)
+
+dynaspec(Phae.long1, flim = c(1, 10)) +
+  ds_spectrogram(wl = 300) +
+  ds_annotations(
+    hermit_st,
+    alpha = 0.1,
+    contour = hermit_contours,
+    contour.col = "tomato"
+  )
+```
+
+![Spectrogram of a 2.5 s sound](NA)
+
 ## Captions
 
 [`ds_captions()`](https://marce10.github.io/dynaSpec/reference/ds_captions.md)
@@ -667,6 +795,117 @@ after the sound file or ‘Wave’ object), and the full screen button
 enlarges the player to the size of the screen (e.g. for presentations;
 web browsers may not allow full screen in embedded frames).
 
+## Comparing sounds
+
+[`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md)
+shows two or more sounds one on top of the other and plays them in
+sequence, from top to bottom. Layers are added as with
+[`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md),
+and apply to all sounds. `gap` sets the silence between sounds (in s).
+Web pages have one set of controls for all sounds: speed, pitch, volume
+and zoom apply to all of them, the time readout shows the number of the
+sound being played and its time, the seek bar spans all sounds and the
+loop button repeats the whole sequence. Clicking on a spectrogram plays
+that sound from that point, and then the following ones:
+
+``` r
+
+data("female_barn_swallow")
+data("male_barn_swallow")
+
+ds_compare(female_barn_swallow, male_barn_swallow, flim = c(0, 10), gap = 0.3) +
+  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1)) +
+  ds_oscillogram() +
+  ds_player(buttons = c("progress", "time", "loop"))
+```
+
+![Spectrogram and oscillogram of a 4.75 s sound](NA)
+
+![Spectrogram and oscillogram of a 4.75 s sound](NA)
+
+Any number of sounds can be compared. All of them use the same frequency
+axis (the lowest Nyquist frequency if their sampling rates differ, as in
+this example) and the same time scale, so a second takes the same width
+in all of them. `same.scale = FALSE` fits each sound to the width of the
+figure instead:
+
+``` r
+
+three_songs <- ds_compare(
+  female_barn_swallow,
+  male_barn_swallow,
+  scythebill
+) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_static(height = 300)
+
+three_songs
+```
+
+![Spectrogram of a 4.75 s sound](NA)
+
+![Spectrogram of a 4.75 s sound](NA)
+
+![Spectrogram of a 4.75 s sound](NA)
+
+All styles and panels can be used, as long as all sounds use the same
+style:
+
+``` r
+
+three_songs + ds_scrolling(t.display = 1, width = 700, height = 250, res = 90)
+```
+
+![Scrolling spectrogram](NA)![](NA)
+
+![Scrolling spectrogram](NA)![](NA)
+
+![Scrolling spectrogram](NA)![](NA)
+
+``` r
+
+
+three_songs + ds_paged(t.display = 1)
+```
+
+![Spectrogram, page 1 of 2](NA)![Spectrogram, page 2 of 2](NA)
+
+![Spectrogram, page 1 of 5](NA)![Spectrogram, page 2 of
+5](NA)![Spectrogram, page 3 of 5](NA)![Spectrogram, page 4 of
+5](NA)![Spectrogram, page 5 of 5](NA)
+
+![Spectrogram, page 1 of 4](NA)![Spectrogram, page 2 of
+4](NA)![Spectrogram, page 3 of 4](NA)![Spectrogram, page 4 of 4](NA)
+
+Sounds can also be
+[`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+objects, for settings or layers of a single sound (e.g. its own time
+range, annotations or captions). Layers added to the comparison apply to
+all sounds:
+
+``` r
+
+swallow_st <- data.frame(start = 0.2, end = 0.75, labels = "first notes")
+
+female <- dynaspec(female_barn_swallow) +
+  ds_annotations(swallow_st, labels = "labels")
+
+male <- dynaspec(male_barn_swallow, tlim = c(0, 2.5))
+
+ds_compare(female, male, flim = c(0, 10)) +
+  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1))
+```
+
+![Spectrogram of a 2.5 s sound](NA)
+
+![Spectrogram of a 2.5 s sound](NA)
+
+Amplitudes are scaled within each sound, so the colors of the
+spectrograms and the height of the oscillograms do not compare the
+amplitude of the sounds. Videos (`.mp4`) and still images (`.png`) stack
+those of each sound: in videos, each sound keeps its first frame until
+it is played, and its last frame afterwards.
+
 ## Videos
 
 Videos
@@ -710,17 +949,19 @@ Click to see
     #> [4] dynaSpec_2.0.0.9000
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.6.2     Rcpp_1.1.2        
-    #>  [5] stringr_1.6.0      bmp_0.3.1          signal_1.8-1       gridExtra_2.3.1   
-    #>  [9] jquerylib_0.1.4    png_0.1-9          systemfonts_1.3.2  scales_1.4.0      
-    #> [13] textshaping_1.0.5  yaml_2.3.12        fastmap_1.2.0      ggplot2_4.0.3     
-    #> [17] R6_2.6.1           igraph_2.3.4       knitr_1.52         MASS_7.3-66       
-    #> [21] backports_1.5.1    checkmate_2.3.4    imager_1.0.8       desc_1.4.3        
-    #> [25] readbitmap_0.1.5   tiff_0.1-12        bslib_0.12.0       RColorBrewer_1.1-3
-    #> [29] rlang_1.3.0        stringi_1.8.9      cachem_1.1.0       xfun_0.62         
-    #> [33] fs_2.1.0           sass_0.4.10        S7_0.2.2           otel_0.2.0        
-    #> [37] cli_3.6.6          magrittr_2.0.5     pkgdown_2.2.1      digest_0.6.39     
-    #> [41] grid_4.6.2         lifecycle_1.0.5    vctrs_0.7.3        evaluate_1.0.5    
-    #> [45] glue_1.8.1         farver_2.1.2       tuneR_1.4.7        ragg_1.5.2        
-    #> [49] purrr_1.2.2        rmarkdown_2.32     jpeg_0.1-11        pkgconfig_2.0.3   
-    #> [53] tools_4.6.2        htmltools_0.5.9
+    #>  [1] NatureSounds_1.0.5 sass_0.4.10        tiff_0.1-12        jpeg_0.1-11       
+    #>  [5] stringi_1.8.9      digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5    
+    #>  [9] grid_4.6.2         RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0    
+    #> [13] backports_1.5.1    tuneR_1.4.7        gridExtra_2.3.1    httr_1.4.9        
+    #> [17] purrr_1.2.2        scales_1.4.0       pbapply_1.7-5      warbleR_1.1.38    
+    #> [21] textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6          rlang_1.3.0       
+    #> [25] fftw_1.0-9         cachem_1.1.0       yaml_2.3.12        otel_0.2.0        
+    #> [29] parallel_4.6.2     tools_4.6.2        checkmate_2.3.4    ggplot2_4.0.3     
+    #> [33] curl_8.1.0         vctrs_0.7.3        R6_2.6.1           png_0.1-9         
+    #> [37] bmp_0.3.1          proxy_0.4-29       dtw_1.23-3         lifecycle_1.0.5   
+    #> [41] stringr_1.6.0      fs_2.1.0           MASS_7.3-66        ragg_1.5.2        
+    #> [45] pkgconfig_2.0.3    desc_1.4.3         pkgdown_2.2.1      bslib_0.12.0      
+    #> [49] gtable_0.3.6       glue_1.8.1         Rcpp_1.1.2         systemfonts_1.3.2 
+    #> [53] xfun_0.62          knitr_1.52         farver_2.1.2       readbitmap_0.1.5  
+    #> [57] htmltools_0.5.9    imager_1.0.8       igraph_2.3.4       rmarkdown_2.32    
+    #> [61] signal_1.8-1       compiler_4.6.2     S7_0.2.2
