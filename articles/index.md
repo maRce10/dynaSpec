@@ -6,3 +6,5 @@
   spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.md):
 - [package
   overview](https://marce10.github.io/dynaSpec/articles/dynaSpec.md):
+- [Themes for dynamic
+  spectrograms](https://marce10.github.io/dynaSpec/articles/themes.md):

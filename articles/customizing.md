@@ -3,12 +3,15 @@
  
 
 This article shows how to customize dynamic spectrograms, layer by
-layer. The [main
+layer, and how to highlight and label parts of the sound with
+annotations and captions. The [main
 vignette](https://marce10.github.io/dynaSpec/articles/dynaSpec.md) shows
-the basic usage of each layer. As there, the examples create interactive
-web pages: press play to watch the spectrogram along with the sound,
-click on it to play from that point, and use the speed slider to slow
-the sound down. Use
+the basic usage of each layer, and the article [Themes for dynamic
+spectrograms](https://marce10.github.io/dynaSpec/articles/themes.md)
+shows the themes. As there, the examples create interactive web pages:
+press play to watch the spectrogram along with the sound, click on it to
+play from that point, and use the speed slider to slow the sound down.
+Use
 [`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)
 with a file name ending in `.mp4` to create videos instead.
 
@@ -29,8 +32,7 @@ or ‘.mp3’ files, so recordings are downloaded first).
 
 Layers can be stored in an object and modified by adding more layers.
 Arguments of
-[`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md),
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+[`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
 and style layers are combined with the previous ones (so only the
 settings that change need to be supplied), while other panel and player
 layers replace previous ones of the same kind, and annotations and
@@ -82,31 +84,10 @@ spectrogram background:
 
 ``` r
 
-ds_scythebill + ds_spectrogram(pal = viridis, colbg = "black") +
-  ds_theme(col.axis = "white", col.lab = "white")
+ds_scythebill + ds_spectrogram(pal = viridis, colbg = "black")
 ```
 
 ![Spectrogram of a 3.05 s sound](NA)
-
-The backgrounds of the figure are set independently: `colbg` in
-[`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
-(or
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md))
-for the spectrogram, `col.panel` in
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-for oscillograms, envelopes and power spectra, and `bg` in
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-for the whole figure around the panels:
-
-``` r
-
-ds_scythebill +
-  ds_spectrogram(pal = viridis) +
-  ds_oscillogram(col = "white") +
-  ds_theme(col.panel = "gray20", bg = "gray90")
-```
-
-![Spectrogram and oscillogram of a 3.05 s sound](NA)
 
 In paged spectrograms the palette can also be the name of a ‘viridis’
 palette (e.g. “magma”) or two colors for a gradient, and `amp.trans`
@@ -117,8 +98,7 @@ difference between loud and quiet sounds; 1 means no transformation):
 
 ds_scythebill +
   ds_spectrogram(amp.trans = 3, collevels = seq(-35, 0, 1)) +
-  ds_paged(t.display = 1) +
-  ds_theme(axis.type = "standard")
+  ds_paged(t.display = 1)
 ```
 
 ![Spectrogram, page 1 of 4](NA)![Spectrogram, page 2 of
@@ -187,250 +167,6 @@ ds_antshrike +
 
 ![Scrolling spectrogram](NA)![](NA)![](NA)
 
-## Themes
-
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-sets the look of all styles: axis titles (`xlab`, `ylab`), the size of
-titles and labels (`cex.lab`, `cex.axis`), the font of titles
-(`font.lab`), the color of axes and text (`col.lab`) and of the axis
-labels alone (`col.axis`), the type of axes (`axis.type`) and the
-background around the panels (`bg`):
-
-``` r
-
-ds_scythebill +
-  ds_oscillogram() +
-  ds_theme(
-    xlab = "Time (s)",
-    ylab = "Frequency (kHz)",
-    cex.lab = 1.4,
-    font.lab = 2,
-    col.lab = "gray30"
-  )
-```
-
-![Spectrogram and oscillogram of a 3.05 s sound](NA)
-
-It also sets the font family of all text (`family`), the orientation of
-the axis labels of both axes (`las`, as in base R: 0 parallel to the
-axis, 1 horizontal, 2 perpendicular, 3 vertical), the length of ticks
-(`tick.length`), boxes around panels (`box`, `col.box`), grid lines
-(`grid`, `col.grid`), the background of oscillogram, envelope and
-spectrum panels (`col.panel`) and the color and size of titles
-(`col.title`, `cex.title`):
-
-``` r
-
-ds_scythebill +
-  ds_oscillogram() +
-  ds_spectrum() +
-  ds_theme(
-    family = "serif",
-    las = 1,
-    tick.length = 0.3,
-    box = FALSE,
-    grid = TRUE,
-    col.panel = "gray95"
-  )
-```
-
-![Spectrogram, oscillogram and power spectrum of a 3.05 s sound](NA)
-
-Themes can also set the colors of the plot: the spectrogram palette and
-background (`pal`, `colbg`), the color of oscillograms, envelopes and
-spectra (`col.wave`), the color of annotations (`col.annotation`), the
-play line (`col.line`) and the highlight box of paged spectrograms
-(`col.highlight`). These are used when they are not supplied in the
-other layers (e.g. `ds_spectrogram(pal = )` takes precedence). `col.bar`
-and `bg.bar` set the colors of the player controls of web pages. A dark
-theme:
-
-``` r
-
-ds_scythebill +
-  ds_oscillogram() +
-  ds_theme(
-    bg = "black",
-    col.lab = "white",
-    pal = viridis,
-    colbg = "black",
-    col.wave = viridis(10)[7],
-    col.line = "white",
-    col.bar = "white",
-    bg.bar = "black"
-  )
-```
-
-![Spectrogram and oscillogram of a 3.05 s sound](NA)
-
-### Preset themes
-
-Preset themes set several settings at once:
-[`ds_theme_dark()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md),
-[`ds_theme_mako()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(light theme with the ‘mako’ palette for the spectrogram, panels,
-annotations and player controls),
-[`ds_theme_presentation()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(large bold text for slides),
-[`ds_theme_paper()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(black and white with serif fonts, for printed figures),
-[`ds_theme_minimal()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(no boxes and light gray axes),
-[`ds_theme_transparent()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(transparent background, to blend in slides or web pages of any color),
-[`ds_theme_void()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(no axes or boxes),
-[`ds_theme_xenocanto()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(inspired by the player of [Xeno-canto](https://xeno-canto.org)) and
-[`ds_theme_macaulay()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-(inspired by the player of the [Macaulay
-Library](https://www.macaulaylibrary.org)). Their settings can be
-changed in the call, or by adding
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-afterwards (adding a preset replaces previous themes):
-
-``` r
-
-ds_scythebill +
-  ds_envelope() +
-  ds_theme_dark(cex.lab = 1.3) +
-  ds_player(buttons = c("time", "loop", "volume"))
-```
-
-![Spectrogram and amplitude envelope of a 3.05 s sound](NA)
-
-``` r
-
-ds_scythebill +
-  ds_oscillogram() +
-  ds_theme_paper()
-```
-
-![Spectrogram and oscillogram of a 3.05 s sound](NA)
-
-``` r
-
-ds_antshrike +
-  ds_scrolling(t.display = 2) +
-  ds_theme_presentation()
-```
-
-![Scrolling spectrogram](NA)![](NA)
-
-[`ds_theme_xenocanto()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-uses a gray spectrogram, labels inside the figure, a solid play line and
-rounded player controls with a seek bar. It looks best with scrolling
-spectrograms whose time axis moves along (`fix.time = FALSE`) and a
-short oscillogram:
-
-``` r
-
-ds_antshrike +
-  ds_oscillogram(height = 0.2) +
-  ds_theme_xenocanto() +
-  ds_scrolling(t.display = 3, fix.time = FALSE)
-```
-
-![Scrolling spectrogram](NA)![](NA)![](NA)
-
-As other presets, its settings can be changed. For instance, the color
-version of the Xeno-canto player:
-
-``` r
-
-ds_antshrike +
-  ds_oscillogram(height = 0.2) +
-  ds_theme_xenocanto(
-    pal = viridis::inferno,
-    colbg = "black",
-    bg = "black",
-    col.panel = "black",
-    col.wave = "white",
-    col.lab = "white",
-    col.line = "white"
-  ) +
-  ds_scrolling(t.display = 3, fix.time = FALSE)
-```
-
-![Scrolling spectrogram](NA)![](NA)![](NA)
-
-[`ds_theme_macaulay()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-uses a gray spectrogram, compact axes (frequency labels in a narrow
-column on the left and the time in minutes and seconds above the figure)
-and a black player bar with a square play button. It looks best with
-scrolling spectrograms with an overview of the whole sound below (the
-part shown is highlighted):
-
-``` r
-
-ds_antshrike +
-  ds_overview() +
-  ds_theme_macaulay() +
-  ds_scrolling(t.display = 3, fix.time = FALSE)
-```
-
-![Scrolling spectrogram](NA)![](NA)
-
-The look of these themes comes from settings that can be used in any
-theme. The Xeno-canto theme uses `axis.type = "inside"` (labels with
-units inside the figure), `lty.line` and `lwd.line` (type and width of
-the play line of scrolling spectrograms) and `bar.style = "rounded"`
-(round player controls with a seek bar, on the `bg.bar` background). The
-Macaulay theme uses `axis.type = "compact"`, `bar.style = "square"`
-(flat bar with a square play button in the color of the play line) and
-`col.highlight` (color dimming the overview outside the part shown).
-
-`axis.type` can be “standard”, “inside”, “compact”, “none” or, in
-scrolling spectrograms, “minimal” (1 s and 1 kHz scale bars):
-
-``` r
-
-ds_antshrike +
-  ds_scrolling(t.display = 2) +
-  ds_theme(axis.type = "minimal")
-```
-
-![Scrolling spectrogram](NA)![](NA)
-
-### Spectrogram themes
-
-[`ds_set_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
-sets a theme for all the spectrograms shown afterwards in the R session
-(e.g. in all the code chunks of a document), as
-[`ggplot2::theme_set()`](https://ggplot2.tidyverse.org/reference/get_theme.html).
-[`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
-added to a spectrogram changes some of its settings, and preset themes
-replace it.
-[`ds_set_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
-returns the previous theme, so it can be restored (`ds_set_theme(NULL)`
-removes it):
-
-``` r
-
-old <- ds_set_theme(ds_theme_paper(cex.lab = 1.3))
-
-# paper theme
-ds_scythebill + ds_oscillogram()
-```
-
-![Spectrogram and oscillogram of a 3.05 s sound](NA)
-
-``` r
-
-
-# paper theme with another axis title
-ds_scythebill + ds_envelope() + ds_theme(ylab = "Freq. (kHz)")
-```
-
-![Spectrogram and amplitude envelope of a 3.05 s sound](NA)
-
-``` r
-
-
-# restore the previous theme
-ds_set_theme(old)
-```
-
 ## Static spectrograms
 
 Static spectrograms are the default style, so
@@ -495,9 +231,9 @@ pages loop until paused):
 
 ``` r
 
-data("Phae.long4", package = "NatureSounds")
+data("Phae.long1", package = "NatureSounds")
 
-dynaspec(Phae.long4, flim = c(1, 10)) +
+dynaspec(Phae.long1, flim = c(2, 9)) +
   ds_spectrogram(
     wl = 300,
     ovlp = 90,
@@ -506,14 +242,13 @@ dynaspec(Phae.long4, flim = c(1, 10)) +
     colbg = "black"
   ) +
   ds_scrolling(
-    t.display = 1.7,
+    t.display = 1.2,
     width = 1000,
-    height = 500,
+    height = 400,
     res = 120,
-    speed = 0.2,
+    speed = 0.8,
     loop = 3
-  ) +
-  ds_theme(axis.type = "none")
+  )
 ```
 
 ![Scrolling spectrogram](NA)![](NA)
@@ -547,7 +282,7 @@ dynaspec(nightingale_wren, flim = c(0, 8), tlim = 20) +
   ds_scrolling(
     t.display = 3,
     width = 700,
-    height = 250,
+    height = 350,
     res = 100,
     lcol = "#FFFFFFE6"
   )
@@ -638,8 +373,7 @@ ds_scythebill +
     highlight.col = "#2d2d86",
     highlight.alpha = 0.4,
     lcol = "#FFEA46"
-  ) +
-  ds_theme(bg = "black")
+  )
 ```
 
 ![Spectrogram, page 1 of 4](NA)![Spectrogram, page 2 of
@@ -657,30 +391,29 @@ download.file(
   mode = "wb"
 )
 
-dynaspec(whale, flim = c(0, 0.7), tlim = 12) +
-  ds_spectrogram(amp.trans = 3) +
+dynaspec(whale, flim = c(0.1, 2), tlim = 9) +
+  ds_spectrogram(amp.trans = 3, wl = 2000, ovlp = 90, collevels = seq(-50, 0, 5)) +
   ds_paged(t.display = 3)
+```
+
+![Spectrogram, page 1 of 3](NA)![Spectrogram, page 2 of
+3](NA)![Spectrogram, page 3 of 3](NA)
+
+A yellow-throaded toucan song from
+[xeno-canto](https://www.xeno-canto.org) with a two-color palette:
+
+``` r
+
+toucan <- tempfile(fileext = ".mp3")
+download.file("https://xeno-canto.org/154168/download", toucan, mode = "wb")
+
+dynaspec(toucan, tlim = c(3.2, 15.2), flim = c(0, 8)) +
+  ds_spectrogram(pal = c("white", "black"), collevels = seq(-100, 0, 5)) +
+  ds_paged(t.display = 3, highlight.col = "#d1b0ff", lcol = "#7817ff")
 ```
 
 ![Spectrogram, page 1 of 4](NA)![Spectrogram, page 2 of
 4](NA)![Spectrogram, page 3 of 4](NA)![Spectrogram, page 4 of 4](NA)
-
-A common nighthawk call from [xeno-canto](https://www.xeno-canto.org)
-with a two-color palette:
-
-``` r
-
-nighthawk <- tempfile(fileext = ".mp3")
-download.file("https://xeno-canto.org/490771/download", nighthawk, mode = "wb")
-
-dynaspec(nighthawk, tlim = 20) +
-  ds_spectrogram(pal = c("white", "black")) +
-  ds_paged(t.display = 4, highlight.col = "#d1b0ff", lcol = "#7817ff")
-```
-
-![Spectrogram, page 1 of 5](NA)![Spectrogram, page 2 of
-5](NA)![Spectrogram, page 3 of 5](NA)![Spectrogram, page 4 of
-5](NA)![Spectrogram, page 5 of 5](NA)
 
 ## Annotations
 
@@ -695,19 +428,33 @@ range, and colors and labels can be taken from its columns:
 ``` r
 
 # note types
-st <- data.frame(
-  start = c(0.34, 1.13, 1.44, 1.75),
-  end = c(1.03, 1.36, 1.68, 2.28),
-  bottom.freq = c(2.5, 2.4, 2.3, 2.1),
-  top.freq = c(3.9, 4, 3.8, 5.4),
-  labels = c("A", "B", "B", "C"),
-  colors = c("#E69F00", "#56B4E9", "#56B4E9", "#009E73")
+nts <- data.frame(
+  start = c(0.34, 1.13, 1.44, 1.75, 2.32),
+  end = c(1.03, 1.36, 1.68, 2.28, 2.56),
+  bottom.freq = c(2.5, 2.4, 2.3, 2.1, 2.1),
+  top.freq = c(3.9, 4, 3.8, 4, 3.7) + 0.5,
+  labels = c("A", "B", "B", "C", "D"),
+  colors = viridis::mako(n = 7)[1:5]
 )
 
-ds_scythebill + ds_annotations(st, col = "colors", labels = "labels")
+ds_scythebill +
+  ds_annotations(nts, col = "colors", labels = "labels")
 ```
 
 ![Spectrogram of a 3.05 s sound](NA)
+
+Annotations are also shown in overview spectrograms:
+
+``` r
+
+
+ds_scythebill +
+  ds_scrolling() +
+  ds_annotations(nts, col = "colors", labels = "labels") +
+  ds_overview()
+```
+
+![Scrolling spectrogram](NA)![](NA)
 
 The box borders are set with `border` (a color or the name of a column
 with the color of each box), `lwd` (width) and `lty` (line type):
@@ -716,24 +463,24 @@ with the color of each box), `lwd` (width) and `lty` (line type):
 
 ds_scythebill +
   ds_annotations(
-    st,
+    nts,
     col = "colors",
     alpha = 0.1,
     border = "colors",
     lwd = 2,
-    lty = "dashed",
+    lty = "dotted",
     labels = "labels"
   )
 ```
 
 ![Spectrogram of a 3.05 s sound](NA)
 
-[`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md)
-also sets the opacity of the boxes (`alpha`), the size of the labels
-(`cex`) and whether boxes span only the frequency range of the
-selections (`freq`). The following code highlights the male and female
-parts of a house wren duet (after downloading the recording and
-selection table from GitHub):
+`type = "spectrogram"` colors the spectrogram itself within each
+selection, with a gradient from the spectrogram background to the color
+of the selection (as
+[`warbleR::color_spectro()`](https://marce10.github.io/warbleR/reference/color_spectro.html)),
+instead of drawing boxes. A narrower amplitude range (`collevels`) keeps
+the background noise uncolored:
 
 ``` r
 
@@ -754,50 +501,18 @@ st <- read.csv(
 st$colors <- viridis(10)[c(3, 8)]
 st$labels <- c("male", "female")
 
-duet <- dynaspec(hs_wren, flim = c(1, 13)) +
+duet <- dynaspec(hs_wren, flim = c(1, 14)) +
   ds_spectrogram(
     wl = 512,
     pal = reverse.gray.colors.1,
-    collevels = seq(-100, 0, 1)
+    collevels = seq(-120, 0, 1)
   ) +
   ds_scrolling(t.display = 1.2, loop = 3, width = 1000, height = 500, res = 120)
 
-duet + ds_annotations(st, col = "colors", alpha = 0.4, labels = "labels", cex = 1.5)
-```
-
-![Scrolling spectrogram](NA)![](NA)
-
-With box borders, spanning the whole frequency range (`freq = FALSE`),
-and an oscillogram:
-
-``` r
-
-duet +
-  ds_annotations(
-    st,
-    col = "colors",
-    alpha = 0.3,
-    border = "gray30",
-    lwd = 2,
-    freq = FALSE
-  ) +
-  ds_oscillogram()
-```
-
-![Scrolling spectrogram](NA)![](NA)![](NA)
-
-`type = "spectrogram"` colors the spectrogram itself within each
-selection, with a gradient from the spectrogram background to the color
-of the selection (as
-[`warbleR::color_spectro()`](https://marce10.github.io/warbleR/reference/color_spectro.html)),
-instead of drawing boxes. A narrower amplitude range (`collevels`) keeps
-the background noise uncolored:
-
-``` r
 
 duet +
   ds_spectrogram(collevels = seq(-60, 0, 1)) +
-  ds_annotations(st, col = "colors", type = "spectrogram", labels = "labels")
+  ds_annotations(st, col = "colors", type = "spectrogram", labels = "labels", cex = 4)
 ```
 
 ![Scrolling spectrogram](NA)![](NA)
@@ -819,7 +534,8 @@ duet +
     col = "colors",
     type = "line",
     line.freq = "line.freq",
-    labels = "labels"
+    labels = "labels", 
+    cex = 4
   )
 ```
 
@@ -838,7 +554,7 @@ data("Phae.long1", package = "NatureSounds")
 
 dynaspec(Phae.long1, flim = c(1, 10)) +
   ds_spectrogram(wl = 300) +
-  ds_annotations(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec")
+  ds_annotations(lbh_selec_table, sound.file = "Phae.long1.wav", labels = "selec", col = "tomato")
 ```
 
 ![Spectrogram of a 2.5 s sound](NA)
@@ -877,8 +593,8 @@ dynaspec(frogs, flim = c(0, 5.5), tlim = c(35.3, 50.5)) +
     c("Dendropsophus ebraccatus", "Eleutherodactylus coqui"),
     start = c(35.7, 42.3),
     end = c(40.8, 50.1),
-    x = 0.3,
-    y = 0.9,
+    x = 0.33,
+    y = 0.86,
     col = "#FFEA46CC",
     font = 3,
     fading = 0.6
@@ -891,8 +607,7 @@ dynaspec(frogs, flim = c(0, 5.5), tlim = c(35.3, 50.5)) +
     res = 200,
     lcol = "#FFFFFFCC",
     lty = 3
-  ) +
-  ds_theme(bg = "black", col.lab = "white")
+  )
 ```
 
 ![Scrolling spectrogram](NA)![](NA)![](NA)
@@ -941,7 +656,6 @@ which makes web pages larger:
 
 ds_antshrike +
   ds_overview() +
-  ds_theme_macaulay() +
   ds_player(buttons = c("zoom", "volume", "time")) +
   ds_scrolling(t.display = 3, fix.time = FALSE)
 ```

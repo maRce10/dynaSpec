@@ -36,12 +36,17 @@ dynaspec(wave, flim = NULL, tlim = NULL)
 
   Numeric vector of length 2 with the frequency limits (in kHz). Default
   is `NULL` (from 0 to the Nyquist frequency, or the style default).
+  `Inf` as upper limit means the Nyquist frequency of the sound (half
+  its sampling rate). Any other upper limit higher than the Nyquist
+  frequency gives a warning, and spectrograms are shown up to the
+  Nyquist frequency.
 
 - tlim:
 
   Numeric vector of length 1 or 2 with the time range (in s) of the
   sound to use: a single value takes the first seconds of the sound, and
-  two values a time interval. Times of
+  two values a time interval. `Inf` as upper limit means the end of the
+  sound. Times of
   [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md)
   and
   [`ds_captions()`](https://marce10.github.io/dynaSpec/reference/ds_captions.md)

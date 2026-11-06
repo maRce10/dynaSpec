@@ -99,6 +99,27 @@
   ‘cli’) while rendering frames
 - Scrolling spectrograms start moving right away (`buffer` is now 0 by
   default)
+- `Inf` as upper limit of `flim` (the Nyquist frequency of the sound)
+  and `tlim` (the end of the sound) in
+  [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md),
+  without warnings
+- Paged spectrograms fill their plotting region: the empty margin around
+  them was removed, frequency limits are kept within the Nyquist
+  frequency (as in other styles) and rounding no longer adds a nearly
+  empty last page
+- Looping scrolling spectrograms no longer jump when the sound starts
+  again: the time of the player continues through the end of the sound
+  (sounds shorter than 0.15 s visibly moved back), strips of web pages
+  move at the exact speed of the sound (rounding to whole video frames
+  made them up to a few percent faster in short sounds), and the image
+  of the spectrogram spans its time range exactly, so its end matches
+  its start
+- The spectrogram of scrolling spectrograms is at the true time of the
+  sound:
+  [`seewave::spectro()`](https://rdrr.io/pkg/seewave/man/spectro.html)
+  stretches its time axis by the length of a window, which placed it up
+  to half a window away from the audio and the oscillogram at the ends
+  of the strip (not when using `spectro.call` or `ggspectro`)
 - Scrolling spectrograms whose time axis moves along
   (`fix.time = FALSE`) labeled the time of the sound with half a window
   of silence added at the start (labels were `t.display / 2` ahead of
@@ -133,6 +154,10 @@
 - Scrolling spectrograms failed when `flim` reached or exceeded the
   Nyquist frequency of the sound (it is now limited to it, as in static
   spectrograms)
+- [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+  warns when the upper limit of `flim` is higher than the Nyquist
+  frequency of the sound (spectrograms are shown up to the Nyquist
+  frequency)
 - Paged spectrograms no longer resample sounds when the new sampling
   rate is close to the original one
   ([`tuneR::downsample()`](https://rdrr.io/pkg/tuneR/man/downsample.html)

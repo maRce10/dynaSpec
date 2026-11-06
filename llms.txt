@@ -36,21 +36,90 @@ The package offers three styles of dynamic spectrogram:
 | Scrolling ([`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | The spectrogram scrolls from right to left past a fixed “play” line, as in the Macaulay Library |
 | Paged ([`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | A spectrogram (or several “pages”) revealed by a sliding highlight box, as in Adobe Audition’s spectral view |
 
+### What it looks like
+
+The previews below are silent animations made from videos saved with
+[`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)
+(in R, printing the objects shows interactive web pages with sound).
+
+**Static spectrogram** with an oscillogram, annotation lines and the
+‘mako’ theme:
+
+``` r
+
+st <- data.frame(start = c(0.34, 1.13, 1.75, 2.34), end = c(1.03, 1.68, 2.33, 2.55),
+                 labels = c("long note", "arched notes", "trill", "end note"), y = c(4.6, 4.9, 5.4, 4))
+
+dynaspec(scythebill, flim = c(1.5, Inf)) +
+  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_oscillogram() +
+  ds_annotations(st, type = "line", line.freq = "y", labels = "labels") +
+  ds_theme_mako()
+```
+
+![Static spectrogram of a brown-billed scythebill song with an
+oscillogram and labeled lines above the notes, with a play line moving
+across](reference/figures/readme_static.gif)
+
+**Scrolling spectrogram** with an overview of the whole sound and the
+Macaulay Library look:
+
+``` r
+
+dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_overview() +
+  ds_theme_macaulay() +
+  ds_scrolling(t.display = 2, fix.time = FALSE)
+```
+
+![Scrolling spectrogram of a great antshrike song passing a fixed play
+line, with an overview of the whole sound
+below](reference/figures/readme_scrolling.gif)
+
+**Paged spectrogram**, revealed by a sliding highlight box:
+
+``` r
+
+dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
+  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_paged(t.display = 2.5)
+```
+
+![Paged spectrogram of a great antshrike song revealed by a sliding
+highlight box](reference/figures/readme_paged.gif)
+
 **Contents:** [Installation](#installation) · [Quick
 start](#quick-start) · [Background](#background) · [Citation](#citation)
 
-> 📖 **Examples of the three styles are in the vignette [Creating
-> dynamic
-> spectrograms](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)**
-> (or run
-> [`vignette("dynaSpec")`](https://marce10.github.io/dynaSpec/articles/dynaSpec.md)
-> in R). Customization options are shown in the article [Customizing
-> dynamic
-> spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html).
+**Vignette and articles** (on the [package
+website](https://marce10.github.io/dynaSpec/)):
+
+- [Creating dynamic
+  spectrograms](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)
+  (vignette; also
+  [`vignette("dynaSpec")`](https://marce10.github.io/dynaSpec/articles/dynaSpec.md)
+  in R): basic usage of every layer and of the three styles, and how to
+  save and embed them
+- [Themes for dynamic
+  spectrograms](https://marce10.github.io/dynaSpec/articles/themes.html):
+  theme settings and preset themes, including looks inspired by the
+  Xeno-canto and Macaulay Library players
+- [Customizing dynamic
+  spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html):
+  spectrograms, panels, styles, annotations, captions, player controls
+  and videos
 
 ## Installation
 
-Install the development version from GitHub (requires
+Install latest version from CRAN:
+
+``` r
+
+install.packages("dynaSpec")
+```
+
+Or install the development version from GitHub (requires
 [remotes](https://cran.r-project.org/package=remotes)):
 
 ``` r
@@ -60,9 +129,9 @@ remotes::install_github("maRce10/dynaSpec")
 
 ### ffmpeg
 
-Web pages do not need any external software. To create videos dynaSpec
-uses [ffmpeg](https://ffmpeg.org/download.html), which must be installed
-and available in the system path:
+Web pages do not need any external software. However, to create videos
+dynaSpec uses [ffmpeg](https://ffmpeg.org/download.html), which must be
+installed and available in the system path:
 
 | Operating system | Command (in a terminal) |
 |----|----|
@@ -79,60 +148,6 @@ Sys.which("ffmpeg")
 
 If ffmpeg is installed somewhere else, point R to the executable with
 `Sys.setenv(ffmpeg = "path/to/ffmpeg")`.
-
-## Quick start
-
-``` r
-
-library(dynaSpec)
-
-# example recording included in the package
-data("scythebill")
-
-# static spectrogram with oscillogram
-# (shown in the RStudio viewer or the web browser)
-x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
-  ds_oscillogram()
-
-x
-
-# paged style
-x + ds_paged(t.display = 1)
-
-# scrolling style (a longer recording)
-data("antshrike")
-y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
-y + ds_scrolling(t.display = 2)
-
-# save as a web page or as a video
-save_dynaspec(x, "scythebill.html")
-save_dynaspec(y + ds_scrolling(t.display = 2), "antshrike.mp4")
-```
-
-Sounds can be ‘Wave’ objects or ‘.wav’ and ‘.mp3’ files. Invalid
-arguments are reported all together before any processing starts, so
-mistakes are caught early. See the
-[vignette](https://marce10.github.io/dynaSpec/articles/dynaSpec.html)
-for many more options and examples.
-
-## Background
-
-This package is a collaboration between [Marcelo
-Araya-Salas](https://marce10.github.io/) and [Matt
-Wilkins](https://www.mattwilkinsbio.com/), and the successor of
-[dynaSpec](https://github.com/maRce10/dynaSpec). The goal is to create
-static and dynamic visualizations of sounds, ready for publication or
-presentation. Marcelo’s approach (scrolling spectrograms) shows a
-spectrogram sliding past a fixed point as sounds are played, similar to
-that used in Cornell’s Macaulay Library. Matt’s approach creates “paged”
-spectrograms that are revealed by a sliding highlight box as sounds are
-played, akin to Adobe Audition’s spectral view. dynaSpec brings both
-approaches, and static spectrograms with a moving play line, together
-under a single layered syntax, and adds interactive web pages.
-
-A taste of what you can do (a video made with dynaSpec):
 
 ------------------------------------------------------------------------
 
@@ -230,3 +245,5 @@ Bugs and feature requests can be reported at
   spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.md):
 - [package
   overview](https://marce10.github.io/dynaSpec/articles/dynaSpec.md):
+- [Themes for dynamic
+  spectrograms](https://marce10.github.io/dynaSpec/articles/themes.md):

@@ -20,6 +20,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/customizing.html">Customizing dynamic spectrograms</a></li>
+    <li><a class="dropdown-item" href="../articles/themes.html">Themes for dynamic spectrograms</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -59,6 +60,11 @@
 <li>
 <code><a href="../reference/save_dynaspec.html">save_dynaspec()</a></code> saves <code>dynaspec</code> objects as web pages (‘.html’), videos (‘.mp4’, requires ffmpeg) or still images (‘.png’), showing a progress bar (via ‘cli’) while rendering frames</li>
 <li>Scrolling spectrograms start moving right away (<code>buffer</code> is now 0 by default)</li>
+<li>
+<code>Inf</code> as upper limit of <code>flim</code> (the Nyquist frequency of the sound) and <code>tlim</code> (the end of the sound) in <code><a href="../reference/dynaspec.html">dynaspec()</a></code>, without warnings</li>
+<li>Paged spectrograms fill their plotting region: the empty margin around them was removed, frequency limits are kept within the Nyquist frequency (as in other styles) and rounding no longer adds a nearly empty last page</li>
+<li>Looping scrolling spectrograms no longer jump when the sound starts again: the time of the player continues through the end of the sound (sounds shorter than 0.15 s visibly moved back), strips of web pages move at the exact speed of the sound (rounding to whole video frames made them up to a few percent faster in short sounds), and the image of the spectrogram spans its time range exactly, so its end matches its start</li>
+<li>The spectrogram of scrolling spectrograms is at the true time of the sound: <code><a href="https://rdrr.io/pkg/seewave/man/spectro.html" class="external-link">seewave::spectro()</a></code> stretches its time axis by the length of a window, which placed it up to half a window away from the audio and the oscillogram at the ends of the strip (not when using <code>spectro.call</code> or <code>ggspectro</code>)</li>
 <li>Scrolling spectrograms whose time axis moves along (<code>fix.time = FALSE</code>) labeled the time of the sound with half a window of silence added at the start (labels were <code>t.display / 2</code> ahead of the play line); they now show the time of the sound</li>
 <li>Web pages embed their images with <code>srcset</code> instead of <code>src</code>: R Markdown documents that are not self-contained (e.g. pkgdown articles) pass every <code>&lt;img src&gt;</code> through <code><a href="https://rdrr.io/r/utils/URLencode.html" class="external-link">utils::URLdecode()</a></code>, which took minutes for embedded spectrograms (building the package website hung)</li>
 <li>Axis labels: amplitude envelopes and power spectra are labeled ‘Amp.’ (as oscillograms; previously ‘Env.’ and ‘Power’)</li>
@@ -70,6 +76,8 @@
 <li>Backgrounds are independent: <code>ds_spectrogram(colbg)</code> sets only the spectrogram background, <code>ds_theme(col.panel)</code> the other panels and <code>ds_theme(bg)</code> the figure (white by default; supplying <code>colbg</code> no longer changes the figure background of static spectrograms)</li>
 <li>Amplitude envelopes and power spectra are black by default, as oscillograms (previously blue)</li>
 <li>Scrolling spectrograms failed when <code>flim</code> reached or exceeded the Nyquist frequency of the sound (it is now limited to it, as in static spectrograms)</li>
+<li>
+<code><a href="../reference/dynaspec.html">dynaspec()</a></code> warns when the upper limit of <code>flim</code> is higher than the Nyquist frequency of the sound (spectrograms are shown up to the Nyquist frequency)</li>
 <li>Paged spectrograms no longer resample sounds when the new sampling rate is close to the original one (<code><a href="https://rdrr.io/pkg/tuneR/man/downsample.html" class="external-link">tuneR::downsample()</a></code> does not filter, which added artifacts)</li>
 <li>New example recordings by Julio E. Sánchez: <code>scythebill</code> (song of a brown-billed scythebill, <em>Campylorhamphus pusillus</em>, Cartago, Costa Rica, 1998; 11.025 kHz), used in most examples, and <code>antshrike</code> (two songs of a great antshrike, <em>Taraba major</em>, Finca La Selva, Heredia, Costa Rica, 1999; 11.025 kHz), used in examples of scrolling spectrograms. The barn swallow example files of previous versions are now the Wave objects <code>female_barn_swallow</code> and <code>male_barn_swallow</code> (recorded by Matthew R. Wilkins) (the ‘.wav’ files were removed from the package). It replaces <code>canyon_wren</code>, which was removed</li>
 <li>Videos of static and paged spectrograms are made by moving the play line or highlight box over still images with ffmpeg, so they are created in seconds</li>

@@ -323,6 +323,10 @@ or replace it (preset themes):
 ds_set_theme(ds_theme_dark())
 ```
 
+All the theme settings and preset themes are shown in the article
+[Themes for dynamic
+spectrograms](https://marce10.github.io/dynaSpec/articles/themes.html).
+
 ## Saving web pages, videos and images
 
 [`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)

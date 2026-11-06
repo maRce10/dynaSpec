@@ -37,6 +37,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/customizing.html">Customizing dynamic spectrograms</a></li>
+    <li><a class="dropdown-item" href="articles/themes.html">Themes for dynamic spectrograms</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -65,8 +66,8 @@
 <p>Dynamic spectrograms are built in layers, as ‘ggplot2’ graphs: <code><a href="reference/dynaspec.html">dynaspec()</a></code> takes the sound, and layers are added with <code>+</code> (only the panels added are shown):</p>
 <table class="table">
 <colgroup>
-<col width="31%">
-<col width="68%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr>
 <th>Layer</th>
@@ -119,8 +120,8 @@
 <p>The package offers three styles of dynamic spectrogram:</p>
 <table class="table">
 <colgroup>
-<col width="22%">
-<col width="77%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr>
 <th>Style</th>
@@ -141,24 +142,66 @@
 </tr>
 </tbody>
 </table>
+<div class="section level3">
+<h3 id="what-it-looks-like">What it looks like<a class="anchor" aria-label="anchor" href="#what-it-looks-like"></a>
+</h3>
+<p>The previews below are silent animations made from videos saved with <code><a href="reference/save_dynaspec.html">save_dynaspec()</a></code> (in R, printing the objects shows interactive web pages with sound).</p>
+<p><strong>Static spectrogram</strong> with an oscillogram, annotation lines and the ‘mako’ theme:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.34</span>, <span class="fl">1.13</span>, <span class="fl">1.75</span>, <span class="fl">2.34</span><span class="op">)</span>, end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.03</span>, <span class="fl">1.68</span>, <span class="fl">2.33</span>, <span class="fl">2.55</span><span class="op">)</span>,</span>
+<span>                 labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"long note"</span>, <span class="st">"arched notes"</span>, <span class="st">"trill"</span>, <span class="st">"end note"</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.6</span>, <span class="fl">4.9</span>, <span class="fl">5.4</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_annotations.html">ds_annotations</a></span><span class="op">(</span><span class="va">st</span>, type <span class="op">=</span> <span class="st">"line"</span>, line.freq <span class="op">=</span> <span class="st">"y"</span>, labels <span class="op">=</span> <span class="st">"labels"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_theme.html">ds_theme_mako</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_static.gif" alt="Static spectrogram of a brown-billed scythebill song with an oscillogram and labeled lines above the notes, with a play line moving across" width="100%"></p>
+<p><strong>Scrolling spectrogram</strong> with an overview of the whole sound and the Macaulay Library look:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span>, tlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_overview.html">ds_overview</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_theme.html">ds_theme_macaulay</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">2</span>, fix.time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_scrolling.gif" alt="Scrolling spectrogram of a great antshrike song passing a fixed play line, with an overview of the whole sound below" width="100%"></p>
+<p><strong>Paged spectrogram</strong>, revealed by a sliding highlight box:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span>, tlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/styles.html">ds_paged</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_paged.gif" alt="Paged spectrogram of a great antshrike song revealed by a sliding highlight box" width="100%"></p>
 <p><strong>Contents:</strong> <a href="#installation">Installation</a> · <a href="#quick-start">Quick start</a> · <a href="#background">Background</a> · <a href="#citation">Citation</a></p>
-<blockquote>
-<p>📖 <strong>Examples of the three styles are in the vignette <a href="https://marce10.github.io/dynaSpec/articles/dynaSpec.html">Creating dynamic spectrograms</a></strong> (or run <code><a href="articles/dynaSpec.html">vignette("dynaSpec")</a></code> in R). Customization options are shown in the article <a href="https://marce10.github.io/dynaSpec/articles/customizing.html">Customizing dynamic spectrograms</a>.</p>
-</blockquote>
+<!-- a GitHub alert box (raw markdown, so pandoc keeps it; pkgdown/make_index.R turns it into a Bootstrap alert) -->
+<div class="alert alert-info">
+<p><strong>Vignette and articles</strong> (on the <a href="https://marce10.github.io/dynaSpec/">package website</a>):</p>
+<ul>
+<li>
+<a href="https://marce10.github.io/dynaSpec/articles/dynaSpec.html">Creating dynamic spectrograms</a> (vignette; also <code><a href="articles/dynaSpec.html">vignette("dynaSpec")</a></code> in R): basic usage of every layer and of the three styles, and how to save and embed them</li>
+<li>
+<a href="https://marce10.github.io/dynaSpec/articles/themes.html">Themes for dynamic spectrograms</a>: theme settings and preset themes, including looks inspired by the Xeno-canto and Macaulay Library players</li>
+<li>
+<a href="https://marce10.github.io/dynaSpec/articles/customizing.html">Customizing dynamic spectrograms</a>: spectrograms, panels, styles, annotations, captions, player controls and videos</li>
+</ul>
+</div>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the development version from GitHub (requires <a href="https://cran.r-project.org/package=remotes" class="external-link">remotes</a>):</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>Install latest version from CRAN:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"dynaSpec"</span><span class="op">)</span></span></code></pre></div>
+<p>Or install the development version from GitHub (requires <a href="https://cran.r-project.org/package=remotes" class="external-link">remotes</a>):</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"maRce10/dynaSpec"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="ffmpeg">ffmpeg<a class="anchor" aria-label="anchor" href="#ffmpeg"></a>
 </h3>
-<p>Web pages do not need any external software. To create videos dynaSpec uses <a href="https://ffmpeg.org/download.html" class="external-link">ffmpeg</a>, which must be installed and available in the system path:</p>
+<p>Web pages do not need any external software. However, to create videos dynaSpec uses <a href="https://ffmpeg.org/download.html" class="external-link">ffmpeg</a>, which must be installed and available in the system path:</p>
 <table class="table">
 <colgroup>
-<col width="9%">
-<col width="90%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr>
 <th>Operating system</th>
@@ -181,48 +224,11 @@
 </tbody>
 </table>
 <p>You can check that R finds it with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.which.html" class="external-link">Sys.which</a></span><span class="op">(</span><span class="st">"ffmpeg"</span><span class="op">)</span></span></code></pre></div>
 <p>If ffmpeg is installed somewhere else, point R to the executable with <code>Sys.setenv(ffmpeg = "path/to/ffmpeg")</code>.</p>
+<hr>
 </div>
-</div>
-<div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
-</h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://marce10.github.io/dynaSpec/">dynaSpec</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># example recording included in the package</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"scythebill"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># static spectrogram with oscillogram</span></span>
-<span><span class="co"># (shown in the RStudio viewer or the web browser)</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">x</span></span>
-<span></span>
-<span><span class="co"># paged style</span></span>
-<span><span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="reference/styles.html">ds_paged</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># scrolling style (a longer recording)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"antshrike"</span><span class="op">)</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">y</span> <span class="op">+</span> <span class="fu"><a href="reference/styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># save as a web page or as a video</span></span>
-<span><span class="fu"><a href="reference/save_dynaspec.html">save_dynaspec</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"scythebill.html"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/save_dynaspec.html">save_dynaspec</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="fu"><a href="reference/styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="st">"antshrike.mp4"</span><span class="op">)</span></span></code></pre></div>
-<p>Sounds can be ‘Wave’ objects or ‘.wav’ and ‘.mp3’ files. Invalid arguments are reported all together before any processing starts, so mistakes are caught early. See the <a href="https://marce10.github.io/dynaSpec/articles/dynaSpec.html">vignette</a> for many more options and examples.</p>
-</div>
-<div class="section level2">
-<h2 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
-</h2>
-<p>This package is a collaboration between <a href="https://marce10.github.io/" class="external-link">Marcelo Araya-Salas</a> and <a href="https://www.mattwilkinsbio.com/" class="external-link">Matt Wilkins</a>, and the successor of <a href="https://github.com/maRce10/dynaSpec" class="external-link">dynaSpec</a>. The goal is to create static and dynamic visualizations of sounds, ready for publication or presentation. Marcelo’s approach (scrolling spectrograms) shows a spectrogram sliding past a fixed point as sounds are played, similar to that used in Cornell’s Macaulay Library. Matt’s approach creates “paged” spectrograms that are revealed by a sliding highlight box as sounds are played, akin to Adobe Audition’s spectral view. dynaSpec brings both approaches, and static spectrograms with a moving play line, together under a single layered syntax, and adds interactive web pages.</p>
-<p>A taste of what you can do (a video made with dynaSpec):</p>
-<video src="https://github.com/user-attachments/assets/8323b6cd-8ddd-4d4f-9e42-4adad90f2c74" controls width="100%"></video><hr>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
