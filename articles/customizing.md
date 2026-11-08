@@ -955,7 +955,7 @@ Click to see
     #> [13] backports_1.5.1    tuneR_1.4.7        gridExtra_2.3.1    httr_1.4.9        
     #> [17] purrr_1.2.2        scales_1.4.0       pbapply_1.7-5      warbleR_1.1.38    
     #> [21] textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6          rlang_1.3.0       
-    #> [25] fftw_1.0-9         cachem_1.1.0       yaml_2.3.12        otel_0.2.0        
+    #> [25] fftw_1.0-9         cachem_1.1.0       yaml_2.3.12        otel_0.3.0        
     #> [29] parallel_4.6.2     tools_4.6.2        checkmate_2.3.4    ggplot2_4.0.3     
     #> [33] curl_8.1.0         vctrs_0.7.3        R6_2.6.1           png_0.1-9         
     #> [37] bmp_0.3.1          proxy_0.4-29       dtw_1.23-3         lifecycle_1.0.5   

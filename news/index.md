@@ -93,7 +93,9 @@
   shows two or more sounds one on top of the other and plays them in
   sequence, with the same frequency and time scales. It works with all
   styles, layers, themes and outputs: web pages have one set of controls
-  for all sounds, and videos and images stack those of each sound
+  for all sounds, and videos and images stack those of each sound. Only
+  the last sound has a time axis title, and spectrograms keep the same
+  height
 - Layers and themes have a `ds_` prefix
   ([`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md),
   [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md),

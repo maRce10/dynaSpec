@@ -65,7 +65,7 @@ spectrogram visualizations</h3>
 <a href="https://marce10.github.io/" class="external-link">Marcelo
 Araya-Salas</a> &amp; Matthew R. Wilkins</h4>
             
-            <h4 data-toc-skip class="date">2026-11-06</h4>
+            <h4 data-toc-skip class="date">2026-11-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/vignettes/articles/themes.Rmd" class="external-link"><code>vignettes/articles/themes.Rmd</code></a></small>
       <div class="d-none name"><code>themes.Rmd</code></div>
@@ -136,7 +136,8 @@ the background around the panels (<code>bg</code>):</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -1142,7 +1143,8 @@ the color and size of titles (<code>col.title</code>,
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -2149,7 +2151,8 @@ of the player controls of web pages. A dark theme:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -3147,7 +3150,8 @@ oscillograms, envelopes and power spectra, and <code>bg</code> in
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -4150,7 +4154,8 @@ previous themes.</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -5146,7 +5151,8 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -6141,7 +6147,8 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -7136,7 +7143,8 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -8132,7 +8140,8 @@ colors for panels, annotations, play line and player controls:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -9128,7 +9137,8 @@ color:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -10122,7 +10132,8 @@ color:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -11121,7 +11132,8 @@ moves along (<code>fix.time = FALSE</code>) and a short oscillogram:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -12121,7 +12133,8 @@ color version of the Xeno-canto player:</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -13121,7 +13134,8 @@ overview of the whole sound below (the part shown is highlighted):</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -14128,7 +14142,8 @@ or, in scrolling spectrograms, “minimal” (1 s and 1 kHz scale bars):</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -15129,7 +15144,8 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -16118,7 +16134,8 @@ it can be restored (<code>ds_set_theme(NULL)</code> removes it):</p>
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -17126,7 +17143,7 @@ Click to see
 <span><span class="co">#&gt; [21] backports_1.5.1    checkmate_2.3.4    imager_1.0.8       desc_1.4.3        </span></span>
 <span><span class="co">#&gt; [25] readbitmap_0.1.5   tiff_0.1-12        bslib_0.12.0       RColorBrewer_1.1-3</span></span>
 <span><span class="co">#&gt; [29] rlang_1.3.0        stringi_1.8.9      cachem_1.1.0       xfun_0.62         </span></span>
-<span><span class="co">#&gt; [33] fs_2.1.0           sass_0.4.10        S7_0.2.2           otel_0.2.0        </span></span>
+<span><span class="co">#&gt; [33] fs_2.1.0           sass_0.4.10        S7_0.2.2           otel_0.3.0        </span></span>
 <span><span class="co">#&gt; [37] seewave_2.2.4      cli_3.6.6          magrittr_2.0.5     pkgdown_2.2.1     </span></span>
 <span><span class="co">#&gt; [41] digest_0.6.39      grid_4.6.2         lifecycle_1.0.5    vctrs_0.7.3       </span></span>
 <span><span class="co">#&gt; [45] evaluate_1.0.5     glue_1.8.1         farver_2.1.2       tuneR_1.4.7       </span></span>

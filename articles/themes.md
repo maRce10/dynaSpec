@@ -383,7 +383,7 @@ Click to see
     #> [21] backports_1.5.1    checkmate_2.3.4    imager_1.0.8       desc_1.4.3        
     #> [25] readbitmap_0.1.5   tiff_0.1-12        bslib_0.12.0       RColorBrewer_1.1-3
     #> [29] rlang_1.3.0        stringi_1.8.9      cachem_1.1.0       xfun_0.62         
-    #> [33] fs_2.1.0           sass_0.4.10        S7_0.2.2           otel_0.2.0        
+    #> [33] fs_2.1.0           sass_0.4.10        S7_0.2.2           otel_0.3.0        
     #> [37] seewave_2.2.4      cli_3.6.6          magrittr_2.0.5     pkgdown_2.2.1     
     #> [41] digest_0.6.39      grid_4.6.2         lifecycle_1.0.5    vctrs_0.7.3       
     #> [45] evaluate_1.0.5     glue_1.8.1         farver_2.1.2       tuneR_1.4.7       

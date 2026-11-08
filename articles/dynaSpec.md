@@ -437,7 +437,7 @@ Click to see
     #> [25] desc_1.4.3         readbitmap_0.1.5   tiff_0.1-12        bslib_0.12.0      
     #> [29] RColorBrewer_1.1-3 rlang_1.3.0        stringi_1.8.9      cachem_1.1.0      
     #> [33] xfun_0.62          fs_2.1.0           sass_0.4.10        S7_0.2.2          
-    #> [37] otel_0.2.0         viridisLite_0.4.3  cli_3.6.6          magrittr_2.0.5    
+    #> [37] otel_0.3.0         viridisLite_0.4.3  cli_3.6.6          magrittr_2.0.5    
     #> [41] pkgdown_2.2.1      digest_0.6.39      grid_4.6.2         lifecycle_1.0.5   
     #> [45] vctrs_0.7.3        evaluate_1.0.5     glue_1.8.1         farver_2.1.2      
     #> [49] tuneR_1.4.7        ragg_1.5.2         purrr_1.2.2        rmarkdown_2.32    
