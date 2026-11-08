@@ -651,7 +651,9 @@ test_that("ds_compare() keeps the same time scale and stacks images", {
   save_dynaspec(base, png_file, play = FALSE, verbose = FALSE)
   img <- png::readPNG(png_file)
   expect_equal(dim(img)[2], 400)
-  expect_equal(dim(img)[1], 3 * 200 + 2 * 8)
+  # (only the last sound has a time axis title, and there is no band between figures with axes)
+  expect_lt(dim(img)[1], 3 * 200)
+  expect_gt(dim(img)[1], 3 * 150)
   expect_equal(seewave::duration(pad_wave_int(a, 1.6)), 1.6, tolerance = 1e-3)
   expect_identical(pad_wave_int(b, 1), b)
 
@@ -677,7 +679,9 @@ test_that("videos of ds_compare() play the sounds in sequence", {
   info <- video_info_int(file)
   expect_equal(info$duration, 0.6 + 0.9 + 0.7 + 2 * 0.2, tolerance = 0.05)
   expect_equal(info$width, 300)
-  expect_equal(info$height, 3 * 150 + 2 * 8)
+  # (only the last sound has a time axis title; no band between figures with axes)
+  expect_lt(info$height, 3 * 150)
+  expect_gt(info$height, 2 * 150)
 })
 
 test_that("frequency contours are measured and drawn at their time and frequency", {
@@ -760,5 +764,65 @@ test_that("contours work with all styles and selections of several sound files",
   expect_error(ds_annotations(st, contour = list(1, "a", 2)), "Each element")
   expect_error(ds_annotations(st, contour.args = list(foo = 1)), "contour.args")
   expect_error(ds_annotations(st, contour.col = "notacolor"), "contour.col")
+})
+
+test_that("sounds of comparisons other than the last one have no time axis title and spectrograms of the same height", {
+  a <- short_sound(1)
+  base <- dynaspec(a, flim = c(1, 5)) + ds_spectrogram(wl = 128)
+  no_title <- function(x) { x$theme$time.title <- FALSE; x }
+
+  # static: plotting regions (data-rows: top and bottom of the panels, as proportions of the figure) of the same height
+  panel_px <- function(x) {
+    html <- save_dynaspec(x, play = FALSE, verbose = FALSE)
+    file <- tempfile(fileext = ".png")
+    save_dynaspec(x, file, play = FALSE, verbose = FALSE)
+    # (last row, which has the time axis)
+    rows <- as.numeric(strsplit(utils::tail(strsplit(sub('.*data-rows="([^"]+)".*', "\\1", html), ";")[[1]], 1), ",")[[1]])
+    h <- nrow(png::readPNG(file))
+    c(fig = h, panel = (rows[6] - rows[5]) * h)
+  }
+  for (st in list(ds_static(width = 400, height = 300), ds_static(width = 400, height = 300, rows = 2))) {
+    for (p in list(NULL, ds_oscillogram())) {
+      x <- base + st
+      if (!is.null(p)) x <- x + p
+      with_title <- panel_px(x)
+      without <- panel_px(no_title(x))
+      expect_lt(without[["fig"]], with_title[["fig"]])
+      expect_equal(without[["panel"]], with_title[["panel"]], tolerance = 2 / with_title[["panel"]])
+    }
+  }
+
+  # scrolling: plotting region (as proportions of the frame) of the same height in pixels
+  frame_px <- function(x) {
+    html <- save_dynaspec(x, play = FALSE, verbose = FALSE)
+    cfg <- regmatches(html, regexpr('<script type="application/json">[^<]+', html))
+    num <- function(name) as.numeric(sub(paste0('.*"', name, '":([0-9.e-]+).*'), "\\1", cfg))
+    img <- sub('.*<img class="ds-frame" srcset="data:image/png;base64,([^ ]+) 1x".*', "\\1", html)
+    f <- tempfile(fileext = ".png")
+    writeBin(base64_decode_test(img), f)
+    h <- nrow(png::readPNG(f))
+    c(fig = h, panel = (num("lowBottom") - num("upTop")) * h)
+  }
+  skip_if_not_installed("base64enc")
+  base64_decode_test <- function(x) base64enc::base64decode(x)
+  x <- base + ds_scrolling(t.display = 0.5, width = 300, height = 200)
+  with_title <- frame_px(x)
+  without <- frame_px(no_title(x))
+  expect_lt(without[["fig"]], with_title[["fig"]])
+  expect_equal(without[["panel"]], with_title[["panel"]], tolerance = 2 / with_title[["panel"]])
+
+  # comparisons: the last sound keeps its title
+  cmp <- ds_compare(a, a, a) + ds_spectrogram(wl = 128)
+  html <- save_dynaspec(cmp + ds_static(width = 400, height = 300), play = FALSE, verbose = FALSE)
+  heights <- vapply(regmatches(html, gregexpr('<img srcset="data:image/png;base64,[^ ]+', html))[[1]], function(u) {
+    f <- tempfile(fileext = ".png")
+    writeBin(base64enc::base64decode(sub('<img srcset="data:image/png;base64,', "", u)), f)
+    nrow(png::readPNG(f))
+  }, numeric(1))
+  expect_equal(unname(heights[1]), unname(heights[2]))
+  expect_gt(heights[3], heights[1])
+  expect_false(grepl('style="--ds-cmp-gap', html, fixed = TRUE))
+  # (figures without axes are separated)
+  expect_match(save_dynaspec(cmp + ds_paged(t.display = 0.5), play = FALSE, verbose = FALSE), 'style="--ds-cmp-gap:8px"', fixed = TRUE)
 })
 

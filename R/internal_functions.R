@@ -1043,7 +1043,8 @@ player_js_int <- function() {
       ".dynaspec-player audio,.dynaspec-paged audio{display:none}" +
       ".ds-box{position:absolute;pointer-events:none}" +
       // comparison of sounds: stacked players with the controls of the last one
-      ".dynaspec-compare>div+div{margin-top:.5em}" +
+      ".dynaspec-compare>div+div{margin-top:var(--ds-cmp-gap,0)}" +
+      ".dynaspec-compare>.ds-round+.ds-round{margin-top:.5em}" +
       ".dynaspec-compare>.ds-round:not(:last-child){margin-bottom:0}" +
       ".dynaspec-compare:fullscreen{background:var(--ds-bg,#fff);padding:1em;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;overflow:auto}" +
       ".dynaspec-compare:fullscreen .ds-wrap,.dynaspec-compare:fullscreen .ds-bar{margin-left:auto;margin-right:auto;width:100%}" +
@@ -2328,12 +2329,14 @@ draw_page_int <- function(sp, i) {
   # color of axis labels, and room taken by vertical time labels (las = 2 or 3)
   axis_col <- theme_int(th, "col.axis", txt_col)
   x_extra <- x_lab_extra_int(theme_int(th, "las", 1), pretty(range_i), cex_axis)
+  # (no time axis title in sounds of comparisons other than the last one, see paged_bottom_int())
+  time_title <- !isFALSE(th$time.title)
 
   op <- graphics::par(
     bg = fig_bg,
     mar = if (inside) c(0.45 + cex_axis, 0, if (has_title) 3 else 0, if (sp$plotLegend) 7 else 0) else
       if (compact) c(0.3, 0.6 + 1.6 * cex_axis, 0.4 + 1.1 * cex_axis + if (has_title) 2.4 else 0, if (sp$plotLegend) 7 else 0.3) else
-      c(if (axes) 2.2 + 2 * lab_cex + x_extra else 0, if (axes) 2.8 + 2.6 * lab_cex else 0, if (has_title) 3 else if (axes) 1.2 else 0, if (sp$plotLegend) 7 else if (axes) 1.2 else 0),
+      c(if (axes) paged_bottom_int(th, time_title) + x_extra else 0, if (axes) 2.8 + 2.6 * lab_cex else 0, if (has_title) 3 else if (axes) 1.2 else 0, if (sp$plotLegend) 7 else if (axes) 1.2 else 0),
     col.axis = txt_col, col.lab = txt_col, col.main = theme_int(th, "col.title", txt_col), fg = txt_col, las = theme_int(th, "las", 1),
     family = theme_int(th, "family", "sans"), tcl = tcl
   )
@@ -2372,7 +2375,8 @@ draw_page_int <- function(sp, i) {
     graphics::axis(2, cex.axis = cex_axis, tcl = tcl, mgp = c(3, 0.6, 0), col = box_col, col.axis = axis_col)
     font_lab <- theme_int(th, "font.lab", 2)
     cex_lab <- 20 / 12 * lab_cex
-    graphics::title(xlab = theme_int(th, "xlab", "Time (s)"), cex.lab = cex_lab, font.lab = font_lab, line = 1.2 + 1.5 * lab_cex + x_extra)
+    if (time_title)
+      graphics::title(xlab = theme_int(th, "xlab", "Time (s)"), cex.lab = cex_lab, font.lab = font_lab, line = 1.2 + 1.5 * lab_cex + x_extra)
     # the frequency axis title is shrunk if it is longer than the figure height
     ylab <- theme_int(th, "ylab", "Frequency (kHz)")
     # (it is centered on the plotting region, so it can extend twice the distance to the closest figure edge)
@@ -2402,6 +2406,12 @@ draw_page_int <- function(sp, i) {
   c(t0 = range_i[1], t1 = range_i[2],
     left = graphics::grconvertX(range_i[1], "user", "ndc"), right = graphics::grconvertX(range_i[2], "user", "ndc"),
     top = ndc_y(sp$yLim[2]), bottom = ndc_y(sp$yLim[1]))
+}
+
+# bottom margin (in lines, without the room taken by vertical labels) of pages with standard axes, with or without time
+# axis title
+paged_bottom_int <- function(th, title = TRUE) {
+  if (title) 2.2 + 2 * theme_int(th, "cex.lab", 1) else 1.3 + 16 / 12 * theme_int(th, "cex.axis", 1)
 }
 
 # draw page i of a paged spectrogram in a png file, 'spec.width' x 'spec.height' inches at resolution 'res'
@@ -2644,6 +2654,8 @@ static_spectro_int <- function(wave,
   spec_gap <- 0.1
   # (rows other than the last one get time labels without axis title)
   row_lines <- if (inside) 0.45 + cex_axis else 1.2 + cex_axis + x_lab_extra_int(theme_int(theme, "las", 1), pretty(c(0, dur)), cex_axis)
+  # (no time axis title in sounds of comparisons other than the last one: the last row is as the others, see below)
+  time_title <- !isFALSE(theme$time.title)
   slot_mar <- function(i, axis) c(if (i < n_stack) 0.2 else if (axes && !compact) (if (axis) bottom_lines else row_lines) else if (axis && axes) bottom_lines else if (flush) 0 else 0.5, if (spec_left) spec_gap else if (axes) lab_lines else if (inside) 0 else 1, if (i == 1) top_lines else 0, if (is.null(spectrum) || spec_left) (if (flush) 0 else 1) else spec_gap)
 
   # slot heights (in inches) that keep relative heights between plotting regions, with the same plotting
@@ -2655,6 +2667,8 @@ static_spectro_int <- function(wave,
   plot_in <- height / res - sum(slot_marg(TRUE))
   if (plot_in <= 0)
     stop2("'height' is too small to fit the figure (increase 'height' or decrease 'res')")
+  # (without time axis title the figure is shorter, and the plotting regions are as high as with it)
+  if (!time_title && !compact) bottom_lines <- row_lines
   slot_heights <- function(axis) plot_in * rel / sum(rel) + slot_marg(axis)
   fig_height <- round(res * ((rows - 1) * sum(slot_heights(FALSE)) + sum(slot_heights(TRUE))))
 
@@ -2705,7 +2719,7 @@ static_spectro_int <- function(wave,
       t1 <- row_lims[k + 1] / f
       axis <- k == rows
       # (theme of the row: no time axis title except in the last row)
-      th_row <- if (axis) theme else utils::modifyList(theme, list(xlab = ""))
+      th_row <- if (axis && time_title) theme else utils::modifyList(theme, list(xlab = ""))
       tops <- bottoms <- numeric(n_stack)
 
       for (i in plot_order) {
@@ -2820,6 +2834,11 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
 
   # report errors
   .report_assertions(check_results)
+
+  # no time axis title in sounds of comparisons other than the last one: frames are shorter by the room of the title, so
+  # the spectrogram is as high as with it
+  time_title <- !(isFALSE(theme$time.title) && axis.type == "standard")
+  if (!time_title) height <- height - round(2 * png_line_in_int(res, theme) * res)
 
   # other arguments in '...' are passed to seewave::spectro()
   spectro_args <- list(...)
@@ -3156,7 +3175,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
       graphics::par(mar = c(0.45 + theme_int(theme, "cex.axis", 1), 0, 0, 0)) else
     if (axis.type != "standard")
       graphics::par(mar =  rep(0, 4)) else
-    graphics::par(mar =  c(4.2 + x_extra, 4.2, 1, 1) + 0.1)
+    graphics::par(mar =  c((if (time_title) 4.2 else 2.2) + x_extra, 4.2, 1, 1) + 0.1)
 
     # keep original values
     org.flim <- flim
@@ -3175,7 +3194,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
     # (time axis labels move along when time is not fixed, so they are added by the web page in html frames)
     graphics::plot(0,0, type = "n", xlim = if(fix.time) c(0, t.display) else tlim, ylim = flim, xlab = "", ylab = if (axis.type == "standard") theme_int(theme, "ylab", "Frequency (kHz)") else "", xaxs = "i", yaxs = "i", bty = "n", xaxt = if (axis.type == "standard" && fix.time && frame_time) "s" else "n", yaxt = "n", las = x_las)
     # time axis title (below vertical time labels)
-    if (axis.type == "standard")
+    if (axis.type == "standard" && time_title)
       graphics::title(xlab = theme_int(theme, "xlab", "Time (s)"), line = 3 + x_extra)
 
     # get plotting area coordinates
@@ -4086,6 +4105,13 @@ pad_wave_int <- function(w, to) {
   w
 }
 
+# separation (in pixels) between stacked figures: none when figures have margins with axes, so they do not touch
+compare_band_int <- function(s) {
+  # (paged spectrograms have no axes by default)
+  default <- if (identical(s$style$type, "paged")) "none" else "standard"
+  if (theme_int(global_theme_int(s)$theme, "axis.type", default) %in% c("standard", "compact")) 0 else 8
+}
+
 # background of the separation between stacked images and videos (color of the figure, or white if transparent)
 compare_bg_int <- function(s) {
   bg <- theme_int(global_theme_int(s)$theme, "bg", "white")
@@ -4100,6 +4126,8 @@ save_compare_int <- function(x, out, ext, play, verbose) {
     stop2("all sounds of a comparison must use the same style (add the style to the comparison, e.g. ds_compare(x, y) + ds_scrolling())")
   durs <- vapply(sounds, compare_dur_int, numeric(1))
   sounds <- lapply(sounds, function(s) { s$compare <- TRUE; s })
+  # (only the last sound has a time axis title)
+  for (i in seq_len(length(sounds) - 1)) sounds[[i]]$theme$time.title <- FALSE
 
   # same time scale
   if (isTRUE(x$same.scale)) {
@@ -4119,7 +4147,7 @@ save_compare_int <- function(x, out, ext, play, verbose) {
   }
 
   res <- switch(ext,
-    html = compare_html_int(lapply(sounds, render, file = NULL), durs, x$gap, out, play),
+    html = compare_html_int(lapply(sounds, render, file = NULL), durs, x$gap, out, play, band = compare_band_int(sounds[[1]])),
     mp4 = compare_video_int(sounds, render, durs, x, out),
     png = compare_png_int(sounds, render, out, verbose)
   )
@@ -4128,10 +4156,11 @@ save_compare_int <- function(x, out, ext, play, verbose) {
 }
 
 # web page of a comparison: the players of all sounds (their javascript goes after them, as it sets the sequence)
-compare_html_int <- function(players, durs, gap, out, play) {
+compare_html_int <- function(players, durs, gap, out, play, band = 0) {
   js <- player_js_int()
   html <- paste0(
-    '<div class="dynaspec-compare" data-gap="', gap, '" data-durations="', paste(durs, collapse = ","), '">\n',
+    '<div class="dynaspec-compare" data-gap="', gap, '" data-durations="', paste(durs, collapse = ","), '"',
+    if (band > 0) paste0(' style="--ds-cmp-gap:', band, 'px"'), '>\n',
     paste(vapply(players, function(p) sub(js, "", p, fixed = TRUE), character(1)), collapse = ""),
     '</div>\n',
     js
@@ -4163,6 +4192,7 @@ compare_video_int <- function(sounds, render, durs, x, out) {
   w <- info[[1]]$width
   w <- w + w %% 2
   bg <- paste0("0x", substring(compare_bg_int(sounds[[1]]), 2))
+  band <- compare_band_int(sounds[[1]])
   num <- function(v) format(v, digits = 10, scientific = FALSE)
   chains <- vapply(seq_len(n), function(i) {
     before <- sum(d[seq_len(i - 1)]) + (i - 1) * g
@@ -4170,7 +4200,7 @@ compare_video_int <- function(sounds, render, durs, x, out) {
     tpad <- c(if (before > 0) paste0("start_mode=clone:start_duration=", num(before)), if (after > 0) paste0("stop_mode=clone:stop_duration=", num(after)))
     # (a band of the figure background separates the videos)
     sprintf("[%d:v]trim=end=%s,setpts=PTS-STARTPTS,tpad=%s,scale=%d:-2,setsar=1%s[v%d]", i - 1, num(d[i]), paste(tpad, collapse = ":"), w,
-            if (i < n) sprintf(",pad=iw:ih+8:0:0:color=%s", bg) else "", i)
+            if (i < n && band > 0) sprintf(",pad=iw:ih+%d:0:0:color=%s", band, bg) else "", i)
   }, character(1))
   audio <- vapply(seq_len(n), function(i) {
     sprintf("[%d:a]atrim=end=%s,asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo%s[a%d]", i - 1, num(d[i]),
@@ -4196,7 +4226,7 @@ compare_png_int <- function(sounds, render, out, verbose) {
   bg <- grDevices::col2rgb(compare_bg_int(sounds[[1]])) / 255
   for (i in seq_len(n)) {
     img <- lapply(files, function(f) if (i <= length(f)) png::readPNG(f[i]))
-    png::writePNG(stack_images_int(img, bg), res[i])
+    png::writePNG(stack_images_int(img, bg, band = compare_band_int(sounds[[1]])), res[i])
   }
   if (verbose) message("Image(s) saved at: ", paste(res, collapse = ", "))
   res
@@ -4296,6 +4326,11 @@ save_paged_int <- function(x, wave, layers, out, ext, play, verbose, audio = NUL
   prep_args$layers <- layers
   th <- minimal_axis_int(x$theme, "paged")
   prep_args$theme <- th
+  # (pages without time axis title are shorter, so their spectrogram is as high as with the title)
+  if (isFALSE(th$time.title) && theme_int(th, "axis.type", "standard") == "standard") {
+    h <- if (is.null(prep_args$spec.height)) 3 else prep_args$spec.height
+    prep_args$spec.height <- h - (paged_bottom_int(th, TRUE) - paged_bottom_int(th, FALSE)) * png_line_in_int(100, th)
+  }
   if (!is.null(th$axis.type)) prep_args$axis.type <- th$axis.type
 
   # pages as png files
