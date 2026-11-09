@@ -97,9 +97,6 @@ dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
 
 <img src="man/figures/readme_paged.gif" alt="Paged spectrogram of a great antshrike song revealed by a sliding highlight box" width="100%"/>
 
-**Contents:** [Installation](#installation) · [Quick
-start](#quick-start) · [Background](#background) · [Citation](#citation)
-
 <!-- a GitHub alert box (raw markdown, so pandoc keeps it; pkgdown/make_index.R turns it into a Bootstrap alert) -->
 
 > [!TIP]
