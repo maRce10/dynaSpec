@@ -20,3 +20,4 @@ Authors@R: c(person("Marcelo", "Araya-Salas", role = c("aut", "cre"), email = "m
 Config/roxygen2/version: 8.1.1
 URL: https://marce10.github.io/dynaSpec/, https://github.com/maRce10/dynaSpec
 BugReports: https://github.com/maRce10/dynaSpec/issues
+RoxygenNote: 7.3.3

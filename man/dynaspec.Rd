@@ -7,7 +7,7 @@
 dynaspec(wave, flim = NULL, tlim = NULL)
 }
 \arguments{
-\item{wave}{The sound: an object of class 'Wave' or the path to a '.wav' or '.mp3' file.}
+\item{wave}{The sound: an object of class 'Wave', the path to a '.wav' or '.mp3' file, or the path to a video file with sound (e.g. '.mp4', '.mov', '.mkv', '.webm' or '.avi'; requires 'ffmpeg'). The sound of videos is used as the sound, and \code{\link[=ds_video]{ds_video()}} shows the video next to the spectrogram.}
 
 \item{flim}{Numeric vector of length 2 with the frequency limits (in kHz). Default is \code{NULL} (from 0 to the Nyquist frequency, or the style default). \code{Inf} as upper limit means the Nyquist frequency of the sound (half its sampling rate). Any other upper limit higher than the Nyquist frequency gives a warning, and spectrograms are shown up to the Nyquist frequency.}
 
@@ -24,7 +24,7 @@ Panels are added as layers, as in 'ggplot2': only the panels added are shown (\c
 
 The three styles show the sound in different ways:
 \itemize{
-\item \code{\link[=ds_scrolling]{ds_scrolling()}}: the spectrogram scrolls along a fixed play line.
+\item \code{\link[=ds_scrolling]{ds_scrolling()}}: the spectrogram scrolls past the play line (the line only moves at the start and the end of the sound).
 \item \code{\link[=ds_paged]{ds_paged()}}: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.
 \item \code{\link[=ds_static]{ds_static()}} (default): a play line moves over the whole figure (spectrogram, oscillogram or both), which can be split in several rows.
 }
@@ -41,7 +41,7 @@ dynaspec(scythebill)
 
 # static spectrogram with oscillogram (printing shows it in the viewer or browser)
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_oscillogram()
 
 # save as a web page
@@ -57,7 +57,7 @@ x + ds_paged(t.display = 1)
 # scrolling style (a longer recording)
 data(antshrike)
 y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 y + ds_scrolling(t.display = 2)
 
 # video (requires ffmpeg)

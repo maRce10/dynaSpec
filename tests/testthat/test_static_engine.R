@@ -60,11 +60,13 @@ test_that("oscillogram can be plotted above or below the spectrogram", {
   below <- static_engine(short_sound(1), wl = 300, width = 300, height = 200, play = FALSE)
   above <- static_engine(short_sound(1), wl = 300, width = 300, height = 200, osc.position = "above", play = FALSE)
 
-  # play line spans both panels (from the top margin, 1 line, to the time axis margin, 4 lines) in both layouts; the
+  # play line spans both panels (from the top margin, 1 line, to the time axis margin, which fits the time axis title of
+  # size 1.2 below labels of size 1, see xlab_margin_int()) in both layouts; the
   # height of a line depends on the device (0.2 inches on Linux, 0.192 on Windows), in a 2 inch high figure
   line_in <- dynaSpec:::png_line_in_int(100)
   expect_equal(ext(below, "top"), line_in / 2, tolerance = 1e-3)
-  expect_equal(ext(below, "bottom"), 1 - 4 * line_in / 2, tolerance = 1e-3)
+  bottom <- dynaSpec:::xlab_margin_int(1 + 0.9, 1.2)
+  expect_equal(ext(below, "bottom"), 1 - bottom * line_in / 2, tolerance = 1e-3)
   expect_equal(ext(above, "top"), ext(below, "top"))
   expect_equal(ext(above, "bottom"), ext(below, "bottom"))
   expect_error(static_engine(short_sound(1), osc.position = "left"), "osc.position")
@@ -94,11 +96,13 @@ test_that("static_spectro splits sounds in rows", {
   expect_error(static_engine(short_sound(), wl = 300, rows = 400, height = 50), "too short")
   expect_error(static_engine(short_sound(), wl = 100, rows = 100), "too tall")
   expect_error(static_engine(short_sound(), rows = 0), "rows")
-  # image is 3 rows high (upper rows have time labels but no axis title: 1.8 lines shorter; a line is 0.2 inches on
-  # Linux, 0.192 on Windows; 100 dpi)
+  # image is 3 rows high (upper rows have time labels but no axis title: the margin of the time axis title, see
+  # xlab_margin_int(), minus 2.05 lines; lower rows have a top margin of 0.4 lines instead of 1: 0.6 lines shorter; a line
+  # is 0.2 inches on Linux, 0.192 on Windows; 100 dpi)
   skip_if_not_installed("base64enc")
   img <- png::readPNG(base64enc::base64decode(sub('[ "].*', "", sub('.*<img srcset="data:image/png;base64,', "", res))))
-  expect_equal(dim(img)[1:2], c(round(600 - 2 * 1.8 * dynaSpec:::png_line_in_int(100) * 100), 300))
+  shorter <- 2 * (dynaSpec:::xlab_margin_int(1 + 0.9, 1.2) - 2.05) + 2 * 0.6
+  expect_equal(dim(img)[1:2], c(round(600 - shorter * dynaSpec:::png_line_in_int(100) * 100), 300))
 })
 
 test_that("static_spectro creates a video with the play line", {
@@ -126,6 +130,11 @@ test_that("static_spectro creates a video with the play line", {
   # (the line is the longest vertical run of reddish rows: reddish pixels elsewhere in the column, e.g. color fringes of
   # antialiased text in the time axis title on some systems, are not part of it)
   on_line <- rowSums(reddish[, round(line_x) + (-3:3)]) > 0
+  # (gaps of up to 3 rows, where the line crosses dark pixels of the waveform, are part of it)
+  runs <- rle(on_line)
+  short_gap <- !runs$values & runs$lengths <= 3 & c(FALSE, runs$values[-length(runs$values)]) & c(runs$values[-1], FALSE)
+  runs$values[short_gap] <- TRUE
+  on_line <- inverse.rle(runs)
   runs <- rle(on_line)
   longest <- which.max(ifelse(runs$values, runs$lengths, 0))
   line_y <- c(sum(runs$lengths[seq_len(longest - 1)]) + 1, sum(runs$lengths[seq_len(longest)]))

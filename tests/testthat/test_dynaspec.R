@@ -72,13 +72,13 @@ test_that("scrolling and paged spectrograms are saved as web pages", {
   expect_match(res, 'class="dynaspec-scroll"', fixed = TRUE)
   expect_match(res, '"labels":"hb"', fixed = TRUE)
 
-  res <- save_dynaspec(x + ds_paged(t.display = 1, spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE)
+  res <- save_dynaspec(x + ds_paged(t.display = 1, width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE)
   expect_match(res, 'class="dynaspec-paged"', fixed = TRUE)
   expect_equal(nrow(player_rows(res)), 2)
 
   # pages as images
   out <- file.path(tempdir(), "pages_test.png")
-  files <- save_dynaspec(x + ds_paged(t.display = 1, spec.width = 4, spec.height = 1.5), out, play = FALSE, verbose = FALSE)
+  files <- save_dynaspec(x + ds_paged(t.display = 1, width = 600, height = 225, res = 150), out, play = FALSE, verbose = FALSE)
   on.exit(unlink(files), add = TRUE)
   expect_equal(basename(files), c("pages_test_1.png", "pages_test_2.png"))
   expect_error(save_dynaspec(x + ds_scrolling(), out, play = FALSE), "only available")
@@ -93,13 +93,13 @@ test_that("videos are created for all styles", {
   out <- file.path(tempdir(), c("v_static.mp4", "v_paged.mp4", "v_scroll.mp4"))
   on.exit(unlink(out), add = TRUE)
   save_dynaspec(x + ds_static(width = 300, height = 200), out[1], play = FALSE, verbose = FALSE)
-  save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), out[2], play = FALSE, verbose = FALSE)
+  save_dynaspec(x + ds_paged(width = 600, height = 225, res = 150), out[2], play = FALSE, verbose = FALSE)
   save_dynaspec(x + ds_scrolling(t.display = 0.5, width = 300, height = 200, fps = 10), out[3], play = FALSE, verbose = FALSE)
   expect_true(all(file.exists(out)))
 })
 
 test_that("static spectrograms can hide the play line", {
-  x <- dynaspec(short_sound(1)) + ds_spectrogram(wl = 300) + ds_static(width = 300, height = 200, play.line = FALSE, lcol = "#c0392b")
+  x <- dynaspec(short_sound(1)) + ds_spectrogram(wl = 300) + ds_static(width = 300, height = 200, play.line = FALSE) + ds_theme(col.line = "#c0392b")
   res <- save_dynaspec(x, play = FALSE, verbose = FALSE)
   expect_match(res, 'data-line="false"', fixed = TRUE)
   expect_match(save_dynaspec(x + ds_static(play.line = TRUE), play = FALSE, verbose = FALSE), 'data-line="true"', fixed = TRUE)
@@ -171,7 +171,7 @@ test_that("envelope, spectrum and overview layers", {
   expect_match(sc(hb), '"lower":"none"', fixed = TRUE)
   expect_warning(sc(hb + ds_oscillogram() + ds_overview()), "single lower panel")
   expect_warning(sc(hb + ds_spectrum()), "only shown in static")
-  expect_warning(save_dynaspec(hb + ds_envelope() + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "not shown in paged")
+  expect_warning(save_dynaspec(hb + ds_envelope() + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "not shown in paged")
 
   # no delay before scrolling starts by default
   expect_match(sc(hb), '"buffer":0', fixed = TRUE)
@@ -190,7 +190,7 @@ test_that("dynatheme sets axis titles and look in all styles", {
   expect_s3_class(save_dynaspec(x + ds_theme(axis.type = "none", bg = "black") + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
   sc <- save_dynaspec(x + ds_theme(bg = "black") + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE)
   expect_match(sc, '"bg":"#000000"', fixed = TRUE)
-  expect_s3_class(save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html")
 
   # minimal axes only in scrolling spectrograms
   expect_warning(save_dynaspec(x + ds_theme(axis.type = "minimal") + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "only available in scrolling")
@@ -205,7 +205,7 @@ test_that("captions are shown in all styles", {
     ds_captions(c("a", "b"), start = c(0.1, 0.5), end = c(0.4, 0.9), fading = 0.1) +
     ds_captions("top", start = 0, end = 1, x = 0.2, y = 0.95, col = "red", font = 2)
   html <- function(y) save_dynaspec(y, play = FALSE, verbose = FALSE)
-  for (st in list(ds_static(width = 300, height = 200), ds_scrolling(t.display = 0.5, width = 300, height = 200), ds_paged(spec.width = 4, spec.height = 1.5))) {
+  for (st in list(ds_static(width = 300, height = 200), ds_scrolling(t.display = 0.5, width = 300, height = 200), ds_paged(width = 600, height = 225, res = 150))) {
     res <- html(x + st)
     expect_match(res, 'class="ds-captions"', fixed = TRUE)
     expect_match(res, '"labels":["a","b"]', fixed = TRUE)
@@ -221,7 +221,7 @@ test_that("captions are shown in all styles", {
   out <- file.path(tempdir(), c("cap_static.mp4", "cap_paged.mp4"))
   on.exit(unlink(out), add = TRUE)
   save_dynaspec(x + ds_static(width = 300, height = 200), out[1], play = FALSE, verbose = FALSE)
-  save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), out[2], play = FALSE, verbose = FALSE)
+  save_dynaspec(x + ds_paged(width = 600, height = 225, res = 150), out[2], play = FALSE, verbose = FALSE)
   expect_true(all(file.exists(out)))
 })
 
@@ -263,7 +263,7 @@ test_that("ds_player() adds buttons to web pages", {
   expect_match(res, 'data-buttons="time"', fixed = TRUE)
 
   # all styles get the buttons and the name of the downloaded sound
-  for (st in list(ds_static(width = 300, height = 200), ds_scrolling(t.display = 0.5, width = 300, height = 200), ds_paged(spec.width = 4, spec.height = 1.5))) {
+  for (st in list(ds_static(width = 300, height = 200), ds_scrolling(t.display = 0.5, width = 300, height = 200), ds_paged(width = 600, height = 225, res = 150))) {
     res <- save_dynaspec(x + ds_player(buttons = b) + st, play = FALSE, verbose = FALSE)
     expect_match(res, paste0('data-buttons="', paste(b, collapse = ","), '" data-name="'), fixed = TRUE)
   }
@@ -294,7 +294,7 @@ test_that("ds_player(buttons = 'zoom') stretches scrolling spectrograms", {
 test_that("spectrogram, panel and figure backgrounds are independent", {
   png_file <- file.path(tempdir(), "bg_indep.png")
   on.exit(unlink(png_file), add = TRUE)
-  x <- dynaspec(short_sound(), flim = c(1.5, 5.5)) + ds_spectrogram(wl = 200, colbg = "black") + ds_oscillogram() +
+  x <- dynaspec(short_sound(), flim = c(1.5, 5.5)) + ds_spectrogram(wl = 200, col.bg = "black") + ds_oscillogram() +
     ds_static(width = 400, height = 250)
   save_dynaspec(x, png_file, play = FALSE, verbose = FALSE)
   img <- png::readPNG(png_file)
@@ -330,9 +330,14 @@ test_that("ds_theme() settings and preset themes", {
   expect_equal(y$theme[c("bg", "cex.lab", "family")], list(bg = "black", cex.lab = 1.4, family = "serif"))
 
   # theme colors are used when not supplied in other layers
-  z <- dynaSpec:::theme_layers_int(x + ds_spectrogram(colbg = "white") + ds_oscillogram() + ds_envelope(col = "red") + ds_static() + ds_theme_dark())
+  z <- dynaSpec:::theme_layers_int(x + ds_spectrogram(col.bg = "white") + ds_oscillogram() + ds_envelope(col = "red") + ds_static() + ds_theme_dark())
   expect_identical(z$spectrogram$pal, viridis::mako)
-  expect_equal(z$spectrogram$colbg, "white")
+  expect_equal(z$spectrogram$col.bg, "white")
+  # (presets do not set the spectrogram background: it is the color of the lowest amplitude of their palette)
+  for (th in list(ds_theme_dark(), ds_theme_paper(), ds_theme_minimal(), ds_theme_macaulay(), ds_theme_mako()))
+    expect_null(th$args$col.bg)
+  expect_null(dynaSpec:::theme_layers_int(x + ds_theme_dark())$spectrogram$col.bg)
+  expect_equal(low_col_int(viridis::mako), viridis::mako(30)[1])
   expect_equal(vapply(z$panels, `[[`, character(1), "col"), c("#A0DFB9", "red"))
   expect_equal(z$style$args$lcol, "white")
 
@@ -340,7 +345,7 @@ test_that("ds_theme() settings and preset themes", {
   for (th in list(ds_theme_dark(), ds_theme_presentation(), ds_theme_paper(), ds_theme_minimal(), ds_theme_transparent(), ds_theme_void(), ds_theme_xenocanto(), ds_theme_macaulay())) {
     expect_s3_class(save_dynaspec(x + ds_oscillogram() + ds_spectrum(side = "left") + th + ds_static(width = 400, height = 250), play = FALSE, verbose = FALSE), "dynaSpec_html")
     expect_s3_class(save_dynaspec(x + ds_oscillogram() + th + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
-    expect_s3_class(save_dynaspec(x + th + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+    expect_s3_class(save_dynaspec(x + th + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html")
   }
 
   # player controls and fonts of web pages
@@ -353,10 +358,10 @@ test_that("ds_theme() settings and preset themes", {
   expect_s3_class(save_dynaspec(x + ds_theme(pal = "magma", grid = TRUE, box = FALSE, las = 0, tick.length = 0) + ds_static(width = 400, height = 250), play = FALSE, verbose = FALSE), "dynaSpec_html")
 
   # rounded player controls show the seek bar by default (unless buttons are supplied); play line of scrolling
-  z <- dynaSpec:::theme_layers_int(x + ds_theme_xenocanto() + ds_scrolling(lwd = 3))
+  z <- dynaSpec:::theme_layers_int(x + ds_theme_xenocanto(lwd.line = 3) + ds_scrolling())
   expect_equal(z$player$buttons, c("progress", "time"))
   expect_equal(z$style$args[c("lty", "lwd")], list(lty = 1, lwd = 3))
-  expect_null(dynaSpec:::theme_layers_int(x + ds_theme_xenocanto() + ds_static())$style$args$lty)
+  expect_equal(dynaSpec:::theme_layers_int(x + ds_theme_xenocanto() + ds_static())$style$args$lty, 1)
   expect_equal(dynaSpec:::theme_layers_int(x + ds_player(buttons = "loop") + ds_theme_xenocanto())$player$buttons, "loop")
   res <- save_dynaspec(x + ds_theme_xenocanto(), play = FALSE, verbose = FALSE)
   expect_match(res, 'data-bar-style="rounded"', fixed = TRUE)
@@ -366,13 +371,13 @@ test_that("ds_theme() settings and preset themes", {
   ins <- x + ds_oscillogram() + ds_theme(axis.type = "inside")
   expect_s3_class(save_dynaspec(ins + ds_spectrum(side = "left") + ds_static(width = 400, height = 250, rows = 2), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_match(save_dynaspec(ins + ds_scrolling(t.display = 0.5, fix.time = FALSE, width = 300, height = 200), play = FALSE, verbose = FALSE), '"unit":"s"', fixed = TRUE)
-  expect_s3_class(save_dynaspec(x + ds_theme(axis.type = "inside") + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_theme(axis.type = "inside") + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html")
 
   # compact axes in all styles (time in minutes and seconds)
   cmp <- x + ds_oscillogram() + ds_theme(axis.type = "compact")
   expect_s3_class(save_dynaspec(cmp + ds_spectrum(side = "left") + ds_static(width = 400, height = 250, rows = 2), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_match(save_dynaspec(cmp + ds_scrolling(t.display = 0.5, fix.time = FALSE, width = 300, height = 200), play = FALSE, verbose = FALSE), '"top":true', fixed = TRUE)
-  expect_s3_class(save_dynaspec(x + ds_theme(axis.type = "compact") + ds_paged(spec.width = 4, spec.height = 1.5, title = "a"), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_theme(axis.type = "compact") + ds_paged(width = 600, height = 225, res = 150, title = "a"), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_equal(dynaSpec:::mmss_int(c(0, 1, 65)), c("0:00", "0:01", "1:05"))
   expect_equal(dynaSpec:::mmss_int(c(0.5, 2)), c("0:00.5", "0:02.0"))
 
@@ -411,7 +416,7 @@ test_that("ds_annotations() can color the spectrogram within selections", {
   # colored pixels (red and blue channels differ) only appear with type = "spectrogram"
   expect_gt(sum(abs(img[, , 1] - img[, , 3]) > 0.2), 0)
   expect_s3_class(save_dynaspec(x + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
-  expect_s3_class(save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_error(ds_annotations(st, type = "fill"), "type")
 })
 
@@ -442,11 +447,12 @@ test_that("ds_theme_mako() and theme colors of annotations", {
   z <- dynaSpec:::theme_layers_int(x + ds_theme_mako())
   expect_equal(z$selections[[1]]$col, "#366A9F")
   expect_equal(z$panels[[1]]$col, "#40498E")
-  expect_equal(z$spectrogram$pal(3), viridis::mako(3, direction = -1))
+  # (low amplitudes dark, as in viridis::mako())
+  expect_equal(z$spectrogram$pal(3), viridis::mako(3))
   # colors supplied in layers take precedence; without theme the default color is used
   expect_equal(dynaSpec:::theme_layers_int(x + ds_annotations(st, col = "red") + ds_theme(col.annotation = "blue"))$selections[[2]]$col, "red")
   expect_equal(dynaSpec:::annotation_cols_int(x$selections[[1]]), "#E69F00")
-  for (st_l in list(ds_static(width = 400, height = 250), ds_scrolling(t.display = 0.5, width = 300, height = 200), ds_paged(spec.width = 4, spec.height = 1.5)))
+  for (st_l in list(ds_static(width = 400, height = 250), ds_scrolling(t.display = 0.5, width = 300, height = 200), ds_paged(width = 600, height = 225, res = 150)))
     expect_s3_class(suppressWarnings(save_dynaspec(x + ds_theme_mako() + st_l, play = FALSE, verbose = FALSE)), "dynaSpec_html")
   expect_error(ds_theme(col.annotation = "zzz"), "col.annotation")
 })
@@ -463,7 +469,7 @@ test_that("ds_theme() sets the color and orientation of axis labels", {
   res <- save_dynaspec(x + ds_scrolling(t.display = 0.5, fix.time = FALSE, width = 300, height = 200), play = FALSE, verbose = FALSE)
   expect_match(res, '"xVert":true', fixed = TRUE)
   expect_match(res, '"colAxis":"#FF0000"', fixed = TRUE)
-  expect_s3_class(suppressWarnings(save_dynaspec(x + ds_theme(axis.type = "standard", las = 3) + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE)), "dynaSpec_html")
+  expect_s3_class(suppressWarnings(save_dynaspec(x + ds_theme(axis.type = "standard", las = 3) + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE)), "dynaSpec_html")
   # axis label sizes of the Macaulay preset
   expect_equal(ds_theme_macaulay()$args[c("cex.axis", "cex.lab")], list(cex.axis = 0.96, cex.lab = 1.2))
   expect_error(ds_theme(las = 4), "las")
@@ -490,7 +496,7 @@ test_that("ds_annotations(type = 'line') draws lines above the sounds in all sty
   img <- png::readPNG(png_file)
   expect_true(any(img[, , 1] > 0.35 & img[, , 1] > img[, , 2] + 0.2 & img[, , 1] > img[, , 3] + 0.2))
   expect_s3_class(save_dynaspec(x + ann + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
-  expect_s3_class(save_dynaspec(x + ann + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ann + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_error(ds_annotations(st, type = "line", line.freq = "who"), "line.freq")
   expect_error(ds_annotations(st, type = "lines"), "type")
 })
@@ -509,7 +515,7 @@ test_that("dynaspec() warns when flim is higher than the Nyquist frequency", {
   x <- x + ds_spectrogram(wl = 200)
   expect_s3_class(save_dynaspec(x + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
   expect_s3_class(save_dynaspec(x + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html")
-  expect_s3_class(save_dynaspec(x + ds_paged(spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(x + ds_paged(width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html")
 })
 
 test_that("Inf as upper limit of flim and tlim means the Nyquist frequency and the end of the sound", {
@@ -519,7 +525,7 @@ test_that("Inf as upper limit of flim and tlim means the Nyquist frequency and t
   for (obj in list(x, y)) {
     expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_static(width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html"))
     expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_scrolling(t.display = 0.5, width = 300, height = 200), play = FALSE, verbose = FALSE), "dynaSpec_html"))
-    expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_paged(t.display = 1, spec.width = 4, spec.height = 1.5), play = FALSE, verbose = FALSE), "dynaSpec_html"))
+    expect_no_warning(expect_s3_class(save_dynaspec(obj + ds_paged(t.display = 1, width = 600, height = 225, res = 150), play = FALSE, verbose = FALSE), "dynaSpec_html"))
   }
   # the lower limit must still be within the sound
   expect_error(dynaspec(sound, flim = c(Inf, Inf)), "flim")
@@ -554,7 +560,7 @@ test_that("looping scrolling spectrograms match at the loop point", {
   w <- tuneR::Wave(left = round(y), samp.rate = f, bit = 16)
   t_d <- 0.5
   html <- save_dynaspec(dynaspec(w, flim = c(1, 8)) +
-    ds_spectrogram(wl = 1024, ovlp = 90, collevels = seq(-40, 0, 2), pal = viridis::viridis, colbg = "black") +
+    ds_spectrogram(wl = 1024, ovlp = 90, collevels = seq(-40, 0, 2), pal = viridis::viridis, col.bg = "black") +
     ds_scrolling(t.display = t_d, width = 700, height = 200, res = 50, loop = 3), play = FALSE, verbose = FALSE)
   uris <- regmatches(html, gregexpr("data:image/png;base64,[A-Za-z0-9+/=]+", html))[[1]]
   strip <- png::readPNG(base64enc::base64decode(sub("^.*base64,", "", uris[2])))
@@ -720,22 +726,23 @@ test_that("frequency contours are measured and drawn at their time and frequency
   }
   x <- dynaspec(w, flim = c(0, 5)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
     ds_annotations(st, alpha = 0, contour = "dominant", contour.col = "red")
-  a <- red_y(x, 200)
-  # (x = 200 is the middle of the sound, 2 s, or 2.5 kHz; the plotting region spans almost the whole figure)
+  a <- red_y(x, 209)
+  # (x = 209 is the middle of the sound, 2 s, or 2.5 kHz: without axes the plotting region goes from 1 line, 20 pixels,
+  # to the right edge of the figure)
   expect_equal(1 - a$y / a$rows, 0.5, tolerance = 0.05)
   # (no contour before and after the selection)
   expect_true(!any(a$any[1:80]) && !any(a$any[320:400]))
   cut <- red_y(dynaspec(w, flim = c(0, 5), tlim = c(1, 3)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
-    ds_annotations(st, alpha = 0, contour = "dominant", contour.col = "red"), 200)
+    ds_annotations(st, alpha = 0, contour = "dominant", contour.col = "red"), 209)
   expect_equal(cut$y, a$y, tolerance = 0.05)
 
   # supplied contours: same place as the measured ones
   list_points <- dynaspec(w, flim = c(0, 5)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
     ds_annotations(st, alpha = 0, contour = list(data.frame(time = c(1, 3), freq = c(1, 4))), contour.col = "red")
-  expect_equal(red_y(list_points, 200)$y, a$y, tolerance = 0.05)
+  expect_equal(red_y(list_points, 209)$y, a$y, tolerance = 0.05)
   even <- dynaspec(w, flim = c(0, 5)) + ds_spectrogram(wl = 256, ovlp = 50) + ds_theme(axis.type = "none") + ds_static(width = 400, height = 300) +
     ds_annotations(st, alpha = 0, contour = data.frame(sound.files = "a", selec = 1, f1 = 1, f2 = 2.5, f3 = 4), contour.col = "red")
-  expect_equal(red_y(even, 200)$y, a$y, tolerance = 0.05)
+  expect_equal(red_y(even, 209)$y, a$y, tolerance = 0.05)
   # (numeric vector and missing contours)
   two <- data.frame(start = c(1, 2), end = c(1.5, 3))
   z <- ds_annotations(two, contour = list(NULL, c(1, 2)))
@@ -824,5 +831,392 @@ test_that("sounds of comparisons other than the last one have no time axis title
   expect_false(grepl('style="--ds-cmp-gap', html, fixed = TRUE))
   # (figures without axes are separated)
   expect_match(save_dynaspec(cmp + ds_paged(t.display = 0.5), play = FALSE, verbose = FALSE), 'style="--ds-cmp-gap:8px"', fixed = TRUE)
+})
+
+test_that("static play lines take line type and width (also from themes)", {
+  x <- dynaspec(short_sound(1), flim = c(1, 5)) + ds_spectrogram(wl = 128)
+  attr_of <- function(html, name) { m <- regmatches(html, regexpr(paste0(name, '="[^"]*"'), html)); if (length(m)) sub('.*="([^"]*)"', "\\1", m) else NA }
+
+  html <- save_dynaspec(x + ds_static(width = 400, height = 200), play = FALSE, verbose = FALSE)
+  expect_true(is.na(attr_of(html, "data-lwd")) && is.na(attr_of(html, "data-dash")))
+  html <- save_dynaspec(x + ds_static(width = 400, height = 200, res = 96) + ds_theme(lty.line = "dashed", lwd.line = 3), play = FALSE, verbose = FALSE)
+  expect_equal(as.numeric(attr_of(html, "data-lwd")), 3)
+  expect_equal(attr_of(html, "data-dash"), "4,4")
+  expect_equal(attr_of(html, "data-line"), "true")
+  # (blank lines are not shown; themes set the line when not supplied)
+  expect_equal(attr_of(save_dynaspec(x + ds_theme(lty.line = 0), play = FALSE, verbose = FALSE), "data-line"), "false")
+  html <- save_dynaspec(x + ds_theme(lty.line = "dotted", lwd.line = 2) + ds_static(width = 400, height = 200, res = 96), play = FALSE, verbose = FALSE)
+  expect_equal(attr_of(html, "data-dash"), "1,3")
+  expect_equal(as.numeric(attr_of(html, "data-lwd")), 2)
+  expect_error(ds_theme(lty.line = "wavy"), "lty.line")
+  # (the play line is set only in themes)
+  expect_error(ds_static(lty = 2), "lty.line")
+  expect_error(ds_scrolling(lcol = "red"), "col.line")
+  expect_error(ds_paged(highlight.col = "red", lcol = "blue"), "col.highlight")
+  expect_error(ds_static(foo = 1), "unused")
+
+  # line patterns and images
+  expect_null(lty_dash_int(1))
+  expect_equal(lty_dash_int("blank"), 0)
+  expect_equal(lty_dash_int(4), c(1, 3, 4, 3))
+  img <- line_image_int(16, 2, "#FF000080", c(4, 4))
+  expect_equal(dim(img), c(16, 2, 4))
+  expect_equal(img[, 1, 4] > 0, rep(rep(c(TRUE, FALSE), each = 8), length.out = 16))
+  expect_equal(max(img[, , 4]), 128 / 255)
+  expect_true(all(img[, , 1] == 1))
+
+  # videos: the line has the width supplied
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  file <- tempfile(fileext = ".mp4")
+  save_dynaspec(x + ds_theme(axis.type = "none") + ds_static(width = 400, height = 200, res = 96, fps = 10) + ds_theme(col.line = "red", lwd.line = 6), file, play = FALSE, verbose = FALSE)
+  frame <- tempfile(fileext = ".png")
+  system2(ffmpeg_exec2(), c("-hide_banner", "-loglevel", "error", "-y", "-ss", "0.5", "-i", shQuote(file), "-frames:v", "1", shQuote(frame)))
+  m <- png::readPNG(frame)
+  red <- which(m[100, , 1] > 0.7 & m[100, , 2] < 0.4 & m[100, , 3] < 0.4)
+  expect_equal(length(red), 6, tolerance = 2 / 6)
+})
+
+# test video (needs ffmpeg with lavfi and libx264): white flash from 2 to 2.2 s and a 2 kHz beep at the same time, with the
+# sound track starting 0.3 s after the video (as in some cameras)
+make_test_video <- function(ext = "mp4") {
+  file <- tempfile(fileext = paste0(".", ext))
+  args <- paste("-hide_banner -loglevel error -y -f lavfi -i",
+                shQuote("color=black:s=320x180:r=25:d=6,drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='between(t,2,2.2)'"),
+                "-itsoffset 0.3 -f lavfi -i", shQuote("aevalsrc='if(between(t,1.7,1.9),0.8*sin(2*PI*2000*t),0.02*sin(2*PI*500*t))':s=22050:d=5.7"),
+                "-map 0:v -map 1:a -c:v libx264 -pix_fmt yuv420p -c:a aac", shQuote(file))
+  system2(ffmpeg_exec2(), args, stdout = FALSE, stderr = FALSE)
+  if (file.exists(file)) file else NULL
+}
+# time (s) of the first loud sound and of the first bright frame (top or bottom quarter of the frames) of a video
+beep_time <- function(w) { a <- stats::filter(abs(w@left), rep(1 / 200, 200)); which(a > 0.3 * max(a, na.rm = TRUE))[1] / w@samp.rate }
+flash_time <- function(file, region = "top") {
+  d <- tempfile(); dir.create(d)
+  system2(ffmpeg_exec2(), c("-hide_banner -loglevel error -y -i", shQuote(file), "-vf fps=50", file.path(d, "f%05d.png")))
+  br <- vapply(sort(list.files(d, full.names = TRUE)), function(f) {
+    m <- png::readPNG(f); h <- dim(m)[1]
+    mean(m[if (region == "top") 1:floor(h / 4) else floor(3 * h / 4):h, , 1])
+  }, numeric(1))
+  (which(br > 0.5)[1] - 1) / 50
+}
+video_sound <- function(file) {
+  wav <- tempfile(fileext = ".wav")
+  system2(ffmpeg_exec2(), c("-hide_banner -loglevel error -y -i", shQuote(file), "-vn -c:a pcm_s16le", shQuote(wav)))
+  tuneR::readWave(wav)
+}
+
+test_that("dynaspec() reads the sound of videos, in step with their frames", {
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  vid <- make_test_video()
+  skip_if(is.null(vid), "ffmpeg cannot create test videos")
+  x <- dynaspec(vid, flim = c(0, 5))
+  expect_s4_class(x$wave, "Wave")
+  expect_equal(x$video.file, normalizePath(vid))
+  expect_equal(x$name, tools::file_path_sans_ext(basename(vid)))
+  # (the sound track starts 0.3 s late; the beep is at 2 s of the video)
+  expect_equal(beep_time(x$wave), 2, tolerance = 0.01 / 2)
+  expect_equal(seewave::duration(x$wave), 6, tolerance = 0.05 / 6)
+
+  expect_s3_class(ds_video(), "dynaspec_layer")
+  expect_error(ds_video("left"), "position")
+  expect_error(dynaspec(sub("\\.mp4$", ".mkv", vid)), "does\\s+not\\s+exist")
+  # (videos without sound; ds_video() without a video)
+  silent <- tempfile(fileext = ".mp4")
+  system2(ffmpeg_exec2(), c("-hide_banner -loglevel error -y -f lavfi -i color=black:s=64x64:r=10:d=1 -c:v libx264", shQuote(silent)))
+  expect_error(dynaspec(silent), "no sound track")
+  expect_error(save_dynaspec(dynaspec(short_sound(1)) + ds_spectrogram(wl = 128) + ds_video(), play = FALSE, verbose = FALSE), "needs a video")
+  expect_warning(save_dynaspec(x + ds_spectrogram(wl = 256) + ds_video() + ds_static(width = 300, height = 150), tempfile(fileext = ".png"), play = FALSE, verbose = FALSE), "still images")
+})
+
+test_that("videos with ds_video() keep the video in step with the sound in all styles", {
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  vid <- make_test_video()
+  skip_if(is.null(vid), "ffmpeg cannot create test videos")
+  x <- dynaspec(vid, flim = c(0, 5), tlim = c(1, 4)) + ds_spectrogram(wl = 256)
+  check <- function(layers, region = "top", expected = 1) {
+    out <- tempfile(fileext = ".mp4")
+    save_dynaspec(Reduce(`+`, layers, x), out, play = FALSE, verbose = FALSE)
+    beep <- beep_time(video_sound(out))
+    flash <- flash_time(out, region)
+    expect_equal(beep, expected, tolerance = 0.03 / expected)
+    # (within one frame)
+    expect_lt(abs(flash - beep), 0.05)
+    video_info_int(out)
+  }
+  info <- check(list(ds_video(), ds_static(width = 320, height = 150)))
+  expect_equal(info$width, 320)
+  expect_equal(info$height, 180 + 150)
+  check(list(ds_video(position = "below"), ds_static(width = 320, height = 150)), region = "bottom")
+  check(list(ds_video(), ds_paged(t.display = 0.5, fps = 25)))
+  check(list(ds_video(), ds_scrolling(t.display = 0.5, width = 320, height = 150, fps = 25)))
+  # (slowed down, with buffer: the beep is at (0.5 + 1) / 0.5 s)
+  check(list(ds_video(), ds_scrolling(t.display = 0.5, width = 320, height = 150, fps = 25, speed = 0.5, buffer = 0.5)), expected = 3)
+})
+
+test_that("web pages with ds_video() embed the video in the player", {
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  vid <- make_test_video()
+  skip_if(is.null(vid), "ffmpeg cannot create test videos")
+  x <- dynaspec(vid, flim = c(0, 5)) + ds_spectrogram(wl = 256)
+  for (st in list(ds_static(width = 300, height = 150), ds_scrolling(t.display = 0.5, width = 300, height = 150, buffer = 0.2), ds_paged(t.display = 1))) {
+    html <- save_dynaspec(x + ds_video(position = "below") + st, play = FALSE, verbose = FALSE)
+    expect_match(html, '<video class="ds-video" muted playsinline preload="auto" src="data:video/mp4;base64,', fixed = TRUE)
+    expect_match(html, 'data-video="below"', fixed = TRUE)
+    expect_match(html, paste0('data-video-offset="', if (st$style == "scrolling") 0.2 else 0, '"'), fixed = TRUE)
+  }
+  # (without ds_video() the video is only used for its sound)
+  expect_false(grepl("<video", save_dynaspec(x, play = FALSE, verbose = FALSE), fixed = TRUE))
+  expect_match(player_js_int(), "videoSync", fixed = TRUE)
+  # comparisons of videos
+  expect_s3_class(save_dynaspec(ds_compare(x, x) + ds_video(), play = FALSE, verbose = FALSE), "dynaSpec_html")
+})
+
+test_that("paged videos keep the sound in step with the pages", {
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  vid <- make_test_video()
+  skip_if(is.null(vid), "ffmpeg cannot create test videos")
+  x <- dynaspec(vid, flim = c(0, 5), tlim = c(1, 4)) + ds_spectrogram(wl = 256)
+  out <- tempfile(fileext = ".mp4")
+  save_dynaspec(x + ds_paged(t.display = 0.25, fps = 25), out, play = FALSE, verbose = FALSE)
+  # (12 pages: the sound used to be about 23 ms later at each page)
+  expect_equal(beep_time(video_sound(out)), 1, tolerance = 0.01)
+  expect_equal(video_info_int(out)$duration, 3, tolerance = 0.02 / 3)
+  # (relative file names)
+  withr::with_dir(tempdir(), expect_true(file.exists(save_dynaspec(x + ds_paged(t.display = 1.5, fps = 10), "paged_relative.mp4", play = FALSE, verbose = FALSE))))
+})
+
+test_that("messages are cli alerts and saved files are reported once", {
+  x <- dynaspec(short_sound(1), flim = c(1, 5)) + ds_spectrogram(wl = 128)
+  file <- tempfile(fileext = ".png")
+  msgs <- capture_messages(save_dynaspec(x + ds_static(width = 300, height = 150), file, play = FALSE))
+  expect_length(msgs, 1)
+  expect_match(msgs, "File saved at", fixed = TRUE)
+  expect_match(msgs, basename(file), fixed = TRUE)
+  expect_silent(save_dynaspec(x + ds_static(width = 300, height = 150), file, play = FALSE, verbose = FALSE))
+  # (no message for web pages without file; several files of paged images and comparisons are reported together)
+  expect_length(capture_messages(save_dynaspec(x, play = FALSE)), 0)
+  msgs <- capture_messages(save_dynaspec(x + ds_paged(t.display = 0.5), file.path(tempdir(), "pages.png"), play = FALSE))
+  expect_match(paste(msgs, collapse = ""), "Files saved at", fixed = TRUE)
+  expect_false(any(grepl("Segmented", msgs)))
+  msgs <- capture_messages(save_dynaspec(ds_compare(short_sound(1), short_sound(1)) + ds_spectrogram(wl = 128), file, play = FALSE))
+  expect_length(grep("saved at", msgs), 1)
+})
+
+test_that("ds_video() sets the height of videos and figures go right below them", {
+  expect_error(ds_video(height = 0), "height")
+  expect_error(ds_video(height = "a"), "height")
+  expect_equal(ds_video(height = 0.5)$args, list(position = "above", height = 0.5))
+
+  # figures without top margin (static spectrograms: the panels start at the top of the figure)
+  x <- dynaspec(short_sound(1), flim = c(1, 5)) + ds_spectrogram(wl = 128) + ds_static(width = 300, height = 150)
+  top_of <- function(x) as.numeric(strsplit(sub('.*data-rows="([^"]+)".*', "\\1", save_dynaspec(x, play = FALSE, verbose = FALSE)), ",")[[1]][5])
+  expect_gt(top_of(x), 0.02)
+  y <- x
+  y$theme$top.margin <- FALSE
+  expect_equal(top_of(y), 0, tolerance = 0.005)
+
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  vid <- make_test_video()
+  skip_if(is.null(vid), "ffmpeg cannot create test videos")
+  v <- dynaspec(vid, flim = c(0, 5)) + ds_spectrogram(wl = 256) + ds_static(width = 320, height = 150)
+  out <- tempfile(fileext = ".mp4")
+  save_dynaspec(v + ds_video(height = 0.6), out, play = FALSE, verbose = FALSE)
+  info <- video_info_int(out)
+  expect_equal(info$width, 320)
+  # (video 320 x 180 pixels, figure 180 / 0.6 = 300 pixels high)
+  expect_equal(info$height, 180 + 300, tolerance = 4 / 480)
+  # (the video takes the width of the figure, 320 x 180 pixels, and the figure is as high as the video divided by 'height')
+  save_dynaspec(v + ds_video(height = 1.5), out, play = FALSE, verbose = FALSE)
+  expect_equal(video_info_int(out)$height, 180 + 120, tolerance = 4 / 300)
+  expect_equal(video_figure_size_int(v + ds_video(height = 0.5))$style$args$height, 360)
+  expect_equal(video_figure_size_int(v + ds_video(height = 1) + ds_scrolling(width = 640))$style$args$height, 360)
+  expect_equal(video_figure_size_int(v + ds_video(height = 2) + ds_paged(width = 1200))$style$args$height, round(1200 * 180 / 320 / 2))
+  expect_error(save_dynaspec(v + ds_video(height = 3), out, play = FALSE, verbose = FALSE), "too little room")
+  html <- save_dynaspec(v + ds_video(position = "below", height = 0.6), play = FALSE, verbose = FALSE)
+  expect_false(grepl("data-video-height", html, fixed = TRUE))
+  # (no top margin under a video above the figure only)
+  expect_gt(as.numeric(strsplit(sub('.*data-rows="([^"]+)".*', "\\1", html), ",")[[1]][5]), 0.02)
+  html <- save_dynaspec(v + ds_video(), play = FALSE, verbose = FALSE)
+  expect_equal(as.numeric(strsplit(sub('.*data-rows="([^"]+)".*', "\\1", html), ",")[[1]][5]), 0, tolerance = 0.005)
+})
+
+test_that("palettes can be two or more colors in all styles and themes", {
+  x <- dynaspec(short_sound(1), flim = c(1, 5)) + ds_spectrogram(wl = 128, pal = c("white", "gold", "red", "black"))
+  for (st in list(ds_static(width = 300, height = 150), ds_scrolling(t.display = 0.5, width = 300, height = 150), ds_paged(t.display = 0.5)))
+    expect_s3_class(save_dynaspec(x + st, play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(dynaspec(short_sound(1)) + ds_spectrogram(wl = 128) + ds_theme(pal = c("white", "#21908C", "black")), play = FALSE, verbose = FALSE), "dynaSpec_html")
+  # (gradient through all the colors, from low to high amplitude)
+  cols <- pal_fun_int(c("white", "red", "black"))(3)
+  expect_equal(toupper(cols), c("#FFFFFF", "#FF0000", "#000000"))
+  expect_equal(low_col_int(c("white", "red", "black")), "#FFFFFF")
+  expect_error(ds_theme(pal = c("white", "notacolor")), "two or more colors")
+  expect_error(ds_theme(pal = "notapalette"), "two or more colors")
+  expect_error(save_dynaspec(x + ds_spectrogram(pal = c("white", "nope")) + ds_paged(), play = FALSE, verbose = FALSE), "valid color")
+})
+
+test_that("a single y axis title is drawn for rows and sounds with a single type of panel", {
+  # (groups of rows with dark pixels in the column of the y axis title, at the left edge of the figure)
+  title_groups <- function(file) {
+    m <- png::readPNG(file)
+    dark <- apply(m[, 1:22, 1:3, drop = FALSE] < 0.5, 1, any)
+    # (gaps between the letters and words of a title are part of it)
+    r <- rle(dark)
+    r$values[!r$values & r$lengths <= 15 & c(FALSE, r$values[-length(r$values)]) & c(r$values[-1], FALSE)] <- TRUE
+    r <- rle(inverse.rle(r))
+    list(n = sum(r$values & r$lengths > 3), rows = which(dark), height = nrow(m))
+  }
+  png_of <- function(x) { f <- tempfile(fileext = ".png"); save_dynaspec(x, f, play = FALSE, verbose = FALSE); f }
+  x <- dynaspec(short_sound(2), flim = c(1, 5)) + ds_spectrogram(wl = 128)
+  # rows: one title (spectrograms only, or oscillograms only) centered on the panels of all rows
+  rows2 <- x + ds_static(rows = 2, width = 400, height = 200)
+  one <- title_groups(png_of(rows2))
+  expect_equal(one$n, 1)
+  lay <- attr(save_dynaspec(rows2, play = FALSE, verbose = FALSE), "layout")
+  expect_equal(mean(range(one$rows)) / one$height, mean(c(lay$top, lay$bottom)), tolerance = 0.03)
+  expect_equal(title_groups(png_of(dynaspec(short_sound(2)) + ds_oscillogram() + ds_static(rows = 3, width = 400, height = 150)))$n, 1)
+  # (several types of panels: one title per panel)
+  expect_gt(title_groups(png_of(x + ds_oscillogram() + ds_static(rows = 2, width = 400, height = 300)))$n, 1)
+
+  # comparisons: a single title across the stacked figures (it crosses the boundary between them)
+  cmp <- ds_compare(short_sound(1), short_sound(1.5)) + ds_spectrogram(wl = 128) + ds_static(width = 400, height = 200)
+  expect_true(compare_ylab_int(cmp$sounds))
+  f <- png_of(cmp)
+  g <- title_groups(f)
+  expect_equal(g$n, 1)
+  first_height <- attr(save_dynaspec(cmp$sounds[[1]] + ds_theme(), play = FALSE, verbose = FALSE), "layout")$height
+  expect_true(min(g$rows) < first_height && max(g$rows) > first_height)
+  # (not for other styles, mixed panels or videos)
+  expect_false(compare_ylab_int((cmp + ds_oscillogram())$sounds))
+  expect_false(compare_ylab_int((cmp + ds_scrolling(t.display = 0.5) + ds_overview())$sounds))
+  # (scrolling spectrograms without lower panel, and paged spectrograms with standard axes)
+  expect_true(compare_ylab_int((cmp + ds_scrolling(t.display = 0.5))$sounds))
+  expect_false(compare_ylab_int((cmp + ds_paged(t.display = 0.5))$sounds))
+  expect_true(compare_ylab_int((cmp + ds_paged(t.display = 0.5) + ds_theme(axis.type = "standard"))$sounds))
+  html <- save_dynaspec(cmp + ds_scrolling(t.display = 0.5, width = 400, height = 200), play = FALSE, verbose = FALSE)
+  expect_s3_class(html, "dynaSpec_html")
+  expect_false(compare_ylab_int((cmp + ds_theme(axis.type = "inside"))$sounds))
+})
+
+test_that("axis titles fit in the figure at any size", {
+  # (larger titles widen the margins: the y axis title is not cut at the left edge, and the time axis title stays below
+  # the labels)
+  expect_gt(title_margin_int(2.4, 2.4), title_margin_int(2.4, 1.2))
+  expect_gt(xlab_line_int(1.9, 2.4), xlab_line_int(1.9, 1.2))
+  expect_equal(xlab_margin_int(1.9, 1.2) - xlab_line_int(1.9, 1.2), 1 + 0.2 * 1.2)
+  for (cx in c(1, 2.5)) {
+    x <- dynaspec(short_sound(1), flim = c(1, 5)) + ds_spectrogram(wl = 128) + ds_theme(cex.lab = cx)
+    f <- tempfile(fileext = ".png")
+    save_dynaspec(x + ds_static(width = 400, height = 250), f, play = FALSE, verbose = FALSE)
+    m <- png::readPNG(f)
+    # (no dark pixels of the title at the left edge of the figure)
+    expect_false(any(m[, 1, 1:3] < 0.5))
+  }
+  # (long titles are made smaller to fit the height of the figure; titles shared by comparisons are not)
+  png_device_int(tempfile(fileext = ".png"), width = 400, height = 100, res = 100)
+  graphics::par(mar = rep(0, 4))
+  graphics::plot.new()
+  expect_lt(fit_ylab_cex_int("Frequency (kHz)", 3, 0.5), 3)
+  expect_equal(fit_ylab_cex_int("kHz", 1, 0.5), 1)
+  grDevices::dev.off()
+})
+
+test_that("the window length can be set in milliseconds (wl.ms)", {
+  expect_equal(wl_from_ms_int(11025, 20), 220)
+  expect_equal(wl_from_ms_int(44100, 20), 882)
+  expect_equal(wl_from_ms_int(22050, 1) %% 2, 0)
+  expect_error(ds_spectrogram(wl.ms = -1), "wl.ms")
+  png_of <- function(x) { f <- tempfile(fileext = ".png"); save_dynaspec(x + ds_static(width = 300, height = 150), f, play = FALSE, verbose = FALSE); png::readPNG(f) }
+  a <- short_sound(1)
+  # (the same figure as with the window length in samples at the sampling rate of the sound; 'wl.ms' takes precedence;
+  # default: 512 samples at 44.1 kHz)
+  expect_identical(png_of(dynaspec(a) + ds_spectrogram(wl.ms = 20)), png_of(dynaspec(a) + ds_spectrogram(wl = wl_from_ms_int(a@samp.rate, 20))))
+  expect_identical(png_of(dynaspec(a) + ds_spectrogram(wl = 128, wl.ms = 20)), png_of(dynaspec(a) + ds_spectrogram(wl.ms = 20)))
+  expect_identical(png_of(dynaspec(a) + ds_spectrogram()), png_of(dynaspec(a) + ds_spectrogram(wl.ms = 512 / 44.1)))
+  expect_equal(resolve_wl_int(44100), 512)
+  expect_equal(resolve_wl_int(11025, wl = 300), 300)
+  expect_equal(resolve_wl_int(11025, wl = 300, wl.ms = 20), 220)
+  expect_error(ds_annotations(data.frame(start = 0, end = 1), contour.args = list(wl.ms = 10)), NA)
+  expect_false(identical(png_of(dynaspec(a) + ds_spectrogram(wl.ms = 5)), png_of(dynaspec(a) + ds_spectrogram(wl.ms = 40))))
+  # (scrolling and paged spectrograms, and comparisons of sounds with different sampling rates)
+  for (st in list(ds_scrolling(t.display = 0.5, width = 300, height = 150), ds_paged(t.display = 0.5)))
+    expect_s3_class(save_dynaspec(dynaspec(a) + ds_spectrogram(wl.ms = 15) + st, play = FALSE, verbose = FALSE), "dynaSpec_html")
+  b <- tuneR::Wave(left = round(32000 * sin(2 * pi * 2000 * (1:44100) / 44100)), samp.rate = 44100, bit = 16)
+  expect_s3_class(save_dynaspec(ds_compare(a, b) + ds_spectrogram(wl.ms = 15), play = FALSE, verbose = FALSE), "dynaSpec_html")
+})
+
+test_that("ds_filter() filters the sound that is shown and heard", {
+  expect_s3_class(ds_filter(c(1, 3)), "dynaspec_layer")
+  expect_error(ds_filter(c(3, 1)), "bp")
+  expect_error(ds_filter(c(0, Inf)), "does not filter")
+  expect_error(ds_filter(1), "bp")
+  # tones at 0.5 and 3 kHz, the first one removed by a high-pass filter
+  f <- 22050
+  t <- seq_len(f) / f
+  w <- tuneR::Wave(left = round(10000 * sin(2 * pi * 500 * t) + 10000 * sin(2 * pi * 3000 * t)), samp.rate = f, bit = 16)
+  power <- function(x, lo, hi) { s <- seewave::meanspec(x, plot = FALSE); sum(s[s[, 1] > lo & s[, 1] < hi, 2]) }
+  hp <- filter_wave_int(w, c(1.5, Inf))
+  expect_equal(length(hp@left), length(w@left))
+  expect_lt(power(hp, 0.3, 0.7) / power(hp, 2.8, 3.2), 0.05)
+  lp <- filter_wave_int(w, c(0, 1.5))
+  expect_lt(power(lp, 2.8, 3.2) / power(lp, 0.3, 0.7), 0.05)
+  # (limits beyond the Nyquist frequency are not applied; lower limits beyond it give an error)
+  expect_identical(filter_wave_int(w, c(0, 20)), w)
+  expect_error(filter_wave_int(w, c(12, 13)), "Nyquist")
+  # (no shift in time: a click stays in place)
+  x <- numeric(f); x[5000] <- 20000
+  click <- filter_wave_int(tuneR::Wave(left = x, samp.rate = f, bit = 16), c(1, 5))
+  expect_equal(which.max(abs(click@left)), 5000)
+  # stereo sounds keep both channels
+  expect_true(filter_wave_int(tuneR::stereo(w, w), c(1.5, Inf))@stereo)
+  # the sound embedded in web pages is the filtered one
+  x <- dynaspec(w) + ds_spectrogram(wl.ms = 10) + ds_filter(c(1.5, Inf))
+  html <- save_dynaspec(x, play = FALSE, verbose = FALSE)
+  expect_true(grepl(sound_data_int(hp)$uri, html, fixed = TRUE))
+  for (st in list(ds_scrolling(t.display = 0.5, width = 300, height = 150), ds_paged(t.display = 0.5)))
+    expect_s3_class(save_dynaspec(x + st, play = FALSE, verbose = FALSE), "dynaSpec_html")
+  expect_s3_class(save_dynaspec(ds_compare(w, w) + ds_filter(c(1.5, Inf)), play = FALSE, verbose = FALSE), "dynaSpec_html")
+})
+
+test_that("removed and renamed arguments point to their replacements", {
+  expect_error(ds_paged(filter = c(0, 1)), "ds_filter")
+  expect_error(ds_scrolling(height.prop = c(5, 1)), "height")
+  expect_error(ds_scrolling(hop.size = 10), "wl.ms")
+  expect_error(ds_paged(spec.width = 4), "pixels")
+  expect_error(ds_paged(plot.legend = TRUE), "legend")
+  expect_error(ds_spectrogram(colbg = "black"), "col.bg")
+  expect_error(ds_theme(colbg = "black"))
+  # paged pages in pixels: images are width x height pixels
+  x <- dynaspec(short_sound(1), flim = c(1, 5)) + ds_spectrogram(wl.ms = 10)
+  files <- save_dynaspec(x + ds_paged(t.display = 1, width = 600, height = 200, res = 100, legend = TRUE), file.path(tempdir(), "px.png"), play = FALSE, verbose = FALSE)
+  expect_equal(dim(png::readPNG(files[1]))[1:2], c(200, 600))
+  # col.bg in spectrograms and themes
+  png_of <- function(x) { f <- tempfile(fileext = ".png"); save_dynaspec(x + ds_static(width = 300, height = 150), f, play = FALSE, verbose = FALSE); png::readPNG(f) }
+  expect_identical(png_of(x + ds_spectrogram(col.bg = "red")), png_of(x + ds_theme(col.bg = "red")))
+  # scrolling web pages start at the first speed of ds_player()
+  html <- save_dynaspec(x + ds_scrolling(t.display = 0.5, width = 300, height = 150, speed = 0.5), play = FALSE, verbose = FALSE)
+  expect_match(html, 'data-speeds="1,0.5,0.25,0.125"', fixed = TRUE)
+})
+
+test_that("scrolling spectrograms keep the window within the sound (still ends)", {
+  x <- dynaspec(short_sound(2), flim = c(1, 5)) + ds_spectrogram(wl.ms = 10)
+  cfg_of <- function(st) { h <- save_dynaspec(x + st, play = FALSE, verbose = FALSE); regmatches(h, regexpr('<script type="application/json">[^<]+', h)) }
+  expect_match(cfg_of(ds_scrolling(t.display = 0.5, width = 300, height = 150)), '"stillEnds":true', fixed = TRUE)
+  expect_match(cfg_of(ds_scrolling(t.display = 0.5, width = 300, height = 150, still.ends = FALSE)), '"stillEnds":false', fixed = TRUE)
+  # (looping spectrograms scroll continuously)
+  expect_match(cfg_of(ds_scrolling(t.display = 0.5, width = 300, height = 150, loop = 2)), '"stillEnds":false', fixed = TRUE)
+  expect_error(save_dynaspec(x + ds_scrolling(still.ends = "yes"), play = FALSE, verbose = FALSE), "still.ends")
+
+  # videos: the play line moves at the start and the end, and stays at the center in the middle
+  skip_if(!have_ffmpeg_exec2(), "ffmpeg not available")
+  out <- tempfile(fileext = ".mp4")
+  save_dynaspec(x + ds_theme(col.line = "red", lty.line = 1, axis.type = "none") + ds_scrolling(t.display = 1, width = 400, height = 200, fps = 10), out, play = FALSE, verbose = FALSE)
+  line_x <- function(t) {
+    f <- tempfile(fileext = ".png")
+    system2(ffmpeg_exec2(), c("-nostdin -hide_banner -loglevel error -y -ss", t, "-i", shQuote(out), "-frames:v 1", shQuote(f)))
+    m <- png::readPNG(f)
+    mean(which(colSums(m[, , 1] > 0.7 & m[, , 2] < 0.4 & m[, , 3] < 0.4) > 0)) / dim(m)[2]
+  }
+  expect_equal(line_x(0.2), 0.2, tolerance = 0.05 / 0.2)
+  expect_equal(line_x(1), 0.5, tolerance = 0.05)
+  expect_equal(line_x(1.8), 0.8, tolerance = 0.05 / 0.8)
 })
 

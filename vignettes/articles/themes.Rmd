@@ -40,11 +40,11 @@ data("antshrike")
 
 # a short song for static spectrograms
 ds_scythebill <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1))
 
 # a longer recording for scrolling spectrograms
 ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 ```
 
 # Theme settings
@@ -79,7 +79,7 @@ ds_scythebill +
   )
 ```
 
-Themes can also set the colors of the plot: the spectrogram palette and background (`pal`, `colbg`), the color of oscillograms, envelopes and spectra (`col.wave`), the color of annotations (`col.annotation`), the play line (`col.line`) and the highlight box of paged spectrograms (`col.highlight`). These are used when they are not supplied in the other layers (e.g. `ds_spectrogram(pal = )` takes precedence). `col.bar` and `bg.bar` set the colors of the player controls of web pages. A dark theme:
+Themes can also set the colors of the plot: the spectrogram palette and background (`pal`, `col.bg`), the color of oscillograms, envelopes and spectra (`col.wave`), the color of annotations (`col.annotation`), the play line (`col.line`) and the highlight box of paged spectrograms (`col.highlight`). These are used when they are not supplied in the other layers (e.g. `ds_spectrogram(pal = )` takes precedence). `col.bar` and `bg.bar` set the colors of the player controls of web pages. A dark theme:
 
 ```{r}
 ds_scythebill +
@@ -88,7 +88,7 @@ ds_scythebill +
     bg = "black",
     col.lab = "white",
     pal = viridis,
-    colbg = "black",
+    col.bg = "black",
     col.wave = viridis(10)[7],
     col.line = "white",
     col.bar = "white",
@@ -98,7 +98,7 @@ ds_scythebill +
 
 ## Backgrounds
 
-The backgrounds of a figure are set independently: `colbg` in `ds_spectrogram()` (or `ds_theme()`) for the spectrogram, `col.panel` in `ds_theme()` for oscillograms, envelopes and power spectra, and `bg` in `ds_theme()` for the whole figure around the panels:
+The backgrounds of a figure are set independently: `col.bg` in `ds_spectrogram()` (or `ds_theme()`) for the spectrogram, `col.panel` in `ds_theme()` for oscillograms, envelopes and power spectra, and `bg` in `ds_theme()` for the whole figure around the panels:
 
 ```{r}
 ds_scythebill +
@@ -198,7 +198,7 @@ ds_antshrike +
   ds_oscillogram(height = 0.2) +
   ds_theme_xenocanto(
     pal = viridis::inferno,
-    colbg = "black",
+    col.bg = "black",
     bg = "black",
     col.panel = "black",
     col.wave = "white",

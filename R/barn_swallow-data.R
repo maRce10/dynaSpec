@@ -12,7 +12,7 @@
 #' data(female_barn_swallow)
 #'
 #' x <- dynaspec(female_barn_swallow, flim = c(0, 10)) +
-#'   ds_spectrogram(wl = 300, collevels = seq(-50, 0, 1))
+#'   ds_spectrogram(wl.ms = 14, collevels = seq(-50, 0, 1))
 "female_barn_swallow"
 
 #' @rdname barn_swallow

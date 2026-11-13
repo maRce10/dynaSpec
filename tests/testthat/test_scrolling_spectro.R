@@ -116,8 +116,8 @@ test_that("scrolling_spectro creates web pages", {
   # frame, scrolling spectrogram and sound embedded
   expect_equal(lengths(regmatches(res, gregexpr("data:image/png;base64,", res))), 2)
   expect_match(res, "data:audio/wav;base64,", fixed = TRUE)
-  # 'speed' is the initial speed
-  expect_match(res, 'data-speeds="0.5,1,0.25,0.125"', fixed = TRUE)
+  # ('speed' is the speed of videos; web pages start at the first of 'speeds')
+  expect_match(res, 'data-speeds="1,0.5,0.25,0.125"', fixed = TRUE)
 
   # settings: no buffer by default, annotations in sound time
   cfg <- sub("</script>.*", "", sub('.*<script type="application/json">', "", res))

@@ -38,7 +38,7 @@ test_that("paged_spectro creates missing folders and keeps temporary files when 
     vid <- paged_engine(p, file.name = file.path(new_dest, "video.mp4"), play = FALSE, delete.temp = FALSE, fps = 10)
   )
   expect_match(msgs, "Created destination folder", all = FALSE)
-  expect_match(msgs, "Video saved at", all = FALSE)
+  expect_match(msgs, "Temporary files saved at", all = FALSE)
 
   expect_true(dir.exists(new_dest))
   expect_true(file.exists(vid))
