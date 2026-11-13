@@ -49,5 +49,5 @@ object with `+`.
 data(scythebill)
 
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + ds_spectrum(side = "left")
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) + ds_spectrum(side = "left")
 ```

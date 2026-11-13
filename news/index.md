@@ -88,6 +88,116 @@
   supplied (e.g. the output of
   [`warbleR::freq_ts()`](https://marce10.github.io/warbleR/reference/freq_ts.html)),
   in all styles and outputs
+- New layer `ds_filter(bp)`: bandpass (or high-pass or low-pass) filter
+  of the sound, so the filtered sound is both shown and heard, in all
+  styles and outputs, also with video files
+- The help pages of the styles,
+  [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
+  and
+  [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+  show the default values of their arguments
+- Scrolling spectrograms keep the window shown within the sound
+  (`ds_scrolling(still.ends = TRUE)`, default): the spectrogram is still
+  at the start, while the play line moves from the left edge to the
+  center, and at the end, while the line moves to the right edge, so the
+  window is always full of sound (`still.ends = FALSE` keeps the line at
+  the center; looping spectrograms scroll continuously)
+- Standardized arguments:
+  [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+  sets the size of the pages in pixels with `width`, `height` and `res`,
+  as the other styles (it was `spec.width` and `spec.height`, in inches;
+  videos and images of pages are now `width` x `height` pixels), and the
+  color scale with `legend` (was `plot.legend`); the spectrogram
+  background is `col.bg` in
+  [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
+  and
+  [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+  (was `colbg`); `ds_scrolling(speed)` only sets the speed of videos
+  (web pages start at the first speed of `ds_player(speeds)`, as in all
+  styles); removed `ds_paged(filter)` (use
+  [`ds_filter()`](https://marce10.github.io/dynaSpec/reference/ds_filter.md)),
+  `ds_scrolling(height.prop)` (use the `height` of
+  [`ds_oscillogram()`](https://marce10.github.io/dynaSpec/reference/ds_oscillogram.md),
+  [`ds_envelope()`](https://marce10.github.io/dynaSpec/reference/ds_envelope.md)
+  or
+  [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md))
+  and `ds_scrolling(hop.size)` (use `ds_spectrogram(wl.ms)`). Removed
+  and renamed arguments give an error pointing to their replacement
+- Scrolling spectrograms of long recordings no longer print seewave’s
+  note “This took quite a lot of time to display this graphic…”
+- ffmpeg is run with `-nostdin`: it read the standard input, so R
+  scripts read from it (e.g. the examples of R CMD check) lost text
+  after making a video
+- `ds_spectrogram(wl.ms)`: window length in milliseconds, which takes
+  precedence over `wl` (in samples), so sounds with different sampling
+  rates get windows of the same duration, in all styles (paged
+  spectrograms compute it after resampling); also in `contour.args` of
+  [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md).
+  The default window lasts 11.61 ms (512 samples at 44.1 kHz) in all
+  styles: static and paged spectrograms used 512 samples at any sampling
+  rate (e.g. 46 ms at 11.025 kHz). `ds_scrolling(hop.size)` still works
+- A single y axis title for all rows of static spectrograms, and for all
+  sounds of
+  [`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md)
+  (static, scrolling and paged spectrograms), when each one has a single
+  type of panel (only spectrograms, oscillograms or envelopes); less
+  space between rows and between axis titles and axis labels in all
+  styles (also with
+  [`ds_video()`](https://marce10.github.io/dynaSpec/reference/ds_video.md)),
+  with margins that grow with the size of axis titles
+  (`ds_theme(cex.lab)`), and y axis titles made smaller when longer than
+  the figure; time labels that would be cut at the edges of the figure
+  are not shown
+- No right margin: spectrograms (and power spectra on their right side)
+  reach the right edge of the figure in all styles
+- Palettes (`pal` of
+  [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
+  and
+  [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md))
+  can be two or more colors for a gradient
+  (e.g. `c("white", "gold", "red", "black")`), in all styles (it was two
+  colors, and only in paged spectrograms’ checks)
+- Messages are cli alerts (as in ‘suwo’): progress bars for rendering
+  video frames and pages (also pages of web pages), and a single “File
+  saved at” message for all outputs
+- Preset themes do not set the spectrogram background (`colbg`): as in
+  other spectrograms, it is the color of the lowest amplitude of the
+  palette
+  ([`ds_theme_dark()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+  used black, which did not match the darkest color of its palette)
+- [`ds_theme_mako()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md):
+  the ‘mako’ palette goes from dark (low amplitude) to light (high
+  amplitude), as
+  [`viridis::mako()`](https://sjmgarnier.github.io/viridisLite/reference/viridis.html)
+  (it was reversed)
+- Videos:
+  [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+  takes video files (e.g. ‘.mp4’, ‘.mov’, ‘.mkv’, ‘.webm’; requires
+  ffmpeg), using their sound, and the new layer
+  [`ds_video()`](https://marce10.github.io/dynaSpec/reference/ds_video.md)
+  shows the video above or below the spectrogram, in step with the
+  sound, in videos (‘.mp4’) and web pages of all styles; `height` sets
+  its height relative to the figure (the video takes the width of the
+  figure, and the height of the figure is adjusted), and figures go
+  right below videos (no top margin)
+- Videos of paged spectrograms: the sound no longer falls behind the
+  pages (about 23 ms at each page), and pages no longer drift from
+  rounding to whole frames
+- [`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)
+  saves paged videos with relative file names (e.g. “song.mp4”), which
+  failed when joining the pages
+- The play line and the highlight box of paged spectrograms are set only
+  with
+  [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
+  (`col.line`, `lty.line`, `lwd.line` and `col.highlight`), in all
+  styles; `lcol`, `lty`, `lwd` and `highlight.col` were removed from
+  [`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md),
+  [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+  and
+  [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+  (they give an error pointing to the theme setting). `lty.line` and
+  `lwd.line` now also apply to static spectrograms, in web pages and
+  videos
 - New function
   [`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md):
   shows two or more sounds one on top of the other and plays them in

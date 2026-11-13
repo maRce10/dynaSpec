@@ -8,7 +8,7 @@ Songs of a female and a male barn swallow recorded by Matthew R. Wilkins
 ``` r
 data(female_barn_swallow)
 
-data(male_barn_swallow)
+male_barn_swallow
 ```
 
 ## Format
@@ -25,5 +25,5 @@ An object of class `Wave` of length 104763.
 data(female_barn_swallow)
 
 x <- dynaspec(female_barn_swallow, flim = c(0, 10)) +
-  ds_spectrogram(wl = 300, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 14, collevels = seq(-50, 0, 1))
 ```

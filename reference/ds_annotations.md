@@ -148,14 +148,15 @@ ds_annotations(
 
 - contour.args:
 
-  List with the settings used to measure contours: 'wl' (window length,
-  in samples; default is that of
+  List with the settings used to measure contours: 'wl.ms' (window
+  length, in ms; takes precedence over 'wl') or 'wl' (in samples);
+  default is the window of
   [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md),
-  or 512), 'ovlp' (percent overlap; default 90), 'threshold' (amplitude
-  threshold, as a percentage, below which no frequency is measured;
-  default 5) and 'smooth' (number of consecutive values of the running
-  median and mean used to smooth contours; default 5, and 1 for no
-  smoothing).
+  or 11.61 ms, 'ovlp' (percent overlap; default 90), 'threshold'
+  (amplitude threshold, as a percentage, below which no frequency is
+  measured; default 5) and 'smooth' (number of consecutive values of the
+  running median and mean used to smooth contours; default 5, and 1 for
+  no smoothing).
 
 ## Value
 
@@ -191,7 +192,7 @@ st <- data.frame(start = c(0.34, 1.13, 1.44, 1.75), end = c(1.03, 1.36, 1.68, 2.
                  colors = c("#E69F00", "#56B4E9", "#56B4E9", "#009E73"))
 
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_annotations(st, col = "colors", labels = "labels")
 
 # dashed borders of the same color as the boxes
@@ -199,18 +200,18 @@ x <- x + ds_annotations(st, col = "colors", alpha = 0.1, border = "colors", lwd 
 
 # spectrogram colored within the selections
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_annotations(st, col = "colors", type = "spectrogram")
 
 # lines above the notes (one height per note type)
 st$line.freq <- c(4.6, 4.9, 4.9, 5.2)
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_annotations(st, col = "colors", type = "line", line.freq = "line.freq", labels = "labels")
 
 # frequency contours
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_annotations(st, col = "colors", labels = "labels", contour = "dominant",
                  contour.col = "#E69F00")
 ```

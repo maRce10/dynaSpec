@@ -73,7 +73,7 @@ its captions overlap the most visible one is shown.
 data(scythebill)
 
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_captions(c("long note", "arched notes", "trill"), start = c(0.34, 1.13, 1.75),
               end = c(1.03, 1.68, 2.28), fading = 0.2)
 ```

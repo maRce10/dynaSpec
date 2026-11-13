@@ -53,7 +53,7 @@ old <- ds_set_theme(ds_theme_dark(cex.lab = 1.3))
 
 # uses the dark theme
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + ds_oscillogram()
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) + ds_oscillogram()
 
 # dark theme with other axis titles
 x <- x + ds_theme(xlab = "Time of the song (s)")

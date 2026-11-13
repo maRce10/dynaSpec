@@ -24,11 +24,11 @@ data("antshrike")
 
 # a short song for static spectrograms
 ds_scythebill <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1))
 
 # a longer recording for scrolling spectrograms
 ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 ```
 
 ## Theme settings
@@ -81,7 +81,7 @@ ds_scythebill +
 ![Spectrogram, oscillogram and power spectrum of a 3.05 s sound](NA)
 
 Themes can also set the colors of the plot: the spectrogram palette and
-background (`pal`, `colbg`), the color of oscillograms, envelopes and
+background (`pal`, `col.bg`), the color of oscillograms, envelopes and
 spectra (`col.wave`), the color of annotations (`col.annotation`), the
 play line (`col.line`) and the highlight box of paged spectrograms
 (`col.highlight`). These are used when they are not supplied in the
@@ -97,7 +97,7 @@ ds_scythebill +
     bg = "black",
     col.lab = "white",
     pal = viridis,
-    colbg = "black",
+    col.bg = "black",
     col.wave = viridis(10)[7],
     col.line = "white",
     col.bar = "white",
@@ -109,7 +109,7 @@ ds_scythebill +
 
 ### Backgrounds
 
-The backgrounds of a figure are set independently: `colbg` in
+The backgrounds of a figure are set independently: `col.bg` in
 [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
 (or
 [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md))
@@ -254,7 +254,7 @@ ds_antshrike +
   ds_oscillogram(height = 0.2) +
   ds_theme_xenocanto(
     pal = viridis::inferno,
-    colbg = "black",
+    col.bg = "black",
     bg = "black",
     col.panel = "black",
     col.wave = "white",

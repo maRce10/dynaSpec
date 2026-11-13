@@ -33,7 +33,7 @@ The package offers three styles of dynamic spectrogram:
 | Style | What it looks like |
 |----|----|
 | Static ([`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md), default) | A play line moves over the whole spectrogram (and oscillogram), which can be split in several rows |
-| Scrolling ([`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | The spectrogram scrolls from right to left past a fixed “play” line, as in the Macaulay Library |
+| Scrolling ([`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | The spectrogram scrolls from right to left past the “play” line, as in the Macaulay Library (the line only moves at the start and the end, so the window is always full of sound) |
 | Paged ([`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | A spectrogram (or several “pages”) revealed by a sliding highlight box, as in Adobe Audition’s spectral view |
 
 ### What it looks like
@@ -51,7 +51,7 @@ st <- data.frame(start = c(0.34, 1.13, 1.75, 2.34), end = c(1.03, 1.68, 2.33, 2.
                  labels = c("long note", "arched notes", "trill", "end note"), y = c(4.6, 4.9, 5.4, 4))
 
 dynaspec(scythebill, flim = c(1.5, Inf)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_oscillogram() +
   ds_annotations(st, type = "line", line.freq = "y", labels = "labels") +
   ds_theme_mako()
@@ -67,22 +67,22 @@ Macaulay Library look:
 ``` r
 
 dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) +
   ds_overview() +
   ds_theme_macaulay() +
   ds_scrolling(t.display = 2, fix.time = FALSE)
 ```
 
-![Scrolling spectrogram of a great antshrike song passing a fixed play
-line, with an overview of the whole sound
-below](reference/figures/readme_scrolling.gif)
+![Scrolling spectrogram of a great antshrike song passing the play line,
+which moves only at the start and the end, with an overview of the whole
+sound below](reference/figures/readme_scrolling.gif)
 
 **Paged spectrogram**, revealed by a sliding highlight box:
 
 ``` r
 
 dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) +
   ds_paged(t.display = 2.5)
 ```
 
@@ -164,49 +164,74 @@ Bugs and feature requests can be reported at
 
 # Package index
 
-## All functions
+## Create and save dynamic spectrograms
 
-- [`antshrike`](https://marce10.github.io/dynaSpec/reference/antshrike.md)
-  :
+Start a dynamic spectrogram of a sound (or of a video) or a comparison
+of sounds, add layers with `+`, and save it as a web page, video or
+image.
 
-  Acoustic recording of *Taraba major* (great antshrike) songs
+- [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
+  : Create dynamic spectrograms
+- [`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md)
+  : Compare sounds with dynamic spectrograms
+- [`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)
+  : Save dynamic spectrograms
+- [`` `+`( ``*`<dynaspec>`*`)`](https://marce10.github.io/dynaSpec/reference/plus-.dynaspec.md)
+  : Add layers to dynamic spectrograms
 
-- [`female_barn_swallow`](https://marce10.github.io/dynaSpec/reference/barn_swallow.md)
-  [`male_barn_swallow`](https://marce10.github.io/dynaSpec/reference/barn_swallow.md)
-  :
+## Panels
 
-  Acoustic recordings of *Hirundo rustica* (barn swallow) songs
+The parts of the figure, added as layers (only the panels added are
+shown).
+
+- [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
+  : Spectrogram layer of dynamic spectrograms
+- [`ds_oscillogram()`](https://marce10.github.io/dynaSpec/reference/ds_oscillogram.md)
+  : Oscillogram layer of dynamic spectrograms
+- [`ds_envelope()`](https://marce10.github.io/dynaSpec/reference/ds_envelope.md)
+  : Amplitude envelope layer of dynamic spectrograms
+- [`ds_spectrum()`](https://marce10.github.io/dynaSpec/reference/ds_spectrum.md)
+  : Power spectrum layer of dynamic spectrograms
+- [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md)
+  : Overview layer of scrolling spectrograms
+- [`ds_video()`](https://marce10.github.io/dynaSpec/reference/ds_video.md)
+  : Video layer of dynamic spectrograms
+
+## Filter the sound
+
+Changes the sound itself (what is shown and heard).
+
+- [`ds_filter()`](https://marce10.github.io/dynaSpec/reference/ds_filter.md)
+  : Frequency filter layer of dynamic spectrograms
+
+## Highlight and label the sound
 
 - [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md)
   : Annotation layer of dynamic spectrograms
-
 - [`ds_captions()`](https://marce10.github.io/dynaSpec/reference/ds_captions.md)
   : Caption layer of dynamic spectrograms
 
-- [`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md)
-  : Compare sounds with dynamic spectrograms
+## Styles
 
-- [`ds_envelope()`](https://marce10.github.io/dynaSpec/reference/ds_envelope.md)
-  : Amplitude envelope layer of dynamic spectrograms
+How the sound is shown as it plays (static, scrolling or paged
+spectrograms).
 
-- [`ds_oscillogram()`](https://marce10.github.io/dynaSpec/reference/ds_oscillogram.md)
-  : Oscillogram layer of dynamic spectrograms
+- [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+  [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+  [`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md)
+  : Styles of dynamic spectrograms
 
-- [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md)
-  : Overview layer of scrolling spectrograms
+## Player
+
+Playback controls of web pages.
 
 - [`ds_player()`](https://marce10.github.io/dynaSpec/reference/ds_player.md)
   : Player settings of dynamic spectrogram web pages
 
-- [`ds_set_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
-  [`ds_get_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
-  : Set the theme of all dynamic spectrograms
+## Themes
 
-- [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)
-  : Spectrogram layer of dynamic spectrograms
-
-- [`ds_spectrum()`](https://marce10.github.io/dynaSpec/reference/ds_spectrum.md)
-  : Power spectrum layer of dynamic spectrograms
+The look of axes, text, colors and player controls, preset themes, and
+themes for all spectrograms of a session.
 
 - [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
   [`ds_theme_dark()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
@@ -219,15 +244,11 @@ Bugs and feature requests can be reported at
   [`ds_theme_xenocanto()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
   [`ds_theme_mako()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)
   : Theme of dynamic spectrograms
+- [`ds_set_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
+  [`ds_get_theme()`](https://marce10.github.io/dynaSpec/reference/ds_set_theme.md)
+  : Set the theme of all dynamic spectrograms
 
-- [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
-  : Create dynamic spectrograms
-
-- [`` `+`( ``*`<dynaspec>`*`)`](https://marce10.github.io/dynaSpec/reference/plus-.dynaspec.md)
-  : Add layers to dynamic spectrograms
-
-- [`save_dynaspec()`](https://marce10.github.io/dynaSpec/reference/save_dynaspec.md)
-  : Save dynamic spectrograms
+## Example sounds
 
 - [`scythebill`](https://marce10.github.io/dynaSpec/reference/scythebill.md)
   :
@@ -235,10 +256,28 @@ Bugs and feature requests can be reported at
   Acoustic recording of a *Campylorhamphus pusillus* (brown-billed
   scythebill) song
 
-- [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)
-  [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)
-  [`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md)
-  : Styles of dynamic spectrograms
+- [`antshrike`](https://marce10.github.io/dynaSpec/reference/antshrike.md)
+  :
+
+  Acoustic recording of *Taraba major* (great antshrike) songs
+
+- [`female_barn_swallow`](https://marce10.github.io/dynaSpec/reference/barn_swallow.md)
+  [`male_barn_swallow`](https://marce10.github.io/dynaSpec/reference/barn_swallow.md)
+  :
+
+  Acoustic recordings of *Hirundo rustica* (barn swallow) songs
+
+## Package and defunct functions
+
+- [`dynaSpec`](https://marce10.github.io/dynaSpec/reference/dynaSpec-package.md)
+  [`dynaSpec-package`](https://marce10.github.io/dynaSpec/reference/dynaSpec-package.md)
+  : dynaSpec: Interactive and dynamic spectrogram visualizations
+- [`scrolling_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  [`prep_static_ggspectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  [`prepStaticSpec()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  [`paged_spectro()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  [`pagedSpec()`](https://marce10.github.io/dynaSpec/reference/dynaSpec-defunct.md)
+  : Defunct functions in dynaSpec
 
 # Articles
 

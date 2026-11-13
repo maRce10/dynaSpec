@@ -120,9 +120,10 @@ not compare the amplitude of the sounds.
 data(female_barn_swallow, male_barn_swallow)
 
 x <- ds_compare(female_barn_swallow, male_barn_swallow, flim = c(0, 10)) +
-  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 
 save_dynaspec(x, file.path(tempdir(), "swallows.html"), play = FALSE)
+#> ✔ File saved at: /tmp/Rtmp7mqEhF/swallows.html
 
 if (FALSE) { # \dontrun{
 # show it
@@ -136,7 +137,7 @@ x + ds_paged(t.display = 1) + ds_player(buttons = c("progress", "time", "loop"))
 # more than two sounds
 data(scythebill)
 ds_compare(female_barn_swallow, male_barn_swallow, scythebill) +
-  ds_spectrogram(wl = 512)
+  ds_spectrogram(wl.ms = 23)
 
 # video (requires ffmpeg)
 save_dynaspec(x, file.path(tempdir(), "swallows.mp4"))
@@ -144,6 +145,6 @@ save_dynaspec(x, file.path(tempdir(), "swallows.mp4"))
 # layers of a single sound
 st <- data.frame(start = 0.5, end = 1, labels = "A")
 a <- dynaspec(female_barn_swallow) + ds_annotations(st, labels = "labels")
-ds_compare(a, male_barn_swallow, flim = c(0, 10), gap = 1) + ds_spectrogram(wl = 512)
+ds_compare(a, male_barn_swallow, flim = c(0, 10), gap = 1) + ds_spectrogram(wl.ms = 23)
 } # }
 ```

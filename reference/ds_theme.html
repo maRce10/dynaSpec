@@ -35,7 +35,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Theme of dynamic spectrograms</h1>
-      <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/R/dynaspec.R" class="external-link"><code>R/dynaspec.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/R/themes.R" class="external-link"><code>R/themes.R</code></a></small>
       <div class="d-none name"><code>ds_theme.Rd</code></div>
     </div>
 
@@ -46,36 +46,36 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ds_theme</span><span class="op">(</span></span>
-<span>  <span class="va">xlab</span>,</span>
-<span>  <span class="va">ylab</span>,</span>
-<span>  <span class="va">cex.lab</span>,</span>
-<span>  <span class="va">cex.axis</span>,</span>
-<span>  <span class="va">font.lab</span>,</span>
-<span>  <span class="va">col.lab</span>,</span>
-<span>  <span class="va">col.axis</span>,</span>
-<span>  <span class="va">axis.type</span>,</span>
-<span>  <span class="va">bg</span>,</span>
-<span>  <span class="va">family</span>,</span>
-<span>  <span class="va">las</span>,</span>
-<span>  <span class="va">tick.length</span>,</span>
-<span>  <span class="va">box</span>,</span>
-<span>  <span class="va">col.box</span>,</span>
-<span>  <span class="va">grid</span>,</span>
-<span>  <span class="va">col.grid</span>,</span>
-<span>  <span class="va">col.panel</span>,</span>
-<span>  <span class="va">col.title</span>,</span>
-<span>  <span class="va">cex.title</span>,</span>
-<span>  <span class="va">pal</span>,</span>
-<span>  <span class="va">colbg</span>,</span>
-<span>  <span class="va">col.wave</span>,</span>
-<span>  <span class="va">col.line</span>,</span>
-<span>  <span class="va">lty.line</span>,</span>
-<span>  <span class="va">lwd.line</span>,</span>
-<span>  <span class="va">col.highlight</span>,</span>
-<span>  <span class="va">col.annotation</span>,</span>
-<span>  <span class="va">col.bar</span>,</span>
-<span>  <span class="va">bg.bar</span>,</span>
-<span>  <span class="va">bar.style</span></span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cex.lab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cex.axis <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  font.lab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.lab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.axis <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axis.type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  family <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  las <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tick.length <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  box <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.box <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  grid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.grid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.panel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cex.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.bg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.wave <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.line <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lty.line <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lwd.line <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.highlight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.annotation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.bar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bg.bar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bar.style <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ds_theme_dark</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
@@ -126,7 +126,7 @@
 
 
 <dt id="arg-bg">bg<a class="anchor" aria-label="anchor" href="#arg-bg"></a></dt>
-<dd><p>Background color of the figure around the panels ("transparent" for a transparent background). Default is white. The backgrounds of the panels are set separately: 'colbg' (spectrograms, see <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>) and 'col.panel' (other panels).</p></dd>
+<dd><p>Background color of the figure around the panels ("transparent" for a transparent background). Default is white. The backgrounds of the panels are set separately: 'col.bg' (spectrograms, see <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>) and 'col.panel' (other panels).</p></dd>
 
 
 <dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
@@ -165,7 +165,7 @@
 <dd><p>Color and size of titles (the title of paged spectrograms and the 'Amp.' label of power spectra). Defaults are 'col.lab' and 1.</p></dd>
 
 
-<dt id="arg-pal-colbg">pal, colbg<a class="anchor" aria-label="anchor" href="#arg-pal-colbg"></a></dt>
+<dt id="arg-pal-col-bg">pal, col.bg<a class="anchor" aria-label="anchor" href="#arg-pal-col-bg"></a></dt>
 <dd><p>Color palette and background of spectrograms (see <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>). Used when not supplied in <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>.</p></dd>
 
 
@@ -174,15 +174,15 @@
 
 
 <dt id="arg-col-line">col.line<a class="anchor" aria-label="anchor" href="#arg-col-line"></a></dt>
-<dd><p>Color of the play line (and cursor of paged spectrograms). Used when 'lcol' is not supplied in the style (<code><a href="styles.html">ds_static()</a></code>, <code><a href="styles.html">ds_scrolling()</a></code> or <code><a href="styles.html">ds_paged()</a></code>).</p></dd>
+<dd><p>Color of the play line (and of the cursor of paged spectrograms and the active player buttons). Defaults are "#07889B99" (scrolling), "white" (paged) and <code>viridis::mako(10)[9]</code> (static).</p></dd>
 
 
 <dt id="arg-lty-line-lwd-line">lty.line, lwd.line<a class="anchor" aria-label="anchor" href="#arg-lty-line-lwd-line"></a></dt>
-<dd><p>Type and width of the play line of scrolling spectrograms. Used when 'lty' and 'lwd' are not supplied in <code><a href="styles.html">ds_scrolling()</a></code>.</p></dd>
+<dd><p>Type and width of the play line of scrolling and static spectrograms, as in <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">graphics::par()</a></code>: 'lty.line' is an integer (0-6) or a name ("solid", "dashed", "dotted", "dotdash", "longdash", "twodash" or "blank"), and 'lwd.line' a width in which 1 is 1/96 inch (scaled with the resolution). Defaults are 2 and 2 (scrolling), and a solid line 2 pixels wide (static).</p></dd>
 
 
 <dt id="arg-col-highlight">col.highlight<a class="anchor" aria-label="anchor" href="#arg-col-highlight"></a></dt>
-<dd><p>Color of the highlight box of paged spectrograms (used when 'highlight.col' is not supplied in <code><a href="styles.html">ds_paged()</a></code>) and of the translucent boxes dimming the parts of the <code><a href="ds_overview.html">ds_overview()</a></code> outside the window shown in scrolling spectrograms. Default is gray in overviews.</p></dd>
+<dd><p>Color of the highlight box of paged spectrograms (default "#4B0C6BFF") and of the translucent boxes dimming the parts of the <code><a href="ds_overview.html">ds_overview()</a></code> outside the window shown in scrolling spectrograms. Default is gray in overviews.</p></dd>
 
 
 <dt id="arg-col-annotation">col.annotation<a class="anchor" aria-label="anchor" href="#arg-col-annotation"></a></dt>
@@ -207,9 +207,9 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Only the settings supplied are used; other settings take the defaults of each style. Settings supplied in other layers (e.g. the palette in <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>) take precedence over those of the theme.</p>
-<p>Preset themes are complete themes: adding one replaces previous themes (use <code>ds_theme()</code> afterwards to change some of its settings, or supply them in the preset):</p><ul><li><p><code>ds_theme_dark()</code>: black background, white text, 'mako' palette.</p></li>
-<li><p><code>ds_theme_mako()</code>: light theme with the 'mako' palette (reversed: light background and dark sounds) and 'mako' colors for panels, annotations, play line and player controls.</p></li>
+    <p>Only the settings supplied are used: settings left as <code>NULL</code> take the defaults of each style (given for each setting above). Settings supplied in other layers (e.g. the palette in <code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>) take precedence over those of the theme.</p>
+<p>Preset themes are complete themes: adding one replaces previous themes (use <code>ds_theme()</code> afterwards to change some of its settings, or supply them in the preset):</p><ul><li><p><code>ds_theme_dark()</code>: black figure background, white text, 'mako' palette (the spectrogram background is its darkest color, as in all presets).</p></li>
+<li><p><code>ds_theme_mako()</code>: light theme with the 'mako' palette (dark blue background and light sounds) and 'mako' colors for panels, annotations, play line and player controls.</p></li>
 <li><p><code>ds_theme_presentation()</code>: large bold text for slides and projectors.</p></li>
 <li><p><code>ds_theme_paper()</code>: black and white with serif fonts, for printed figures.</p></li>
 <li><p><code>ds_theme_minimal()</code>: no boxes, light gray axes and short ticks.</p></li>
@@ -228,25 +228,25 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scythebill</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">18</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ds_theme</span><span class="op">(</span>xlab <span class="op">=</span> <span class="st">"Time (s)"</span>, ylab <span class="op">=</span> <span class="st">"Frequency (kHz)"</span>, cex.lab <span class="op">=</span> <span class="fl">1.4</span>, font.lab <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># preset theme with larger axis titles</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">18</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ds_theme_dark</span><span class="op">(</span>cex.lab <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Macaulay Library look</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">antshrike</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">23</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ds_overview.html">ds_overview</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ds_theme_macaulay</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">3</span>, fix.time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Xeno-canto look (and its color version)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span>height <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">23</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span>height <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ds_theme_xenocanto</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">3</span>, fix.time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="fu">ds_theme_xenocanto</span><span class="op">(</span>pal <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span>, colbg <span class="op">=</span> <span class="st">"black"</span>, bg <span class="op">=</span> <span class="st">"black"</span>,</span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="fu">ds_theme_xenocanto</span><span class="op">(</span>pal <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span>, col.bg <span class="op">=</span> <span class="st">"black"</span>, bg <span class="op">=</span> <span class="st">"black"</span>,</span></span>
 <span class="r-in"><span>  col.panel <span class="op">=</span> <span class="st">"black"</span>, col.wave <span class="op">=</span> <span class="st">"white"</span>, col.lab <span class="op">=</span> <span class="st">"white"</span>, col.line <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

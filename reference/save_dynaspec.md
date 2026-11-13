@@ -72,17 +72,19 @@ seconds.
 data(scythebill)
 
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + ds_oscillogram()
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) + ds_oscillogram()
 
 save_dynaspec(x, file.path(tempdir(), "scythebill.html"), play = FALSE)
+#> ✔ File saved at: /tmp/Rtmp7mqEhF/scythebill.html
 save_dynaspec(x, file.path(tempdir(), "scythebill.png"), play = FALSE)
+#> ✔ File saved at: /tmp/Rtmp7mqEhF/scythebill.png
 
 if (FALSE) { # \dontrun{
 # videos (require ffmpeg)
 save_dynaspec(x, file.path(tempdir(), "scythebill.mp4"))
 data(antshrike)
 y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 save_dynaspec(y + ds_scrolling(t.display = 2), file.path(tempdir(), "antshrike_scrolling.mp4"))
 } # }
 ```

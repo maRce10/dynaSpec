@@ -42,6 +42,6 @@ show overviews (static spectrograms show the whole sound already).
 data(antshrike)
 
 x <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) +
   ds_overview() + ds_scrolling(t.display = 2)
 ```

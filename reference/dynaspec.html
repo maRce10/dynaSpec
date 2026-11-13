@@ -53,7 +53,7 @@
 
 
 <dl><dt id="arg-wave">wave<a class="anchor" aria-label="anchor" href="#arg-wave"></a></dt>
-<dd><p>The sound: an object of class 'Wave' or the path to a '.wav' or '.mp3' file.</p></dd>
+<dd><p>The sound: an object of class 'Wave', the path to a '.wav' or '.mp3' file, or the path to a video file with sound (e.g. '.mp4', '.mov', '.mkv', '.webm' or '.avi'; requires 'ffmpeg'). The sound of videos is used as the sound, and <code><a href="ds_video.html">ds_video()</a></code> shows the video next to the spectrogram.</p></dd>
 
 
 <dt id="arg-flim">flim<a class="anchor" aria-label="anchor" href="#arg-flim"></a></dt>
@@ -71,7 +71,7 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Panels are added as layers, as in 'ggplot2': only the panels added are shown (<code><a href="ds_spectrogram.html">ds_spectrogram()</a></code>, <code><a href="ds_oscillogram.html">ds_oscillogram()</a></code>, <code><a href="ds_envelope.html">ds_envelope()</a></code> or several of them, and <code><a href="ds_spectrum.html">ds_spectrum()</a></code> next to the spectrogram). <code>dynaspec()</code> alone shows an empty panel with a time axis and the play line (annotations and captions can be drawn on it). Scrolling and paged spectrograms need a spectrogram.</p>
-<p>The three styles show the sound in different ways:</p><ul><li><p><code><a href="styles.html">ds_scrolling()</a></code>: the spectrogram scrolls along a fixed play line.</p></li>
+<p>The three styles show the sound in different ways:</p><ul><li><p><code><a href="styles.html">ds_scrolling()</a></code>: the spectrogram scrolls past the play line (the line only moves at the start and the end of the sound).</p></li>
 <li><p><code><a href="styles.html">ds_paged()</a></code>: the spectrogram is split into pages, and a translucent box reveals the part of each page being played.</p></li>
 <li><p><code><a href="styles.html">ds_static()</a></code> (default): a play line moves over the whole figure (spectrogram, oscillogram or both), which can be split in several rows.</p></li>
 </ul><p>Web pages include buttons to slow down playback (see <code><a href="ds_player.html">ds_player()</a></code>), and clicking on the spectrogram plays the sound from that point. Figures and sounds are embedded in the HTML code, so web pages can be shared as single files or pasted into any web page. Note that embedding sounds makes web pages larger (about 1.4 times the size of the sound file), so cut or downsample long recordings before creating web pages.</p>
@@ -100,11 +100,12 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># static spectrogram with oscillogram (printing shows it in the viewer or browser)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">dynaspec</span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">18</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ds_oscillogram.html">ds_oscillogram</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># save as a web page</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="save_dynaspec.html">save_dynaspec</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"scythebill.html"</span><span class="op">)</span>, play <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> File saved at: /tmp/Rtmp7mqEhF/scythebill.html</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># show it</span></span></span>
@@ -116,7 +117,7 @@
 <span class="r-in"><span><span class="co"># scrolling style (a longer recording)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">antshrike</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">dynaspec</span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">23</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">+</span> <span class="fu"><a href="styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># video (requires ffmpeg)</span></span></span>

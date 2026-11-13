@@ -11,36 +11,36 @@ settings at once.
 
 ``` r
 ds_theme(
-  xlab,
-  ylab,
-  cex.lab,
-  cex.axis,
-  font.lab,
-  col.lab,
-  col.axis,
-  axis.type,
-  bg,
-  family,
-  las,
-  tick.length,
-  box,
-  col.box,
-  grid,
-  col.grid,
-  col.panel,
-  col.title,
-  cex.title,
-  pal,
-  colbg,
-  col.wave,
-  col.line,
-  lty.line,
-  lwd.line,
-  col.highlight,
-  col.annotation,
-  col.bar,
-  bg.bar,
-  bar.style
+  xlab = NULL,
+  ylab = NULL,
+  cex.lab = NULL,
+  cex.axis = NULL,
+  font.lab = NULL,
+  col.lab = NULL,
+  col.axis = NULL,
+  axis.type = NULL,
+  bg = NULL,
+  family = NULL,
+  las = NULL,
+  tick.length = NULL,
+  box = NULL,
+  col.box = NULL,
+  grid = NULL,
+  col.grid = NULL,
+  col.panel = NULL,
+  col.title = NULL,
+  cex.title = NULL,
+  pal = NULL,
+  col.bg = NULL,
+  col.wave = NULL,
+  col.line = NULL,
+  lty.line = NULL,
+  lwd.line = NULL,
+  col.highlight = NULL,
+  col.annotation = NULL,
+  col.bar = NULL,
+  bg.bar = NULL,
+  bar.style = NULL
 )
 
 ds_theme_dark(...)
@@ -105,7 +105,7 @@ ds_theme_mako(...)
 
   Background color of the figure around the panels ("transparent" for a
   transparent background). Default is white. The backgrounds of the
-  panels are set separately: 'colbg' (spectrograms, see
+  panels are set separately: 'col.bg' (spectrograms, see
   [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md))
   and 'col.panel' (other panels).
 
@@ -158,7 +158,7 @@ ds_theme_mako(...)
   Color and size of titles (the title of paged spectrograms and the
   'Amp.' label of power spectra). Defaults are 'col.lab' and 1.
 
-- pal, colbg:
+- pal, col.bg:
 
   Color palette and background of spectrograms (see
   [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md)).
@@ -176,24 +176,22 @@ ds_theme_mako(...)
 
 - col.line:
 
-  Color of the play line (and cursor of paged spectrograms). Used when
-  'lcol' is not supplied in the style
-  ([`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md),
-  [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)
-  or
-  [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)).
+  Color of the play line (and of the cursor of paged spectrograms and
+  the active player buttons). Defaults are "#07889B99" (scrolling),
+  "white" (paged) and `viridis::mako(10)[9]` (static).
 
 - lty.line, lwd.line:
 
-  Type and width of the play line of scrolling spectrograms. Used when
-  'lty' and 'lwd' are not supplied in
-  [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md).
+  Type and width of the play line of scrolling and static spectrograms,
+  as in [`graphics::par()`](https://rdrr.io/r/graphics/par.html):
+  'lty.line' is an integer (0-6) or a name ("solid", "dashed", "dotted",
+  "dotdash", "longdash", "twodash" or "blank"), and 'lwd.line' a width
+  in which 1 is 1/96 inch (scaled with the resolution). Defaults are 2
+  and 2 (scrolling), and a solid line 2 pixels wide (static).
 
 - col.highlight:
 
-  Color of the highlight box of paged spectrograms (used when
-  'highlight.col' is not supplied in
-  [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md))
+  Color of the highlight box of paged spectrograms (default "#4B0C6BFF")
   and of the translucent boxes dimming the parts of the
   [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md)
   outside the window shown in scrolling spectrograms. Default is gray in
@@ -238,8 +236,9 @@ object with `+`.
 
 ## Details
 
-Only the settings supplied are used; other settings take the defaults of
-each style. Settings supplied in other layers (e.g. the palette in
+Only the settings supplied are used: settings left as `NULL` take the
+defaults of each style (given for each setting above). Settings supplied
+in other layers (e.g. the palette in
 [`ds_spectrogram()`](https://marce10.github.io/dynaSpec/reference/ds_spectrogram.md))
 take precedence over those of the theme.
 
@@ -247,10 +246,11 @@ Preset themes are complete themes: adding one replaces previous themes
 (use `ds_theme()` afterwards to change some of its settings, or supply
 them in the preset):
 
-- `ds_theme_dark()`: black background, white text, 'mako' palette.
+- `ds_theme_dark()`: black figure background, white text, 'mako' palette
+  (the spectrogram background is its darkest color, as in all presets).
 
-- `ds_theme_mako()`: light theme with the 'mako' palette (reversed:
-  light background and dark sounds) and 'mako' colors for panels,
+- `ds_theme_mako()`: light theme with the 'mako' palette (dark blue
+  background and light sounds) and 'mako' colors for panels,
   annotations, play line and player controls.
 
 - `ds_theme_presentation()`: large bold text for slides and projectors.
@@ -295,24 +295,24 @@ to set a theme for all spectrograms,
 data(scythebill)
 
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_theme(xlab = "Time (s)", ylab = "Frequency (kHz)", cex.lab = 1.4, font.lab = 2)
 
 # preset theme with larger axis titles
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) + ds_oscillogram() +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) + ds_oscillogram() +
   ds_theme_dark(cex.lab = 1.4)
 
 # Macaulay Library look
 data(antshrike)
 x <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) +
   ds_overview() + ds_theme_macaulay() + ds_scrolling(t.display = 3, fix.time = FALSE)
 
 # Xeno-canto look (and its color version)
 x <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) + ds_oscillogram(height = 0.15) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) + ds_oscillogram(height = 0.15) +
   ds_theme_xenocanto() + ds_scrolling(t.display = 3, fix.time = FALSE)
-x <- x + ds_theme_xenocanto(pal = viridis::inferno, colbg = "black", bg = "black",
+x <- x + ds_theme_xenocanto(pal = viridis::inferno, col.bg = "black", bg = "black",
   col.panel = "black", col.wave = "white", col.lab = "white", col.line = "white")
 ```

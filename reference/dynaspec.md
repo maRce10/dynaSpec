@@ -29,8 +29,12 @@ dynaspec(wave, flim = NULL, tlim = NULL)
 
 - wave:
 
-  The sound: an object of class 'Wave' or the path to a '.wav' or '.mp3'
-  file.
+  The sound: an object of class 'Wave', the path to a '.wav' or '.mp3'
+  file, or the path to a video file with sound (e.g. '.mp4', '.mov',
+  '.mkv', '.webm' or '.avi'; requires 'ffmpeg'). The sound of videos is
+  used as the sound, and
+  [`ds_video()`](https://marce10.github.io/dynaSpec/reference/ds_video.md)
+  shows the video next to the spectrogram.
 
 - flim:
 
@@ -72,7 +76,8 @@ it). Scrolling and paged spectrograms need a spectrogram.
 The three styles show the sound in different ways:
 
 - [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md):
-  the spectrogram scrolls along a fixed play line.
+  the spectrogram scrolls past the play line (the line only moves at the
+  start and the end of the sound).
 
 - [`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md):
   the spectrogram is split into pages, and a translucent box reveals the
@@ -121,11 +126,12 @@ dynaspec(scythebill)
 
 # static spectrogram with oscillogram (printing shows it in the viewer or browser)
 x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_oscillogram()
 
 # save as a web page
 save_dynaspec(x, file.path(tempdir(), "scythebill.html"), play = FALSE)
+#> ✔ File saved at: /tmp/Rtmp7mqEhF/scythebill.html
 
 if (FALSE) { # \dontrun{
 # show it
@@ -137,7 +143,7 @@ x + ds_paged(t.display = 1)
 # scrolling style (a longer recording)
 data(antshrike)
 y <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 y + ds_scrolling(t.display = 2)
 
 # video (requires ffmpeg)

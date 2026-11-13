@@ -35,7 +35,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Overview layer of scrolling spectrograms</h1>
-      <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/R/dynaspec.R" class="external-link"><code>R/dynaspec.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/R/panels.R" class="external-link"><code>R/panels.R</code></a></small>
       <div class="d-none name"><code>ds_overview.Rd</code></div>
     </div>
 
@@ -74,7 +74,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">antshrike</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">antshrike</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">256</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ds_spectrogram.html">ds_spectrogram</a></span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">23</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ds_overview</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="styles.html">ds_scrolling</a></span><span class="op">(</span>t.display <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

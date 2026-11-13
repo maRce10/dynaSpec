@@ -33,7 +33,7 @@ The package offers three styles of dynamic spectrogram:
 | Style | What it looks like |
 |----|----|
 | Static ([`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md), default) | A play line moves over the whole spectrogram (and oscillogram), which can be split in several rows |
-| Scrolling ([`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | The spectrogram scrolls from right to left past a fixed “play” line, as in the Macaulay Library |
+| Scrolling ([`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | The spectrogram scrolls from right to left past the “play” line, as in the Macaulay Library (the line only moves at the start and the end, so the window is always full of sound) |
 | Paged ([`ds_paged()`](https://marce10.github.io/dynaSpec/reference/styles.md)) | A spectrogram (or several “pages”) revealed by a sliding highlight box, as in Adobe Audition’s spectral view |
 
 ### What it looks like
@@ -51,7 +51,7 @@ st <- data.frame(start = c(0.34, 1.13, 1.75, 2.34), end = c(1.03, 1.68, 2.33, 2.
                  labels = c("long note", "arched notes", "trill", "end note"), y = c(4.6, 4.9, 5.4, 4))
 
 dynaspec(scythebill, flim = c(1.5, Inf)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_oscillogram() +
   ds_annotations(st, type = "line", line.freq = "y", labels = "labels") +
   ds_theme_mako()
@@ -67,22 +67,22 @@ Macaulay Library look:
 ``` r
 
 dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) +
   ds_overview() +
   ds_theme_macaulay() +
   ds_scrolling(t.display = 2, fix.time = FALSE)
 ```
 
-![Scrolling spectrogram of a great antshrike song passing a fixed play
-line, with an overview of the whole sound
-below](reference/figures/readme_scrolling.gif)
+![Scrolling spectrogram of a great antshrike song passing the play line,
+which moves only at the start and the end, with an overview of the whole
+sound below](reference/figures/readme_scrolling.gif)
 
 **Paged spectrogram**, revealed by a sliding highlight box:
 
 ``` r
 
 dynaspec(antshrike, flim = c(0.5, 5.5), tlim = c(0.1, 5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1)) +
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1)) +
   ds_paged(t.display = 2.5)
 ```
 

@@ -35,19 +35,9 @@ instructions in the
 
 Dynamic spectrograms are built in layers, as ‘ggplot2’ graphs:
 [`dynaspec()`](https://marce10.github.io/dynaSpec/reference/dynaspec.md)
-takes the sound, and layers are added with `+`:
-
-``` r
-
-dynaspec(wave, flim = c(1, 10)) + # the sound (and frequency and time ranges)
-  ds_spectrogram(wl = 300) + # panels: spectrogram, oscillogram, envelope, spectrum
-  ds_oscillogram() +
-  ds_annotations(st) + # highlight parts of the sound
-  ds_captions("song", start = 0, end = 2) + # text shown during a time range
-  ds_theme(xlab = "Time (s)") + # customize axis titles, text and colors
-  ds_player(speeds = c(1, 0.5)) + # customize playback buttons of web pages
-  ds_scrolling(t.display = 1.7) # spectro style: ds_static() (default), ds_scrolling() or ds_paged()
-```
+takes the sound, and layers are added with `+`. Each layer adds a part
+of the figure or changes how it looks or plays (the examples below show
+them one by one):
 
 | Layer | What it does |
 |----|----|
@@ -55,6 +45,8 @@ dynaspec(wave, flim = c(1, 10)) + # the sound (and frequency and time ranges)
 | [`ds_oscillogram()`](https://marce10.github.io/dynaSpec/reference/ds_oscillogram.md), [`ds_envelope()`](https://marce10.github.io/dynaSpec/reference/ds_envelope.md) | Add an oscillogram or an amplitude envelope (above or below the spectrogram) |
 | [`ds_spectrum()`](https://marce10.github.io/dynaSpec/reference/ds_spectrum.md) | Adds a power spectrum next to the spectrogram |
 | [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md) | Adds a lower panel with the whole sound to scrolling spectrograms |
+| [`ds_video()`](https://marce10.github.io/dynaSpec/reference/ds_video.md) | Shows the video of a video file above or below the spectrogram |
+| [`ds_filter()`](https://marce10.github.io/dynaSpec/reference/ds_filter.md) | Applies a bandpass filter to the sound: a cleaner spectrogram and a cleaner sound to listen to |
 | [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md) | Highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table) |
 | [`ds_captions()`](https://marce10.github.io/dynaSpec/reference/ds_captions.md) | Text at a fixed position shown during a time range, like subtitles |
 | [`ds_theme()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md), [`ds_theme_dark()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md), … | Axis titles, fonts, colors of the figure and plot, and preset themes |
@@ -90,7 +82,7 @@ Only the panels added as layers are shown. A spectrogram:
 data("scythebill")
 
 ds_scythebill <- dynaspec(scythebill, flim = c(0.2, 4)) +
-  ds_spectrogram(wl = 512, collevels = seq(-50, 0, 1), ovlp = 95)
+  ds_spectrogram(wl.ms = 46, collevels = seq(-50, 0, 1), ovlp = 95)
 
 ds_scythebill
 ```
@@ -99,7 +91,7 @@ ds_scythebill
 
 The spectrogram background is the color of the lowest amplitude of the
 palette (white for the default gray palette), so quiet parts of the
-sound and the background look the same. Use `ds_spectrogram(colbg = )`
+sound and the background look the same. Use `ds_spectrogram(col.bg = )`
 to set another background.
 
 Layers can be stored in an object (as `ds_scythebill` above) and added
@@ -146,7 +138,7 @@ the sound used (in s):
 ``` r
 
 dynaspec(scythebill, flim = c(1.5, 5.5), tlim = c(1.1, 1.76)) +
-  ds_spectrogram(wl = 200, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1))
 ```
 
 ![Spectrogram of a 0.66 s sound](NA)
@@ -169,7 +161,7 @@ height of each row), and `play.line = FALSE` hides the moving line:
 data("antshrike")
 
 ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 4)) +
-   ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+   ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 
 ds_antshrike  + 
   ds_static(rows = 2, height = 350)
@@ -179,8 +171,11 @@ ds_antshrike  +
 
 ### Scrolling spectrograms
 
-The spectrogram scrolls along a fixed play line, as in the Macaulay
-Library. `t.display` sets the time window (in s) shown at once, and
+The spectrogram scrolls past the play line, as in the Macaulay Library.
+At the start the spectrogram is still while the line moves from the left
+edge to the center, and at the end it is still again while the line
+moves to the right edge, so the window is always full of sound.
+`t.display` sets the time window (in s) shown at once, and
 [`ds_overview()`](https://marce10.github.io/dynaSpec/reference/ds_overview.md)
 adds a lower panel with the whole sound, in which the part being shown
 is highlighted:
@@ -189,7 +184,7 @@ is highlighted:
 
 
 ds_antshrike <- dynaspec(antshrike, flim = c(0.5, 5.5)) +
-  ds_spectrogram(wl = 256, collevels = seq(-50, 0, 1))
+  ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 
 ds_antshrike +
   ds_overview() +
@@ -279,7 +274,7 @@ and the colors of the player controls:
 ``` r
 
 dynaspec(scythebill, flim = c(1.5, 5.5)) +
-  ds_spectrogram(wl = 200, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
+  ds_spectrogram(wl.ms = 18, pal = viridis::mako, collevels = seq(-100, 0, 1)) +
   ds_theme(
     xlab = "Time (s)",
     ylab = "Frequency (kHz)",

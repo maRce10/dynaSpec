@@ -35,7 +35,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Spectrogram layer of dynamic spectrograms</h1>
-      <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/R/dynaspec.R" class="external-link"><code>R/dynaspec.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/maRce10/dynaSpec/blob/master/R/panels.R" class="external-link"><code>R/panels.R</code></a></small>
       <div class="d-none name"><code>ds_spectrogram.Rd</code></div>
     </div>
 
@@ -45,7 +45,17 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ds_spectrogram</span><span class="op">(</span><span class="va">wl</span>, <span class="va">ovlp</span>, <span class="va">wn</span>, <span class="va">pal</span>, <span class="va">collevels</span>, <span class="va">colbg</span>, <span class="va">amp.trans</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ds_spectrogram</span><span class="op">(</span></span>
+<span>  wl <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  wl.ms <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ovlp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  wn <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  collevels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.bg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  amp.trans <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,7 +63,11 @@
 
 
 <dl><dt id="arg-wl">wl<a class="anchor" aria-label="anchor" href="#arg-wl"></a></dt>
-<dd><p>Window length (in samples), as in <code><a href="https://rdrr.io/pkg/seewave/man/spectro.html" class="external-link">seewave::spectro()</a></code>.</p></dd>
+<dd><p>Window length (in samples), as in <code><a href="https://rdrr.io/pkg/seewave/man/spectro.html" class="external-link">seewave::spectro()</a></code>. Used when 'wl.ms' is not supplied.</p></dd>
+
+
+<dt id="arg-wl-ms">wl.ms<a class="anchor" aria-label="anchor" href="#arg-wl-ms"></a></dt>
+<dd><p>Window length in milliseconds (as 'Window length' in Praat). Takes precedence over 'wl'. When neither is supplied the window lasts 11.61 ms (512 samples at 44.1 kHz) in all styles. The window length in samples is computed from the sampling rate of the sound (for paged spectrograms, after resampling), so sounds with different sampling rates (e.g. in <code><a href="ds_compare.html">ds_compare()</a></code>) get windows of the same duration and the same time resolution.</p></dd>
 
 
 <dt id="arg-ovlp">ovlp<a class="anchor" aria-label="anchor" href="#arg-ovlp"></a></dt>
@@ -65,15 +79,15 @@
 
 
 <dt id="arg-pal">pal<a class="anchor" aria-label="anchor" href="#arg-pal"></a></dt>
-<dd><p>Color palette function (e.g. <code><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis::viridis()</a></code> or <code><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html" class="external-link">seewave::reverse.gray.colors.1()</a></code>). Paged spectrograms also take the names of 'viridis' palettes (e.g. "magma") and 2 colors for a gradient (e.g. <code>c("white", "black")</code>).</p></dd>
+<dd><p>Color palette of the spectrogram, from low to high amplitude: a palette function (e.g. <code><a href="https://sjmgarnier.github.io/viridis/reference/reexports.html" class="external-link">viridis::viridis()</a></code> or <code><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html" class="external-link">seewave::reverse.gray.colors.1()</a></code>), the name of a 'viridis' palette (e.g. "magma"), or two or more colors for a gradient (e.g. <code>c("white", "black")</code> or <code>c("white", "gold", "red", "black")</code>).</p></dd>
 
 
 <dt id="arg-collevels">collevels<a class="anchor" aria-label="anchor" href="#arg-collevels"></a></dt>
 <dd><p>Numeric vector with the amplitude levels (in dB) of the colors, as in <code><a href="https://rdrr.io/pkg/seewave/man/spectro.html" class="external-link">seewave::spectro()</a></code> (e.g. <code>seq(-40, 0, 1)</code>).</p></dd>
 
 
-<dt id="arg-colbg">colbg<a class="anchor" aria-label="anchor" href="#arg-colbg"></a></dt>
-<dd><p>Background color of the spectrogram, shown where the amplitude is below the lowest level of 'collevels'. Default is the color of the lowest amplitude of the palette (e.g. white for <code><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html" class="external-link">seewave::reverse.gray.colors.1()</a></code>, the default palette, or dark blue for <code><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis::mako()</a></code>), so quiet parts and the background look the same.</p></dd>
+<dt id="arg-col-bg">col.bg<a class="anchor" aria-label="anchor" href="#arg-col-bg"></a></dt>
+<dd><p>Background color of the spectrogram, shown where the amplitude is below the lowest level of 'collevels'. Default is the color of the lowest amplitude of the palette (e.g. white for <code><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html" class="external-link">seewave::reverse.gray.colors.1()</a></code>, the default palette, or dark blue for <code><a href="https://sjmgarnier.github.io/viridis/reference/reexports.html" class="external-link">viridis::mako()</a></code>), so quiet parts and the background look the same.</p></dd>
 
 
 <dt id="arg-amp-trans">amp.trans<a class="anchor" aria-label="anchor" href="#arg-amp-trans"></a></dt>
@@ -90,8 +104,13 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Only the arguments supplied are used; other settings take the defaults of each style (see <code><a href="styles.html">ds_scrolling()</a></code>, <code><a href="styles.html">ds_paged()</a></code> and <code><a href="styles.html">ds_static()</a></code>).</p>
-    </div>
+    <p>Only the arguments supplied are used. Arguments with default <code>NULL</code> take the defaults of each style (<code><a href="styles.html">ds_static()</a></code>, <code><a href="styles.html">ds_scrolling()</a></code> or <code><a href="styles.html">ds_paged()</a></code>):</p><ul><li><p>'wl.ms' (or 'wl'): 11.61 ms (512 samples at 44.1 kHz) in all styles.</p></li>
+<li><p>'ovlp': 70 (static and scrolling) and 90 (paged).</p></li>
+<li><p>'wn': "hanning" (static and scrolling) and "blackman" (paged).</p></li>
+<li><p>'pal': <code><a href="https://rdrr.io/pkg/seewave/man/seewave.internal.html" class="external-link">seewave::reverse.gray.colors.1()</a></code> (static and scrolling) and "inferno" (paged).</p></li>
+<li><p>'collevels': <code>seq(-40, 0, 1)</code> (static), 30 levels from the lowest to the highest amplitude, as in <code><a href="https://rdrr.io/pkg/seewave/man/spectro.html" class="external-link">seewave::spectro()</a></code> (scrolling) and <code>seq(-30, 0, 1)</code> (paged).</p></li>
+<li><p>'col.bg': the color of the lowest amplitude of the palette.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="dynaspec.html">dynaspec()</a></code></p></div>
@@ -102,7 +121,11 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scythebill</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">ds_spectrogram</span><span class="op">(</span>wl <span class="op">=</span> <span class="fl">200</span>, pal <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">mako</a></span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">60</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">ds_spectrogram</span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">18</span>, pal <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">mako</a></span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">60</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># window length in milliseconds (the same duration for any sampling rate)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="dynaspec.html">dynaspec</a></span><span class="op">(</span><span class="va">scythebill</span>, flim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ds_spectrogram</span><span class="op">(</span>wl.ms <span class="op">=</span> <span class="fl">15</span>, collevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
