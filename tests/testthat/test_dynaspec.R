@@ -283,7 +283,7 @@ test_that("ds_player(buttons = 'zoom') stretches scrolling spectrograms", {
   expect_match(plain, '"movingAxis":false', fixed = TRUE)
   # strips are drawn at twice the resolution
   strip_width <- function(h) {
-    uri <- regmatches(h, regexpr('class="ds-strip" srcset="data:image/png;base64,[^ "]+', h))
+    uri <- regmatches(h, regexpr('class="ds-strip nostretch" srcset="data:image/png;base64,[^ "]+', h))
     dim(png::readPNG(base64enc::base64decode(sub(".*base64,", "", uri))))[2]
   }
   skip_if_not_installed("base64enc")
@@ -804,7 +804,7 @@ test_that("sounds of comparisons other than the last one have no time axis title
     html <- save_dynaspec(x, play = FALSE, verbose = FALSE)
     cfg <- regmatches(html, regexpr('<script type="application/json">[^<]+', html))
     num <- function(name) as.numeric(sub(paste0('.*"', name, '":([0-9.e-]+).*'), "\\1", cfg))
-    img <- sub('.*<img class="ds-frame" srcset="data:image/png;base64,([^ ]+) 1x".*', "\\1", html)
+    img <- sub('.*<img class="ds-frame nostretch" srcset="data:image/png;base64,([^ ]+) 1x".*', "\\1", html)
     f <- tempfile(fileext = ".png")
     writeBin(base64_decode_test(img), f)
     h <- nrow(png::readPNG(f))
@@ -821,9 +821,9 @@ test_that("sounds of comparisons other than the last one have no time axis title
   # comparisons: the last sound keeps its title
   cmp <- ds_compare(a, a, a) + ds_spectrogram(wl = 128)
   html <- save_dynaspec(cmp + ds_static(width = 400, height = 300), play = FALSE, verbose = FALSE)
-  heights <- vapply(regmatches(html, gregexpr('<img srcset="data:image/png;base64,[^ ]+', html))[[1]], function(u) {
+  heights <- vapply(regmatches(html, gregexpr('<img class="nostretch" srcset="data:image/png;base64,[^ ]+', html))[[1]], function(u) {
     f <- tempfile(fileext = ".png")
-    writeBin(base64enc::base64decode(sub('<img srcset="data:image/png;base64,', "", u)), f)
+    writeBin(base64enc::base64decode(sub('<img class="nostretch" srcset="data:image/png;base64,', "", u)), f)
     nrow(png::readPNG(f))
   }, numeric(1))
   expect_equal(unname(heights[1]), unname(heights[2]))
@@ -1220,3 +1220,32 @@ test_that("scrolling spectrograms keep the window within the sound (still ends)"
   expect_equal(line_x(1.8), 0.8, tolerance = 0.05 / 0.8)
 })
 
+
+test_that("ds_player(autoplay) marks players for revealjs presentations", {
+  data("scythebill", package = "dynaSpec")
+  x <- dynaspec(scythebill, flim = c(1.5, 5.5)) + ds_spectrogram(wl.ms = 18)
+  step <- '<span class="fragment ds-autoplay" aria-hidden="true"></span>'
+  # none (default): no mark and no hidden step
+  h <- as.character(save_dynaspec(x, play = FALSE, verbose = FALSE))
+  expect_false(grepl('<div class="dynaspec-player" data-autoplay', h))
+  expect_false(grepl(step, h, fixed = TRUE))
+  # next: mark and hidden step after the player
+  h <- as.character(save_dynaspec(x + ds_player(autoplay = "next"), play = FALSE, verbose = FALSE))
+  expect_match(h, '<div class="dynaspec-player" data-autoplay="next"', fixed = TRUE)
+  expect_true(endsWith(h, step))
+  # slide: mark without hidden step
+  h <- as.character(save_dynaspec(x + ds_player(autoplay = "slide"), play = FALSE, verbose = FALSE))
+  expect_match(h, '<div class="dynaspec-player" data-autoplay="slide"', fixed = TRUE)
+  expect_false(grepl(step, h, fixed = TRUE))
+  # comparisons: only the comparison is marked, with a single hidden step
+  h <- as.character(save_dynaspec(ds_compare(x, x) + ds_player(autoplay = "next"), play = FALSE, verbose = FALSE))
+  expect_equal(lengths(regmatches(h, gregexpr('<div class="dynaspec-[a-z]+" data-autoplay', h))), 1)
+  expect_match(h, '<div class="dynaspec-compare" data-autoplay="next"', fixed = TRUE)
+  expect_equal(lengths(regmatches(h, gregexpr(step, h, fixed = TRUE))), 1)
+  # when knitting the hidden step goes inside the raw html block
+  op <- options(knitr.in.progress = TRUE)
+  on.exit(options(op))
+  k <- as.character(save_dynaspec(x + ds_player(autoplay = "next"), play = FALSE, verbose = FALSE))
+  expect_true(endsWith(k, paste0(step, "\n```\n")))
+  expect_error(ds_player(autoplay = "always"), "autoplay")
+})

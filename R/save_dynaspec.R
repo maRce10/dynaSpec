@@ -51,7 +51,16 @@ save_dynaspec <- function(x, file.name = NULL, play = TRUE, verbose = TRUE) {
   out <- if (is.null(file.name)) tempfile(fileext = ".html") else file.path(normalizePath(dirname(file.name), mustWork = TRUE), basename(file.name))
   play_out <- play && !is.null(file.name)
 
+  # playback in revealjs presentations (ds_player(autoplay)): comparisons play as a whole, not each of their sounds
+  autoplay <- x$autoplay
+  if (inherits(x, "dynaspec_compare")) {
+    autoplay <- x$sounds[[1]]$autoplay
+    x$sounds <- lapply(x$sounds, function(s) { s$autoplay <- NULL; s })
+  }
+
   res <- if (inherits(x, "dynaspec_compare")) save_compare_int(x, out, ext, play_out, verbose) else save_sound_int(x, out, ext, play_out, verbose)
+
+  if (ext == "html" && !is.null(autoplay) && autoplay != "none") res <- autoplay_html_int(res, autoplay)
 
   # files saved
   if (verbose && !is.null(file.name) && !isFALSE(getOption("dynaSpec.report"))) {
@@ -136,4 +145,19 @@ save_sound_int <- function(x, out, ext, play, verbose) {
   }
 
   render(out, play)
+}
+
+
+# web player that plays by itself in revealjs presentations (ds_player(autoplay)): the player is marked with
+# 'data-autoplay' (read by the javascript of the players) and, to play it with "next", followed by a hidden step
+# (fragment). The code embedded when knitting ends with the end of its raw html block
+autoplay_html_int <- function(html, autoplay) {
+  att <- attributes(html)
+  res <- sub('(<div class="dynaspec-(player|paged|scroll|compare)")', paste0('\\1 data-autoplay="', autoplay, '"'), html)
+  if (autoplay == "next") {
+    step <- '<span class="fragment ds-autoplay" aria-hidden="true"></span>'
+    res <- if (grepl("\n```\n$", res)) sub("\n```\n$", paste0("\n", step, "\n```\n"), res) else paste0(res, "\n", step)
+  }
+  attributes(res) <- att
+  res
 }

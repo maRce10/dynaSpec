@@ -15,7 +15,7 @@ An object of class \code{Wave} of length 104763.
 \usage{
 data(female_barn_swallow)
 
-male_barn_swallow
+data(male_barn_swallow)
 }
 \description{
 Songs of a female and a male barn swallow recorded by Matthew R. Wilkins (the example sound files of dynaSpec 1.x).

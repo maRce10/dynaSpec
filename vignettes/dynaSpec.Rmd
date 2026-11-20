@@ -201,6 +201,26 @@ ds_scythebill +
 
 Several players can be included in the same document or web page; only one sound plays at a time.
 
+## Presentations
+
+In slides, pressing the play button breaks the flow of a talk. With `autoplay` the sound plays by itself while moving through the presentation with the keyboard (or a presentation remote):
+
+* `autoplay = "next"`: the sound plays when pressing "next" on its slide (e.g. the right arrow key or the space bar), and the following "next" goes on to the next step or slide. This leaves time to introduce the spectrogram before playing it. Going back stops the sound
+* `autoplay = "slide"`: the sound plays as soon as its slide is shown
+
+```{r, eval = FALSE}
+ds_scythebill + ds_player(autoplay = "next")
+```
+
+Sounds still playing stop when leaving their slide, and comparisons (`ds_compare()`) play all their sounds in sequence, as with the play button. The play button and the other controls keep working as usual.
+
+This works in presentations made with [reveal.js](https://revealjs.com) (version 4 or later), the most common format of HTML slides in R:
+
+* Quarto: `format: revealjs`
+* R Markdown: `output: revealjs::revealjs_presentation` (package [revealjs](https://CRAN.R-project.org/package=revealjs))
+
+In other formats the player works as usual, but the sound only plays with the play button: other HTML slides (e.g. 'xaringan', 'ioslides' or 'slidy'), documents and web pages. Slides that are not web pages (e.g. 'beamer' or PowerPoint) can show the spectrogram as a video (see [Saving](#saving-web-pages-videos-and-images)).
+
 # Highlighting and labeling sounds
 
 `ds_annotations()` highlights parts of the sound with translucent boxes, borders and labels (e.g. from a selection table of [warbleR](https://cran.r-project.org/package=warbleR) or [ohun](https://cran.r-project.org/package=ohun)), and `ds_captions()` adds text at a fixed position of the figure shown during a time range, like subtitles. Both work in the three styles, and are shown in the article [Customizing dynamic spectrograms](https://marce10.github.io/dynaSpec/articles/customizing.html#annotations).

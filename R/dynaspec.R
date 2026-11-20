@@ -130,7 +130,11 @@ dynaspec <- function(wave, flim = NULL, tlim = NULL) {
       # (complete themes also replace the theme set with ds_set_theme())
       if (isTRUE(e2$complete)) e1$theme_complete <- TRUE
     },
-    player = e1$player <- e2$args,
+    # (autoplay is not a setting of the players themselves: it is added to the web page by save_dynaspec())
+    player = {
+      e1$autoplay <- e2$args$autoplay
+      e1$player <- e2$args[setdiff(names(e2$args), "autoplay")]
+    },
     video = e1$video.layer <- e2$args,
     filter = e1$filter <- e2$args,
     annotations = e1$selections <- c(e1$selections, list(e2$args)),

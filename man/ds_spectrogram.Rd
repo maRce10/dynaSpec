@@ -25,11 +25,11 @@ ds_spectrogram(
 
 \item{wn}{Window function name, as in \code{\link[seewave:spectro]{seewave::spectro()}} (e.g. "hanning" or "blackman").}
 
-\item{pal}{Color palette of the spectrogram, from low to high amplitude: a palette function (e.g. \code{\link[viridis:reexports]{viridis::viridis()}} or \code{\link[seewave:seewave.internal]{seewave::reverse.gray.colors.1()}}), the name of a 'viridis' palette (e.g. "magma"), or two or more colors for a gradient (e.g. \code{c("white", "black")} or \code{c("white", "gold", "red", "black")}).}
+\item{pal}{Color palette of the spectrogram, from low to high amplitude: a palette function (e.g. \code{\link[viridis:viridis]{viridis::viridis()}} or \code{\link[seewave:reverse.gray.colors.1]{seewave::reverse.gray.colors.1()}}), the name of a 'viridis' palette (e.g. "magma"), or two or more colors for a gradient (e.g. \code{c("white", "black")} or \code{c("white", "gold", "red", "black")}).}
 
 \item{collevels}{Numeric vector with the amplitude levels (in dB) of the colors, as in \code{\link[seewave:spectro]{seewave::spectro()}} (e.g. \code{seq(-40, 0, 1)}).}
 
-\item{col.bg}{Background color of the spectrogram, shown where the amplitude is below the lowest level of 'collevels'. Default is the color of the lowest amplitude of the palette (e.g. white for \code{\link[seewave:seewave.internal]{seewave::reverse.gray.colors.1()}}, the default palette, or dark blue for \code{\link[viridis:reexports]{viridis::mako()}}), so quiet parts and the background look the same.}
+\item{col.bg}{Background color of the spectrogram, shown where the amplitude is below the lowest level of 'collevels'. Default is the color of the lowest amplitude of the palette (e.g. white for \code{\link[seewave:reverse.gray.colors.1]{seewave::reverse.gray.colors.1()}}, the default palette, or dark blue for \code{\link[viridis:mako]{viridis::mako()}}), so quiet parts and the background look the same.}
 
 \item{amp.trans}{Amplitude transformation to brighten paged spectrograms (values > 1 brighten quiet sounds; only used by \code{\link[=ds_paged]{ds_paged()}}).}
 
@@ -47,7 +47,7 @@ Only the arguments supplied are used. Arguments with default \code{NULL} take th
 \item 'wl.ms' (or 'wl'): 11.61 ms (512 samples at 44.1 kHz) in all styles.
 \item 'ovlp': 70 (static and scrolling) and 90 (paged).
 \item 'wn': "hanning" (static and scrolling) and "blackman" (paged).
-\item 'pal': \code{\link[seewave:seewave.internal]{seewave::reverse.gray.colors.1()}} (static and scrolling) and "inferno" (paged).
+\item 'pal': \code{\link[seewave:reverse.gray.colors.1]{seewave::reverse.gray.colors.1()}} (static and scrolling) and "inferno" (paged).
 \item 'collevels': \code{seq(-40, 0, 1)} (static), 30 levels from the lowest to the highest amplitude, as in \code{\link[seewave:spectro]{seewave::spectro()}} (scrolling) and \code{seq(-30, 0, 1)} (paged).
 \item 'col.bg': the color of the lowest amplitude of the palette.
 }

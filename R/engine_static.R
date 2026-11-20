@@ -398,14 +398,15 @@ static_spectro_int <- function(wave,
     return(invisible(file.name))
   }
 
-  # player html
+  # player html (images of class "nostretch": revealjs presentations made with Quarto otherwise take the image out of
+  # the player to stretch it, when it is the only image of a slide)
   html <- paste0(
     '<div class="dynaspec-player" data-duration="', dur,
     '" data-rows="', paste(apply(round(ext, 5), 1, paste, collapse = ","), collapse = ";"),
     '"', player_attrs_int(speeds, keep.pitch, buttons, download.name, theme), ' data-line="', tolower(play.line), '"',
     if (!is.null(lwd_px)) paste0(' data-lwd="', signif(lwd_px, 4), '"'), if (length(dash) > 1) paste0(' data-dash="', paste(dash, collapse = ","), '"'),
     ' data-color="', col2hex_int(lcol), '" data-text-color="', contrast_col_int(lcol), '">\n',
-    '<img srcset="', base64_uri_int(png_file, "image/png"), ' 1x" alt="', html_escape_int(if (is.null(alt)) paste0(if (empty) "Time axis" else panel_names_int(spectro, panels, spectrum), " of a ", round(dur, 2), " s sound") else alt), '">\n',
+    '<img class="nostretch" srcset="', base64_uri_int(png_file, "image/png"), ' 1x" alt="', html_escape_int(if (is.null(alt)) paste0(if (empty) "Time axis" else panel_names_int(spectro, panels, spectrum), " of a ", round(dur, 2), " s sound") else alt), '">\n',
     '<audio controls preload="auto" src="', snd$uri, '"></audio>\n',
     captions_json_int(layers$captions, res = res, width = width),
     '</div>\n',

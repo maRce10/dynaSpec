@@ -100,7 +100,7 @@ test_that("static_spectro splits sounds in rows", {
   # xlab_margin_int(), minus 2.05 lines; lower rows have a top margin of 0.4 lines instead of 1: 0.6 lines shorter; a line
   # is 0.2 inches on Linux, 0.192 on Windows; 100 dpi)
   skip_if_not_installed("base64enc")
-  img <- png::readPNG(base64enc::base64decode(sub('[ "].*', "", sub('.*<img srcset="data:image/png;base64,', "", res))))
+  img <- png::readPNG(base64enc::base64decode(sub('[ "].*', "", sub('.*<img class="nostretch" srcset="data:image/png;base64,', "", res))))
   shorter <- 2 * (dynaSpec:::xlab_margin_int(1 + 0.9, 1.2) - 2.05) + 2 * 0.6
   expect_equal(dim(img)[1:2], c(round(600 - shorter * dynaSpec:::png_line_in_int(100) * 100), 300))
 })

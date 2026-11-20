@@ -1073,6 +1073,60 @@
         initCompare(div);
       });
     };
+
+    // revealjs presentations (ds_player(autoplay)): players marked with data-autoplay="next" play when the hidden step
+    // (fragment) that follows them is shown, and those marked with data-autoplay="slide" when their slide is shown.
+    // Going back from the step, or leaving the slide, stops them. The events are set once, when the presentation is ready
+    window.dynaSpecAutoplay = function () {
+      if (window.dynaSpecAutoplayOn || !document.querySelector("[data-autoplay]")) return;
+      window.dynaSpecAutoplayOn = true;
+      var playing = function (box) {
+        return Array.prototype.some.call(box.querySelectorAll("audio"), function (a) { return !a.paused; });
+      };
+      // play button: the last one (comparisons show the controls of their last sound; those of the others are hidden).
+      // Used to play and stop, so the playback line and the sequence of comparisons follow
+      var button = function (box) {
+        var b = box ? box.querySelectorAll(".ds-play") : [];
+        return b.length ? b[b.length - 1] : null;
+      };
+      var play = function (box) {
+        var b = button(box);
+        if (b && !playing(box)) b.click();
+      };
+      var stop = function (box) {
+        if (!box) return;
+        var b = button(box);
+        if (b && playing(box)) b.click();
+        box.querySelectorAll("audio,video").forEach(function (a) { a.pause(); });
+      };
+      // player of a step: the last one before it in its slide
+      var stepPlayer = function (step) {
+        var slide = step.closest("section"), box = null;
+        if (!slide) return null;
+        slide.querySelectorAll('[data-autoplay="next"]').forEach(function (p) {
+          if (p.compareDocumentPosition(step) & Node.DOCUMENT_POSITION_FOLLOWING) box = p;
+        });
+        return box;
+      };
+      // (waits up to a minute for revealjs; nothing is done in other web pages)
+      var tries = 0;
+      var setup = function () {
+        var R = window.Reveal;
+        if (!R || !R.on || !R.isReady || !R.isReady()) { if (++tries < 600) setTimeout(setup, 100); return; }
+        R.on("fragmentshown", function (e) {
+          if (e.fragment.classList.contains("ds-autoplay")) play(stepPlayer(e.fragment));
+        });
+        R.on("fragmenthidden", function (e) {
+          if (e.fragment.classList.contains("ds-autoplay")) stop(stepPlayer(e.fragment));
+        });
+        R.on("slidechanged", function (e) {
+          if (e.previousSlide) e.previousSlide.querySelectorAll("[data-autoplay]").forEach(stop);
+          if (e.currentSlide) e.currentSlide.querySelectorAll('[data-autoplay="slide"]').forEach(play);
+        });
+      };
+      setup();
+    };
   }
   window.dynaSpecPlayers();
+  window.dynaSpecAutoplay();
 })();

@@ -141,6 +141,10 @@
     checkmate::assert_numeric(args$speeds, lower = 0.0625, upper = 16, min.len = 1, any.missing = FALSE, unique = TRUE, add = check_collection, .var.name = "speeds")
   }
 
+  if (!is.null(args$autoplay)) {
+    checkmate::assert_choice(args$autoplay, c("none", "next", "slide"), add = check_collection, .var.name = "autoplay")
+  }
+
   if (!is.null(args$buttons)) {
     checkmate::assert_character(args$buttons, any.missing = FALSE, unique = TRUE, add = check_collection, .var.name = "buttons")
     checkmate::assert_subset(args$buttons, c("time", "loop", "volume", "download", "fullscreen", "progress", "zoom"), add = check_collection, .var.name = "buttons")

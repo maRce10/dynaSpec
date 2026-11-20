@@ -16,7 +16,7 @@ ds_get_theme()
 \code{ds_set_theme()} returns the previous theme invisibly (so it can be restored); \code{ds_get_theme()} returns the current theme (\code{NULL} if none was set).
 }
 \description{
-\code{ds_set_theme()} sets a theme used by all \code{\link[=dynaspec]{dynaspec()}} objects created or shown afterwards in the R session (e.g. in all the code chunks of an R Markdown or Quarto document), as \code{\link[ggplot2:get_theme]{ggplot2::theme_set()}}. \code{ds_get_theme()} returns the current theme.
+\code{ds_set_theme()} sets a theme used by all \code{\link[=dynaspec]{dynaspec()}} objects created or shown afterwards in the R session (e.g. in all the code chunks of an R Markdown or Quarto document), as \code{\link[ggplot2:theme_set]{ggplot2::theme_set()}}. \code{ds_get_theme()} returns the current theme.
 }
 \details{
 Themes added to a \code{\link[=dynaspec]{dynaspec()}} object with \code{+} take precedence: \code{\link[=ds_theme]{ds_theme()}} changes some settings of the global theme, while preset themes (e.g. \code{+ ds_theme_paper()}) are complete themes that replace it.
