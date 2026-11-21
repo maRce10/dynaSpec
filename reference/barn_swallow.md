@@ -8,7 +8,7 @@ Songs of a female and a male barn swallow recorded by Matthew R. Wilkins
 ``` r
 data(female_barn_swallow)
 
-male_barn_swallow
+data(male_barn_swallow)
 ```
 
 ## Format

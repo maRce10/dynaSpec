@@ -55,7 +55,7 @@ ds_spectrogram(
 
   Color palette of the spectrogram, from low to high amplitude: a
   palette function (e.g.
-  [`viridis::viridis()`](https://sjmgarnier.github.io/viridis/reference/reexports.html)
+  [`viridis::viridis()`](https://sjmgarnier.github.io/viridisLite/reference/viridis.html)
   or
   [`seewave::reverse.gray.colors.1()`](https://rdrr.io/pkg/seewave/man/seewave.internal.html)),
   the name of a 'viridis' palette (e.g. "magma"), or two or more colors
@@ -75,7 +75,7 @@ ds_spectrogram(
   lowest amplitude of the palette (e.g. white for
   [`seewave::reverse.gray.colors.1()`](https://rdrr.io/pkg/seewave/man/seewave.internal.html),
   the default palette, or dark blue for
-  [`viridis::mako()`](https://sjmgarnier.github.io/viridis/reference/reexports.html)),
+  [`viridis::mako()`](https://sjmgarnier.github.io/viridisLite/reference/viridis.html)),
   so quiet parts and the background look the same.
 
 - amp.trans:

@@ -377,13 +377,13 @@ Click to see
     #> loaded via a namespace (and not attached):
     #>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.6.2     Rcpp_1.1.2        
     #>  [5] stringr_1.6.0      bmp_0.3.1          signal_1.8-1       gridExtra_2.3.1   
-    #>  [9] jquerylib_0.1.4    png_0.1-9          systemfonts_1.3.2  scales_1.4.0      
-    #> [13] textshaping_1.0.5  yaml_2.3.12        fastmap_1.2.0      ggplot2_4.0.3     
+    #>  [9] jquerylib_0.1.4    png_0.1-9          systemfonts_1.3.3  scales_1.4.0      
+    #> [13] textshaping_1.1.0  yaml_2.3.12        fastmap_1.2.0      ggplot2_4.0.4     
     #> [17] R6_2.6.1           igraph_2.3.4       knitr_1.52         MASS_7.3-66       
     #> [21] backports_1.5.1    checkmate_2.3.4    imager_1.0.8       desc_1.4.3        
     #> [25] readbitmap_0.1.5   tiff_0.1-12        bslib_0.12.0       RColorBrewer_1.1-3
     #> [29] rlang_1.3.0        stringi_1.8.9      cachem_1.1.0       xfun_0.62         
-    #> [33] fs_2.1.0           sass_0.4.10        S7_0.2.2           otel_0.3.0        
+    #> [33] fs_2.1.0           sass_0.5.0         S7_1.0.0           otel_0.3.0        
     #> [37] seewave_2.2.4      cli_3.6.6          magrittr_2.0.5     pkgdown_2.2.1     
     #> [41] digest_0.6.39      grid_4.6.2         lifecycle_1.0.5    vctrs_0.7.3       
     #> [45] evaluate_1.0.5     glue_1.8.1         farver_2.1.2       tuneR_1.4.7       

@@ -131,7 +131,7 @@ x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
 
 # save as a web page
 save_dynaspec(x, file.path(tempdir(), "scythebill.html"), play = FALSE)
-#> ✔ File saved at: /tmp/Rtmp7mqEhF/scythebill.html
+#> ✔ File saved at: /tmp/Rtmp8fgyT9/scythebill.html
 
 if (FALSE) { # \dontrun{
 # show it

@@ -75,9 +75,9 @@ x <- dynaspec(scythebill, flim = c(1.5, 5.5)) +
   ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) + ds_oscillogram()
 
 save_dynaspec(x, file.path(tempdir(), "scythebill.html"), play = FALSE)
-#> ✔ File saved at: /tmp/Rtmp7mqEhF/scythebill.html
+#> ✔ File saved at: /tmp/Rtmp8fgyT9/scythebill.html
 save_dynaspec(x, file.path(tempdir(), "scythebill.png"), play = FALSE)
-#> ✔ File saved at: /tmp/Rtmp7mqEhF/scythebill.png
+#> ✔ File saved at: /tmp/Rtmp8fgyT9/scythebill.png
 
 if (FALSE) { # \dontrun{
 # videos (require ffmpeg)

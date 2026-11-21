@@ -73,7 +73,11 @@
     playback speed slider (snapping to fixed speeds) and ‘keep pitch’
     toggle of web pages, plus optional time readout, seek bar, zoom
     slider (scrolling spectrograms: stretch or shrink the spectrogram),
-    loop, volume, download and full screen buttons (`buttons`)
+    loop, volume, download and full screen buttons (`buttons`);
+    `autoplay` plays the sound by itself in presentations made with
+    reveal.js (Quarto `format: revealjs` and R Markdown
+    `revealjs::revealjs_presentation`): when pressing “next” on its
+    slide (`"next"`) or when its slide is shown (`"slide"`)
   - [`ds_static()`](https://marce10.github.io/dynaSpec/reference/styles.md)
     (default),
     [`ds_scrolling()`](https://marce10.github.io/dynaSpec/reference/styles.md)
@@ -82,6 +86,10 @@
     style of the dynamic spectrogram (`ds_static(play.line = FALSE)`
     hides the moving line, whose default color is now
     `viridis::mako(10)[9]`)
+- Players work in Quarto presentations (`format: revealjs`) when they
+  are the only image of a slide: Quarto took the spectrogram out of the
+  player to stretch it to the slide (their images have class
+  `nostretch`)
 - [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md)
   can draw frequency contours within selections (`contour`): measured on
   the sound (“dominant” or “fundamental”, settings in `contour.args`) or

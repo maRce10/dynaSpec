@@ -123,7 +123,7 @@ x <- ds_compare(female_barn_swallow, male_barn_swallow, flim = c(0, 10)) +
   ds_spectrogram(wl.ms = 23, collevels = seq(-50, 0, 1))
 
 save_dynaspec(x, file.path(tempdir(), "swallows.html"), play = FALSE)
-#> ✔ File saved at: /tmp/Rtmp7mqEhF/swallows.html
+#> ✔ File saved at: /tmp/Rtmp8fgyT9/swallows.html
 
 if (FALSE) { # \dontrun{
 # show it

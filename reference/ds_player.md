@@ -8,7 +8,8 @@
 ds_player(
   speeds = c(1, 0.5, 0.25, 0.125),
   keep.pitch = FALSE,
-  buttons = "time"
+  buttons = "time",
+  autoplay = "none"
 )
 ```
 
@@ -64,6 +65,36 @@ ds_player(
   [`ds_theme_xenocanto()`](https://marce10.github.io/dynaSpec/reference/ds_theme.md)).
   Buttons are only shown in web pages (not in videos).
 
+- autoplay:
+
+  Character string to control if the sound plays by itself in
+  presentations, so speakers can play it without pressing the play
+  button, just by moving through the slides (e.g. with the keyboard or a
+  presentation remote):
+
+  - `"none"`: the sound is only played with the play button
+
+  - `"next"`: the sound is played when pressing "next" (e.g. the right
+    arrow key or the space bar) on its slide, and the following "next"
+    goes on with the presentation (a hidden step, or fragment, is added
+    right after the player). This leaves time to introduce the
+    spectrogram before playing it. Going back stops the sound
+
+  - `"slide"`: the sound is played as soon as its slide is shown
+
+  Sounds still playing are stopped when leaving their slide. Comparisons
+  ([`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md))
+  play all their sounds in sequence. The play button and the other
+  controls keep working as usual.
+
+  It works in presentations made with reveal.js (version 4 or later):
+  Quarto presentations with `format: revealjs` and R Markdown
+  presentations with `output: revealjs::revealjs_presentation` (package
+  'revealjs'). In other formats (other HTML slides, such as 'xaringan',
+  'ioslides' or 'slidy', documents and web pages) the sound only plays
+  with the play button, and it has no effect in videos. Default is
+  `"none"`.
+
 ## Value
 
 A layer to be added to a
@@ -83,5 +114,10 @@ data("scythebill")
 dynaspec(scythebill, flim = c(1.5, 5.5)) +
   ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
   ds_player(buttons = c("time", "loop", "volume", "download", "fullscreen"))
+
+# in a revealjs presentation: pressing "next" plays the sound before moving on
+dynaspec(scythebill, flim = c(1.5, 5.5)) +
+  ds_spectrogram(wl.ms = 18, collevels = seq(-50, 0, 1)) +
+  ds_player(autoplay = "next")
 } # }
 ```

@@ -1068,19 +1068,19 @@ Click to see
     #> [4] dynaSpec_2.0.0.9000
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] NatureSounds_1.0.5 sass_0.4.10        tiff_0.1-12        jpeg_0.1-11       
+    #>  [1] NatureSounds_1.0.5 sass_0.5.0         tiff_0.1-12        jpeg_0.1-11       
     #>  [5] stringi_1.8.9      digest_0.6.39      magrittr_2.0.5     evaluate_1.0.5    
     #>  [9] grid_4.6.2         RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0    
     #> [13] backports_1.5.1    tuneR_1.4.7        gridExtra_2.3.1    httr_1.4.9        
     #> [17] purrr_1.2.2        scales_1.4.0       pbapply_1.7-5      warbleR_1.1.38    
-    #> [21] textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6          rlang_1.3.0       
+    #> [21] textshaping_1.1.0  jquerylib_0.1.4    cli_3.6.6          rlang_1.3.0       
     #> [25] fftw_1.0-9         cachem_1.1.0       yaml_2.3.12        otel_0.3.0        
-    #> [29] parallel_4.6.2     tools_4.6.2        checkmate_2.3.4    ggplot2_4.0.3     
+    #> [29] parallel_4.6.2     tools_4.6.2        checkmate_2.3.4    ggplot2_4.0.4     
     #> [33] curl_8.1.0         vctrs_0.7.3        R6_2.6.1           png_0.1-9         
     #> [37] bmp_0.3.1          proxy_0.4-29       dtw_1.23-3         lifecycle_1.0.5   
     #> [41] stringr_1.6.0      fs_2.1.0           MASS_7.3-66        ragg_1.5.2        
     #> [45] pkgconfig_2.0.3    desc_1.4.3         pkgdown_2.2.1      bslib_0.12.0      
-    #> [49] gtable_0.3.6       glue_1.8.1         Rcpp_1.1.2         systemfonts_1.3.2 
+    #> [49] gtable_0.3.6       glue_1.8.1         Rcpp_1.1.2         systemfonts_1.3.3 
     #> [53] xfun_0.62          knitr_1.52         farver_2.1.2       readbitmap_0.1.5  
     #> [57] htmltools_0.5.9    imager_1.0.8       igraph_2.3.4       rmarkdown_2.32    
-    #> [61] signal_1.8-1       compiler_4.6.2     S7_0.2.2
+    #> [61] signal_1.8-1       compiler_4.6.2     S7_1.0.0

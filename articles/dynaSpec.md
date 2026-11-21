@@ -248,6 +248,41 @@ ds_scythebill +
 Several players can be included in the same document or web page; only
 one sound plays at a time.
 
+### Presentations
+
+In slides, pressing the play button breaks the flow of a talk. With
+`autoplay` the sound plays by itself while moving through the
+presentation with the keyboard (or a presentation remote):
+
+- `autoplay = "next"`: the sound plays when pressing “next” on its slide
+  (e.g. the right arrow key or the space bar), and the following “next”
+  goes on to the next step or slide. This leaves time to introduce the
+  spectrogram before playing it. Going back stops the sound
+- `autoplay = "slide"`: the sound plays as soon as its slide is shown
+
+``` r
+
+ds_scythebill + ds_player(autoplay = "next")
+```
+
+Sounds still playing stop when leaving their slide, and comparisons
+([`ds_compare()`](https://marce10.github.io/dynaSpec/reference/ds_compare.md))
+play all their sounds in sequence, as with the play button. The play
+button and the other controls keep working as usual.
+
+This works in presentations made with [reveal.js](https://revealjs.com)
+(version 4 or later), the most common format of HTML slides in R:
+
+- Quarto: `format: revealjs`
+- R Markdown: `output: revealjs::revealjs_presentation` (package
+  [revealjs](https://CRAN.R-project.org/package=revealjs))
+
+In other formats the player works as usual, but the sound only plays
+with the play button: other HTML slides (e.g. ‘xaringan’, ‘ioslides’ or
+‘slidy’), documents and web pages. Slides that are not web pages
+(e.g. ‘beamer’ or PowerPoint) can show the spectrogram as a video (see
+[Saving](#saving-web-pages-videos-and-images)).
+
 ## Highlighting and labeling sounds
 
 [`ds_annotations()`](https://marce10.github.io/dynaSpec/reference/ds_annotations.md)
@@ -425,13 +460,13 @@ Click to see
     #> loaded via a namespace (and not attached):
     #>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.6.2     Rcpp_1.1.2        
     #>  [5] stringr_1.6.0      bmp_0.3.1          signal_1.8-1       gridExtra_2.3.1   
-    #>  [9] jquerylib_0.1.4    png_0.1-9          systemfonts_1.3.2  scales_1.4.0      
-    #> [13] textshaping_1.0.5  yaml_2.3.12        fastmap_1.2.0      ggplot2_4.0.3     
+    #>  [9] jquerylib_0.1.4    png_0.1-9          systemfonts_1.3.3  scales_1.4.0      
+    #> [13] textshaping_1.1.0  yaml_2.3.12        fastmap_1.2.0      ggplot2_4.0.4     
     #> [17] R6_2.6.1           igraph_2.3.4       knitr_1.52         MASS_7.3-66       
     #> [21] viridis_0.6.5      backports_1.5.1    checkmate_2.3.4    imager_1.0.8      
     #> [25] desc_1.4.3         readbitmap_0.1.5   tiff_0.1-12        bslib_0.12.0      
     #> [29] RColorBrewer_1.1-3 rlang_1.3.0        stringi_1.8.9      cachem_1.1.0      
-    #> [33] xfun_0.62          fs_2.1.0           sass_0.4.10        S7_0.2.2          
+    #> [33] xfun_0.62          fs_2.1.0           sass_0.5.0         S7_1.0.0          
     #> [37] otel_0.3.0         viridisLite_0.4.3  cli_3.6.6          magrittr_2.0.5    
     #> [41] pkgdown_2.2.1      digest_0.6.39      grid_4.6.2         lifecycle_1.0.5   
     #> [45] vctrs_0.7.3        evaluate_1.0.5     glue_1.8.1         farver_2.1.2      
