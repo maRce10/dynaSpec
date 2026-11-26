@@ -77,7 +77,7 @@ video_sound_int <- function(file) {
 # video part of a dynaspec object: frames from 'from' to 'to' s of the video at a constant frame rate, 'width' pixels
 # wide (even height), at 'speed' (as the sound of scrolling videos), with 'start' s of its first frame before it and
 # repeated last frame up to 'total' s. Without sound
-video_part_int <- function(video, file, from, to, fps, width, speed = 1, start = 0, total = (to - from) / speed + start, crf = 20, height = NULL, bg = "#FFFFFF") {
+video_part_int <- function(video, file, from, to, fps, width, speed = 1, start = 0, total = (to - from) / speed + start, crf = 17, height = NULL, bg = "#FFFFFF") {
   num <- function(v) format(v, digits = 10, scientific = FALSE)
   filter <- paste0(
     "trim=start=", num(from), ":end=", num(to), ",setpts=(PTS-", num(from), "/TB)/", num(speed),
@@ -136,7 +136,7 @@ video_stack_int <- function(x, spec_file, out, dur, timing = list(speed = 1, buf
   # (both pictures start at time 0: videos of paged spectrograms can start a few ms later, from joining pages)
   stack <- paste0("[0:v]setpts=PTS-STARTPTS[a];[1:v]setpts=PTS-STARTPTS[b];", if (above) "[a][b]" else "[b][a]", "vstack=inputs=2[v]")
   run_ffmpeg_int(paste("-y", if (timing$loop > 1) paste("-stream_loop", timing$loop - 1), "-i", shQuote(part), "-i", shQuote(spec_file),
-                       "-filter_complex", shQuote(stack), "-map [v] -map 1:a -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a copy -t",
+                       "-filter_complex", shQuote(stack), "-map [v] -map 1:a -c:v libx264 -crf 17 -pix_fmt yuv420p -c:a aac -b:a 192k -t",
                        format(info$duration, digits = 10, scientific = FALSE), "-movflags +faststart", shQuote(out)),
                  "adding the video")
   out

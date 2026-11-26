@@ -261,7 +261,7 @@ compare_video_int <- function(sounds, render, durs, x, out) {
     audio, paste0(paste0("[a", seq_len(n), "]", collapse = ""), "concat=n=", n, ":v=0:a=1[a]")
   ), collapse = ";")
   run_ffmpeg_int(paste("-y", paste("-i", shQuote(files), collapse = " "), "-filter_complex", shQuote(filter),
-                       "-map [v] -map [a] -c:v libx264 -pix_fmt yuv420p -c:a aac", shQuote(out)), "stacking the videos of the sounds")
+                       "-map [v] -map [a] -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k", shQuote(out)), "stacking the videos of the sounds")
   out
 }
 

@@ -677,7 +677,7 @@ scrolling_spectro_int <- function(wave, file.name = "scroll.spectro.mp4", hop.si
   run_ffmpeg_int(cll1, "creating video from frames")
 
   # add audio
-  cll2 <- paste("-i", shQuote(temp.video), "-i", shQuote(temp.audio), "-vcodec libx264 -acodec libmp3lame -shortest -y", shQuote(file.name))
+  cll2 <- paste("-i", shQuote(temp.video), "-i", shQuote(temp.audio), "-map 0:v -map 1:a -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest -movflags +faststart -y", shQuote(file.name))
 
   # run ffmpeg to add audio
   run_ffmpeg_int(cll2, "adding audio to video")
